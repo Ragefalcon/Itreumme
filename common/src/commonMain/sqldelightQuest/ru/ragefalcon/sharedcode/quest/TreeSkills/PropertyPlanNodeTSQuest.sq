@@ -1,0 +1,62 @@
+-- Таблица: property_plan_node_ts_quest
+CREATE TABLE property_plan_node_ts_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+--     id_tree   INTEGER NOT NULL,
+    id_node   INTEGER NOT NULL,
+    privplan  INTEGER NOT NULL,
+    stap_prpl INTEGER NOT NULL,
+    porog_hour  REAL NOT NULL
+);
+
+-- CREATE TEMP TABLE indenplan(
+--   _id INTEGER  NOT NULL,
+--   name TEXT  NOT NULL,
+--   sum_hour REAL  NOT NULL,
+--   data INTEGER  NOT NULL
+-- );
+
+insertOrReplace:
+INSERT OR REPLACE INTO property_plan_node_ts_quest(
+     id_node,
+     privplan,
+     stap_prpl,
+     porog_hour
+                )
+VALUES (?, ?, ?, ?);
+
+update:
+UPDATE property_plan_node_ts_quest SET
+                  privplan = :privplan,
+                  stap_prpl = :stap_prpl,
+                  porog_hour = :sum_hour
+              WHERE id_node = :id_node;
+
+
+delete:
+DELETE FROM property_plan_node_ts_quest  WHERE id_node = :id_node;
+
+selectSpisNodeForPlanOrStap:
+SELECT spis_node_tree_skills_quest.* FROM spis_node_tree_skills_quest, spis_level_tree_skill_quest
+    WHERE spis_node_tree_skills_quest._id IN
+            (SELECT id_node FROM property_plan_node_ts_quest WHERE (privplan = :privplan AND stap_prpl = -1) OR stap_prpl = :stap_prpl)
+        AND spis_level_tree_skill_quest.id_tree = spis_node_tree_skills_quest.id_tree
+        AND spis_level_tree_skill_quest.num_level = spis_node_tree_skills_quest.level;
+
+selectPlanNodeTreeSkills:
+SELECT spis_node_tree_skills_quest.*, ic1.extension AS ext1, ic1.type_ramk AS type1, ic2.extension AS ext2, ic2.type_ramk AS type2,  property_plan_node_ts_quest.porog_hour,property_plan_node_ts_quest.privplan,property_plan_node_ts_quest.stap_prpl,
+    ( CASE :type_tree
+            WHEN  "KIT" THEN 1
+            WHEN "TREE" THEN 1
+            WHEN "LEVELS" THEN  (SELECT COUNT(*) FROM spis_must_complete_node_for_level_quest
+                                        WHERE spis_must_complete_node_for_level_quest.id_tree = :id_tree
+                                        AND spis_must_complete_node_for_level_quest.id_node = spis_node_tree_skills_quest._id) = 1
+    ELSE 0 END) AS must_node
+
+FROM property_plan_node_ts_quest, spis_node_tree_skills_quest
+-- LEFT JOIN spis_icon_node_tree_skills_quest ON spis_node_tree_skills_quest.icon = spis_icon_node_tree_skills_quest._id
+LEFT JOIN spis_icon_node_tree_skills_quest ic1 ON spis_node_tree_skills_quest.icon = ic1._id
+LEFT JOIN spis_icon_node_tree_skills_quest ic2 ON spis_node_tree_skills_quest.icon_complete = ic2._id
+WHERE spis_node_tree_skills_quest._id = property_plan_node_ts_quest.id_node AND spis_node_tree_skills_quest.id_tree = :id_tree AND id_type_node = :id_type_plan  ;
+
+
+

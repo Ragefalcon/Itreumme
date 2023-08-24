@@ -1,0 +1,4 @@
+INSERT INTO complex_opis (table_name,item_id,sort)
+   SELECT 'spis_stap_plan' AS table_name, _id AS item_id, 1 AS sort FROM spis_stap_plan;
+INSERT INTO complex_opis_text (opis_id, text, colorNum, font_size, cursive, bold)
+   SELECT complex_opis._id AS opis_id, spis_stap_plan.opis AS text, 1 AS colorNum, 3 AS font_size, 0 AS cursive, 0 AS bold FROM complex_opis INNER JOIN spis_stap_plan ON table_name = 'spis_stap_plan' AND item_id = spis_stap_plan._id;

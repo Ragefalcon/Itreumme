@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/colorMyMainTheme">
+    <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/cl_main_time" android:layout_width="match_parent"
+                                                       android:layout_height="match_parent">
+
+        <LinearLayout
+                android:id="@+id/ll_effekt"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                android:paddingStart="16dp" android:paddingTop="4dp" android:paddingBottom="0dp"
+                android:paddingEnd="16dp">
+            <TextView
+                    android:text="Программа"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/name_effekt_tms"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/colorMyBeg"
+                    android:textAllCaps="false"
+                    android:textSize="18sp"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:shadowColor="@android:color/background_dark"
+                    android:textAlignment="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+            />
+            <TextView
+                    android:text="Н: 8.0/15.0   М: 61.1/67.5   Г: 358.0/515.0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_hours_info_effekt_tms"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@drawable/sel_col_tint_butt_inv"
+                    android:textAllCaps="false"
+                    android:textSize="10sp"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:shadowColor="@android:color/background_dark"
+                    android:textAlignment="center"
+                    app:layout_constraintTop_toBottomOf="@+id/name_parent_plan_stap2"
+                    app:layout_constraintEnd_toEndOf="parent"
+            />
+            <ru.ragefalcon.tutatores.ui.drawclasses.EffektShkalDrawHelper
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp" android:id="@+id/effektShkal_tms"
+                    app:layout_constraintTop_toBottomOf="@+id/name_parent_plan_stap3"
+                    app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            />
+        </LinearLayout>
+        <com.google.android.material.tabs.TabLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:id="@+id/tab_time"
+                app:tabMode="fixed"
+                app:tabIndicatorFullWidth="true"
+                android:fitsSystemWindows="true"
+                app:tabMaxWidth="0dp"
+                app:tabTextColor="@color/colorMyBeg"
+                app:tabIndicatorColor="@color/colorMyBeg"
+                app:layout_constraintTop_toBottomOf="@+id/ll_effekt">
+
+            <com.google.android.material.tabs.TabItem
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Tab5"/>
+            <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Monday"/>
+
+            <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tuesday"/>
+
+            <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wednesday"/>
+        </com.google.android.material.tabs.TabLayout>
+        <androidx.viewpager.widget.ViewPager
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tab_time"
+                android:id="@+id/vp_time">
+        </androidx.viewpager.widget.ViewPager>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

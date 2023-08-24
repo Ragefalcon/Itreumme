@@ -1,0 +1,126 @@
+CREATE TABLE IF NOT EXISTS spis_characteristic (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    sort   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    opis  TEXT NOT NULL,
+    start_value  INTEGER NOT NULL
+);
+
+-- Триггер: replicated_insert_spis_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS sort_insert_spis_characteristic_trig
+         AFTER INSERT
+            ON spis_characteristic
+      FOR EACH ROW
+BEGIN
+    UPDATE spis_characteristic SET sort = new._id WHERE _id = new._id;
+END;
+
+-- Триггер: replicated_insert_spis_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS delete_privs_characteristic
+         AFTER DELETE
+            ON spis_characteristic
+BEGIN
+    DELETE FROM spis_plan_characteristic WHERE id_characteristic = old._id;
+END;
+
+-- Триггер: replicated_insert_spis_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_characteristic_trig
+         AFTER INSERT
+            ON spis_characteristic
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_characteristic',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_characteristic_trig
+         AFTER UPDATE
+            ON spis_characteristic
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_characteristic',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_characteristic',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_characteristic_trig
+         AFTER DELETE
+            ON spis_characteristic
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_characteristic',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+CREATE TABLE IF NOT EXISTS spis_plan_characteristic (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_characteristic   INTEGER NOT NULL,
+    stap    INTEGER NOT NULL,
+    id_plan INTEGER NOT NULL
+);
+
+
+-- Триггер: replicated_insert_spis_plan_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_plan_characteristic_trig
+         AFTER INSERT
+            ON spis_plan_characteristic
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan_characteristic',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_plan_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_plan_characteristic_trig
+         AFTER UPDATE
+            ON spis_plan_characteristic
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan_characteristic',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan_characteristic',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_plan_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_plan_characteristic_trig
+         AFTER DELETE
+            ON spis_plan_characteristic
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan_characteristic',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

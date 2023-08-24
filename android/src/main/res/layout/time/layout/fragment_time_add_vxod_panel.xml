@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:fitsSystemWindows="false"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="550dp"
+                                                   tools:context=".ui.time.TimeAddVxodPanelFragment">
+
+    <!--    <ImageView-->
+    <!--            android:src="@drawable/back_add_layout"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent" android:id="@+id/back_add_vxod_tpanel"/>-->
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--            android:id="@+id/cl_add_tpanel"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:minHeight="400dp"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            android:layout_marginStart="30dp"-->
+    <!--            android:layout_marginTop="30dp"-->
+    <!--            android:layout_marginEnd="30dp"-->
+    <!--            android:layout_marginBottom="30dp"-->
+    <!--            android:background="@drawable/bg_add_time_panel"-->
+    <!--    >-->
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColorHint="@color/colorSchetTheme"
+            android:id="@+id/edit_name_vxod"
+    >
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Название новой идеи"
+                android:textColorHint="@color/colorSchetTheme"
+                android:inputType="text"
+                android:textColor="@color/colorMyBeg"
+                tools:text="Новая идея"
+                style="@style/Profile.EditText.Single"
+                android:enabled="true"
+                android:cursorVisible="true"
+                android:id="@+id/edit_name_vxod_text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_name_vxod"
+            android:textColorHint="@color/colorSchetTheme"
+            android:id="@+id/edit_opis_vxod"
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="56dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_opis_vxod_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Описание идеи"
+                android:inputType="textMultiLine|text"
+                tools:text="666"
+                android:textColor="@color/colorMyBeg"
+                style="@style/Profile.EditText.Single"
+                android:enabled="true"
+                android:ems="10"
+                android:cursorVisible="true" android:gravity="fill_horizontal"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <!--        <fragment-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                class="ru.ragefalcon.tutatores.ui.element_fragment.VyborStatFragment"-->
+    <!--                android:id="@+id/fr_vyb_stat_vxod"-->
+    <!--                tools:layout_editor_absoluteY="4dp"-->
+    <!--                tools:layout_editor_absoluteX="4dp"-->
+    <!--                app:layout_constraintBottom_toTopOf="@+id/butt_cancel_tpanel"-->
+    <!--                app:layout_constraintStart_toStartOf="parent"-->
+    <!--                app:layout_constraintEnd_toEndOf="parent"-->
+    <!--                android:layout_marginStart="30dp"-->
+    <!--                android:layout_marginTop="30dp"-->
+    <!--                android:layout_marginEnd="30dp"-->
+    <!--                android:layout_marginBottom="0dp"-->
+    <!--                android:tag="bladi"-->
+    <!--                tools:layout="@layout/fragment_vybor_stat"-->
+    <!--        />-->
+    <ru.ragefalcon.tutatores.ui.element_fragment.VyborStatFragment
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/vyb_stat_vxod"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    <!--        <Button-->
+    <!--                android:text="Добавить"-->
+    <!--                android:layout_width="0dp"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:id="@+id/butt_add_vxod_record_tpanel"-->
+    <!--                app:layout_constraintBottom_toBottomOf="@+id/butt_cancel_tpanel"-->
+    <!--                app:layout_constraintLeft_toRightOf="@+id/butt_cancel_tpanel"-->
+    <!--                app:layout_constraintRight_toRightOf="parent" android:layout_marginLeft="16dp"-->
+    <!--                android:layout_marginRight="16dp"/>-->
+    <!--        <Button-->
+    <!--                android:text="Отмена"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:id="@+id/butt_cancel_tpanel" android:elevation="6dp"-->
+    <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--                app:layout_constraintLeft_toLeftOf="parent" android:layout_marginBottom="16dp"-->
+    <!--                android:layout_marginStart="16dp"-->
+    <!--                android:layout_marginTop="16dp"/>-->
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

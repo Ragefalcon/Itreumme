@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="wrap_content"
+                                                   tools:context=".ui.time.TimeAddVxodPanelFragment"
+>
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_name_dream"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColorHint="@color/colorSchetTheme"
+            app:hintTextColor="@color/colorStatTint_05"
+    >
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_name_dream_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Название мечты"
+                android:textColorHint="@color/colorSchetTheme"
+                android:inputType="text"
+                android:textColor="@color/colorMyBeg"
+                tools:text="Новая идея"
+                style="@style/Profile.EditText.Single"
+                android:enabled="true"
+                android:cursorVisible="true"
+        />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_opis_dream"
+            android:layout_width="0dp"
+            android:layout_height="250dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_name_dream"
+            android:textColorHint="@color/colorSchetTheme"
+    >
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_opis_dream_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Описание мечты"
+                android:inputType="textMultiLine|text"
+                tools:text="666"
+                android:textColor="@color/colorMyBeg"
+                style="@style/Profile.EditText.Single"
+                android:enabled="true"
+                android:ems="10"
+                android:cursorVisible="true" android:gravity="fill_horizontal"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <ru.ragefalcon.tutatores.ui.element_fragment.VyborStatFragment
+            android:id="@+id/vyb_stat_dream"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/cl_srok_dream"
+            app:layout_constraintStart_toStartOf="parent"
+    />
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_srok_dream"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toBottomOf="@+id/cb_srok_dream"
+            android:layout_marginTop="16dp">
+
+        <ru.ragefalcon.tutatores.ui.element_fragment.MyDateSelect
+                android:text="12.34.3455"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/date_end_dream"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:fontFamily="sans-serif"
+                android:textColor="@drawable/sel_col_tint_butt_inv"
+                tools:text="30 мар. 2020 (пн)"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:shadowColor="@android:color/background_dark"
+                app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <CheckBox
+            android:id="@+id/cb_srok_dream"
+            android:text="успеть до"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_opis_dream"
+            android:layout_marginEnd="8dp"
+            android:textColor="@color/menu_item_color_state" android:layout_marginTop="8dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

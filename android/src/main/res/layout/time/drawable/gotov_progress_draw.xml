@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+            android:id="@android:id/background"
+            android:drawable="@drawable/bg_stap_plan"
+         />
+    <item android:id="@android:id/secondaryProgress"
+              android:top="-6dp"
+              android:right="-6dp"
+              android:left="-6dp"
+              android:bottom="-6dp"
+          >
+
+<!--    >-->
+                <scale
+                android:drawable="@drawable/bg_analiz_main"
+                android:scaleWidth="100%"
+                />
+    </item>
+    <item android:id="@android:id/progress"
+          android:top="-10dp"
+          android:right="-10dp"
+          android:left="-10dp"
+          android:bottom="-10dp"
+    >
+<!--        android:top="-12dp"-->
+<!--        android:right="-12dp"-->
+<!--        android:left="-12dp"-->
+<!--        android:bottom="-12dp"-->
+        <scale
+                android:drawable="@drawable/bg_add_time_panel"
+                android:scaleWidth="100%"
+        />
+    </item>
+
+<!--    bg_add_time_panel-->
+</layer-list>

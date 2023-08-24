@@ -1,0 +1,17 @@
+ALTER TABLE spis_tree_skill ADD COLUMN quest_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE spis_node_tree_skills ADD COLUMN quest_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE spis_must_complete_node_for_level ADD COLUMN quest_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE spis_level_tree_skill ADD COLUMN quest_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE spis_icon_node_tree_skills ADD COLUMN quest_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE spis_binding_node_tree_skill ADD COLUMN quest_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE property_plan_node_ts ADD COLUMN quest_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE property_count_node_ts ADD COLUMN quest_id  INTEGER NOT NULL DEFAULT 0;
+
+ALTER TABLE spis_tree_skill ADD COLUMN quest_key_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE spis_node_tree_skills ADD COLUMN quest_key_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE spis_must_complete_node_for_level ADD COLUMN quest_key_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE spis_level_tree_skill ADD COLUMN quest_key_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE spis_icon_node_tree_skills ADD COLUMN quest_key_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE spis_binding_node_tree_skill ADD COLUMN quest_key_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE property_plan_node_ts ADD COLUMN quest_key_id  INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE property_count_node_ts ADD COLUMN quest_key_id  INTEGER NOT NULL DEFAULT 0;

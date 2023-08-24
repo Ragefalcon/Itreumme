@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/navig_dream_detail"
+            app:startDestination="@id/avatarDreamScreen">
+    <fragment android:id="@+id/avatarDreamScreen"
+              android:name="ru.ragefalcon.tutatores.ui.avatar.dream.AvatarDreamsFragment"
+              android:label="DreamFragment"
+              tools:layout="@layout/fragment_dream"
+    >
+        <action android:id="@+id/action_dream_to_detail"
+                app:destination="@id/avatarDreamDetailScreen"
+        />
+    </fragment>
+    <fragment android:id="@+id/avatarDreamDetailScreen"
+              android:name="ru.ragefalcon.tutatores.ui.avatar.dream.AvatarDreamDetailFragment"
+              android:label="DreamDetailFragment"
+              tools:layout="@layout/fragment_dream_detail"
+    >
+    </fragment>
+
+</navigation>

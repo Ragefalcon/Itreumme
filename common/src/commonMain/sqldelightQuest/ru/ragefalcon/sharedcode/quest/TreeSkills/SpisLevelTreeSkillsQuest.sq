@@ -1,0 +1,82 @@
+-- Таблица: spis_level_tree_skill_quest
+CREATE TABLE spis_level_tree_skill_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    num_level INTEGER NOT NULL,
+    opis  TEXT NOT NULL,
+    proc_porog REAL NOT NULL,
+    visible_stat  INTEGER NOT NULL
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_level_tree_skill_quest(
+     id_tree,
+     name,
+     num_level,
+     opis,
+     proc_porog,
+     visible_stat
+                )
+VALUES (?, ?, ?, ?, ?, ?);
+
+update{
+UPDATE spis_level_tree_skill_quest SET
+                  name = :name,
+                  opis = :opis,
+                  proc_porog = :proc_porog,
+                  visible_stat = :visible_stat
+              WHERE _id = :id;
+    UPDATE common_trigger
+       SET child_name = :name
+     WHERE child_id = :id AND type_trig_id IN :type_start_trig_id;
+}
+
+
+delete{
+DELETE FROM common_trigger
+                WHERE child_id = :id AND type_trig_id IN :type_trig_start_node;
+DELETE FROM spis_level_tree_skill_quest  WHERE _id = :id;
+}
+
+getMaxLevelNum:
+SELECT IFNULL(MAX(num_level),0) FROM spis_level_tree_skill_quest WHERE id_tree = :id_tree;
+
+selectLevelTreeSkill:
+SELECT *,
+ (SELECT COUNT(*) FROM spis_node_tree_skills_quest, spis_must_complete_node_for_level_quest WHERE spis_node_tree_skills_quest.id_tree = :id_tree AND spis_node_tree_skills_quest._id = spis_must_complete_node_for_level_quest.id_node AND level = spis_level_tree_skill_quest.num_level) AS count_node_must,
+ (SELECT COUNT(*) FROM spis_node_tree_skills_quest WHERE id_tree = :id_tree AND level = spis_level_tree_skill_quest.num_level) AS count_node
+FROM spis_level_tree_skill_quest WHERE id_tree = :id_tree ORDER BY num_level;
+
+selectLevelTreeSkillForSelect:
+SELECT *,
+ (SELECT COUNT(*) FROM spis_node_tree_skills_quest, spis_must_complete_node_for_level_quest WHERE spis_node_tree_skills_quest.id_tree = :id_tree AND spis_node_tree_skills_quest._id = spis_must_complete_node_for_level_quest.id_node AND level = spis_level_tree_skill_quest.num_level) AS count_node_must,
+ (SELECT COUNT(*) FROM spis_node_tree_skills_quest WHERE id_tree = :id_tree AND level = spis_level_tree_skill_quest.num_level) AS count_node
+FROM spis_level_tree_skill_quest WHERE id_tree = :id_tree ORDER BY num_level;
+
+
+-- Триггер: insert_spis_level_tree_skill_quest_trig
+CREATE TRIGGER IF NOT EXISTS insert_spis_level_tree_skill_quest_trig1
+         BEFORE INSERT
+            ON spis_level_tree_skill_quest
+      FOR EACH ROW
+BEGIN
+UPDATE spis_level_tree_skill_quest SET num_level = num_level + 1 WHERE id_tree = new.id_tree AND num_level >= new.num_level;
+UPDATE spis_node_tree_skills_quest
+    SET level = level + 1
+    WHERE level >= new.num_level AND id_tree = new.id_tree;
+END;
+
+-- Триггер: delete_spis_level_tree_skill_quest_trig
+CREATE TRIGGER IF NOT EXISTS delete_spis_level_tree_skill_quest_trig1
+         AFTER DELETE
+            ON spis_level_tree_skill_quest
+      FOR EACH ROW
+BEGIN
+UPDATE spis_level_tree_skill_quest SET num_level = num_level - 1 WHERE id_tree = old.id_tree AND num_level > old.num_level;
+UPDATE spis_node_tree_skills_quest
+    SET level = level - 1
+    WHERE level > old.num_level AND id_tree = old.id_tree;
+END;
+
+

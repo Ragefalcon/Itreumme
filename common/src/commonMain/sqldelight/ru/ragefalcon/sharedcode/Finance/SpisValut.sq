@@ -1,0 +1,134 @@
+--
+-- Файл сгенерирован с помощью SQLiteStudio v3.2.1 в Пн апр 6 20:08:36 2020
+--
+-- Использованная кодировка текста: System
+--
+
+-- Таблица: spis_valut
+CREATE TABLE spis_valut (
+    _id  INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    cod  TEXT NOT NULL,
+    kurs REAL NOT NULL
+);
+
+selectSpisValut:
+SELECT *,
+    (SELECT COUNT(*) FROM spis_schet WHERE val_id = spis_valut._id) AS countschet
+--     0 AS countschet
+FROM spis_valut;
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_valut(
+    name,
+    cod,
+    kurs
+)
+VALUES (?, ?,?);
+
+updateValut:
+UPDATE spis_valut SET
+name = :name,
+cod = :cod,
+kurs = :kurs
+WHERE _id = :id;
+
+deleteValut:
+DELETE FROM spis_valut WHERE _id = :id;
+
+
+INSERT INTO spis_valut (_id,name,cod,kurs)
+                       VALUES (1,'Рубль(Российский)','RUB',1.0),
+                              (2,'Доллар(США)','USD',66.0),
+                              (3,'Евро','EUR',65.05),
+                              (4,'Крона(Чешская)','CZK',1.68),
+                              (5,'Дирхам(ОАЭ)','AED',8.76),
+                              (6,'Ланкийская рупия(Шри Ланка)','LKR',0.6);
+
+
+-- Триггер: update_spis_valut_trig1
+CREATE TRIGGER update_spis_valut_trig1
+         AFTER UPDATE
+            ON spis_valut
+          WHEN old.kurs <> new.kurs
+BEGIN
+    DELETE FROM popravka_kurs
+          WHERE data = strftime('%s000', date('now') );
+    INSERT INTO popravka_kurs VALUES (
+                                  NULL,
+                                  (
+                                      SELECT sum(ss) 
+                                        FROM (
+                                                 SELECT round(total(summa) * ( -1), 2) AS ss
+                                                   FROM sum_oper_week
+                                                 UNION ALL
+                                                 SELECT round(total(sumrub), 2) AS ss
+                                                   FROM (
+                                                            SELECT (
+                                                                       SELECT sum_on_schet.summa * total(spis_valut.kurs) 
+                                                                         FROM spis_valut,
+                                                                              spis_schet
+                                                                        WHERE sum_on_schet._id = spis_schet._id AND 
+                                                                              spis_schet.val_id = spis_valut._id
+                                                                   )
+                                                                   AS sumrub
+                                                              FROM sum_on_schet,
+                                                                   spis_schet
+                                                             WHERE sum_on_schet._id = spis_schet._id AND 
+                                                                   spis_schet.open <> 'false'
+                                                        )
+                                             )
+                                  ),
+                                  1,
+                                  strftime('%s000', date('now') ) 
+                              );
+END;
+
+
+-- Триггер: replicated_insert_spis_valut_trig
+CREATE TRIGGER replicated_insert_spis_valut_trig
+         AFTER INSERT
+            ON spis_valut
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_valut',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_valut_trig
+CREATE TRIGGER replicated_update_spis_valut_trig
+         AFTER UPDATE
+            ON spis_valut
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_valut',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_valut',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_valut_trig
+CREATE TRIGGER replicated_delete_spis_valut_trig
+         AFTER DELETE
+            ON spis_valut
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_valut',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+

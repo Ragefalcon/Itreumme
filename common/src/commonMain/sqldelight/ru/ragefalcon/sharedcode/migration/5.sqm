@@ -1,0 +1,8 @@
+-- Таблица: spis_node_tree_skills
+CREATE TABLE IF NOT EXISTS spis_icon_node_tree_skills (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    extension  TEXT NOT NULL,
+    type_ramk INTEGER NOT NULL
+);
+
+ALTER TABLE spis_node_tree_skills ADD COLUMN icon_complete INTEGER NOT NULL DEFAULT -1;

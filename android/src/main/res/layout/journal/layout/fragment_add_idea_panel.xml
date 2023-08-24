@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:fitsSystemWindows="false"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="550dp"
+                                                   tools:context=".ui.time.TimeAddVxodPanelFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_selected_parent_idea"
+            android:transitionName="cl_selected_parent_idea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_sel_priv_plan_stap"
+            app:layout_constraintTop_toBottomOf="@+id/cl_selected_parent_bloknot" android:layout_marginTop="-20dp"
+            android:translationY="-10dp">
+        <TextView
+                android:text="Сделать подразделом"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:id="@+id/name_parent_idea"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:fontFamily="sans-serif"
+                android:textColor="@drawable/sel_col_tint_butt_inv"
+                android:textSize="20sp"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:shadowColor="@android:color/background_dark"
+                app:layout_constraintEnd_toStartOf="@+id/butt_unsel_idea"/>
+        <Button
+                android:id="@+id/butt_unsel_idea"
+                android:backgroundTint="@drawable/sel_col_tint_butt_inv"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/ic_minus"
+                android:layout_marginEnd="16dp"
+                android:visibility="invisible"
+                tools:visibility="visible"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_selected_parent_bloknot"
+            android:transitionName="cl_selected_parent_bloknot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/bg_sel_priv_plan"
+    >
+        <TextView
+                android:text="Блокнот"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/name_parent_bloknot"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:fontFamily="sans-serif"
+                android:textColor="@drawable/sel_col_tint_butt_inv"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:shadowColor="@android:color/background_dark"
+                android:textAlignment="center"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_name_idea"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_selected_parent_idea"
+            android:textColorHint="@color/colorSchetTheme"
+            app:hintEnabled="true"
+            app:hintTextColor="@color/colorStatTint_05"
+    >
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_name_idea_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Название раздела"
+                android:textColorHint="@color/colorSchetTheme"
+                android:inputType="text"
+                android:textColor="@color/colorMyBeg"
+                style="@style/Profile.EditText.Single"
+                android:enabled="true"
+                android:cursorVisible="true"
+        />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_opis_idea"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_name_idea"
+            android:textColorHint="@color/colorSchetTheme"
+            app:layout_constraintBottom_toBottomOf="parent" android:layout_marginBottom="56dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_opis_idea_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Описание раздела"
+                android:inputType="textMultiLine|text"
+                tools:text="666"
+                android:textColor="@color/colorMyBeg"
+                style="@style/Profile.EditText.Single"
+                android:enabled="true"
+                android:ems="10"
+                android:cursorVisible="true" android:gravity="fill_horizontal"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <ru.ragefalcon.tutatores.ui.element_fragment.VyborStatFragment
+            android:id="@+id/vyb_stat_idea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+    />
+
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

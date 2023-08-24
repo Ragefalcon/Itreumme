@@ -1,0 +1,195 @@
+-- Таблица: spis_level_tree_skill
+CREATE TABLE spis_level_tree_skill (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    num_level INTEGER NOT NULL,
+    opis  TEXT NOT NULL,
+    proc_porog REAL NOT NULL,
+    open_level  INTEGER NOT NULL,
+    quest_id  INTEGER NOT NULL DEFAULT 0,
+    quest_key_id  INTEGER NOT NULL DEFAULT 0
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_level_tree_skill(
+     id_tree,
+     name,
+     num_level,
+     opis,
+     proc_porog,
+--      CASE WHEN num_level = 1 THEN 1 ELSE open_level END,
+     open_level,
+     quest_id
+                )
+VALUES (?, ?, :num_level, ?, ?, CASE WHEN :num_level = 1 THEN 1 ELSE :open_level END, ?);
+
+updateCompleteLevel:
+UPDATE spis_level_tree_skill SET open_level = CASE WHEN num_level = 1 THEN 1 ELSE CASE
+WHEN (SELECT COUNT(*) FROM spis_node_tree_skills, spis_must_complete_node_for_level
+                    WHERE spis_node_tree_skills.level = spis_level_tree_skill.num_level - 1
+                        AND spis_node_tree_skills.id_tree = :id_tree
+                        AND spis_node_tree_skills.complete = :cod_node_visib
+                        AND spis_node_tree_skills._id = spis_must_complete_node_for_level.id_node) = 0
+      AND
+      IFNULL(((SELECT COUNT(spis_node_tree_skills._id)*100.0 FROM spis_node_tree_skills
+                           WHERE spis_node_tree_skills.level = num_level - 1
+                               AND spis_node_tree_skills.id_tree = :id_tree
+                               AND spis_node_tree_skills.complete = :cod_node_complete
+                               AND spis_node_tree_skills._id NOT IN
+                                    (SELECT spis_must_complete_node_for_level.id_node FROM spis_must_complete_node_for_level, spis_node_tree_skills
+                                        WHERE spis_node_tree_skills.id_tree = :id_tree
+                                        AND spis_node_tree_skills.level = spis_level_tree_skill.num_level - 1
+                                        AND spis_node_tree_skills._id = spis_must_complete_node_for_level.id_node
+                                        ))
+        /
+      (SELECT COUNT(spis_node_tree_skills._id)*1.0 FROM spis_node_tree_skills
+                           WHERE spis_node_tree_skills.level = num_level - 1
+                               AND spis_node_tree_skills.id_tree = :id_tree
+                               AND spis_node_tree_skills._id NOT IN
+                                    (SELECT spis_must_complete_node_for_level.id_node FROM spis_must_complete_node_for_level, spis_node_tree_skills
+                                    WHERE spis_node_tree_skills.id_tree = :id_tree
+                                        AND spis_node_tree_skills.level = spis_level_tree_skill.num_level - 1
+                                        AND spis_node_tree_skills._id = spis_must_complete_node_for_level.id_node
+                                    )
+      )),100)
+        >=
+      (SELECT proc_porog FROM spis_level_tree_skill AS tmp2 WHERE id_tree = :id_tree AND tmp2.num_level = spis_level_tree_skill.num_level - 1)
+      AND
+      (SELECT COUNT(*) FROM spis_node_tree_skills
+                          WHERE spis_node_tree_skills.level = num_level - 1
+                              AND spis_node_tree_skills.id_tree = :id_tree) <> 0
+      AND
+      (SELECT open_level FROM spis_level_tree_skill AS tmp3
+                          WHERE tmp3.num_level = spis_level_tree_skill.num_level - 1
+                          AND tmp3.id_tree = :id_tree
+                          ) = 1
+THEN 1 ELSE 0 END END
+WHERE id_tree = :id_tree AND EXISTS (SELECT  * FROM spis_level_tree_skill AS tmp
+                                                             WHERE tmp.id_tree = :id_tree AND tmp.num_level = spis_level_tree_skill.num_level);
+
+-- updateCompleteLevel:
+-- UPDATE spis_level_tree_skill SET open_level = CASE
+-- WHEN (SELECT COUNT(*) FROM spis_node_tree_skills, spis_must_complete_node_for_level
+--                     WHERE spis_node_tree_skills.level = :num_level
+--                         AND spis_node_tree_skills.id_tree = :id_tree
+--                         AND spis_node_tree_skills.complete = :cod_node_visib
+--                         AND spis_node_tree_skills._id = spis_must_complete_node_for_level.id_node) = 0
+--       AND
+--       IFNULL(((SELECT COUNT(spis_node_tree_skills._id)*100.0 FROM spis_node_tree_skills
+--                            WHERE spis_node_tree_skills.level = :num_level
+--                                AND spis_node_tree_skills.id_tree = :id_tree
+--                                AND spis_node_tree_skills.complete = :cod_node_complete
+--                                AND spis_node_tree_skills._id NOT IN (SELECT spis_must_complete_node_for_level.id_node FROM spis_must_complete_node_for_level WHERE id_tree = :id_tree AND num_level = :num_level))
+--         /
+--       (SELECT COUNT(spis_node_tree_skills._id)*1.0 FROM spis_node_tree_skills
+--                            WHERE spis_node_tree_skills.level = :num_level
+--                                AND spis_node_tree_skills.id_tree = :id_tree
+--                                AND spis_node_tree_skills._id NOT IN (SELECT spis_must_complete_node_for_level.id_node FROM spis_must_complete_node_for_level WHERE id_tree = :id_tree AND num_level = :num_level))),100)
+--         >=
+--       (SELECT proc_porog FROM spis_level_tree_skill WHERE id_tree = :id_tree AND num_level = :num_level)
+--       AND
+--       (SELECT COUNT(*) FROM spis_node_tree_skills
+--                           WHERE spis_node_tree_skills.level = :num_level
+--                               AND spis_node_tree_skills.id_tree = :id_tree) <> 0
+--       AND
+--       (SELECT open_level FROM spis_level_tree_skill
+--                           WHERE spis_level_tree_skill.num_level = :num_level) = 1
+-- THEN 1 ELSE 0 END
+-- WHERE id_tree = :id_tree AND num_level = :num_level + 1;
+--
+update:
+UPDATE spis_level_tree_skill SET
+                  name = :name,
+                  opis = :opis,
+                  proc_porog = :proc_porog
+              WHERE _id = :id;
+
+
+
+delete:
+DELETE FROM spis_level_tree_skill  WHERE _id = :id;
+
+getMaxLevelNum:
+SELECT IFNULL(MAX(num_level),0) FROM spis_level_tree_skill WHERE id_tree = :id_tree;
+
+selectLevelTreeSkill:
+SELECT *,
+ (SELECT COUNT(*) FROM spis_node_tree_skills, spis_must_complete_node_for_level WHERE spis_node_tree_skills.id_tree = :id_tree AND spis_node_tree_skills._id = spis_must_complete_node_for_level.id_node AND level = spis_level_tree_skill.num_level AND complete = :cod_node_complete) AS count_complete_node_must,
+ (SELECT COUNT(*) FROM spis_node_tree_skills, spis_must_complete_node_for_level WHERE spis_node_tree_skills.id_tree = :id_tree AND spis_node_tree_skills._id = spis_must_complete_node_for_level.id_node AND level = spis_level_tree_skill.num_level) AS count_node_must,
+ (SELECT COUNT(*) FROM spis_node_tree_skills WHERE id_tree = :id_tree AND level = spis_level_tree_skill.num_level AND complete = :cod_node_complete) AS count_complete_node,
+ (SELECT COUNT(*) FROM spis_node_tree_skills WHERE id_tree = :id_tree AND level = spis_level_tree_skill.num_level) AS count_node
+FROM spis_level_tree_skill WHERE id_tree = :id_tree ORDER BY num_level;
+
+
+-- Триггер: insert_spis_level_tree_skill_trig
+CREATE TRIGGER IF NOT EXISTS insert_spis_level_tree_skill_trig1
+         BEFORE INSERT
+            ON spis_level_tree_skill
+      FOR EACH ROW
+BEGIN
+UPDATE spis_level_tree_skill SET num_level = num_level + 1 WHERE id_tree = new.id_tree AND num_level >= new.num_level;
+UPDATE spis_node_tree_skills
+    SET level = level + 1
+    WHERE level >= new.num_level AND id_tree = new.id_tree;
+END;
+
+-- Триггер: delete_spis_level_tree_skill_trig
+CREATE TRIGGER IF NOT EXISTS delete_spis_level_tree_skill_trig1
+         AFTER DELETE
+            ON spis_level_tree_skill
+      FOR EACH ROW
+BEGIN
+UPDATE spis_level_tree_skill SET num_level = num_level - 1 WHERE id_tree = old.id_tree AND num_level > old.num_level;
+UPDATE spis_node_tree_skills
+    SET level = level - 1
+    WHERE level > old.num_level AND id_tree = old.id_tree;
+END;
+
+
+-- Триггер: replicated_insert_spis_level_tree_skill_trig
+CREATE TRIGGER replicated_insert_spis_level_tree_skill_trig
+         AFTER INSERT
+            ON spis_level_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_level_tree_skill',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_level_tree_skill_trig
+CREATE TRIGGER replicated_update_spis_level_tree_skill_trig
+         AFTER UPDATE
+            ON spis_level_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_level_tree_skill',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_level_tree_skill',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_level_tree_skill_trig
+CREATE TRIGGER replicated_delete_spis_level_tree_skill_trig
+         AFTER DELETE
+            ON spis_level_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_level_tree_skill',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

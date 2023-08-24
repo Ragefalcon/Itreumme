@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".ui.time.DenPlanFragment">
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scene_plan_tab"
+    >
+        <!--    android:background="@drawable/bg_stap_plan"-->
+        <TextView
+                android:text="Показать неиспользуемые"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_count_plan_label"
+                app:layout_constraintTop_toTopOf="@+id/butt_toggle_open"
+                android:fontFamily="sans-serif"
+                android:textColor="@drawable/sel_color_tint_butt"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:shadowColor="@android:color/background_dark"
+                android:textAlignment="viewStart"
+                app:layout_constraintStart_toEndOf="@+id/butt_toggle_open"
+                app:layout_constraintBottom_toBottomOf="@+id/butt_toggle_open"
+                android:layout_marginStart="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="16dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_fin_sett_list"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:listitem="@layout/item_sett_schet"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintTop_toBottomOf="@+id/butt_toggle_open"
+                app:layout_constraintBottom_toTopOf="@+id/butt_add" android:layout_marginBottom="8dp"/>
+        <ToggleButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/butt_toggle_open"
+                android:background="@drawable/bg_archive_check_button"
+                android:backgroundTint="@drawable/sel_color_tint_butt"
+                android:textIsSelectable="false"
+                android:checked="false"
+                android:textOn=""
+                android:textOff=""
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="12dp"/>
+        <Button
+                android:id="@+id/butt_add"
+                android:backgroundTint="@drawable/sel_color_tint_butt"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/ic_add_butt"
+                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" android:layout_marginBottom="8dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

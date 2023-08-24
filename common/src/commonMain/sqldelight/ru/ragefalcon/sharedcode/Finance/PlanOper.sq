@@ -1,0 +1,56 @@
+
+-- Таблица: planoper
+CREATE TABLE planoper (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    name  TEXT,
+    summa REAL,
+    data  INTEGER
+);
+
+
+-- Триггер: replicated_insert_planoper_trig
+CREATE TRIGGER replicated_insert_planoper_trig
+         AFTER INSERT
+            ON planoper
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'planoper',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_planoper_trig
+CREATE TRIGGER replicated_update_planoper_trig
+         AFTER UPDATE
+            ON planoper
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'planoper',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'planoper',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_planoper_trig
+CREATE TRIGGER replicated_delete_planoper_trig
+         AFTER DELETE
+            ON planoper
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'planoper',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

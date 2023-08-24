@@ -1,0 +1,3 @@
+
+DROP TABLE IF EXISTS spis_stap_idea_fts4;
+CREATE VIRTUAL TABLE spis_stap_idea_fts4 USING FTS4 ( name TEXT NOT NULL, opis TEXT);

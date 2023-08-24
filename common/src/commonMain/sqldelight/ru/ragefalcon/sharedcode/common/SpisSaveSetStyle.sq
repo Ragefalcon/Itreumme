@@ -1,0 +1,154 @@
+CREATE TABLE IF NOT EXISTS spis_save_set_style (
+        _id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        type INTEGER NOT NULL
+);
+
+selectSaveSetStyleFull:
+SELECT * FROM spis_save_set_style WHERE type = :typefull;
+
+selectSaveSetStyleTextStyle:
+SELECT * FROM spis_save_set_style WHERE type = :textstyle;
+
+selectSaveSetStyleCommonItem:
+SELECT * FROM spis_save_set_style WHERE type = :commonitem;
+
+selectSaveSetStyleTextButton:
+SELECT * FROM spis_save_set_style WHERE type = :button;
+
+selectSaveSetStyleFullPanel:
+SELECT * FROM spis_save_set_style WHERE type = :fullpanel;
+
+selectSaveSetStyleBackAndBorder:
+SELECT * FROM spis_save_set_style WHERE type = :itemgradient;
+
+selectSaveSetStyleBrush:
+SELECT * FROM spis_save_set_style WHERE type = :brush;
+
+selectSaveSetStyleShape:
+SELECT * FROM spis_save_set_style WHERE type = :shape;
+
+selectSaveSetStylePadding:
+SELECT * FROM spis_save_set_style WHERE type = :padding;
+
+selectSaveSetStyleShadow:
+SELECT * FROM spis_save_set_style WHERE type = :shadow;
+
+selectSaveSetStyleDropdown:
+SELECT * FROM spis_save_set_style WHERE type = :dropdown;
+
+selectSaveSetStyleComboBox:
+SELECT * FROM spis_save_set_style WHERE type = :combobox;
+
+selectSaveSetStyleTextField:
+SELECT * FROM spis_save_set_style WHERE type = :textfield;
+
+insert:
+INSERT OR REPLACE INTO spis_save_set_style( name, type ) VALUES (:name, :type );
+
+
+-- Как выяснилось запрос ниже очень ресурсоемкий, а в моему случае когда количество настроек сильно разрослось это стало вообще катастрофическим.
+-- loadFull:
+-- UPDATE
+--       style_settings
+-- SET
+-- intparam = (SELECT intparam
+--                   FROM save_set_style_settings
+--                   WHERE set_id = :id AND style_settings.codename = save_set_style_settings.codename),
+-- doubleparam = (SELECT doubleparam
+--                   FROM save_set_style_settings
+--                   WHERE set_id = :id AND style_settings.codename = save_set_style_settings.codename),
+-- stringparam = (SELECT stringparam
+--                   FROM save_set_style_settings
+--                   WHERE set_id = :id AND style_settings.codename = save_set_style_settings.codename)
+-- WHERE EXISTS (SELECT  * FROM save_set_style_settings
+--                                 WHERE set_id = :id AND style_settings.codename = save_set_style_settings.codename);
+
+-- selectShablonForApply:
+-- SELECT save_set_style_settings.intparam, save_set_style_settings.doubleparam, save_set_style_settings.stringparam, CAST( :code_name_razdel || save_set_style_settings.codename AS TEXT ) AS codename FROM save_set_style_settings, style_settings
+--    WHERE set_id = :set_id AND style_settings.codename = CAST( :code_name_razdel || save_set_style_settings.codename AS TEXT );
+selectShablonForApply:
+SELECT style_settings._id FROM save_set_style_settings, style_settings
+   WHERE set_id = :set_id AND style_settings.codename = CAST( :code_name_razdel || save_set_style_settings.codename AS TEXT );
+
+loadShablon{
+INSERT INTO style_settings(codename,intparam,doubleparam,stringparam) SELECT CAST( :code_name_razdel || save_set_style_settings.codename AS TEXT ) AS codename,
+ save_set_style_settings.intparam, save_set_style_settings.doubleparam, save_set_style_settings.stringparam FROM save_set_style_settings, style_settings
+                                     WHERE set_id = :set_id AND style_settings.codename = CAST( :code_name_razdel || save_set_style_settings.codename AS TEXT );
+DELETE FROM style_settings WHERE _id IN :delarray;
+}
+
+-- Как выяснилось запрос ниже очень ресурсоемкий, а в моему случае когда количество настроек сильно разрослось это стало вообще катастрофическим.
+-- loadCommon:
+-- UPDATE
+--       style_settings
+-- SET
+-- intparam = (SELECT intparam
+--                   FROM save_set_style_settings
+--                   WHERE set_id = :set_id AND style_settings.codename = CAST( :code_name_razdel || save_set_style_settings.codename AS TEXT )),
+-- doubleparam = (SELECT doubleparam
+--                   FROM save_set_style_settings
+--                   WHERE set_id = :set_id AND style_settings.codename = CAST( :code_name_razdel || save_set_style_settings.codename AS TEXT )),
+-- stringparam = (SELECT stringparam
+--                   FROM save_set_style_settings
+--                   WHERE set_id = :set_id AND style_settings.codename = CAST( :code_name_razdel || save_set_style_settings.codename AS TEXT ))
+-- WHERE EXISTS (SELECT  * FROM save_set_style_settings
+--                                 WHERE set_id = :set_id AND style_settings.codename = CAST( :code_name_razdel || save_set_style_settings.codename AS TEXT ));
+
+selectLoadCommon:
+SELECT _id,  CAST( :code_name_razdel || codename AS TEXT ) AS codename, intparam,doubleparam,stringparam FROM save_set_style_settings WHERE set_id = :set_id;
+
+update:
+UPDATE spis_save_set_style SET name = :name WHERE _id = :id;
+
+delete{
+DELETE FROM spis_save_set_style WHERE _id = :id;
+DELETE FROM save_set_style_settings WHERE set_id = :id;
+}
+
+-- Триггер: replicated_insert_spis_save_set_style_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_save_set_style_trig
+         AFTER INSERT
+            ON spis_save_set_style
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_save_set_style',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+-- Триггер: replicated_update_spis_save_set_style_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_save_set_style_trig
+         AFTER UPDATE
+            ON spis_save_set_style
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_save_set_style',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_save_set_style',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_save_set_style_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_save_set_style_trig
+         AFTER DELETE
+            ON spis_save_set_style
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_save_set_style',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+

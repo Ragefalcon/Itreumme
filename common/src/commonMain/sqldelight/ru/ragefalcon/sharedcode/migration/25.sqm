@@ -1,0 +1,115 @@
+CREATE TABLE IF NOT EXISTS complex_opis_image (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    opis_id   INTEGER NOT NULL,
+    sort   INTEGER NOT NULL
+);
+
+
+-- Триггер: replicated_insert_complex_opis_image_trig
+CREATE TRIGGER replicated_insert_complex_opis_image_trig
+         AFTER INSERT
+            ON complex_opis_image
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_complex_opis_image_trig
+CREATE TRIGGER replicated_update_complex_opis_image_trig
+         AFTER UPDATE
+            ON complex_opis_image
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_complex_opis_image_trig
+CREATE TRIGGER replicated_delete_complex_opis_image_trig
+         AFTER DELETE
+            ON complex_opis_image
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+--------------------------------------
+--------------------------------------
+--------------------------------------
+--------------------------------------
+--------------------------------------
+
+
+CREATE TABLE IF NOT EXISTS complex_opis_image_group (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    opis_id   INTEGER NOT NULL,
+    size_preview   INTEGER NOT NULL,
+    width_limit   INTEGER NOT NULL,
+    enable_text   INTEGER NOT NULL
+);
+
+
+-- Триггер: replicated_insert_complex_opis_image_group_trig
+CREATE TRIGGER replicated_insert_complex_opis_image_group_trig
+         AFTER INSERT
+            ON complex_opis_image_group
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image_group',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_complex_opis_image_group_trig
+CREATE TRIGGER replicated_update_complex_opis_image_group_trig
+         AFTER UPDATE
+            ON complex_opis_image_group
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image_group',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image_group',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_complex_opis_image_group_trig
+CREATE TRIGGER replicated_delete_complex_opis_image_group_trig
+         AFTER DELETE
+            ON complex_opis_image_group
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image_group',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

@@ -1,0 +1,54 @@
+CREATE TABLE IF NOT EXISTS bind_for_schet_plan (
+    _id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    type_element  INTEGER NOT NULL,
+    element_id     INTEGER NOT NULL,
+    schet_plan_id INTEGER NOT NULL
+);
+
+-- Триггер: replicated_insert_bind_for_schet_plan_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_bind_for_schet_plan_trig
+         AFTER INSERT
+            ON bind_for_schet_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'bind_for_schet_plan',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_bind_for_schet_plan_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_bind_for_schet_plan_trig
+         AFTER UPDATE
+            ON bind_for_schet_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'bind_for_schet_plan',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'bind_for_schet_plan',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_bind_for_schet_plan_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_bind_for_schet_plan_trig
+         AFTER DELETE
+            ON bind_for_schet_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'bind_for_schet_plan',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+

@@ -1,0 +1,28 @@
+CREATE TABLE common_trigger (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    parent_type_element TEXT NOT NULL,
+    parent_element_id INTEGER NOT NULL,
+    type_trig_id INTEGER NOT NULL,
+    child_id INTEGER NOT NULL,
+    child_name TEXT NOT NULL,
+    act_code INTEGER NOT NULL
+);
+
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+selectAll:
+SELECT * FROM common_trigger;
+
+insertOrReplace:
+INSERT OR REPLACE INTO common_trigger(parent_type_element,parent_element_id,type_trig_id,child_id,child_name,act_code)
+    VALUES (:elem_type,:elem_id, :type_trig_id, :child_id,:child_name, :act_code);
+
+delete:
+DELETE FROM common_trigger WHERE _id = :id;
+
+setStartQuestDialog{
+    DELETE FROM common_trigger WHERE parent_type_element = :elem_type AND parent_element_id = :elem_id;
+INSERT OR REPLACE INTO common_trigger(parent_type_element,parent_element_id,type_trig_id,child_id,child_name,act_code)
+    VALUES (:elem_type,:elem_id, :type_trig_id, :child_id,:child_name, :act_code);
+}

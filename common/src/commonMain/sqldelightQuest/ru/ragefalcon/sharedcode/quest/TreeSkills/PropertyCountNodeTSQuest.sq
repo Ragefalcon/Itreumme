@@ -1,0 +1,50 @@
+-- Таблица: property_count_node_ts
+CREATE TABLE property_count_node_ts_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+--     id_tree   INTEGER NOT NULL,
+    id_node   INTEGER NOT NULL,
+    priv_counter  INTEGER NOT NULL,
+    count_value  INTEGER NOT NULL,
+    max_value INTEGER NOT NULL,
+    porog_value  INTEGER NOT NULL
+);
+
+-- CREATE TEMP TABLE indenplan(
+--   _id INTEGER  NOT NULL,
+--   name TEXT  NOT NULL,
+--   sum_hour REAL  NOT NULL,
+--   data INTEGER  NOT NULL
+-- );
+
+insertOrReplace:
+INSERT OR REPLACE INTO property_count_node_ts_quest(
+     id_node,
+     priv_counter,
+     count_value,
+     max_value,
+     porog_value
+                )
+VALUES (?, ?, ?, ?, ?);
+
+update:
+UPDATE property_count_node_ts_quest SET
+                  priv_counter = :privplan,
+                  count_value = :privplan,
+                  max_value = :stap_prpl,
+                  porog_value = :sum_hour
+              WHERE id_node = :id_node;
+
+
+
+delete:
+DELETE FROM property_count_node_ts_quest  WHERE id_node = :id_node;
+
+
+select:
+SELECT *
+-- (SELECT TOTAL(hour) AS obs FROM (SELECT hour FROM  sum_hour_stap_plan,spis_plan_goal WHERE property_count_node_ts._id = spis_plan_goal.id_goal AND spis_plan_goal.stap = sum_hour_stap_plan._id UNION
+--  SELECT hour FROM hour_plan,spis_plan_goal WHERE  property_count_node_ts._id = spis_plan_goal.id_goal AND hour_plan._id = spis_plan_goal.id_plan AND spis_plan_goal.stap = 0) ) AS hour
+FROM property_count_node_ts_quest ORDER BY id_node;
+
+
+

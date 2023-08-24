@@ -1,0 +1,53 @@
+ALTER TABLE complex_opis_checkbox ADD COLUMN many_type INTEGER NOT NULL DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS complex_opis_link (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    opis_id   INTEGER NOT NULL,
+    link     TEXT NOT NULL
+);
+
+-- Триггер: replicated_insert_complex_opis_link_trig
+CREATE TRIGGER replicated_insert_complex_opis_link_trig
+         AFTER INSERT
+            ON complex_opis_link
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_link',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_complex_opis_link_trig
+CREATE TRIGGER replicated_update_complex_opis_link_trig
+         AFTER UPDATE
+            ON complex_opis_link
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_link',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_link',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_complex_opis_link_trig
+CREATE TRIGGER replicated_delete_complex_opis_link_trig
+         AFTER DELETE
+            ON complex_opis_link
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_link',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

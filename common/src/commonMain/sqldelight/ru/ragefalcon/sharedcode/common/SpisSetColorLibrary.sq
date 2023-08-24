@@ -1,0 +1,65 @@
+CREATE TABLE IF NOT EXISTS spis_set_color_library (
+        _id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL
+);
+
+selectSetColorLibrary:
+SELECT * FROM spis_set_color_library ;
+
+insert:
+INSERT OR REPLACE INTO spis_set_color_library( name ) VALUES (:name );
+
+update:
+UPDATE spis_set_color_library SET name = :name WHERE _id = :id;
+
+delete{
+DELETE FROM spis_set_color_library WHERE _id = :id;
+DELETE FROM color_library WHERE set_id = :id;
+}
+
+-- Триггер: replicated_insert_spis_set_color_library_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_set_color_library_trig
+         AFTER INSERT
+            ON spis_set_color_library
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_set_color_library',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+-- Триггер: replicated_update_spis_set_color_library_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_set_color_library_trig
+         AFTER UPDATE
+            ON spis_set_color_library
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_set_color_library',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_set_color_library',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_set_color_library_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_set_color_library_trig
+         AFTER DELETE
+            ON spis_set_color_library
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_set_color_library',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".ui.time.DenPlanFragment">
+<androidx.constraintlayout.widget.ConstraintLayout
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   android:id="@+id/scene_plan_tab"
+>
+    <!--    android:background="@drawable/bg_stap_plan"-->
+    <TextView
+            android:text="Количество проектов:"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_count_plan_label"
+            app:layout_constraintTop_toTopOf="@+id/butt_toggle_open_plan"
+            android:fontFamily="sans-serif"
+            android:textColor="@drawable/sel_col_tint_butt_inv"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:shadowColor="@android:color/background_dark"
+            android:textAlignment="viewStart" app:layout_constraintStart_toEndOf="@+id/butt_toggle_open_plan"
+            app:layout_constraintBottom_toBottomOf="@+id/butt_toggle_open_plan"
+            app:layout_constraintEnd_toStartOf="@+id/tv_count_plan" android:layout_marginStart="16dp"/>
+    <TextView
+            android:text="0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_count_plan"
+            app:layout_constraintTop_toTopOf="@+id/butt_toggle_open_plan"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:fontFamily="sans-serif"
+            android:textColor="@drawable/sel_col_tint_butt_inv"
+            tools:text="0"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:shadowColor="@android:color/background_dark"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/butt_toggle_open_plan" android:layout_marginEnd="16dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_plan_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/cl_stap_plan"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/item_plan"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            app:layout_constraintHorizontal_bias="0.0" app:layout_constraintVertical_bias="1.0"
+            app:layout_constraintTop_toBottomOf="@+id/butt_toggle_open_plan"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:transitionName="cl_stap_plan"
+            android:id="@+id/cl_stap_plan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bc_bloknot"
+            app:layout_constraintBottom_toTopOf="@id/cl_butt_plan_tab"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp">
+
+        <Button
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/butt_to_stap_plan"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/ic_baseline_expand_less_24"
+                android:backgroundTint="@color/colorAccent" app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"/>
+        <TextView
+                android:transitionName="tv_plan_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_plan_name"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/butt_to_stap_plan"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Программа"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                android:shadowColor="@android:color/background_dark"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp" android:singleLine="false"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_butt_plan_tab"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+    >
+        <ToggleButton
+                android:id="@+id/butt_add_effekt"
+                android:backgroundTint="@drawable/sel_col_tint_butt_inv"
+                android:checked="false"
+                android:textOn=""
+                android:textOff=""
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/ic_baseline_timelapse_24"
+                app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="16dp"/>
+        <SeekBar
+                android:id="@+id/sb_gotov_plan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/butt_add_plan"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="16dp"
+                android:thumb="@drawable/gotov_thumb_progress"
+                android:progressDrawable="@drawable/gotov_progress_draw"
+                android:progress="40"
+                android:progressBackgroundTintMode="multiply"
+                android:progressTintMode="multiply"
+                android:splitTrack="false"
+                android:thumbTintMode="multiply" android:secondaryProgress="75"
+                android:layout_marginBottom="8dp" android:paddingStart="20dp"
+                android:paddingEnd="30dp" app:layout_constraintStart_toEndOf="@+id/butt_add_effekt"
+                android:layout_marginStart="16dp"/>
+        <Button
+                android:id="@+id/butt_add_plan"
+                android:backgroundTint="@drawable/sel_col_tint_butt_inv"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/ic_add_butt"
+        />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <ToggleButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/butt_toggle_open_plan"
+            android:background="@drawable/bg_round_check"
+            android:textIsSelectable="false"
+            android:checked="false"
+            android:textOn=""
+            android:textOff=""
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp" android:layout_marginStart="12dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

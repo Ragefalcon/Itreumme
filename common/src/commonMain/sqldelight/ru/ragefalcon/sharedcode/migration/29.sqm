@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE IF NOT EXISTS complex_opis_text_fts4 USING FTS4 (
+--     content='spis_stap_idea',
+    text TEXT
+);

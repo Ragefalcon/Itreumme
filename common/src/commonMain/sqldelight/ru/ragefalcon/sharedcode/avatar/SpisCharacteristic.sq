@@ -1,0 +1,151 @@
+CREATE TABLE IF NOT EXISTS spis_characteristic (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    sort   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    opis  TEXT NOT NULL,
+    start_value  INTEGER NOT NULL
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_characteristic(
+     sort,
+     name,
+     opis,
+     start_value)
+VALUES (0,?, ?, ?);
+
+update:
+UPDATE spis_characteristic SET
+                  name = :name,
+                  opis = :opis,
+                  start_value = :start_value
+              WHERE _id = :id;
+
+delete{
+DELETE FROM spis_plan_characteristic WHERE id_characteristic = :id;
+DELETE FROM spis_characteristic WHERE _id = :id;
+}
+
+changeSortToUp{
+    UPDATE spis_characteristic SET sort = sort-1 WHERE sort <= :newsort AND sort > :oldsort ;
+    UPDATE spis_characteristic SET sort = :newsort WHERE _id = :id;
+}
+changeSortToDown{
+    UPDATE spis_characteristic SET sort = sort+1 WHERE sort < :oldsort AND sort >= :newsort ;
+    UPDATE spis_characteristic SET sort = :newsort WHERE _id = :id;
+-- 11 22 33 44 55
+--
+-- 11 52 23 34 45
+-- 5 - new 2 old 5
+--
+-- 11 32 43 54 25
+-- 2 - new 5 old 2
+}
+
+selectCharacteristic:
+SELECT spis_characteristic.*,
+(SELECT TOTAL(hour) AS obs FROM
+    (SELECT hour FROM  sum_hour_stap_plan,spis_plan_characteristic WHERE spis_characteristic._id = spis_plan_characteristic.id_characteristic AND spis_plan_characteristic.stap = sum_hour_stap_plan._id
+        UNION
+     SELECT hour FROM hour_plan,spis_plan_characteristic WHERE  spis_characteristic._id = spis_plan_characteristic.id_characteristic AND hour_plan._id = spis_plan_characteristic.id_plan AND spis_plan_characteristic.stap = 0)
+) AS hour
+FROM spis_characteristic ORDER BY sort;
+
+
+selectGrafProgressCharacteristic:
+SELECT strftime('%s000', data / 1000, 'unixepoch', 'weekday 0') AS weekdate, TOTAL(sum_hour/10) AS hourweek  FROM den_plan WHERE
+            privplan IN (SELECT id_plan FROM spis_plan_characteristic WHERE  id_characteristic = :idcharacteristic AND stap = 0)
+            OR
+            stap_prpl IN (WITH RECURSIVE cte AS (
+                                          SELECT spis_stap_plan._id
+                                                      FROM spis_stap_plan
+                                                         WHERE spis_stap_plan._id IN (SELECT stap FROM spis_plan_characteristic WHERE  id_characteristic = :idcharacteristic AND stap <> 0 )
+                                                        UNION ALL SELECT c._id FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id )
+                          	                         SELECT _id FROM cte) --:spisStapId
+	 GROUP BY strftime('%s000', data / 1000, 'unixepoch', 'weekday 0');
+
+-- analizDoxodByMonth:
+-- SELECT monthyear, sum,  ( CASE WHEN maxSum<>0 THEN sum/maxSum ELSE 0.0 END ) AS proc FROM(
+--     SELECT round(TOTAL(r1.sumrub),2) AS sum,
+--            strftime("%Y-%m", r2.data / 1000, 'unixepoch') AS monthyear, -- data / 1000 / 3600 / 24 * 24 * 3600
+--           (SELECT MAX(sum) FROM (SELECT round(TOTAL(sumrub),2) AS sum,
+--                                  strftime("%Y-%m", data / 1000, 'unixepoch') AS monthyear
+--                                  FROM doxod WHERE type_id = :typedox GROUP BY strftime("%Y-%m", data / 1000, 'unixepoch') )) AS maxSum
+--     FROM doxod r2 LEFT JOIN (SELECT * FROM doxod WHERE type_id = :typedox ) r1 ON r2._id = r1._id GROUP BY strftime("%Y-%m", r2.data / 1000, 'unixepoch') )
+-- ORDER BY monthyear DESC;
+--                                                   WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+--                                                         data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+
+
+-- Триггер: replicated_insert_spis_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS sort_insert_spis_characteristic_trig
+         AFTER INSERT
+            ON spis_characteristic
+      FOR EACH ROW
+BEGIN
+    UPDATE spis_characteristic SET sort = new._id WHERE _id = new._id;
+END;
+
+-- Триггер: replicated_insert_spis_characteristic_trig
+-- CREATE TRIGGER sort_update_spis_characteristic_trig
+--          AFTER UPDATE
+--             ON spis_characteristic
+--           WHEN old.sort <> 0 AND old.sort <> new.sort
+-- BEGIN
+--     UPDATE spis_characteristic SET sort = sort-1 WHERE sort <= new._id;
+-- END;
+
+-- Триггер: replicated_insert_spis_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS delete_privs_characteristic
+         AFTER DELETE
+            ON spis_characteristic
+BEGIN
+    DELETE FROM spis_plan_characteristic WHERE id_characteristic = old._id;
+END;
+
+-- Триггер: replicated_insert_spis_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_characteristic_trig
+         AFTER INSERT
+            ON spis_characteristic
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_characteristic',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_characteristic_trig
+         AFTER UPDATE
+            ON spis_characteristic
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_characteristic',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_characteristic',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_characteristic_trig
+         AFTER DELETE
+            ON spis_characteristic
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_characteristic',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

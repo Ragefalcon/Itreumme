@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".ui.element_fragment.VyborStatFragment">
+<androidx.constraintlayout.widget.ConstraintLayout
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent">
+    >
+    <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/iv_stat_vxod"
+            android:tintMode="multiply"
+            app:srcCompat="@drawable/ic_stat_00"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="8dp"
+
+            app:tint="@color/colorStatTint_01"
+    />
+        <RadioGroup
+                android:id="@+id/rg_stat_vxod_addpt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/bg_idea_item"
+                tools:visibility="visible"
+                android:visibility="invisible"
+        >
+            <RadioButton
+                    android:id="@+id/butt_stat1"
+                    android:layout_width="70dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_stat_vxod_item"
+                    android:buttonTint="@color/colorStatTint_01"
+                    android:buttonTintMode="multiply"
+                    android:button="@drawable/bg_rb_stat_vxod_item"
+                    android:checked="true"
+                    android:textColor="@drawable/txt_segmented"
+            />
+
+            <RadioButton
+                    android:id="@+id/butt_stat2"
+                    android:layout_width="70dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_stat_vxod_item"
+                    android:buttonTint="@color/colorStatTint_02"
+                    android:buttonTintMode="multiply"
+                    android:button="@drawable/bg_rb_stat_vxod_item"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:textColor="@drawable/txt_segmented"/>
+            <RadioButton
+                    android:id="@+id/butt_stat3"
+                    android:layout_width="70dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_stat_vxod_item"
+                    android:buttonTint="@color/colorStatTint_03"
+                    android:buttonTintMode="multiply"
+                    android:button="@drawable/bg_rb_stat_vxod_item"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:textColor="@drawable/txt_segmented"/>
+
+            <RadioButton
+                    android:id="@+id/butt_stat4"
+                    android:layout_width="70dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_stat_vxod_item"
+                    android:buttonTint="@color/colorStatTint_04"
+                    android:buttonTintMode="multiply"
+                    android:button="@drawable/bg_rb_stat_vxod_item"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:textColor="@drawable/txt_segmented"/>
+            <RadioButton
+                    android:id="@+id/butt_stat5"
+                    android:layout_width="70dp"
+                    android:layout_height="52dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_stat_vxod_item"
+                    android:buttonTint="@color/colorStatTint_05"
+                    android:buttonTintMode="multiply"
+                    android:button="@drawable/bg_rb_stat_vxod_item"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:textColor="@drawable/txt_segmented"/>
+        </RadioGroup>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

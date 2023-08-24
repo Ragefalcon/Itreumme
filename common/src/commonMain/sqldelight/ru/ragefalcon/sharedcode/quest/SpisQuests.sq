@@ -1,0 +1,111 @@
+CREATE TABLE spis_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    name  TEXT NOT NULL,
+    dateopen  INTEGER NOT NULL,
+    complete INTEGER NOT NULL DEFAULT 0
+);
+
+
+deleteQuest{
+    DELETE FROM spis_otvet_dialog_quest WHERE quest_id = :id;
+    DELETE FROM spis_dialog_quest WHERE quest_id = :id;
+    DELETE FROM quest_mainparam WHERE quest_id = :id;
+    DELETE FROM spis_quest_element WHERE quest_id = :id;
+    DELETE FROM spis_quest WHERE _id = :id;
+}
+
+deleteFullQuest{
+    DELETE FROM spis_tree_skill WHERE quest_id = :id;
+    DELETE FROM spis_node_tree_skills WHERE quest_id = :id;
+    DELETE FROM spis_icon_node_tree_skills WHERE quest_id = :id;
+    DELETE FROM spis_level_tree_skill WHERE quest_id = :id;
+    DELETE FROM spis_must_complete_node_for_level WHERE quest_id = :id;
+    DELETE FROM property_plan_node_ts WHERE quest_id = :id;
+    DELETE FROM property_count_node_ts WHERE quest_id = :id;
+    DELETE FROM spis_binding_node_tree_skill WHERE quest_id = :id;
+
+
+    DELETE FROM spis_plan WHERE quest_id = :id; --_id IN (SELECT element_id FROM spis_quest_element WHERE quest_id = :id AND type_element = :type_plan_element_code);
+    DELETE FROM spis_stap_plan WHERE quest_id = :id; --_id IN (SELECT element_id FROM spis_quest_element WHERE quest_id = :id AND type_element = :type_stap_plan_element_code);
+    DELETE FROM spis_govorun_quest WHERE quest_id = :id;
+    DELETE FROM spis_otvet_dialog_quest WHERE quest_id = :id;
+    DELETE FROM spis_dialog_quest WHERE quest_id = :id;
+    DELETE FROM quest_common_trigger WHERE quest_id = :id;
+    DELETE FROM quest_mainparam WHERE quest_id = :id;
+--     DELETE FROM spis_quest_element WHERE quest_id = :id;
+    DELETE FROM spis_quest WHERE _id = :id;
+}
+
+
+checkInnerQuest:
+SELECT COUNT(*) FROM spis_quest WHERE _id == :id;
+
+selectOpenQuest:
+SELECT * FROM spis_quest WHERE complete <> 10;
+
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_quest(
+     name,
+     dateopen,
+     complete
+               )
+VALUES (?, ?,?);
+
+insertOrReplaceWithId:
+INSERT OR REPLACE INTO spis_quest(
+     _id,
+     name,
+     dateopen,
+     complete
+               )
+VALUES (?,?, ?,?);
+
+
+-- Триггер: replicated_insert_spis_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_quest_trig
+         AFTER INSERT
+            ON spis_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_quest_trig
+         AFTER UPDATE
+            ON spis_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_quest_trig
+         AFTER DELETE
+            ON spis_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

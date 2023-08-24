@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/navig_plan" app:startDestination="@id/timeSpisPlanScreen">
+    <fragment android:id="@+id/timeSpisPlanScreen"
+              android:name="ru.ragefalcon.tutatores.ui.time.PlanFragment"
+              android:label="SpisPlanFragment"
+              tools:layout="@layout/fragment_plan"
+    >
+        <action android:id="@+id/action_plan_to_planstap"
+                app:destination="@id/timeSpisPlanStapScreen"
+        />
+    </fragment>
+    <fragment android:id="@+id/timeSpisPlanStapScreen"
+              android:name="ru.ragefalcon.tutatores.ui.time.PlanStapFragment"
+              android:label="SpisPlanStapFragment"
+              tools:layout="@layout/fragment_plan_stap"
+    >
+        <!--    <argument-->
+        <!--            android:name="parFrag"-->
+        <!--            app:argType="androidx.fragment.app.Fragment"-->
+        <!--    />-->
+    </fragment>
+
+</navigation>

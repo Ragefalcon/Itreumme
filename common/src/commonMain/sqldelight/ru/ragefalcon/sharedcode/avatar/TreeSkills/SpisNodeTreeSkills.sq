@@ -1,0 +1,175 @@
+-- Таблица: spis_node_tree_skills
+CREATE TABLE spis_node_tree_skills (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    opis  TEXT NOT NULL,
+    id_type_node INTEGER NOT NULL,
+    complete INTEGER NOT NULL,
+    level INTEGER NOT NULL,
+    icon  INTEGER NOT NULL,
+    icon_complete INTEGER NOT NULL,
+    quest_id  INTEGER NOT NULL DEFAULT 0,
+    quest_key_id  INTEGER NOT NULL DEFAULT 0
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_node_tree_skills(
+     id_tree,
+     name,
+     opis,
+     id_type_node,
+     complete,
+     level,
+     icon,
+     icon_complete,
+     quest_id
+                )
+VALUES (?, ?, ?, ?,?,?, ?, ?, ?);
+
+update:
+UPDATE spis_node_tree_skills SET
+                  name = :name,
+                  opis = :opis,
+                  level = :level,
+                  icon = :icon,
+                  icon_complete = :icon_complete
+              WHERE _id = :id;
+
+
+
+delete{
+DELETE FROM spis_node_tree_skills  WHERE _id = :id;
+DELETE FROM spis_binding_node_tree_skill  WHERE id_child = :id;
+DELETE FROM spis_binding_node_tree_skill  WHERE id_parent = :id;
+DELETE FROM property_plan_node_ts  WHERE id_node = :id;
+DELETE FROM property_count_node_ts  WHERE id_node = :id;
+DELETE FROM spis_must_complete_node_for_level  WHERE id_node = :id;
+}
+
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+completeHandNode:
+UPDATE spis_node_tree_skills SET
+                  complete = :stat
+              WHERE _id = :id;
+
+unlockNode:
+UPDATE spis_node_tree_skills SET
+                  complete = :stat
+              WHERE quest_id = :quest_id AND quest_key_id = :quest_key_id AND complete IN :statlock;
+
+selectHandNodes:
+SELECT spis_node_tree_skills.*, ic1.extension AS ext1, ic1.type_ramk AS type1, ic2.extension AS ext2, ic2.type_ramk AS type2,
+( CASE :type_tree
+                WHEN  "KIT" THEN 1
+                WHEN "LEVELS" THEN IFNULL((SELECT open_level FROM spis_level_tree_skill WHERE num_level = level AND spis_level_tree_skill.id_tree = :id_tree),0)
+                WHEN "TREE" THEN
+                    CASE  WHEN (SELECT COUNT(*) FROM  spis_binding_node_tree_skill WHERE spis_node_tree_skills._id = spis_binding_node_tree_skill.id_child)=0 THEN 1
+                          ELSE CASE WHEN (SELECT COUNT(*) FROM spis_node_tree_skills AS copy_spis_node, spis_binding_node_tree_skill
+                                        WHERE spis_node_tree_skills._id = spis_binding_node_tree_skill.id_child
+                                            AND spis_binding_node_tree_skill.id_parent = copy_spis_node._id
+                                            AND copy_spis_node.complete <> :codComplete)=0 THEN 1
+                                    ELSE 0 END
+                          END
+                ELSE 0 END) AS open_node,
+    ( CASE :type_tree
+            WHEN  "KIT" THEN 1
+            WHEN "TREE" THEN 1
+            WHEN "LEVELS" THEN  (SELECT COUNT(*) FROM spis_must_complete_node_for_level
+                                        WHERE spis_must_complete_node_for_level.id_tree = :id_tree
+                                        AND spis_must_complete_node_for_level.id_node = spis_node_tree_skills._id) = 1 --spis_must_complete_node_for_level.num_level = level AND
+    ELSE 0 END) AS must_node
+FROM spis_node_tree_skills
+LEFT JOIN spis_icon_node_tree_skills ic1 ON spis_node_tree_skills.icon = ic1._id
+LEFT JOIN spis_icon_node_tree_skills ic2 ON spis_node_tree_skills.icon_complete = ic2._id
+WHERE id_tree = :id_tree AND id_type_node = :id_type_hand;
+
+-- (SELECT TOTAL(hour) AS obs FROM (SELECT hour FROM  sum_hour_stap_plan,spis_plan_goal WHERE spis_node_tree_skills._id = spis_plan_goal.id_goal AND spis_plan_goal.stap = sum_hour_stap_plan._id UNION
+--  SELECT hour FROM hour_plan,spis_plan_goal WHERE  spis_node_tree_skills._id = spis_plan_goal.id_goal AND hour_plan._id = spis_plan_goal.id_plan AND spis_plan_goal.stap = 0) ) AS hour
+
+
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+
+-- Триггер: update_spis_node_tree_skills_trig1
+CREATE TRIGGER update_spis_node_tree_skills_trig1
+         AFTER UPDATE
+            ON spis_node_tree_skills
+      FOR EACH ROW
+          WHEN old.level <> new.level AND (SELECT COUNT(*) FROM spis_binding_node_tree_skill WHERE id_parent = old._id) <> 0
+BEGIN
+UPDATE spis_node_tree_skills
+    SET level = IFNULL((SELECT MAX(level) FROM spis_node_tree_skills AS snts2
+                    WHERE snts2._id IN (SELECT sbnts.id_parent FROM spis_binding_node_tree_skill AS sbnts WHERE sbnts.id_child = spis_node_tree_skills._id)),0)+1 --spis_node_tree_skills.
+    WHERE _id IN (SELECT id_child FROM spis_binding_node_tree_skill WHERE id_parent = old._id);
+END;
+
+
+-- Триггер: delete_spis_node_tree_skills_trig1
+CREATE TRIGGER delete_spis_node_tree_skills_trig1
+         AFTER DELETE
+            ON spis_node_tree_skills
+      FOR EACH ROW
+          WHEN (SELECT COUNT(*) FROM spis_binding_node_tree_skill WHERE id_parent = old._id) <> 0
+BEGIN
+UPDATE spis_node_tree_skills
+    SET level = IFNULL((SELECT MAX(level) FROM spis_node_tree_skills AS snts2
+                    WHERE snts2._id IN (SELECT sbnts.id_parent FROM spis_binding_node_tree_skill AS sbnts WHERE sbnts.id_child = spis_node_tree_skills._id)),0)+1 --spis_node_tree_skills.
+    WHERE _id IN (SELECT id_child FROM spis_binding_node_tree_skill WHERE id_parent = old._id);
+END;
+
+
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+-- Триггер: replicated_insert_spis_node_tree_skills_trig
+CREATE TRIGGER replicated_insert_spis_node_tree_skills_trig
+         AFTER INSERT
+            ON spis_node_tree_skills
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_node_tree_skills',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_node_tree_skills_trig
+CREATE TRIGGER replicated_update_spis_node_tree_skills_trig
+         AFTER UPDATE
+            ON spis_node_tree_skills
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_node_tree_skills',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_node_tree_skills',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_node_tree_skills_trig
+CREATE TRIGGER replicated_delete_spis_node_tree_skills_trig
+         AFTER DELETE
+            ON spis_node_tree_skills
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_node_tree_skills',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

@@ -1,0 +1,5 @@
+-- DROP TABLE IF EXISTS android_metadata;
+-- CREATE TABLE android_metadata (
+--     locale TEXT
+-- );
+-- INSERT OR REPLACE INTO android_metadata VALUES ('ru_RU');

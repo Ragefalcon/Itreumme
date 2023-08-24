@@ -1,0 +1,86 @@
+CREATE TABLE dialog_line (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    type_message TEXT NOT NULL,
+    subtype_id    INTEGER NOT NULL,
+    key_id    INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    datetime     INTEGER NOT NULL,
+    minimaze INTEGER NOT NULL
+);
+
+
+insertOrReplace:
+INSERT OR REPLACE INTO dialog_line(
+    type_message,
+    subtype_id,
+    key_id,
+    name,
+    datetime,
+    minimaze
+ )
+    VALUES (
+     :type_message,
+     :subtype_id,
+     :key_id,
+     :name,
+     :datetime,
+     :minimaze
+     );
+
+setMinimaze:
+UPDATE dialog_line SET minimaze = :mini WHERE _id = :id;
+
+delete:
+DELETE FROM dialog_line WHERE _id = :id;
+
+selectActiv:
+SELECT * FROM dialog_line WHERE minimaze = 0 ORDER BY datetime;
+
+selectMinimaze:
+SELECT * FROM dialog_line WHERE minimaze = 1 ORDER BY datetime;
+
+-- Триггер: replicated_insert_dialog_line_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_dialog_line_trig
+         AFTER INSERT
+            ON dialog_line
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'dialog_line',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_dialog_line_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_dialog_line_trig
+         AFTER UPDATE
+            ON dialog_line
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'dialog_line',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'dialog_line',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_dialog_line_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_dialog_line_trig
+         AFTER DELETE
+            ON dialog_line
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'dialog_line',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

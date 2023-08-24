@@ -1,0 +1,228 @@
+
+-- Таблица: spis_plan_goal
+CREATE TABLE spis_plan_goal (
+    _id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_goal INTEGER NOT NULL,
+    name    TEXT NOT NULL,
+    stap    INTEGER NOT NULL,
+    id_plan INTEGER NOT NULL,
+    vajn    INTEGER NOT NULL,
+    data    INTEGER NOT NULL
+);
+
+
+selectSpisPlanGoal:
+SELECT _id, name,vajn,stap,id_plan, (SELECT gotov FROM spis_plan WHERE spis_plan._id=spis_plan_goal.id_plan AND spis_plan_goal.stap = 0
+					   UNION SELECT gotov FROM spis_stap_plan WHERE spis_stap_plan._id=spis_plan_goal.stap AND spis_plan_goal.stap <> 0 ) AS gotov,
+					   IFNULL((SELECT hour FROM  sum_hour_stap_plan WHERE spis_plan_goal.stap = sum_hour_stap_plan._id UNION
+					  SELECT hour FROM hour_plan WHERE  hour_plan._id = spis_plan_goal.id_plan),0.0) AS hour,
+					  (  CASE stap WHEN 0 THEN
+                               IFNULL((SELECT opis FROM spis_plan WHERE spis_plan._id=id_plan),"")
+                           ELSE
+                               IFNULL((SELECT opis FROM spis_stap_plan WHERE spis_stap_plan._id=stap),"")
+                           END ) AS opis,
+                           IFNULL((SELECT name FROM spis_plan WHERE spis_plan._id=id_plan),"") AS plan_name
+					  FROM spis_plan_goal WHERE id_goal = :idgoal;
+selectSpisPlanDream:
+SELECT _id, name,vajn,stap,id_plan, (SELECT gotov FROM spis_plan WHERE spis_plan._id=spis_plan_goal.id_plan AND spis_plan_goal.stap = 0
+					   UNION SELECT gotov FROM spis_stap_plan WHERE spis_stap_plan._id=spis_plan_goal.stap AND spis_plan_goal.stap <> 0 ) AS gotov,
+					   IFNULL((SELECT hour FROM  sum_hour_stap_plan WHERE spis_plan_goal.stap = sum_hour_stap_plan._id UNION
+					  SELECT hour FROM hour_plan WHERE  hour_plan._id = spis_plan_goal.id_plan),0.0) AS hour,
+					  (  CASE stap WHEN 0 THEN
+                               IFNULL((SELECT opis FROM spis_plan WHERE spis_plan._id=id_plan),"")
+                           ELSE
+                               IFNULL((SELECT opis FROM spis_stap_plan WHERE spis_stap_plan._id=stap),"")
+                           END ) AS opis,
+                           IFNULL((SELECT name FROM spis_plan WHERE spis_plan._id=id_plan),"") AS plan_name
+					  FROM spis_plan_goal WHERE id_goal = :iddream;
+
+insertOrReplaceSpisPlanGoal:
+INSERT OR REPLACE INTO spis_plan_goal(
+     id_goal,
+     name,
+     stap,
+     id_plan,
+     vajn,
+     data
+                )
+VALUES (?, ?, ?, ?, ?, ?);
+
+deleteSpisPlanGoal:
+DELETE FROM spis_plan_goal WHERE _id = :id;
+
+
+-- Триггер: del_stap_includes_in_plan
+CREATE TRIGGER IF NOT EXISTS del_stap_includes_in_plan
+         AFTER INSERT
+            ON spis_plan_goal
+            WHEN new.stap = 0
+BEGIN
+    DELETE FROM spis_plan_goal
+          WHERE id_plan = new.id_plan AND stap <> 0;
+
+END;
+
+-- Триггер: update_spisplangoal_trig1
+CREATE TRIGGER update_spisplangoal_trig1
+         AFTER INSERT
+            ON spis_plan_goal
+BEGIN
+    DELETE FROM statik_hour_goal
+          WHERE data1 IN (
+                    SELECT DISTINCT strftime('%s000', data / 1000, 'unixepoch', 'start of month') AS data1
+                      FROM den_plan
+                     WHERE ( (privplan = new.id_plan AND 
+                              new.stap = 0) OR 
+                             (stap_prpl IN (
+                             WITH RECURSIVE cte AS (
+                                     SELECT spis_stap_plan._id
+                                       FROM spis_stap_plan
+                                      WHERE spis_stap_plan._id = new.stap
+                                     UNION ALL
+                                     SELECT c._id
+                                       FROM spis_stap_plan c
+                                            INNER JOIN
+                                            cte p ON p._id = c.parent_id
+                                 )
+                                 SELECT _id
+                                   FROM cte
+                             )
+                             ) ) 
+                )
+AND 
+                id_goal = new.id_goal;
+    INSERT INTO statik_hour_goal SELECT NULL AS _id,
+                                        new.id_goal,
+                                        data1,
+                                        data2,
+                                        '-1' AS HOUR
+                                   FROM (
+                                            SELECT DISTINCT strftime('%s000', data / 1000, 'unixepoch', 'start of month') AS data1,
+                                                            strftime('%s000', data / 1000, 'unixepoch', 'start of month', '1 month', '-1 days') AS data2
+                                              FROM den_plan
+                                             WHERE ( (privplan = new.id_plan AND 
+                                                      new.stap = 0) OR 
+                                                     (stap_prpl IN (
+                                                     WITH RECURSIVE cte AS (
+                                                             SELECT spis_stap_plan._id
+                                                               FROM spis_stap_plan
+                                                              WHERE spis_stap_plan._id = new.stap
+                                                             UNION ALL
+                                                             SELECT c._id
+                                                               FROM spis_stap_plan c
+                                                                    INNER JOIN
+                                                                    cte p ON p._id = c.parent_id
+                                                         )
+                                                         SELECT _id
+                                                           FROM cte
+                                                     )
+                                                     ) ) 
+                                        );
+END;
+
+
+-- Триггер: update_spisplangoal_trig2
+CREATE TRIGGER update_spisplangoal_trig2
+         AFTER DELETE
+            ON spis_plan_goal
+BEGIN
+    DELETE FROM statik_hour_goal
+          WHERE data1 IN (
+                    SELECT DISTINCT strftime('%s000', data / 1000, 'unixepoch', 'start of month') AS data1
+                      FROM den_plan
+                     WHERE ( (privplan = old.id_plan AND 
+                              old.stap = 0) OR 
+                             (stap_prpl IN (
+                             WITH RECURSIVE cte AS (
+                                     SELECT spis_stap_plan._id
+                                       FROM spis_stap_plan
+                                      WHERE spis_stap_plan._id = old.stap
+                                     UNION ALL
+                                     SELECT c._id
+                                       FROM spis_stap_plan c
+                                            INNER JOIN
+                                            cte p ON p._id = c.parent_id
+                                 )
+                                 SELECT _id
+                                   FROM cte
+                             )
+                             ) ) 
+                )
+AND 
+                id_goal = old.id_goal;
+    INSERT INTO statik_hour_goal SELECT NULL AS _id,
+                                        old.id_goal,
+                                        data1,
+                                        data2,
+                                        '-1' AS HOUR
+                                   FROM (
+                                            SELECT DISTINCT strftime('%s000', data / 1000, 'unixepoch', 'start of month') AS data1,
+                                                            strftime('%s000', data / 1000, 'unixepoch', 'start of month', '1 month', '-1 days') AS data2
+                                              FROM den_plan
+                                             WHERE ( (privplan = old.id_plan AND 
+                                                      old.stap = 0) OR 
+                                                     (stap_prpl IN (
+                                                     WITH RECURSIVE cte AS (
+                                                             SELECT spis_stap_plan._id
+                                                               FROM spis_stap_plan
+                                                              WHERE spis_stap_plan._id = old.stap
+                                                             UNION ALL
+                                                             SELECT c._id
+                                                               FROM spis_stap_plan c
+                                                                    INNER JOIN
+                                                                    cte p ON p._id = c.parent_id
+                                                         )
+                                                         SELECT _id
+                                                           FROM cte
+                                                     )
+                                                     ) ) 
+                                        );
+END;
+
+
+-- Триггер: replicated_insert_spis_plan_goal_trig
+CREATE TRIGGER replicated_insert_spis_plan_goal_trig
+         AFTER INSERT
+            ON spis_plan_goal
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan_goal',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_plan_goal_trig
+CREATE TRIGGER replicated_update_spis_plan_goal_trig
+         AFTER UPDATE
+            ON spis_plan_goal
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan_goal',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan_goal',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_plan_goal_trig
+CREATE TRIGGER replicated_delete_spis_plan_goal_trig
+         AFTER DELETE
+            ON spis_plan_goal
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan_goal',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

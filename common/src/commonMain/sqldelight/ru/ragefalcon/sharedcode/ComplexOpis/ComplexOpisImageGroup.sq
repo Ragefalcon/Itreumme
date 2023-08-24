@@ -1,0 +1,134 @@
+CREATE TABLE IF NOT EXISTS complex_opis_image_group (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    opis_id   INTEGER NOT NULL,
+    size_preview   INTEGER NOT NULL,
+    width_limit   INTEGER NOT NULL,
+    enable_text   INTEGER NOT NULL,
+    text_before   INTEGER NOT NULL DEFAULT 0
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO complex_opis_image_group(
+    opis_id,
+    size_preview,
+    width_limit,
+    enable_text,
+    text_before
+)
+VALUES (:opis_id, :size_preview, :width_limit, :enable_text, :text_before);
+
+update:
+UPDATE complex_opis_image_group SET
+    size_preview = :size_preview,
+    width_limit = :width_limit,
+    enable_text = :enable_text,
+    text_before = :text_before
+WHERE opis_id = :opis_id;
+
+selectComplexOpisImageGroupCommonTable:
+SELECT complex_opis.*,
+        complex_opis_text.text,
+        complex_opis_text.colorNum,
+        complex_opis_text.font_size,
+        complex_opis_text.cursive,
+        complex_opis_text.bold,
+        complex_opis_image_group.size_preview,
+        complex_opis_image_group.width_limit,
+        complex_opis_image_group.enable_text,
+        complex_opis_image_group.text_before,
+--         group_concat(complex_opis_image._id)
+        group_concat(CAST(CAST(complex_opis_image._id AS TEXT) || "-" || CAST(complex_opis_image.sort AS TEXT) AS TEXT)) AS spis_image
+   FROM complex_opis
+   INNER JOIN complex_opis_text ON complex_opis._id = complex_opis_text.opis_id
+   INNER JOIN complex_opis_image_group ON complex_opis._id = complex_opis_image_group.opis_id
+   INNER JOIN complex_opis_image ON complex_opis._id = complex_opis_image.opis_id
+WHERE  (CASE :name_table WHEN 'spis_next_action_stap'
+        THEN (complex_opis.table_name = 'spis_stap_plan' AND complex_opis.item_id
+                    IN (SELECT DISTINCT stap_id FROM spis_next_action WHERE stap_id > 0))
+        ELSE complex_opis.table_name = :name_table END)
+GROUP BY complex_opis_image_group._id;
+
+selectComplexOpisImageGroupCommonWithId:
+SELECT complex_opis.*,
+        complex_opis_text.text,
+        complex_opis_text.colorNum,
+        complex_opis_text.font_size,
+        complex_opis_text.cursive,
+        complex_opis_text.bold,
+        complex_opis_image_group.size_preview,
+        complex_opis_image_group.width_limit,
+        complex_opis_image_group.enable_text,
+        complex_opis_image_group.text_before,
+--         group_concat(complex_opis_image._id)
+        group_concat(CAST(CAST(complex_opis_image._id AS TEXT) || "-" || CAST(complex_opis_image.sort AS TEXT) AS TEXT)) AS spis_image
+   FROM complex_opis
+   INNER JOIN complex_opis_text ON complex_opis._id = complex_opis_text.opis_id
+   INNER JOIN complex_opis_image_group ON complex_opis._id = complex_opis_image_group.opis_id
+   INNER JOIN complex_opis_image ON complex_opis._id = complex_opis_image.opis_id
+WHERE complex_opis.table_name = (CASE :name_table
+    WHEN 'calendar' THEN 'den_plan'
+    WHEN 'calendar_napom' THEN 'napom'
+    WHEN 'history_plan' THEN 'den_plan'
+    WHEN 'history_stap_plan' THEN 'den_plan'
+ELSE :name_table END) AND (CASE :name_table
+    WHEN 'spis_stap_plan' THEN complex_opis.item_id IN (SELECT _id FROM spis_stap_plan WHERE idplan = :id)
+    WHEN 'spis_idea' THEN complex_opis.item_id IN (SELECT _id FROM spis_idea WHERE bloknot = :id)
+    WHEN 'spis_stap_idea' THEN complex_opis.item_id IN (SELECT _id FROM spis_stap_idea WHERE idea_id = :id)
+    WHEN 'den_plan' THEN  complex_opis.item_id IN (SELECT _id FROM den_plan WHERE den_plan.data >= :id AND den_plan.data < strftime('%s000', :id / 1000, 'unixepoch', '1 days'))
+    WHEN 'napom' THEN complex_opis.item_id IN (SELECT _id FROM napom WHERE ((gotov = 'false' OR gotov = 'False') AND data < :id)
+                                                      OR ((data < strftime('%s000', :id / 1000, 'unixepoch', '1 days')) AND data >= :id ))
+    WHEN 'calendar' THEN  complex_opis.item_id IN (SELECT _id FROM den_plan WHERE den_plan.data >= :id AND den_plan.data < strftime('%s000', :id / 1000, 'unixepoch', '43 days'))
+    WHEN 'calendar_napom' THEN  complex_opis.item_id IN (SELECT _id FROM napom WHERE napom.data >= :id AND napom.data < strftime('%s000', :id / 1000, 'unixepoch', '43 days'))
+    WHEN 'history_plan' THEN  complex_opis.item_id IN (SELECT _id FROM den_plan WHERE privplan = :id )
+    WHEN 'history_stap_plan' THEN  complex_opis.item_id IN (SELECT _id FROM den_plan WHERE stap_prpl IN (
+              WITH RECURSIVE cte AS (SELECT _id FROM spis_stap_plan WHERE _id =  :id UNION ALL
+                  SELECT  c._id FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id ) SELECT _id FROM cte ) )
+    ELSE 0 END)
+GROUP BY complex_opis_image_group._id;
+
+
+-- Триггер: replicated_insert_complex_opis_image_group_trig
+CREATE TRIGGER replicated_insert_complex_opis_image_group_trig
+         AFTER INSERT
+            ON complex_opis_image_group
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image_group',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_complex_opis_image_group_trig
+CREATE TRIGGER replicated_update_complex_opis_image_group_trig
+         AFTER UPDATE
+            ON complex_opis_image_group
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image_group',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image_group',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_complex_opis_image_group_trig
+CREATE TRIGGER replicated_delete_complex_opis_image_group_trig
+         AFTER DELETE
+            ON complex_opis_image_group
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image_group',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

@@ -1,0 +1,57 @@
+-- Таблица: spis_idea_goal
+CREATE TABLE spis_idea_goal (
+    _id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_goal INTEGER,
+    name    TEXT,
+    stap    INTEGER,
+    id_idea INTEGER,
+    stat    INTEGER,
+    data    INTEGER
+);
+
+
+-- Триггер: replicated_insert_spis_idea_goal_trig
+CREATE TRIGGER replicated_insert_spis_idea_goal_trig
+         AFTER INSERT
+            ON spis_idea_goal
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_idea_goal',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_idea_goal_trig
+CREATE TRIGGER replicated_update_spis_idea_goal_trig
+         AFTER UPDATE
+            ON spis_idea_goal
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_idea_goal',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_idea_goal',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_idea_goal_trig
+CREATE TRIGGER replicated_delete_spis_idea_goal_trig
+         AFTER DELETE
+            ON spis_idea_goal
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_idea_goal',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

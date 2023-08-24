@@ -1,0 +1,81 @@
+ALTER TABLE spis_plan ADD COLUMN direction INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE spis_plan ADD COLUMN sort INTEGER NOT NULL DEFAULT 0;
+UPDATE spis_plan SET sort = _id;
+
+-- Триггер: sort_insert_spis_goal_trig
+CREATE TRIGGER IF NOT EXISTS sort_insert_spis_plan_trig
+         AFTER INSERT
+            ON spis_plan
+      FOR EACH ROW
+BEGIN
+    UPDATE spis_plan SET sort = new._id WHERE _id = new._id;
+END;
+
+ALTER TABLE spis_stap_plan ADD COLUMN marker INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE spis_stap_plan ADD COLUMN sort INTEGER NOT NULL DEFAULT 0;
+UPDATE spis_stap_plan SET sort = _id;
+
+-- Триггер: sort_insert_spis_stap_plan_trig
+CREATE TRIGGER IF NOT EXISTS sort_insert_spis_stap_plan_trig
+         AFTER INSERT
+            ON spis_stap_plan
+      FOR EACH ROW
+BEGIN
+    UPDATE spis_stap_plan SET sort = new._id WHERE _id = new._id;
+END;
+
+
+
+--
+-- Вариант ниже не рабочий, т.к. при переименовке и удалении новые версии SQLite проверяют согласованность всей схемы БД
+-- и вылезает ошибка о том что такому то триггеру или VIEW не хватает этой таблицы, причем это происходит уже после
+-- удаления таблицы... Можно было бы удалить и снова создать все триггеры, но т.к. это не только триггеры самой таблицы,
+-- но и все триггеры где она участвует, то для таблиц проектов и их этапов это получается слишком много. Я решил,
+-- что это будет слишком гемморно и при этом будет еще страшно выглядеть и плохо читаться.
+--
+-- CREATE TABLE IF NOT EXISTS spis_plan_2 (
+--     _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+--     vajn  INTEGER NOT NULL,
+--     name  TEXT NOT NULL,
+--     gotov REAL NOT NULL,
+--     data1 INTEGER NOT NULL,
+--     data2 INTEGER NOT NULL,
+--     opis  TEXT NOT NULL,
+--     stat  INTEGER NOT NULL,
+--     direction  INTEGER NOT NULL,
+--     sort  INTEGER NOT NULL,
+--     quest_id  INTEGER NOT NULL DEFAULT 0,
+--     quest_key_id  INTEGER NOT NULL DEFAULT 0
+-- );
+--
+-- INSERT INTO spis_plan_2 (_id,vajn,name,gotov,data1,data2,opis,stat,direction,sort,quest_id,quest_key_id)
+--    SELECT _id,vajn,name,gotov,data1,data2,opis,stat, 0 AS direction, _id AS sort,quest_id,quest_key_id FROM spis_plan;
+-- DROP TABLE IF EXISTS spis_plan;
+-- ALTER TABLE spis_plan_2 RENAME TO spis_plan;
+--
+--
+--
+--
+--
+-- -- Таблица: spis_stap_plan
+-- CREATE TABLE IF NOT EXISTS spis_stap_plan_2 (
+--     _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+--     parent_id INTEGER NOT NULL,
+--     name      TEXT NOT NULL,
+--     gotov     REAL NOT NULL,
+--     data1     INTEGER NOT NULL,
+--     data2     INTEGER NOT NULL,
+--     opis      TEXT NOT NULL,
+--     stat      INTEGER NOT NULL,
+--     svernut   TEXT NOT NULL, --INTEGER AS Boolean NOT NULL, -- DEFAULT 0 NOT NULL
+--     idplan    INTEGER NOT NULL,
+--     marker  INTEGER NOT NULL,
+--     sort  INTEGER NOT NULL,
+--     quest_id  INTEGER NOT NULL DEFAULT 0,
+--     quest_key_id  INTEGER NOT NULL DEFAULT 0
+-- );
+--
+-- INSERT INTO spis_stap_plan_2 (_id,parent_id,name,gotov,data1,data2,opis,stat,svernut,idplan,marker,sort,quest_id,quest_key_id)
+--    SELECT _id,parent_id,name,gotov,data1,data2,opis,stat,svernut,idplan, 0 AS marker, _id AS sort,quest_id,quest_key_id FROM spis_stap_plan;
+-- DROP TABLE IF EXISTS spis_stap_plan;
+-- ALTER TABLE spis_stap_plan_2 RENAME TO spis_stap_plan;

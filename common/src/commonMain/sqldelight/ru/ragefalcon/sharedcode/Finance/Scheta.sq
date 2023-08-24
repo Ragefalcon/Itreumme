@@ -1,0 +1,232 @@
+-- Таблица: spis_schet
+CREATE TABLE spis_schet (
+    _id    INTEGER PRIMARY KEY AUTOINCREMENT,
+    name   TEXT NOT NULL,
+    val_id INTEGER NOT NULL,
+    open   TEXT NOT NULL
+);
+
+selectSpisSchetForSett:
+SELECT _id, name, val_id, open,
+        IFNULL((SELECT summa FROM sum_on_schet WHERE _id = spis_schet._id),0.0) AS summa,
+--         0.0 AS summa,
+        (SELECT cod FROM spis_valut WHERE _id = val_id) AS cod,
+        (SELECT TOTAL(count) FROM (SELECT COUNT(*) AS count FROM doxod WHERE schet_id = spis_schet._id
+         UNION ALL SELECT COUNT(*) AS count FROM rasxod WHERE schet_id = spis_schet._id
+         UNION ALL SELECT COUNT(*) AS count FROM perevod WHERE schsp_id = spis_schet._id OR schz_id = spis_schet._id)) AS countoper
+--          0 AS countoper
+    FROM spis_schet WHERE open <> :openn;
+
+selectAllSpisSchet:
+SELECT _id, name, val_id, open, (SELECT cod FROM spis_valut WHERE _id = val_id) AS cod FROM spis_schet WHERE open = 'true' OR open = 'True';
+
+selectAllKrome:
+SELECT _id, name, val_id, open, (SELECT cod FROM spis_valut WHERE _id = val_id) AS cod FROM spis_schet WHERE _id <> :iskl AND open = 'true' OR open = 'True';
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_schet(
+    name,
+    val_id,
+    open
+)
+VALUES (?, ?, "true");
+
+updateSchetName:
+UPDATE spis_schet SET name = :name WHERE _id = :id;
+
+updateSchetOpen:
+UPDATE spis_schet SET open = :openn WHERE _id = :id;
+
+deleteSchet:
+DELETE FROM spis_schet WHERE _id = :id;
+
+
+
+-- Таблица: sum_on_schet
+CREATE TABLE sum_on_schet (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    summa REAL NOT NULL
+);
+-- Таблица: sum_on_schet_pl
+CREATE TABLE sum_on_schet_pl (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    summa REAL NOT NULL
+);
+
+-- Таблица: sum_oper_week
+CREATE TABLE sum_oper_week (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    data  INTEGER NOT NULL,
+    summa REAL NOT NULL DEFAULT (0)
+);
+
+-- SELECT _id, name, summa, (SELECT typer FROM typerasxod WHERE _id = type_id) AS type, data, (SELECT name FROM spis_schet WHERE _id = schet_id) AS schet
+-- FROM rasxod WHERE data >= ? AND data < ?
+-- ORDER BY data; , schet AS schet_id
+selectSchet:
+ SELECT main._id, main.name AS nameoper, main.summa AS summaoper, main.summa2, main.typeoper, main.type AS podtype, main.schetidd, main.data,  main.second_schet_open FROM --ss1.open,
+(SELECT doxod._id, name, schet_id AS schet, schet_id AS schetidd, summa, summa AS summa2, 			CAST(''||:doxodTypeTitle AS TEXT)  AS typeoper,   typedoxod.typed AS type,  data, typedoxod.open AS second_schet_open FROM doxod LEFT JOIN typedoxod ON typedoxod._id = doxod.type_id
+ UNION ALL SELECT rasxod._id, name, schet_id AS schet, schet_id AS schetidd, summa*(-1) AS summa, summa*(-1) AS summa2, CAST(''||:rasxodTypeTitle AS TEXT)  AS typeoper,  typerasxod.typer AS type, data, typerasxod.open AS second_schet_open FROM rasxod LEFT JOIN typerasxod ON typerasxod._id = rasxod.type_id
+ UNION ALL SELECT perevod._id, perevod.name, schz_id AS schet, schsp_id AS schetidd,  sumz AS summa, sumsp*(-1) AS summa2,		CAST(''||:perevodTypeTitle AS TEXT) AS typeoper, 'со счета '||ss2.name AS type,  data,  ss2.open AS second_schet_open FROM perevod LEFT JOIN spis_schet AS ss2 ON ss2._id = schsp_id
+ UNION ALL SELECT perevod._id, perevod.name, schsp_id AS schet, schz_id AS schetidd, sumsp*(-1) AS summa, sumz AS summa2, CAST(''||:perevodTypeTitle AS TEXT) AS typeoper, 'на счет '||ss2.name AS type, data,  ss2.open AS second_schet_open  FROM perevod LEFT JOIN spis_schet AS ss2 ON ss2._id = schz_id) AS main
+WHERE data >= :dtbegin AND data < :dtend AND schet = :schet-- AND typeoper IN :typeArray
+ ORDER BY data;
+
+sumsOperForPeriod:
+ SELECT * FROM (SELECT TOTAL(sumrub) AS doxodsum FROM doxod WHERE schet_id = :schet AND data >= :dtbegin AND data < :dtend) AS doxod,
+  (SELECT TOTAL(sumrub) AS rasxodsum FROM rasxod WHERE schet_id = :schet AND data >= :dtbegin AND data < :dtend) AS rasxod,
+  (SELECT TOTAL(bbb.summa) AS perevodsum FROM (SELECT schz_id AS schet, sumz AS summa, data FROM perevod
+                               UNION ALL SELECT schsp_id AS schet, sumsp*(-1) AS summa, data FROM perevod) AS bbb WHERE schet = :schet AND data >= :dtbegin AND data < :dtend) AS perevod;
+
+sumSchetPeriod:
+SELECT  round(TOTAL(summa),2) AS sum
+FROM
+(SELECT _id, name, schet_id AS schet, summa, data FROM doxod
+ UNION ALL SELECT _id, name, schet_id AS schet, summa*(-1) AS summa, data FROM rasxod
+ UNION ALL SELECT _id, name, schz_id AS schet,  sumz AS summa, data FROM perevod
+ UNION ALL SELECT _id, name, schsp_id AS schet, sumsp*(-1) AS summa, data  FROM perevod )
+ WHERE schet = :schet;
+
+sumAllCapital:
+-- Добавка:
+-- (SELECT  round(TOTAL(summa),2) AS sum FROM sum_oper_week UNION ALL SELECT sumsp AS sum FROM perevod WHERE _id = -666)
+-- вместо просто sum_oper_week нужна чтобы доходили оповещения об обновлении запроса от "второй волны" триггеров,
+-- когда обновляется таблица perevod от нее обновляется таблица popravka_kurs и только от нее уже таблица sum_oper_week
+-- на данный момент оповещения присылаются только в том случае если это триггер от первой измененной таблицы,
+-- либо в интересующем запросе фигурирует сама эта таблица, что я и сделал ниже
+-- ОБновление 25_-5_2022:
+-- я давно уже сделал рабочими рекурсивные триггеры и по идее эта проблема относилась именно к ним, нужно будет как-нибудь
+-- проверить это
+SELECT  round(TOTAL(sum),2) AS sum FROM (SELECT  round(TOTAL(summa),2) AS sum FROM sum_oper_week UNION ALL SELECT sumsp AS sum FROM perevod WHERE _id = -666);
+
+sumAllweek:
+-- SELECT  SUM(summa) AS sum FROM sum_oper_week;
+SELECT * FROM sum_oper_week ORDER BY data;
+
+selectSumOnSchet:
+SELECT _id, name, summa, valut, kurs, ( CASE WHEN maxSum<>0 THEN summa*kurs/maxSum ELSE 0.0 END ) AS proc
+    FROM (SELECT sum_on_schet._id AS _id,
+                 spis_schet.name AS name,
+                 (SELECT kurs FROM spis_valut WHERE _id = spis_schet.val_id) AS kurs,
+                 sum_on_schet.summa AS summa,
+                 (SELECT cod FROM spis_valut WHERE _id=spis_schet.val_id) AS valut,
+                 (SELECT MAX(sum_on_schet.summa*spis_valut.kurs) FROM sum_on_schet, spis_valut, spis_schet WHERE sum_on_schet._id = spis_schet._id AND spis_schet.val_id = spis_valut._id) AS maxSum
+            FROM sum_on_schet LEFT JOIN spis_schet ON sum_on_schet._id = spis_schet._id WHERE spis_schet.open = 'true');
+
+insertPerevod:
+INSERT INTO perevod( --OR REPLACE
+    name,
+    schsp_id,
+    sumsp,
+    schz_id,
+    sumz,
+    data
+)
+VALUES (?, ?, ?, ?, ?, ?);
+
+updatePerevod:
+UPDATE perevod SET
+    name = :name,
+    schsp_id = :schsp_id,
+    sumsp = :sumsp,
+    schz_id = :schz_id,
+    sumz = :sumz,
+    data = :data
+WHERE _id = :id;
+
+deletePerevod:
+DELETE FROM perevod WHERE _id = :id;
+
+
+-- Триггер: insert_sum_oper_week_trig1
+CREATE TRIGGER insert_sum_oper_week_trig1
+         AFTER INSERT
+            ON sum_oper_week
+          WHEN new.summa = 0
+BEGIN
+    DELETE FROM sum_oper_week
+          WHERE data = new.data;
+END;
+
+
+-- Триггер: update_sum_oper_week_trig1
+CREATE TRIGGER update_sum_oper_week_trig1
+         AFTER UPDATE
+            ON sum_oper_week
+          WHEN new.summa = 0
+BEGIN
+    DELETE FROM sum_oper_week
+          WHERE data = new.data;
+END;
+
+-- Триггер: insert_spis_schet_trig1
+CREATE TRIGGER insert_spis_schet_trig1
+         AFTER INSERT
+            ON spis_schet
+BEGIN
+    INSERT INTO sum_on_schet VALUES (
+                                 new._id,
+                                 0
+                             );
+END;
+
+
+-- Триггер: delete_spis_schet_trig1
+CREATE TRIGGER delete_spis_schet_trig1
+         AFTER DELETE
+            ON spis_schet
+BEGIN
+    DELETE FROM sum_on_schet
+          WHERE _id = old._id;
+END;
+
+
+-- Триггер: replicated_insert_spis_schet_trig
+CREATE TRIGGER replicated_insert_spis_schet_trig
+         AFTER INSERT
+            ON spis_schet
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_schet',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_schet_trig
+CREATE TRIGGER replicated_update_spis_schet_trig
+         AFTER UPDATE
+            ON spis_schet
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_schet',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_schet',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_schet_trig
+CREATE TRIGGER replicated_delete_spis_schet_trig
+         AFTER DELETE
+            ON spis_schet
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_schet',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+
+

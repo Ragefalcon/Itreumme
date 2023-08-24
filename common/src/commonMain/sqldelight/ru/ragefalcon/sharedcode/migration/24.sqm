@@ -1,0 +1,189 @@
+CREATE TABLE IF NOT EXISTS complex_opis (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    table_name     TEXT NOT NULL,
+    item_id   INTEGER NOT NULL,
+    sort     INTEGER NOT NULL
+);
+
+-- Триггер: replicated_insert_complex_opis_trig
+CREATE TRIGGER replicated_insert_complex_opis_trig
+         AFTER INSERT
+            ON complex_opis
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_complex_opis_trig
+CREATE TRIGGER replicated_update_complex_opis_trig
+         AFTER UPDATE
+            ON complex_opis
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_complex_opis_trig
+CREATE TRIGGER replicated_delete_complex_opis_trig
+         AFTER DELETE
+            ON complex_opis
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+
+
+CREATE TABLE IF NOT EXISTS complex_opis_text (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    opis_id   INTEGER NOT NULL,
+    text     TEXT NOT NULL,
+    colorNum     INTEGER NOT NULL,
+    font_size     REAL NOT NULL,
+    cursive     INTEGER NOT NULL,
+    bold     INTEGER NOT NULL
+);
+
+
+-- Триггер: replicated_insert_complex_opis_text_trig
+CREATE TRIGGER replicated_insert_complex_opis_text_trig
+         AFTER INSERT
+            ON complex_opis_text
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_text',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_complex_opis_text_trig
+CREATE TRIGGER replicated_update_complex_opis_text_trig
+         AFTER UPDATE
+            ON complex_opis_text
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_text',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_text',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_complex_opis_text_trig
+CREATE TRIGGER replicated_delete_complex_opis_text_trig
+         AFTER DELETE
+            ON complex_opis_text
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_text',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+
+CREATE TABLE IF NOT EXISTS complex_opis_checkbox (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    opis_id   INTEGER NOT NULL,
+    checked     INTEGER NOT NULL
+);
+
+
+-- Триггер: replicated_insert_complex_opis_checkbox_trig
+CREATE TRIGGER replicated_insert_complex_opis_checkbox_trig
+         AFTER INSERT
+            ON complex_opis_checkbox
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_checkbox',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_complex_opis_checkbox_trig
+CREATE TRIGGER replicated_update_complex_opis_checkbox_trig
+         AFTER UPDATE
+            ON complex_opis_checkbox
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_checkbox',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_checkbox',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_complex_opis_checkbox_trig
+CREATE TRIGGER replicated_delete_complex_opis_checkbox_trig
+         AFTER DELETE
+            ON complex_opis_checkbox
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_checkbox',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+-----------------------------------------
+
+INSERT INTO complex_opis (table_name,item_id,sort)
+   SELECT 'spis_plan' AS table_name, _id AS item_id, 1 AS sort FROM spis_plan;
+
+INSERT INTO complex_opis_text (opis_id, text, colorNum, font_size, cursive, bold)
+   SELECT complex_opis._id AS opis_id, spis_plan.opis AS text, 1 AS colorNum, 3 AS font_size, 0 AS cursive, 0 AS bold FROM complex_opis INNER JOIN spis_plan ON table_name = 'spis_plan' AND item_id = spis_plan._id;
+

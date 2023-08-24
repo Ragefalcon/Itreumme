@@ -1,0 +1,76 @@
+CREATE TABLE IF NOT EXISTS spis_schet_pl (
+    _id    INTEGER PRIMARY KEY AUTOINCREMENT,
+    namesp TEXT
+);
+
+CREATE TRIGGER IF NOT EXISTS delete_spis_schet_pl_trig1
+         AFTER DELETE
+            ON spis_schet_pl
+BEGIN
+    DELETE FROM sum_on_schet_pl
+          WHERE _id = old._id;
+END;
+
+CREATE TRIGGER IF NOT EXISTS insert_spis_schet_pl_trig1
+         AFTER INSERT
+            ON spis_schet_pl
+BEGIN
+    INSERT INTO sum_on_schet_pl VALUES (
+                                     new._id,
+                                    0
+                                );
+END;
+
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_schet_pl_trig
+         AFTER DELETE
+            ON spis_schet_pl
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_schet_pl',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_schet_pl_trig
+         AFTER INSERT
+            ON spis_schet_pl
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_schet_pl',
+                                                       new._id,
+                                                      'false'
+                                                  );
+END;
+
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_schet_pl_trig
+         AFTER UPDATE
+            ON spis_schet_pl
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_schet_pl',
+                                                        new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_schet_pl',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+INSERT OR IGNORE INTO spis_schet_pl (_id,namesp)
+                       VALUES (1,'На распределении');
+INSERT OR IGNORE INTO sum_on_schet_pl VALUES (1,0);
+
+INSERT OR IGNORE INTO spis_schet_pl (_id,namesp)
+                       VALUES (2,'Капитал');
+INSERT OR IGNORE INTO sum_on_schet_pl VALUES (2,0);
+
+INSERT OR IGNORE INTO spis_schet_pl (_id,namesp)
+                       VALUES (3,'Ежемесячные расходы');
+INSERT OR IGNORE INTO sum_on_schet_pl VALUES (3,0);

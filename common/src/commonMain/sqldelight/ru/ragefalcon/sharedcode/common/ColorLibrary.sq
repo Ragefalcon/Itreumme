@@ -1,0 +1,61 @@
+CREATE TABLE IF NOT EXISTS color_library (
+        _id INTEGER PRIMARY KEY AUTOINCREMENT,
+        set_id INTEGER NOT NULL,
+        color TEXT NOT NULL
+);
+
+selectColorLibrary:
+SELECT * FROM color_library WHERE set_id = :set_id;
+
+insert:
+INSERT OR REPLACE INTO color_library( set_id, color ) VALUES (:set_id, :color );
+
+delete:
+DELETE FROM color_library WHERE _id = :id;
+
+-- Триггер: replicated_insert_color_library_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_color_library_trig
+         AFTER INSERT
+            ON color_library
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'color_library',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+-- Триггер: replicated_update_color_library_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_color_library_trig
+         AFTER UPDATE
+            ON color_library
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'color_library',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'color_library',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_color_library_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_color_library_trig
+         AFTER DELETE
+            ON color_library
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'color_library',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+

@@ -1,0 +1,169 @@
+CREATE TABLE IF NOT EXISTS style_settings (
+    _id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    codename        TEXT NOT NULL,
+    intparam    INTEGER NOT NULL,
+    doubleparam      REAL NOT NULL,
+    stringparam TEXT NOT NULL
+);
+
+-- Триггер: replicated_insert_style_settings_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_style_settings_trig
+         AFTER INSERT
+            ON style_settings
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'style_settings',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+-- Триггер: replicated_update_style_settings_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_style_settings_trig
+         AFTER UPDATE
+            ON style_settings
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'style_settings',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'style_settings',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_style_settings_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_style_settings_trig
+         AFTER DELETE
+            ON style_settings
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'style_settings',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+---------------------------------
+---------------------------------
+---------------------------------
+
+CREATE TABLE IF NOT EXISTS save_set_style_settings (
+    _id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    set_id  INTEGER NOT NULL,
+    codename        TEXT NOT NULL,
+    intparam    INTEGER NOT NULL,
+    doubleparam      REAL NOT NULL,
+    stringparam TEXT NOT NULL
+);
+
+-- Триггер: replicated_insert_save_set_style_settings_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_save_set_style_settings_trig
+         AFTER INSERT
+            ON save_set_style_settings
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'save_set_style_settings',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+-- Триггер: replicated_update_save_set_style_settings_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_save_set_style_settings_trig
+         AFTER UPDATE
+            ON save_set_style_settings
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'save_set_style_settings',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'save_set_style_settings',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_save_set_style_settings_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_save_set_style_settings_trig
+         AFTER DELETE
+            ON save_set_style_settings
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'save_set_style_settings',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+---------------------------------
+---------------------------------
+---------------------------------
+
+CREATE TABLE IF NOT EXISTS spis_save_set_style (
+        _id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL
+);
+
+
+-- Триггер: replicated_insert_spis_save_set_style_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_save_set_style_trig
+         AFTER INSERT
+            ON spis_save_set_style
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_save_set_style',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+-- Триггер: replicated_update_spis_save_set_style_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_save_set_style_trig
+         AFTER UPDATE
+            ON spis_save_set_style
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_save_set_style',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_save_set_style',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_save_set_style_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_save_set_style_trig
+         AFTER DELETE
+            ON spis_save_set_style
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_save_set_style',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+

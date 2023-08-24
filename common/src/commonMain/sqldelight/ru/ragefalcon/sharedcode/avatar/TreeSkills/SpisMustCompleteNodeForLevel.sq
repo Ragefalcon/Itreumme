@@ -1,0 +1,84 @@
+-- Таблица: spis_must_complete_node_for_level
+CREATE TABLE spis_must_complete_node_for_level (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    id_node  INTEGER NOT NULL,
+    quest_id  INTEGER NOT NULL DEFAULT 0,
+    quest_key_id  INTEGER NOT NULL DEFAULT 0
+);
+
+selectRez:
+SELECT * FROM spis_must_complete_node_for_level WHERE id_node = :id_node;
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_must_complete_node_for_level(
+     id_tree,
+     id_node,
+     quest_id
+                )
+VALUES (?, ?, ?);
+
+updateBind{
+DELETE FROM spis_must_complete_node_for_level  WHERE id_node = :id_node;
+INSERT OR REPLACE INTO spis_must_complete_node_for_level(
+     id_tree,
+     id_node,
+     quest_id
+                )
+VALUES (:id_tree, :id_node, :quest_id);
+SELECT 1 AS rez;
+}
+
+
+deleteBind{
+DELETE FROM spis_must_complete_node_for_level  WHERE id_node = :id_node;
+SELECT 1 AS rez;
+}
+
+
+-- Триггер: replicated_insert_spis_must_complete_node_for_level_trig
+CREATE TRIGGER replicated_insert_spis_must_complete_node_for_level_trig
+         AFTER INSERT
+            ON spis_must_complete_node_for_level
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_must_complete_node_for_level',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_must_complete_node_for_level_trig
+CREATE TRIGGER replicated_update_spis_must_complete_node_for_level_trig
+         AFTER UPDATE
+            ON spis_must_complete_node_for_level
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_must_complete_node_for_level',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_must_complete_node_for_level',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_must_complete_node_for_level_trig
+CREATE TRIGGER replicated_delete_spis_must_complete_node_for_level_trig
+         AFTER DELETE
+            ON spis_must_complete_node_for_level
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_must_complete_node_for_level',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

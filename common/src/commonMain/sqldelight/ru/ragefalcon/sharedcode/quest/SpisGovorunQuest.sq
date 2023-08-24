@@ -1,0 +1,70 @@
+CREATE TABLE spis_govorun_quest (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    quest_id    INTEGER NOT NULL,
+    key_id    INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    opis TEXT NOT NULL,
+    image_file TEXT NOT NULL
+);
+
+selectAll:
+SELECT * FROM spis_govorun_quest;
+
+selectOneQuest:
+SELECT * FROM spis_govorun_quest WHERE quest_id = :quest_id;
+
+selectOneGovorun:
+SELECT * FROM spis_govorun_quest WHERE quest_id = :quest_id AND key_id = :key_id;
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_govorun_quest( quest_id, key_id, name, opis, image_file)
+    VALUES ( :quest_id,:key_id,:name, :opis, :image_file);
+
+delete:
+DELETE FROM spis_govorun_quest WHERE _id = :id;
+
+-- Триггер: replicated_insert_spis_govorun_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_govorun_quest_trig
+         AFTER INSERT
+            ON spis_govorun_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_govorun_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_govorun_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_govorun_quest_trig
+         AFTER UPDATE
+            ON spis_govorun_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_govorun_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_govorun_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_govorun_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_govorun_quest_trig
+         AFTER DELETE
+            ON spis_govorun_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_govorun_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

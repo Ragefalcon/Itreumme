@@ -1,0 +1,45 @@
+CREATE TABLE mainparam (
+    _id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    name        TEXT NOT NULL,
+    intparam    INTEGER NOT NULL,
+    stringparam TEXT NOT NULL
+);
+
+INSERT OR REPLACE INTO mainparam(name,intparam,stringparam)
+    VALUES ("name",-1,"Новый квест"),
+    ("opis",-1,"Описание нового квеста");
+
+updateParam:
+UPDATE mainparam SET name = :name, stringparam = :str, intparam = :int WHERE _id = :id;
+
+updateIntParamId:
+UPDATE mainparam SET intparam = :newValue WHERE _id = :id;
+updateStrParamId:
+UPDATE mainparam SET stringparam = :newValue WHERE _id = :id;
+
+updateIntParamName:
+UPDATE mainparam SET intparam = :newValue WHERE name = :name;
+updateStrParamName:
+UPDATE mainparam SET stringparam = :newValue WHERE name = :name;
+
+selectMainParam:
+SELECT * FROM mainparam;
+
+insertParam:
+INSERT OR REPLACE INTO mainparam(name,intparam,stringparam)
+    VALUES (:name,:prioritet,:opis);
+
+
+
+deleteParam:
+    DELETE FROM mainparam WHERE _id = :id;
+
+insertBirthday{
+    DELETE FROM mainparam WHERE name = "Birthday";
+    INSERT OR REPLACE INTO mainparam(
+         name,
+         intparam,
+         stringparam
+                    )
+    VALUES ("Birthday", 0, :datestr);
+}

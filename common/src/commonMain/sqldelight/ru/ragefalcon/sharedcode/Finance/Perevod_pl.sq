@@ -1,0 +1,175 @@
+-- Таблица: perevod_pl
+CREATE TABLE perevod_pl (
+    _id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    name     TEXT,
+    schsp_id INTEGER,
+    summa    REAL,
+    schz_id  INTEGER,
+    data     INTEGER
+);
+
+-- Триггер: insert_perevod_pl_trig1
+CREATE TRIGGER insert_perevod_pl_trig1
+         AFTER INSERT
+            ON perevod_pl
+BEGIN
+    UPDATE sum_on_schet_pl
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT sumrub AS summa
+                            FROM doxod
+                           WHERE 1 = new.schsp_id
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = new.schsp_id
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = new.schsp_id
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = new.schsp_id
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = new.schsp_id
+                      )
+           )
+     WHERE _id = new.schsp_id;
+    UPDATE sum_on_schet_pl
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT sumrub AS summa
+                            FROM doxod
+                           WHERE 1 = new.schz_id
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = new.schz_id
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = new.schz_id
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = new.schz_id
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = new.schz_id
+                      )
+           )
+     WHERE _id = new.schz_id;
+END;
+
+
+-- Триггер: delete_perevod_pl_trig1
+CREATE TRIGGER delete_perevod_pl_trig1
+         AFTER DELETE
+            ON perevod_pl
+BEGIN
+    UPDATE sum_on_schet_pl
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT sumrub AS summa
+                            FROM doxod
+                           WHERE 1 = old.schsp_id
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = old.schsp_id
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = old.schsp_id
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = old.schsp_id
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = old.schsp_id
+                      )
+           )
+     WHERE _id = old.schsp_id;
+    UPDATE sum_on_schet_pl
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT sumrub AS summa
+                            FROM doxod
+                           WHERE 1 = old.schz_id
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = old.schz_id
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = old.schz_id
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = old.schz_id
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = old.schz_id
+                      )
+           )
+     WHERE _id = old.schz_id;
+END;
+
+
+-- Триггер: replicated_insert_perevod_pl_trig
+CREATE TRIGGER replicated_insert_perevod_pl_trig
+         AFTER INSERT
+            ON perevod_pl
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'perevod_pl',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_perevod_pl_trig
+CREATE TRIGGER replicated_update_perevod_pl_trig
+         AFTER UPDATE
+            ON perevod_pl
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'perevod_pl',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'perevod_pl',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_perevod_pl_trig
+CREATE TRIGGER replicated_delete_perevod_pl_trig
+         AFTER DELETE
+            ON perevod_pl
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'perevod_pl',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

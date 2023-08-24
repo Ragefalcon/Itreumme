@@ -1,0 +1,87 @@
+CREATE TABLE IF NOT EXISTS style_settings (
+    _id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    codename        TEXT NOT NULL,
+    intparam    INTEGER NOT NULL,
+    doubleparam      REAL NOT NULL,
+    stringparam TEXT NOT NULL
+);
+
+selectInterfaceSettings:
+SELECT * FROM style_settings;
+
+insert:
+    INSERT OR REPLACE INTO style_settings(
+         codename,
+         intparam,
+         doubleparam,
+         stringparam
+                    )
+    VALUES (:codename,
+            :intparam,
+            :double,
+            :stringparam);
+
+clearFromDeprecated:
+DELETE FROM style_settings WHERE codename NOT IN :spis_sett;
+
+clearAll:
+DELETE FROM style_settings;
+
+update:
+UPDATE style_settings SET intparam = :intparam, doubleparam = :doubleparam, stringparam = :stringparam WHERE codename = :codename;
+
+updateLong:
+UPDATE style_settings SET intparam = :intparam WHERE codename = :codename;
+
+updateDouble:
+UPDATE style_settings SET doubleparam = :doubleparam WHERE codename = :codename;
+
+updateString:
+UPDATE style_settings SET stringparam = :stringparam WHERE codename = :codename;
+
+-- -- Триггер: replicated_insert_style_settings_trig
+-- CREATE TRIGGER IF NOT EXISTS replicated_insert_style_settings_trig
+--          AFTER INSERT
+--             ON style_settings
+--       FOR EACH ROW
+-- BEGIN
+--     INSERT OR IGNORE INTO system_replicate_record VALUES (
+--                                                       'style_settings',
+--                                                       new._id,
+--                                                       'false'
+--                                                   );
+-- END;
+--
+-- -- Триггер: replicated_update_style_settings_trig
+-- CREATE TRIGGER IF NOT EXISTS replicated_update_style_settings_trig
+--          AFTER UPDATE
+--             ON style_settings
+--       FOR EACH ROW
+-- BEGIN
+--     INSERT OR IGNORE INTO system_replicate_record VALUES (
+--                                                       'style_settings',
+--                                                       new._id,
+--                                                       'false'
+--                                                   );
+--     INSERT OR IGNORE INTO system_replicate_record VALUES (
+--                                                       'style_settings',
+--                                                       old._id,
+--                                                       'false'
+--                                                   );
+-- END;
+--
+--
+-- -- Триггер: replicated_delete_style_settings_trig
+-- CREATE TRIGGER IF NOT EXISTS replicated_delete_style_settings_trig
+--          AFTER DELETE
+--             ON style_settings
+--       FOR EACH ROW
+-- BEGIN
+--     INSERT OR IGNORE INTO system_replicate_record VALUES (
+--                                                       'style_settings',
+--                                                       old._id,
+--                                                       'false'
+--                                                   );
+-- END;
+
+

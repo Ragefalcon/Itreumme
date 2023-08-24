@@ -1,0 +1,214 @@
+CREATE TABLE IF NOT EXISTS spis_schet_pl (
+    _id    INTEGER PRIMARY KEY AUTOINCREMENT,
+    namesp TEXT NOT NULL ,
+    min_aim REAL NOT NULL DEFAULT -1,
+    max_aim REAL NOT NULL DEFAULT -1,
+    open    INTEGER NOT NULL DEFAULT 1
+
+);
+
+selectSpisSchetPlanForSett:
+SELECT spis_schet_pl.*,
+        IFNULL((SELECT summa FROM sum_on_schet_pl WHERE _id = spis_schet_pl._id),0.0) AS summa,
+        (SELECT TOTAL(count) FROM (SELECT COUNT(*) AS count FROM doxod WHERE 1 = spis_schet_pl._id
+         UNION ALL SELECT COUNT(*) AS count FROM popravka_kurs WHERE schz_id = spis_schet_pl._id
+         UNION ALL SELECT COUNT(*) AS count FROM rasxod WHERE schpl_id = spis_schet_pl._id
+         UNION ALL SELECT COUNT(*) AS count FROM perevod_pl WHERE schsp_id = spis_schet_pl._id OR schz_id = spis_schet_pl._id)) AS countoper,
+                  ( CASE WHEN min_aim <> -1 THEN (SELECT TOTAL(sumrub) FROM rasxod WHERE schpl_id = spis_schet_pl._id) ELSE 0 END) AS sumRasxod
+   FROM spis_schet_pl WHERE open NOT IN :openn;
+
+testForCloseOrDelSpisSchetPlan:
+SELECT IFNULL((SELECT summa FROM sum_on_schet_pl WHERE _id = spis_schet_pl._id),0.0) AS summa,
+        (SELECT TOTAL(count) FROM (SELECT COUNT(*) AS count FROM doxod WHERE 1 = spis_schet_pl._id
+         UNION ALL SELECT COUNT(*) AS count FROM popravka_kurs WHERE schz_id = spis_schet_pl._id
+         UNION ALL SELECT COUNT(*) AS count FROM rasxod WHERE schpl_id = spis_schet_pl._id
+         UNION ALL SELECT COUNT(*) AS count FROM perevod_pl WHERE schsp_id = spis_schet_pl._id OR schz_id = spis_schet_pl._id)) AS countoper
+    FROM spis_schet_pl WHERE open = 1 AND _id = :id;
+
+selectAllOpenSpisSchetPlan:
+-- SELECT _id, name, val_id, open, (SELECT cod FROM spis_valut WHERE _id = val_id) AS cod FROM spis_schet_pl WHERE open = 'true' OR open = 'True';
+SELECT spis_schet_pl.* FROM spis_schet_pl WHERE spis_schet_pl.open = 1;
+
+selectAllSchetPlanKrome:
+-- SELECT _id, name, val_id, open, (SELECT cod FROM spis_valut WHERE _id = val_id) AS cod FROM spis_schet_pl WHERE _id <> :iskl AND open = 'true' OR open = 'True';
+SELECT spis_schet_pl.* FROM spis_schet_pl WHERE _id <> :iskl;
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_schet_pl(
+    namesp,
+    min_aim,
+    max_aim,
+    open
+)
+VALUES (?, ?,?,?);
+
+updateSchetPlan:
+UPDATE spis_schet_pl SET namesp = :name, min_aim = :min_aim, max_aim = :max_aim WHERE _id = :id;
+
+updateSchetPlanOpen:
+UPDATE spis_schet_pl SET open = :openn WHERE _id = :id;
+
+deleteSchetPlan{
+DELETE FROM spis_schet_pl WHERE _id = :id;
+DELETE FROM bind_for_schet_plan WHERE schet_plan_id = :id;
+}
+
+-- SELECT _id, name, summa, (SELECT typer FROM typerasxod WHERE _id = type_id) AS type, data, (SELECT name FROM spis_schet WHERE _id = schet_id) AS schet
+-- FROM rasxod WHERE data >= ? AND data < ?
+-- ORDER BY data; , schet AS schet_id
+selectSchetPlan:
+ SELECT main._id, main.name AS nameoper, main.summa AS summaoper, main.typeoper, main.type AS podtype, main.schetidd, main.data,  ss2.open AS second_schet_open FROM --ss1.open,
+-- SELECT _id, name AS nameoper, summa AS summaoper, typeoper, type AS podtype, schetidd, data FROM
+(SELECT _id, name, 1 AS schet, schet_id AS schetidd, sumrub AS summa, 				'Доход'   AS typeoper,   (SELECT typed FROM typedoxod WHERE _id = type_id) AS type,  data FROM doxod
+ UNION ALL SELECT _id, name, schpl_id AS schet, schpl_id AS schetidd, sumrub*(-1) AS summa, 'Расход'  AS typeoper,  (SELECT typer FROM typerasxod WHERE _id = type_id) AS type, data FROM rasxod
+ UNION ALL SELECT _id, 'Поправка на курс' AS name, schz_id AS schet, schz_id AS schetidd, summa, 'Поправка на курс'  AS typeoper,  'Поправка на курс' AS type, data FROM popravka_kurs
+ UNION ALL SELECT _id, name, schz_id AS schet, schsp_id AS schetidd,  summa AS summa, 		'Перевод' AS typeoper, 'со счета '||(SELECT namesp FROM spis_schet_pl WHERE _id = schsp_id) AS type,  data FROM perevod_pl
+ UNION ALL SELECT _id, name, schsp_id AS schet, schz_id AS schetidd, summa*(-1) AS summa, 'Перевод' AS typeoper, 'на счет '||(SELECT namesp FROM spis_schet_pl WHERE _id = schz_id) AS type, data  FROM perevod_pl ) AS main
+--   LEFT JOIN spis_schet AS ss1 ON ss1._id = schet
+ LEFT JOIN spis_schet_pl AS ss2 ON ss2._id = main.schetidd
+ WHERE data >= :dtbegin AND data < :dtend AND schet = :schet
+ ORDER BY data;
+
+sumsOperPlForPeriod:
+ SELECT * FROM (SELECT TOTAL(sumrub) AS doxodsum FROM doxod WHERE 1 = :schet_pl AND data >= :dtbegin AND data < :dtend) AS doxod,
+  (SELECT TOTAL(sumrub) AS rasxodsum FROM rasxod WHERE schpl_id = :schet_pl AND data >= :dtbegin AND data < :dtend) AS rasxod,
+  (SELECT TOTAL(summa) AS popravkasum FROM popravka_kurs WHERE schz_id = :schet_pl AND data >= :dtbegin AND data < :dtend) AS popravka_kurs,
+  (SELECT TOTAL(bbb.summa) AS perevodsum FROM (SELECT schz_id AS schet_pl, summa AS summa, data FROM perevod_pl
+                               UNION ALL SELECT schsp_id AS schet_pl, summa*(-1) AS summa, data FROM perevod_pl) AS bbb WHERE schet_pl = :schet_pl AND data >= :dtbegin AND data < :dtend) AS perevod;
+
+
+sumSchetPlanPeriod:
+SELECT  round(TOTAL(summa),2) AS sum
+FROM
+(
+                          SELECT sumrub AS summa
+                            FROM doxod
+                           WHERE 1 = :schet
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = :schet
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = :schet
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = :schet
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = :schet
+                      );
+
+-- sumAllCapital:
+-- -- Добавка:
+-- -- (SELECT  round(TOTAL(summa),2) AS sum FROM sum_oper_week UNION ALL SELECT sumsp AS sum FROM perevod WHERE _id = -666)
+-- -- вместо просто sum_oper_week нужна чтобы доходили оповещения об обновлении запроса от "второй волны" триггеров,
+-- -- когда обновляется таблица perevod от нее обновляется таблица popravka_kurs и только от нее уже таблица sum_oper_week
+-- -- на данный момент оповещения присылаются только в том случае если это триггер от первой измененной таблицы,
+-- -- либо в интересующем запросе фигурирует сама эта таблица, что я и сделал ниже
+-- -- ОБновление 25_-5_2022:
+-- -- я давно уже сделал рабочими рекурсивные триггеры и по идее эта проблема относилась именно к ним, нужно будет как-нибудь
+-- -- проверить это
+-- SELECT  round(TOTAL(sum),2) AS sum FROM (SELECT  round(TOTAL(summa),2) AS sum FROM sum_oper_week UNION ALL SELECT sumsp AS sum FROM perevod WHERE _id = -666);
+--
+-- sumAllweek:
+-- -- SELECT  SUM(summa) AS sum FROM sum_oper_week;
+-- SELECT * FROM sum_oper_week ORDER BY data;
+
+selectSchetPlanWithSumForGrafItem:
+SELECT _id, name, summa, min_aim,max_aim, sumRasxod,( CASE WHEN maxSum<>0 THEN summa/maxSum ELSE 0.0 END ) AS proc
+    FROM (SELECT sum_on_schet_pl._id AS _id,
+                 spis_schet_pl.namesp AS name,
+                 spis_schet_pl.min_aim AS min_aim,
+                 spis_schet_pl.max_aim AS max_aim,
+                 sum_on_schet_pl.summa AS summa,
+                 (SELECT MAX(sum_on_schet_pl.summa) FROM sum_on_schet_pl, spis_schet_pl WHERE sum_on_schet_pl._id = spis_schet_pl._id ) AS maxSum,
+                 ( CASE WHEN min_aim <> -1 THEN (SELECT TOTAL(sumrub) FROM rasxod WHERE schpl_id = sum_on_schet_pl._id) ELSE 0 END) AS sumRasxod
+            FROM sum_on_schet_pl LEFT JOIN spis_schet_pl ON sum_on_schet_pl._id = spis_schet_pl._id WHERE spis_schet_pl.open = 1);
+
+insertPerevod:
+INSERT INTO perevod_pl( --OR REPLACE
+    name,
+    schsp_id,
+    summa,
+    schz_id,
+    data
+)
+VALUES (?, ?, ?, ?, ?);
+
+updatePerevod:
+UPDATE perevod_pl SET
+    name = :name,
+    schsp_id = :schsp_id,
+    summa = :summa,
+    schz_id = :schz_id,
+    data = :data
+WHERE _id = :id;
+
+deletePerevod:
+DELETE FROM perevod_pl WHERE _id = :id;
+
+
+
+
+CREATE TRIGGER IF NOT EXISTS delete_spis_schet_pl_trig1
+         AFTER DELETE
+            ON spis_schet_pl
+BEGIN
+    DELETE FROM sum_on_schet_pl
+          WHERE _id = old._id;
+END;
+
+CREATE TRIGGER IF NOT EXISTS insert_spis_schet_pl_trig1
+         AFTER INSERT
+            ON spis_schet_pl
+BEGIN
+    INSERT INTO sum_on_schet_pl VALUES (
+                                     new._id,
+                                    0
+                                );
+END;
+
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_schet_pl_trig
+         AFTER DELETE
+            ON spis_schet_pl
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_schet_pl',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_schet_pl_trig
+         AFTER INSERT
+            ON spis_schet_pl
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_schet_pl',
+                                                       new._id,
+                                                      'false'
+                                                  );
+END;
+
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_schet_pl_trig
+         AFTER UPDATE
+            ON spis_schet_pl
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_schet_pl',
+                                                        new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_schet_pl',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

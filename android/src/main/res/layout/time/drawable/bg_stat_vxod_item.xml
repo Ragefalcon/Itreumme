@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true"
+    >
+        <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+
+        >
+            <item
+            >
+                <shape>
+                    <padding android:top="0dp" android:right="10dp" android:bottom="0dp" android:left="10dp" />
+                    <stroke android:color="@android:color/holo_red_dark" android:width="1dp"/>
+                    <corners android:radius="10dp" />
+                </shape>
+            </item>
+<!--            <item-->
+<!--                    android:height="50dp"-->
+<!--                    android:width="50dp"-->
+<!--                    android:drawable="@drawable/ic_stat_00">-->
+<!--            </item>-->
+        </layer-list>
+    </item>
+<!--    <item-->
+<!--            android:height="50dp"-->
+<!--            android:width="50dp"-->
+<!--            android:drawable="@drawable/ic_stat_00">-->
+<!--    </item>-->
+
+</selector>

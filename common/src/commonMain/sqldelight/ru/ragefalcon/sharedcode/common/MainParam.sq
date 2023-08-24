@@ -1,0 +1,22 @@
+CREATE TABLE mainparam (
+    _id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    name        TEXT NOT NULL,
+    intparam    INTEGER NOT NULL,
+    stringparam TEXT NOT NULL
+);
+
+selectMainParam:
+SELECT * FROM mainparam;
+
+selectBirthday:
+SELECT * FROM mainparam WHERE name = "Birthday";
+
+insertBirthday{
+    DELETE FROM mainparam WHERE name = "Birthday";
+    INSERT OR REPLACE INTO mainparam(
+         name,
+         intparam,
+         stringparam
+                    )
+    VALUES ("Birthday", 0, :datestr);
+}

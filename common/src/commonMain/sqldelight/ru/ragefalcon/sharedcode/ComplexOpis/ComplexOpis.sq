@@ -1,0 +1,87 @@
+CREATE TABLE IF NOT EXISTS complex_opis (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    table_name     TEXT NOT NULL,
+    item_id   INTEGER NOT NULL,
+    sort     INTEGER NOT NULL
+);
+
+getLastIndex:
+SELECT last_insert_rowid();
+
+insertOrReplace:
+INSERT OR REPLACE INTO complex_opis(
+    table_name,
+    item_id,
+    sort
+)
+VALUES (:table_name, :item_id, :sort);
+
+updateSort:
+UPDATE complex_opis SET sort = :sort WHERE _id = :id;
+
+
+delete{
+DELETE FROM complex_opis WHERE _id = :id;
+DELETE FROM complex_opis_text WHERE opis_id = :id;
+DELETE FROM complex_opis_text_fts4 WHERE docid = :id;
+DELETE FROM complex_opis_checkbox WHERE opis_id = :id;
+DELETE FROM complex_opis_image_group WHERE opis_id = :id;
+DELETE FROM complex_opis_link WHERE opis_id = :id;
+DELETE FROM complex_opis_image WHERE opis_id = :id;
+}
+
+deleteForItem{
+DELETE FROM complex_opis_image WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = :nameTable AND item_id = :id);
+DELETE FROM complex_opis_link WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = :nameTable AND item_id = :id);
+DELETE FROM complex_opis_image_group WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = :nameTable AND item_id = :id);
+DELETE FROM complex_opis_checkbox WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = :nameTable AND item_id = :id);
+DELETE FROM complex_opis_text_fts4 WHERE docid IN (SELECT _id FROM complex_opis WHERE table_name = :nameTable AND item_id = :id);
+DELETE FROM complex_opis_text WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = :nameTable AND item_id = :id);
+DELETE FROM complex_opis WHERE table_name = :nameTable AND item_id = :id;
+}
+
+-- Триггер: replicated_insert_complex_opis_trig
+CREATE TRIGGER replicated_insert_complex_opis_trig
+         AFTER INSERT
+            ON complex_opis
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_complex_opis_trig
+CREATE TRIGGER replicated_update_complex_opis_trig
+         AFTER UPDATE
+            ON complex_opis
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_complex_opis_trig
+CREATE TRIGGER replicated_delete_complex_opis_trig
+         AFTER DELETE
+            ON complex_opis
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

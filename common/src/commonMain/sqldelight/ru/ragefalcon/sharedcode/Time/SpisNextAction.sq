@@ -1,0 +1,175 @@
+CREATE TABLE IF NOT EXISTS spis_next_action (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    stap_id  INTEGER NOT NULL DEFAULT 0,
+    common_id  INTEGER NOT NULL DEFAULT 0,
+    sort  INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS spis_next_action_common (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    name      TEXT NOT NULL,
+    vajn      INTEGER NOT NULL,
+    privplan  INTEGER NOT NULL,
+    stap_prpl INTEGER NOT NULL
+);
+
+changeSortToUp{
+    UPDATE spis_next_action SET sort = sort-1 WHERE sort <= :newsort AND sort > :oldsort ;
+    UPDATE spis_next_action SET sort = :newsort WHERE _id = :id;
+}
+changeSortToDown{
+    UPDATE spis_next_action SET sort = sort+1 WHERE sort < :oldsort AND sort >= :newsort ;
+    UPDATE spis_next_action SET sort = :newsort WHERE _id = :id;
+}
+
+insertNextActionCommon:
+INSERT OR REPLACE INTO spis_next_action_common (name, vajn, privplan, stap_prpl) VALUES (?, ?,?,?);
+
+updateNextActionCommon:
+UPDATE spis_next_action_common SET name = :name,
+                  vajn = :vajn,
+                  privplan = :privplan,
+                  stap_prpl = :stap_prpl
+              WHERE _id = :id;
+
+deleteNextActionCommon{
+DELETE FROM spis_next_action_common WHERE _id = :id;
+DELETE FROM spis_next_action WHERE common_id = :id;
+-- DELETE FROM complex_opis_image WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_next_action' AND item_id = :id);
+-- DELETE FROM complex_opis_link WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_next_action' AND item_id = :id);
+-- DELETE FROM complex_opis_image_group WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_next_action' AND item_id = :id);
+-- DELETE FROM complex_opis_checkbox WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_next_action' AND item_id = :id);
+-- DELETE FROM complex_opis_text_fts4 WHERE docid IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_next_action' AND item_id = :id);
+-- DELETE FROM complex_opis_text WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_next_action' AND item_id = :id);
+-- DELETE FROM complex_opis WHERE table_name = 'spis_next_action' AND item_id = :id;
+}
+
+
+insertStapIntoNextAction:
+INSERT OR REPLACE INTO spis_next_action (stap_id) VALUES (?);
+
+insertCommonIntoNextAction:
+INSERT OR REPLACE INTO spis_next_action (common_id) VALUES (?);
+
+selectNextAction:
+SELECT spis_next_action._id, spis_next_action.sort,
+(CASE WHEN stap_id > 0 THEN 0 ELSE commonTable._id END) AS common_id,
+IFNULL((CASE WHEN stap_id > 0 THEN stapTable.name ELSE commonTable.name END), CAST ('' AS TEXT)) AS name,
+IFNULL((CASE WHEN stap_id > 0 THEN stapTable.nameplan ELSE commonTable.nameplan END), CAST ('' AS TEXT)) AS namePlan,
+IFNULL((CASE WHEN stap_id > 0 THEN stapTable.name ELSE commonTable.namestap END), CAST ('' AS TEXT)) AS nameStap,
+IFNULL((CASE WHEN stap_id > 0 THEN CASE WHEN stapTable.marker > 0 THEN stapTable.marker - 1 ELSE stapTable.vajnPlan END ELSE commonTable.vajn END),0) AS vajn,
+IFNULL((CASE WHEN stap_id > 0 THEN stapTable.idplan ELSE commonTable.privplan END),-1) AS privplan,
+IFNULL((CASE WHEN stap_id > 0 THEN stapTable._id ELSE commonTable.stap_prpl END),-1) AS stap_prpl
+FROM spis_next_action
+LEFT JOIN (SELECT spis_stap_plan.*, spis_plan.name AS nameplan, spis_plan.vajn AS vajnPlan FROM spis_stap_plan
+                    LEFT JOIN spis_plan ON spis_plan._id = spis_stap_plan.idplan) AS stapTable ON spis_next_action.stap_id = stapTable._id
+LEFT JOIN (SELECT spis_next_action_common.*, spis_plan.name AS nameplan, spis_stap_plan.name AS namestap FROM spis_next_action_common
+                    LEFT JOIN spis_plan ON spis_plan._id = spis_next_action_common.privplan
+                    LEFT JOIN spis_stap_plan ON spis_stap_plan._id = spis_next_action_common.stap_prpl) AS commonTable ON spis_next_action.common_id = commonTable._id
+ORDER BY spis_next_action.sort;
+
+
+-- Триггер: sort_insert_spis_next_action_trig
+CREATE TRIGGER IF NOT EXISTS sort_insert_spis_next_action_trig
+         AFTER INSERT
+            ON spis_next_action
+      FOR EACH ROW
+BEGIN
+    UPDATE spis_next_action SET sort = new._id WHERE _id = new._id;
+END;
+
+
+
+-- Триггер: replicated_insert_spis_next_action_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_next_action_trig
+         AFTER INSERT
+            ON spis_next_action
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_next_action_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_next_action_trig
+         AFTER UPDATE
+            ON spis_next_action
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_next_action_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_next_action_trig
+         AFTER DELETE
+            ON spis_next_action
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+
+-- Триггер: replicated_insert_spis_next_action_common_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_next_action_common_trig
+         AFTER INSERT
+            ON spis_next_action_common
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action_common',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_next_action_common_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_next_action_common_trig
+         AFTER UPDATE
+            ON spis_next_action_common
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action_common',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action_common',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_next_action_common_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_next_action_common_trig
+         AFTER DELETE
+            ON spis_next_action_common
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action_common',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

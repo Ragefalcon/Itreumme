@@ -1,0 +1,38 @@
+
+
+-- CREATE TEMP TABLE indenplan(
+--   _id INTEGER  NOT NULL,
+--   name TEXT  NOT NULL,
+--   sum_hour REAL  NOT NULL,
+--   data INTEGER  NOT NULL
+-- );
+
+
+-- Триггер: del_stap_includes_in_plan
+CREATE TRIGGER IF NOT EXISTS del_stap_includes_in_plan
+         AFTER INSERT
+            ON spis_plan_goal
+            WHEN new.stap = 0
+BEGIN
+    DELETE FROM spis_plan_goal
+          WHERE id_plan = new.id_plan AND stap <> 0;
+
+END;
+
+-- Триггер: delete_privs_goal
+CREATE TRIGGER IF NOT EXISTS delete_privs_goal
+         AFTER DELETE
+            ON spis_goal
+BEGIN
+    DELETE FROM spis_plan_goal WHERE id_goal = old._id;
+    DELETE FROM spis_idea_goal WHERE id_goal = old._id;
+END;
+
+-- Триггер: delete_privs_dream
+CREATE TRIGGER IF NOT EXISTS delete_privs_dream
+         AFTER DELETE
+            ON spis_dream
+BEGIN
+    DELETE FROM spis_plan_goal WHERE id_goal = old._id;
+    DELETE FROM spis_idea_goal WHERE id_goal = old._id;
+END;

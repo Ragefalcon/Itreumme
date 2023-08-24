@@ -1,0 +1,77 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorTextAdd">@color/colorTextAdd</item>
+        <item name="android:windowBackground">@color/colorTransparent</item>
+
+        <item name="itemMyTextSize">@dimen/font_large_24</item>
+        <item name="itemMyPadding">@dimen/itemMyPadding</item>
+        <item name="colorNavigationItem">@color/menu_item_color_state</item>
+        <item name="colorNavigationItemSelected">@color/colorMyBeg</item>
+        <item name="drawableNavigationItemBackground">@drawable/menu_background_color_state</item>
+    </style>
+
+    <style name="dialog_animation">
+<!--        <item name="android:windowEnterAnimation">@transition/fade</item>-->
+<!--        <item name="android:windowEnterAnimation">@anim/anim_fade</item>-->
+<!--        <item name="android:windowExitAnimation">@anim/anim_fade</item>-->
+<!--        <item name="android:windowEnterAnimation">@anim/slide_in_left</item>-->
+<!--        <item name="android:windowExitAnimation">@anim/slide_out_right</item>-->
+    </style>
+
+
+    <style name="Widget.Custom.NavigationView" parent="Widget.Design.NavigationView">
+        <item name="android:textSize">20sp</item><!-- text size in menu-->
+        <item name="android:paddingTop">20dp</item><!-- text size in menu-->
+        <item name="android:paddingBottom">20dp</item><!-- text size in menu-->
+        <item name="android:paddingLeft">20dp</item><!-- text size in menu-->
+        <item name="android:paddingRight">20dp</item><!-- text size in menu-->
+        <item name="itemIconTint">?attr/colorNavigationItem</item>
+        <item name="itemTextColor">?attr/colorNavigationItem</item>
+<!--        <item name="itemMyTextSize">?attr/itemMyTextSize</item>-->
+<!--        <item name="itemPadding">?attr/itemMyPadding</item>-->
+        <item name="itemBackground">?attr/drawableNavigationItemBackground</item>
+    </style>
+
+
+    <style name="Profile">
+
+    </style>
+    <style name="Profile.EditText" parent="Profile">
+
+        <item name="android:textColor">?attr/colorTextAdd</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:enabled">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+    <style name="Profile.EditText.Single" parent="Profile.EditText">
+        <item name="android:singleLine">true</item>
+    </style>
+    <style name="Profile.EditText.MultiLine" parent="Profile.EditText">
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:maxLength">128</item>
+    </style>
+
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowBackground">@drawable/ic_tutatores_background</item>
+    </style>
+
+<!--    https://stackoverflow.com/questions/12636101/how-to-style-popupmenu-->
+<!--    Context wrapper = new ContextThemeWrapper(this, R.style.YOURSTYLE);-->
+<!--    PopupMenu popup = new PopupMenu(wrapper, view);-->
+    <style name="MyPopumMenuStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:itemBackground">#00FF4444</item>
+<!--        <item name="android:itemBackground">@drawable/bg_analiz_main</item>-->
+
+    </style>
+</resources>

@@ -1,0 +1,65 @@
+CREATE TABLE quest_mainparam (
+    _id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    quest_id    INTEGER NOT NULL,
+    name        TEXT NOT NULL,
+    intparam    INTEGER NOT NULL,
+    stringparam TEXT NOT NULL
+);
+
+getQuestParam:
+SELECT * FROM quest_mainparam WHERE quest_id = :quest_id;
+
+insertOrReplacePlan:
+INSERT OR REPLACE INTO quest_mainparam(
+     quest_id,
+     name,
+     intparam,
+     stringparam
+               )
+VALUES (?,?,?, ?);
+
+-- Триггер: replicated_insert_quest_mainparam_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_quest_mainparam_trig
+         AFTER INSERT
+            ON quest_mainparam
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_mainparam',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_quest_mainparam_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_quest_mainparam_trig
+         AFTER UPDATE
+            ON quest_mainparam
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_mainparam',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_mainparam',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_quest_mainparam_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_quest_mainparam_trig
+         AFTER DELETE
+            ON quest_mainparam
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_mainparam',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

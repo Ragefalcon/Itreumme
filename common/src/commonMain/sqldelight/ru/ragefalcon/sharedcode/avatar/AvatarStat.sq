@@ -1,0 +1,9 @@
+
+selectAvatarStat:
+SELECT
+(SELECT COUNT(*) FROM spis_dream WHERE stat = 10) AS dream_real,
+(SELECT COUNT(*) FROM spis_goal WHERE gotov = 100.0) AS goal_real,
+(SELECT COUNT(*) FROM spis_dream) AS dream_count,
+(SELECT COUNT(*) FROM spis_goal WHERE gotov <> 100.0) AS goal_work,
+(SELECT TOTAL(hour) FROM statik_hour_goal WHERE id_goal IN (SELECT _id FROM spis_goal)) AS goal_hour,
+(SELECT TOTAL(hour) FROM statik_hour_goal WHERE id_goal IN (SELECT _id FROM spis_dream)) AS dream_hour;

@@ -1,0 +1,510 @@
+-- CREATE TABLE doxod (
+--     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+--     name TEXT NOT NULL UNIQUE,
+--     summa REAL NOT NULL,
+--     data INTEGER NOT NULL,
+--     schet TEXT
+-- );
+
+CREATE TABLE doxod (
+    _id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    name     TEXT NOT NULL,
+    summa    REAL NOT NULL,
+    type_id  INTEGER NOT NULL,
+    data     INTEGER NOT NULL,
+    schet_id INTEGER NOT NULL,
+    sumrub   REAL NOT NULL
+);
+
+selectDoxodPeriod:
+SELECT doxod.*, typedoxod.typed AS type, spis_schet.name AS schet, spis_schet.open AS schet_open, typedoxod.open AS typerasxod_open --spis_schet_pl.open AS schpl_open,
+-- SELECT _id, name, summa, type_id, (SELECT typed FROM typedoxod WHERE _id = type_id) AS type, data, schet_id, (SELECT name FROM spis_schet WHERE _id = schet_id) AS schet
+FROM doxod
+ LEFT JOIN typedoxod ON typedoxod._id = doxod.type_id
+ LEFT JOIN spis_schet ON spis_schet._id = doxod.schet_id
+--  LEFT JOIN spis_schet_pl ON spis_schet_pl._id = doxod.schpl_id
+WHERE data >= ? AND data < ?
+ORDER BY data;
+
+selectOneDoxodById:
+SELECT doxod.*, typedoxod.typed AS type, spis_schet.name AS schet, spis_schet.open AS schet_open, typedoxod.open AS typerasxod_open --spis_schet_pl.open AS schpl_open,
+-- SELECT _id, name, summa, type_id, (SELECT typed FROM typedoxod WHERE _id = type_id) AS type, data, schet_id, (SELECT name FROM spis_schet WHERE _id = schet_id) AS schet
+FROM doxod
+ LEFT JOIN typedoxod ON typedoxod._id = doxod.type_id
+ LEFT JOIN spis_schet ON spis_schet._id = doxod.schet_id
+--  LEFT JOIN spis_schet_pl ON spis_schet_pl._id = doxod.schpl_id
+WHERE doxod._id = :id;
+
+sumDoxPeriod:
+SELECT  SUM(sumrub) AS sum
+FROM doxod WHERE data >= ? AND data < ?;
+
+selectDoxodPeriodAndType:
+SELECT doxod.*, typedoxod.typed AS type, spis_schet.name AS schet, spis_schet.open AS schet_open, typedoxod.open AS typerasxod_open --spis_schet_pl.open AS schpl_open,
+-- SELECT _id, name, summa, type_id, (SELECT typed FROM typedoxod WHERE _id = type_id) AS type, data, schet_id, (SELECT name FROM spis_schet WHERE _id = schet_id) AS schet
+FROM doxod
+ LEFT JOIN typedoxod ON typedoxod._id = doxod.type_id
+ LEFT JOIN spis_schet ON spis_schet._id = doxod.schet_id
+--  LEFT JOIN spis_schet_pl ON spis_schet_pl._id = doxod.schpl_id
+WHERE data >= :dateBegin AND data < :dateEnd AND type_id = :type_id
+ORDER BY data;
+
+sumDoxPeriodAndType:
+SELECT  SUM(sumrub) AS sum
+FROM doxod WHERE data >= :dateBegin AND data < :dateEnd AND type_id = :type_id;
+
+analizDoxodByTypeForPeriod:
+SELECT _id, type, sum,  ( CASE WHEN allSum<>0 THEN sum/allSum ELSE 0.0 END ) AS proc FROM(
+SELECT type_id AS _id, (SELECT typed FROM typedoxod WHERE _id = type_id) AS type, TOTAL(sumrub) AS sum,
+(SELECT TOTAL(sumrub) AS summa FROM doxod WHERE data >= :dateBegin AND data < :dateEnd) AS allSum
+FROM doxod WHERE data >= :dateBegin AND data < :dateEnd GROUP BY type_id ORDER BY sum );
+
+analizDoxodByMonth:
+SELECT monthyear, sum,  ( CASE WHEN maxSum<>0 THEN sum/maxSum ELSE 0.0 END ) AS proc FROM(
+    SELECT round(TOTAL(r1.sumrub),2) AS sum,
+           strftime("%Y-%m", r2.data / 1000, 'unixepoch') AS monthyear, -- data / 1000 / 3600 / 24 * 24 * 3600
+          (SELECT MAX(sum) FROM (SELECT round(TOTAL(sumrub),2) AS sum,
+                                 strftime("%Y-%m", data / 1000, 'unixepoch') AS monthyear
+                                 FROM doxod WHERE type_id = :typedox GROUP BY strftime("%Y-%m", data / 1000, 'unixepoch') )) AS maxSum
+    FROM doxod r2 LEFT JOIN (SELECT * FROM doxod WHERE type_id = :typedox ) r1 ON r2._id = r1._id GROUP BY strftime("%Y-%m", r2.data / 1000, 'unixepoch') )
+ORDER BY monthyear DESC;
+
+analizDoxodRasxodByMonth:
+SELECT year, month, dataFdM, monthyear, sumdox,sumrasx, sumyeardox, sumyearrasx,
+       ( CASE WHEN maxSum<>0 THEN sumdox/maxSum ELSE 0.0 END ) AS procdox,
+       ( CASE WHEN maxSum<>0 THEN sumrasx/maxSum ELSE 0.0 END ) AS procrasx
+FROM (SELECT round(TOTAL(sumdox),2) AS sumdox,
+               round(TOTAL(sumrasx),2) AS sumrasx,
+               strftime("%Y", data / 1000, 'unixepoch') AS year,
+               strftime("%m", data / 1000, 'unixepoch') AS month,
+               strftime("%Y-%m", data / 1000, 'unixepoch') AS monthyear,
+                                        CAST( strftime('%s000', data / 1000, 'unixepoch', 'start of month') AS INTEGER) AS dataFdM,
+               (SELECT MAX(sum) FROM (SELECT round(TOTAL(sumrub),2) AS sum
+                                                FROM rasxod GROUP BY strftime("%Y-%m", data / 1000, 'unixepoch')
+                                      UNION
+                                      SELECT round(TOTAL(sumrub),2) AS sum
+                                                FROM doxod GROUP BY strftime("%Y-%m", data / 1000, 'unixepoch')          )) AS maxSum,
+               (SELECT round(TOTAL(sumrub),2) AS sum
+                                                FROM doxod WHERE strftime("%Y", data / 1000, 'unixepoch')=strftime("%Y", ut.data / 1000, 'unixepoch')  ) AS sumyeardox,
+               (SELECT round(TOTAL(sumrub),2) AS sum
+                                                FROM rasxod WHERE strftime("%Y", data / 1000, 'unixepoch')=strftime("%Y", ut.data / 1000, 'unixepoch')  ) AS sumyearrasx
+           FROM
+           (SELECT sumrub AS sumdox,
+                0.0 AS sumrasx, data FROM doxod UNION ALL SELECT 0.0 AS sumdox, sumrub AS sumrasx,
+                 data FROM rasxod ) ut
+           GROUP BY strftime("%Y-%m", data / 1000, 'unixepoch') );
+-- ORDER BY monthyear DESC;
+
+
+insertOrReplace:
+INSERT OR REPLACE INTO doxod(
+    name     ,
+    summa    ,
+    type_id  ,
+    data     ,
+    schet_id ,
+    sumrub
+)
+VALUES (?, :summ, ?, ?, :sch_id,
+            round((SELECT kurs FROM spis_valut WHERE _id IN (SELECT val_id FROM spis_schet WHERE _id = :sch_id)) * :summ, 2));
+-- VALUES (?, ?, ?, ?, ?,
+--             round((SELECT kurs FROM spis_valut WHERE _id IN (SELECT val_id FROM spis_schet WHERE _id = ?5)) * ?2, 2));
+
+updateDoxod:
+UPDATE doxod SET name = :name,
+                  summa = :summa,
+                  type_id = :type_id,
+                  data = :data,
+                  schet_id = :schet_id,
+                  sumrub = round((SELECT kurs FROM spis_valut WHERE _id IN (SELECT val_id FROM spis_schet WHERE _id = ?5))*?2, 2)
+              WHERE _id = :id;
+
+deleteDoxod:
+DELETE FROM doxod WHERE _id = :id;
+
+selectByName:
+SELECT *
+FROM doxod
+WHERE name = ?;
+
+
+
+-- Триггер: insert_doxod_trig1
+CREATE TRIGGER insert_doxod_trig1
+         AFTER INSERT
+            ON doxod
+BEGIN
+    DELETE FROM sum_oper_week
+          WHERE data = strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day');
+    INSERT INTO sum_oper_week VALUES (
+                                  NULL,
+                                  strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day'),
+                                  (
+                                      SELECT round(total(summa), 2) 
+                                        FROM (
+                                                 SELECT sumrub * ( -1) AS summa,
+                                                        data
+                                                   FROM rasxod
+                                                  WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND 
+                                                        data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0') 
+                                                 UNION ALL
+                                                 SELECT sumrub AS summa,
+                                                        data
+                                                   FROM doxod
+                                                  WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND 
+                                                        data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0') 
+                                                 UNION ALL
+                                                 SELECT summa,
+                                                        data
+                                                   FROM popravka_kurs
+                                                  WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND 
+                                                        data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0') 
+                                             )
+                                  )
+                              );
+    UPDATE sum_on_schet
+       SET summa = (
+               SELECT round(total(summa), 2) 
+                 FROM (
+                          SELECT summa * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schet_id = new.schet_id
+                          UNION ALL
+                          SELECT summa AS summa
+                            FROM doxod
+                           WHERE schet_id = new.schet_id
+                          UNION ALL
+                          SELECT sumsp * ( -1) AS summa
+                            FROM perevod
+                           WHERE schsp_id = new.schet_id
+                          UNION ALL
+                          SELECT sumz AS summa
+                            FROM perevod
+                           WHERE schz_id = new.schet_id
+                      )
+           )
+     WHERE _id = new.schet_id;
+    UPDATE sum_on_schet_pl
+       SET summa = (
+               SELECT round(total(summa), 2) 
+                 FROM (
+                          SELECT sumrub AS summa
+                            FROM doxod
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = 1
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = 1
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = 1
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = 1
+                      )
+           )
+     WHERE _id = 1;
+END;
+
+
+-- Триггер: delete_doxod_trig1
+CREATE TRIGGER delete_doxod_trig1
+         AFTER DELETE
+            ON doxod
+BEGIN
+    DELETE FROM sum_oper_week
+          WHERE data = strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day');
+    INSERT INTO sum_oper_week VALUES (
+                                  NULL,
+                                  strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day'),
+                                  (
+                                      SELECT round(total(summa), 2) 
+                                        FROM (
+                                                 SELECT sumrub * ( -1) AS summa,
+                                                        data
+                                                   FROM rasxod
+                                                  WHERE data >= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND 
+                                                        data <= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0') 
+                                                 UNION ALL
+                                                 SELECT sumrub AS summa,
+                                                        data
+                                                   FROM doxod
+                                                  WHERE data >= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND 
+                                                        data <= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0') 
+                                                 UNION ALL
+                                                 SELECT summa,
+                                                        data
+                                                   FROM popravka_kurs
+                                                  WHERE data >= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND 
+                                                        data <= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0') 
+                                             )
+                                  )
+                              );
+    UPDATE sum_on_schet
+       SET summa = (
+               SELECT round(total(summa), 2) 
+                 FROM (
+                          SELECT summa * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schet_id = old.schet_id
+                          UNION ALL
+                          SELECT summa AS summa
+                            FROM doxod
+                           WHERE schet_id = old.schet_id
+                          UNION ALL
+                          SELECT sumsp * ( -1) AS summa
+                            FROM perevod
+                           WHERE schsp_id = old.schet_id
+                          UNION ALL
+                          SELECT sumz AS summa
+                            FROM perevod
+                           WHERE schz_id = old.schet_id
+                      )
+           )
+     WHERE _id = old.schet_id;
+    UPDATE sum_on_schet_pl
+       SET summa = (
+               SELECT round(total(summa), 2) 
+                 FROM (
+                          SELECT sumrub AS summa
+                            FROM doxod
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = 1
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = 1
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = 1
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = 1
+                      )
+           )
+     WHERE _id = 1;
+END;
+
+
+-- Триггер: update_doxod_trig01
+CREATE TRIGGER update_doxod_trig01
+         AFTER UPDATE
+            ON doxod
+          WHEN old.schet_id <> new.schet_id
+BEGIN
+    UPDATE sum_on_schet
+       SET summa = (
+               SELECT round(total(summa), 2) 
+                 FROM (
+                          SELECT summa * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schet_id = old.schet_id
+                          UNION ALL
+                          SELECT summa AS summa
+                            FROM doxod
+                           WHERE schet_id = old.schet_id
+                          UNION ALL
+                          SELECT sumsp * ( -1) AS summa
+                            FROM perevod
+                           WHERE schsp_id = old.schet_id
+                          UNION ALL
+                          SELECT sumz AS summa
+                            FROM perevod
+                           WHERE schz_id = old.schet_id
+                      )
+           )
+     WHERE _id = old.schet_id;
+END;
+
+
+-- Триггер: update_doxod_trig0
+CREATE TRIGGER update_doxod_trig0
+         AFTER UPDATE
+            ON doxod
+          WHEN strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') <> strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') 
+BEGIN
+    UPDATE sum_oper_week
+       SET summa = (
+               SELECT round(total(summa), 2) 
+                 FROM (
+                          SELECT sumrub * ( -1) AS summa,
+                                 data
+                            FROM rasxod
+                           WHERE data >= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND 
+                                 data <= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0') 
+                          UNION ALL
+                          SELECT sumrub AS summa,
+                                 data
+                            FROM doxod
+                           WHERE data >= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND 
+                                 data <= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0') 
+                          UNION ALL
+                          SELECT summa,
+                                 data
+                            FROM popravka_kurs
+                           WHERE data >= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND 
+                                 data <= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0') 
+                      )
+           )
+     WHERE data = strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day');
+END;
+
+
+-- Триггер: update_doxod_trig1
+CREATE TRIGGER update_doxod_trig1
+         AFTER UPDATE
+            ON doxod
+          WHEN (new.sumrub <> old.sumrub OR 
+                strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') <> strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') ) 
+BEGIN
+    DELETE FROM sum_oper_week
+          WHERE data = strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day');
+    INSERT INTO sum_oper_week VALUES (
+                                  NULL,
+                                  strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day'),
+                                  (
+                                      SELECT round(total(summa), 2) 
+                                        FROM (
+                                                 SELECT sumrub * ( -1) AS summa,
+                                                        data
+                                                   FROM rasxod
+                                                  WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND 
+                                                        data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0') 
+                                                 UNION ALL
+                                                 SELECT sumrub AS summa,
+                                                        data
+                                                   FROM doxod
+                                                  WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND 
+                                                        data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0') 
+                                                 UNION ALL
+                                                 SELECT summa,
+                                                        data
+                                                   FROM popravka_kurs
+                                                  WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND 
+                                                        data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0') 
+                                             )
+                                  )
+                              );
+END;
+
+
+-- Триггер: update_doxod_trig2
+CREATE TRIGGER update_doxod_trig2
+         AFTER UPDATE
+            ON doxod
+          WHEN (old.schet_id <> new.schet_id OR 
+                new.summa <> old.summa) 
+BEGIN
+    UPDATE sum_on_schet
+       SET summa = (
+               SELECT round(total(summa), 2) 
+                 FROM (
+                          SELECT summa * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schet_id = new.schet_id
+                          UNION ALL
+                          SELECT summa AS summa
+                            FROM doxod
+                           WHERE schet_id = new.schet_id
+                          UNION ALL
+                          SELECT sumsp * ( -1) AS summa
+                            FROM perevod
+                           WHERE schsp_id = new.schet_id
+                          UNION ALL
+                          SELECT sumz AS summa
+                            FROM perevod
+                           WHERE schz_id = new.schet_id
+                      )
+           )
+     WHERE _id = new.schet_id;
+END;
+
+
+-- Триггер: update_doxod_trig3
+CREATE TRIGGER update_doxod_trig3
+         AFTER UPDATE
+            ON doxod
+          WHEN (new.sumrub <> old.sumrub) 
+BEGIN
+    UPDATE sum_on_schet_pl
+       SET summa = (
+               SELECT round(total(summa), 2) 
+                 FROM (
+                          SELECT sumrub AS summa
+                            FROM doxod
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = 1
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = 1
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = 1
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = 1
+                      )
+           )
+     WHERE _id = 1;
+END;
+
+
+--Триггер: replicated_insert_doxod_trig
+CREATE TRIGGER replicated_insert_doxod_trig
+         AFTER INSERT
+            ON doxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'doxod',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_doxod_trig
+CREATE TRIGGER replicated_update_doxod_trig
+         AFTER UPDATE
+            ON doxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'doxod',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'doxod',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_doxod_trig
+CREATE TRIGGER replicated_delete_doxod_trig
+         AFTER DELETE
+            ON doxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'doxod',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

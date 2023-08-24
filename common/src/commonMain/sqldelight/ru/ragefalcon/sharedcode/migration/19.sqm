@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS spis_save_set_style2 (
+        _id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        type INTEGER NOT NULL
+);
+INSERT INTO spis_save_set_style2 (_id,name,type)
+   SELECT _id, name, 1 AS type FROM spis_save_set_style;
+DROP TABLE IF EXISTS spis_save_set_style;
+ALTER TABLE spis_save_set_style2 RENAME TO spis_save_set_style;

@@ -1,0 +1,156 @@
+
+-- Таблица: spis_idea
+CREATE TABLE spis_idea (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    name      TEXT NOT NULL,
+    opis      TEXT NOT NULL,
+    data      INTEGER NOT NULL,
+    stat      INTEGER NOT NULL,
+    parent_id INTEGER NOT NULL,
+    bloknot   INTEGER NOT NULL
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_idea(
+    name     ,
+    opis     ,
+    data     ,
+    stat     ,
+    parent_id     ,
+    bloknot
+)
+VALUES (?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE spis_idea SET
+                  name = :name,
+                  opis = :opis,
+                  data = :data,
+                  stat = :stat,
+                  parent_id = :parent_id,
+                  bloknot = :bloknot
+              WHERE _id = :id;
+
+delete{
+DELETE FROM spis_idea WHERE _id = :id;
+DELETE FROM complex_opis_image WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_idea' AND item_id = :id);
+DELETE FROM complex_opis_link WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_idea' AND item_id = :id);
+DELETE FROM complex_opis_image_group WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_idea' AND item_id = :id);
+DELETE FROM complex_opis_checkbox WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_idea' AND item_id = :id);
+DELETE FROM complex_opis_text_fts4 WHERE docid IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_idea' AND item_id = :id);
+DELETE FROM complex_opis_text WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_idea' AND item_id = :id);
+DELETE FROM complex_opis WHERE table_name = 'spis_idea' AND item_id = :id;
+}
+
+-- 			String str=L"select DISTINCT idea_id as _id from 'SPIS_STAP_IDEA' , SPIS_STAP_IDEA_FTS4 WHERE SPIS_STAP_IDEA.idea_id IN( WITH cte AS (SELECT SPIS_IDEA._id "
+-- 									  "	FROM SPIS_IDEA WHERE SPIS_IDEA.bloknot = '"+ TutGlobObj->TutFrJour1->FrIdea_01->FrSpisIdea_01->ReadIdBlok() +"' "
+-- 									  " UNION ALL SELECT c._id "
+-- 									  "	FROM SPIS_IDEA c INNER JOIN cte p ON p._ID = c.bloknot ) "
+-- 									  " SELECT _id FROM cte ) and "
+-- 							+ "SPIS_STAP_IDEA.[_id]=SPIS_STAP_IDEA_FTS4.[DOCID] AND SPIS_STAP_IDEA_FTS4 MATCH '"
+-- 							+ searchStr + "'"// order by " + MainBD->TabBD->SpisStapIdea->orderBy;
+-- 							" UNION "
+-- 			L" select DISTINCT _id from 'SPIS_IDEA' , SPIS_IDEA_FTS4 WHERE SPIS_IDEA._id IN( WITH cte AS (SELECT SPIS_IDEA._id "
+-- 									  "	FROM SPIS_IDEA WHERE SPIS_IDEA.bloknot = '"+ TutGlobObj->TutFrJour1->FrIdea_01->FrSpisIdea_01->ReadIdBlok() +"' "
+-- 									  " UNION ALL SELECT c._id "
+-- 									  "	FROM SPIS_IDEA c INNER JOIN cte p ON p._ID = c.bloknot ) "
+-- 									  " SELECT _id FROM cte ) and "
+-- 							+ "SPIS_IDEA.[_id]=SPIS_IDEA_FTS4.[DOCID] AND SPIS_IDEA_FTS4 MATCH '"
+-- 							+ searchStr + "'";// order by " + MainBD->TabBD->SpisStapIdea->orderBy;
+-- 			str=MainBD->SQLitePoleToStringIN(str,"_id");
+
+
+selectIdeaInBloknot:
+WITH RECURSIVE cte AS (
+    SELECT 0 AS level, CAST(CAST(CASE WHEN :sortField = 'name' THEN name WHEN :sortField = 'stat' THEN stat ELSE name END AS TEXT) || '/' ||CAST(_id AS TEXT) AS TEXT) AS sort , _id, parent_id, bloknot
+        FROM  spis_idea  WHERE
+                bloknot = :idblok AND parent_id = -1 --ORDER BY sort -- CASE WHEN :sortField = "name" THEN name WHEN :sortField = "stat" THEN stat ELSE name END
+    UNION ALL
+    SELECT cte.level + 1, CAST(cte.sort || '/' || CAST(CASE WHEN :sortField = 'name' THEN c.name WHEN :sortField = 'stat' THEN c.stat ELSE c.name END AS TEXT) || '/' ||CAST(c._id AS TEXT) AS TEXT), c._id, c.parent_id, c.bloknot
+        FROM spis_idea c INNER JOIN cte ON cte._id = c.parent_id AND c.bloknot = :idblok
+) SELECT cte.level, cte._id, cte.parent_id, cte.bloknot,  spis_idea.name, spis_idea.opis, spis_idea.data, spis_idea.stat,
+        (SELECT COUNT(*) FROM spis_idea WHERE spis_idea.parent_id = cte._id AND cte.bloknot = spis_idea.bloknot ) AS stapcount
+        FROM cte, spis_idea WHERE spis_idea._id = cte._id ORDER BY sort;
+--       CASE WHEN :sortField = 'name' THEN sort WHEN :sortField = 'stat' THEN sort ELSE sort END  ;
+--          CASE WHEN :sortField = 'name' THEN name WHEN :sortField = 'stat' THEN stat ELSE name END  ; --DESC
+
+selectIdeaInBloknotForSelect:
+WITH RECURSIVE cte AS (
+    SELECT 0 AS level, CAST(CAST(CASE WHEN :sortField = 'name' THEN name WHEN :sortField = 'stat' THEN stat ELSE name END AS TEXT) || '/' ||CAST(_id AS TEXT) AS TEXT) AS sort , _id, parent_id, bloknot
+        FROM spis_idea WHERE
+                bloknot = :idblok AND parent_id = -1 AND _id NOT IN :iskl
+    UNION ALL
+    SELECT cte.level + 1, CAST(cte.sort || '/' || CAST(CASE WHEN :sortField = 'name' THEN c.name WHEN :sortField = 'stat' THEN c.stat ELSE c.name END AS TEXT) || '/' ||CAST(c._id AS TEXT) AS TEXT), c._id, c.parent_id, c.bloknot
+        FROM spis_idea c INNER JOIN cte ON cte._id = c.parent_id AND c.bloknot = :idblok AND c._id NOT IN :iskl
+) SELECT cte.level, cte._id, cte.parent_id, cte.bloknot,  spis_idea.name, spis_idea.opis, spis_idea.data, spis_idea.stat,
+        (SELECT COUNT(*) FROM spis_idea WHERE spis_idea.parent_id = cte._id AND cte.bloknot = 100874 ) AS stapcount
+        FROM cte, spis_idea WHERE spis_idea._id = cte._id ORDER BY sort;
+
+
+CREATE VIRTUAL TABLE spis_idea_fts4 USING FTS4 (
+    name TEXT NOT NULL,
+    opis TEXT,
+    content=spis_idea
+);
+
+
+-- Триггер: replicated_insert_spis_idea_trig
+CREATE TRIGGER replicated_insert_spis_idea_trig
+         AFTER INSERT
+            ON spis_idea
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_idea',
+                                                      new._id,
+                                                      'true'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_idea_fts4_help',
+-                                                     1,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_idea_trig
+CREATE TRIGGER replicated_update_spis_idea_trig
+         AFTER UPDATE
+            ON spis_idea
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_idea',
+                                                      new._id,
+                                                      'true'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_idea',
+                                                      old._id,
+                                                      'true'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_idea_fts4_help',
+-                                                     1,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_idea_trig
+CREATE TRIGGER replicated_delete_spis_idea_trig
+         AFTER DELETE
+            ON spis_idea
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_idea',
+                                                      old._id,
+                                                      'true'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_idea_fts4_help',
+-                                                     1,
+                                                      'false'
+                                                  );
+END;

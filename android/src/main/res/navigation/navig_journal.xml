@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/navig_journal" app:startDestination="@id/journalSpisBloknotScreen">
+
+    <fragment android:id="@+id/journalSpisBloknotScreen"
+              android:name="ru.ragefalcon.tutatores.ui.journal.SpisBloknotFragment"
+              android:label="SpisBloknotFragment"
+              tools:layout="@layout/fragment_spis_bloknot"
+    >
+        <action android:id="@+id/action_bloknot_to_idea"
+                app:destination="@id/journalSpisIdeaScreen"
+        />
+    </fragment>
+    <fragment android:id="@+id/journalSpisIdeaScreen"
+              android:name="ru.ragefalcon.tutatores.ui.journal.SpisIdeaFragment"
+              android:label="SpisIdeaFragment"
+              tools:layout="@layout/fragment_spis_idea"
+    >
+        <action android:id="@+id/action_idea_to_stapidea"
+                app:destination="@id/journalSpisStapIdeaScreen"
+        />
+    </fragment>
+    <fragment android:id="@+id/journalSpisStapIdeaScreen"
+              android:name="ru.ragefalcon.tutatores.ui.journal.SpisStapIdeaFragment"
+              android:label="SpisStapIdeaFragment"
+              tools:layout="@layout/fragment_spis_stap_idea"
+    >
+        <!--    <argument-->
+        <!--            android:name="parFrag"-->
+        <!--            app:argType="androidx.fragment.app.Fragment"-->
+        <!--    />-->
+    </fragment>
+
+</navigation>

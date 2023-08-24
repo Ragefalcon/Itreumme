@@ -1,0 +1,330 @@
+-- Таблица: popravka_kurs
+CREATE TABLE popravka_kurs (
+    _id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    summa   REAL,
+    schz_id INTEGER,
+    data    INTEGER
+);
+
+-- Триггер: insert_popravka_kurs_trig1
+CREATE TRIGGER insert_popravka_kurs_trig1
+         AFTER INSERT
+            ON popravka_kurs
+          WHEN new.summa = 0
+BEGIN
+    DELETE FROM popravka_kurs
+          WHERE data = new.data;
+END;
+
+
+-- Триггер: insert_popravka_kurs_trig2
+CREATE TRIGGER insert_popravka_kurs_trig2
+         AFTER INSERT
+            ON popravka_kurs
+          WHEN new.summa <> 0
+BEGIN
+    DELETE FROM sum_oper_week
+          WHERE data = strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day');
+    INSERT INTO sum_oper_week VALUES (
+                                  NULL,
+                                  strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day'),
+                                  (
+                                      SELECT round(total(summa), 2)
+                                        FROM (
+                                                 SELECT sumrub * ( -1) AS summa,
+                                                        data
+                                                   FROM rasxod
+                                                  WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+                                                        data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+                                                 UNION ALL
+                                                 SELECT sumrub AS summa,
+                                                        data
+                                                   FROM doxod
+                                                  WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+                                                        data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+                                                 UNION ALL
+                                                 SELECT summa,
+                                                        data
+                                                   FROM popravka_kurs
+                                                  WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+                                                        data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+                                             )
+                                  )
+                              );
+    UPDATE sum_on_schet_pl
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT sumrub AS summa
+                            FROM doxod
+                           WHERE 1 = new.schz_id
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = new.schz_id
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = new.schz_id
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = new.schz_id
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = new.schz_id
+                      )
+           )
+     WHERE _id = new.schz_id;
+END;
+
+
+-- Триггер: delete_popravka_kurs_trig1
+CREATE TRIGGER delete_popravka_kurs_trig1
+         AFTER DELETE
+            ON popravka_kurs
+BEGIN
+    DELETE FROM sum_oper_week
+          WHERE data = strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day');
+    INSERT INTO sum_oper_week VALUES (
+                                  NULL,
+                                  strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day'),
+                                  (
+                                      SELECT round(total(summa), 2)
+                                        FROM (
+                                                 SELECT sumrub * ( -1) AS summa,
+                                                        data
+                                                   FROM rasxod
+                                                  WHERE data >= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+                                                        data <= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+                                                 UNION ALL
+                                                 SELECT sumrub AS summa,
+                                                        data
+                                                   FROM doxod
+                                                  WHERE data >= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+                                                        data <= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+                                                 UNION ALL
+                                                 SELECT summa,
+                                                        data
+                                                   FROM popravka_kurs
+                                                  WHERE data >= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+                                                        data <= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+                                             )
+                                  )
+                              );
+    UPDATE sum_on_schet_pl
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT sumrub AS summa
+                            FROM doxod
+                           WHERE 1 = old.schz_id
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = old.schz_id
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = old.schz_id
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = old.schz_id
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = old.schz_id
+                      )
+           )
+     WHERE _id = old.schz_id;
+END;
+
+
+-- Триггер: update_popravka_kurs_trig01
+CREATE TRIGGER update_popravka_kurs_trig01
+         AFTER UPDATE
+            ON popravka_kurs
+          WHEN (new.schz_id <> old.schz_id)
+BEGIN
+    UPDATE sum_on_schet_pl
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT sumrub AS summa
+                            FROM doxod
+                           WHERE 1 = old.schz_id
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = old.schz_id
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = old.schz_id
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = old.schz_id
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = old.schz_id
+                      )
+           )
+     WHERE _id = old.schz_id;
+END;
+
+
+-- Триггер: update_popravka_kurs_trig0
+CREATE TRIGGER update_popravka_kurs_trig0
+         AFTER UPDATE
+            ON popravka_kurs
+          WHEN strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') <> strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day')
+BEGIN
+    UPDATE sum_oper_week
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT sumrub * ( -1) AS summa,
+                                 data
+                            FROM rasxod
+                           WHERE data >= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+                                 data <= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+                          UNION ALL
+                          SELECT sumrub AS summa,
+                                 data
+                            FROM doxod
+                           WHERE data >= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+                                 data <= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+                          UNION ALL
+                          SELECT summa,
+                                 data
+                            FROM popravka_kurs
+                           WHERE data >= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+                                 data <= strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+                      )
+           )
+     WHERE data = strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day');
+END;
+
+
+-- Триггер: update_popravka_kurs_trig1
+CREATE TRIGGER update_popravka_kurs_trig1
+         AFTER UPDATE
+            ON popravka_kurs
+          WHEN (new.summa <> old.summa OR
+                strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') <> strftime('%s000', old.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') )
+BEGIN
+    DELETE FROM sum_oper_week
+          WHERE data = strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day');
+    INSERT INTO sum_oper_week VALUES (
+                                  NULL,
+                                  strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day'),
+                                  (
+                                      SELECT round(total(summa), 2)
+                                        FROM (
+                                                 SELECT sumrub * ( -1) AS summa,
+                                                        data
+                                                   FROM rasxod
+                                                  WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+                                                        data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+                                                 UNION ALL
+                                                 SELECT sumrub AS summa,
+                                                        data
+                                                   FROM doxod
+                                                  WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+                                                        data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+                                                 UNION ALL
+                                                 SELECT summa,
+                                                        data
+                                                   FROM popravka_kurs
+                                                  WHERE data >= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0', '-6 day') AND
+                                                        data <= strftime('%s000', new.data / 1000 / 3600 / 24 * 24 * 3600, 'unixepoch', 'weekday 0')
+                                             )
+                                  )
+                              );
+END;
+
+
+-- Триггер: update_popravka_kurs_trig2
+CREATE TRIGGER update_popravka_kurs_trig2
+         AFTER UPDATE
+            ON popravka_kurs
+          WHEN (new.summa <> old.summa OR
+                new.schz_id <> old.schz_id)
+BEGIN
+    UPDATE sum_on_schet_pl
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT sumrub AS summa
+                            FROM doxod
+                           WHERE 1 = new.schz_id
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = new.schz_id
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = new.schz_id
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = new.schz_id
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = new.schz_id
+                      )
+           )
+     WHERE _id = new.schz_id;
+END;
+
+-- Триггер: replicated_insert_popravka_kurs_trig
+CREATE TRIGGER replicated_insert_popravka_kurs_trig
+         AFTER INSERT
+            ON popravka_kurs
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'popravka_kurs',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_popravka_kurs_trig
+CREATE TRIGGER replicated_update_popravka_kurs_trig
+         AFTER UPDATE
+            ON popravka_kurs
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'popravka_kurs',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'popravka_kurs',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_popravka_kurs_trig
+CREATE TRIGGER replicated_delete_popravka_kurs_trig
+         AFTER DELETE
+            ON popravka_kurs
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'popravka_kurs',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

@@ -1,0 +1,86 @@
+CREATE TABLE IF NOT EXISTS spis_plan_characteristic (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_characteristic   INTEGER NOT NULL,
+    stap    INTEGER NOT NULL,
+    id_plan INTEGER NOT NULL
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_plan_characteristic(
+     id_characteristic,
+     stap,
+     id_plan )
+VALUES ( ?, ?, ?);
+
+delete:
+DELETE FROM spis_plan_characteristic WHERE _id = :id;
+
+
+selectSpisPlanForCharacteristic:
+SELECT spis_plan_characteristic.*,
+IFNULL(spis_stap_plan.name,spis_plan.name) AS name,
+IFNULL(spis_stap_plan.opis,spis_plan.opis) AS opis,
+IFNULL(spis_plan.vajn,1) AS vajn,
+IFNULL(spis_stap_plan.gotov,spis_plan.gotov) AS gotov,
+IFNULL(sum_hour_stap_plan.hour,hour_plan.hour) AS hour,
+-- IFNULL(CASE spis_plan_characteristic.stap WHEN 0 THEN
+--             (SELECT hour FROM hour_plan WHERE  hour_plan._id = spis_plan_characteristic.id_plan)
+--         ELSE
+--             (SELECT hour FROM  sum_hour_stap_plan WHERE spis_plan_characteristic.stap = sum_hour_stap_plan._id)
+--         END,0.0) AS hour,
+IFNULL(spis_stap_plan.opis,spis_plan.opis) AS gotov,
+                           IFNULL(spis_plan.name,"") AS plan_name
+FROM spis_plan_characteristic
+LEFT JOIN spis_plan ON spis_plan_characteristic.id_plan = spis_plan._id
+LEFT JOIN spis_stap_plan ON spis_plan_characteristic.stap = spis_stap_plan._id
+LEFT JOIN hour_plan ON spis_plan_characteristic.id_plan = hour_plan._id
+LEFT JOIN sum_hour_stap_plan ON spis_plan_characteristic.stap = sum_hour_stap_plan._id
+WHERE id_characteristic = :idcharacteristic;
+
+
+-- Триггер: replicated_insert_spis_plan_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_plan_characteristic_trig
+         AFTER INSERT
+            ON spis_plan_characteristic
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan_characteristic',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_plan_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_plan_characteristic_trig
+         AFTER UPDATE
+            ON spis_plan_characteristic
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan_characteristic',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan_characteristic',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_plan_characteristic_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_plan_characteristic_trig
+         AFTER DELETE
+            ON spis_plan_characteristic
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan_characteristic',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

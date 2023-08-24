@@ -1,0 +1,117 @@
+-- Таблица: SHAB_DEN_PLAN
+CREATE TABLE shab_den_plan (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    name      TEXT NOT NULL,
+    namepl    TEXT NOT NULL,
+    opis      TEXT NOT NULL,
+    vajn      INTEGER NOT NULL,
+    time1     TEXT NOT NULL,
+    time2     TEXT NOT NULL,
+    privplan  INTEGER NOT NULL,
+    stap_prpl INTEGER NOT NULL,
+    povtor    TEXT NOT NULL,
+    sort  INTEGER NOT NULL DEFAULT 0
+);
+
+selectShablonDenPlan:
+SELECT shab_den_plan.*,
+IFNULL(spis_plan.name,'') AS nameprpl , IFNULL(spis_stap_plan.name,'') AS namestap
+FROM shab_den_plan
+LEFT JOIN spis_plan ON shab_den_plan.privplan = spis_plan._id
+LEFT JOIN spis_stap_plan ON shab_den_plan.stap_prpl = spis_stap_plan._id
+ORDER BY shab_den_plan.sort;
+
+
+changeSortToUp{
+    UPDATE shab_den_plan SET sort = sort-1 WHERE sort <= :newsort AND sort > :oldsort ;
+    UPDATE shab_den_plan SET sort = :newsort WHERE _id = :id;
+}
+changeSortToDown{
+    UPDATE shab_den_plan SET sort = sort+1 WHERE sort < :oldsort AND sort >= :newsort ;
+    UPDATE shab_den_plan SET sort = :newsort WHERE _id = :id;
+}
+
+
+insertOrReplaceShablonDenPlan:
+INSERT OR REPLACE INTO shab_den_plan(
+     name,
+     namepl,
+     opis,
+     vajn,
+     time1,
+     time2,
+     privplan,
+     stap_prpl,
+     povtor
+                )
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteShablonDenPlan{
+DELETE FROM shab_den_plan WHERE _id = :id;
+DELETE FROM complex_opis_image WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'shab_den_plan' AND item_id = :id);
+DELETE FROM complex_opis_link WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'shab_den_plan' AND item_id = :id);
+DELETE FROM complex_opis_image_group WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'shab_den_plan' AND item_id = :id);
+DELETE FROM complex_opis_checkbox WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'shab_den_plan' AND item_id = :id);
+DELETE FROM complex_opis_text_fts4 WHERE docid IN (SELECT _id FROM complex_opis WHERE table_name = 'shab_den_plan' AND item_id = :id);
+DELETE FROM complex_opis_text WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'shab_den_plan' AND item_id = :id);
+DELETE FROM complex_opis WHERE table_name = 'shab_den_plan' AND item_id = :id;
+}
+
+
+-- Триггер: sort_insert_shab_den_plan_trig
+CREATE TRIGGER IF NOT EXISTS sort_insert_shab_den_plan_trig
+         AFTER INSERT
+            ON shab_den_plan
+      FOR EACH ROW
+BEGIN
+    UPDATE shab_den_plan SET sort = new._id WHERE _id = new._id;
+END;
+
+
+
+-- Триггер: replicated_insert_SHAB_DEN_PLAN_trig
+CREATE TRIGGER replicated_insert_shab_den_plan_trig
+         AFTER INSERT
+            ON shab_den_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'SHAB_DEN_PLAN',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_SHAB_DEN_PLAN_trig
+CREATE TRIGGER replicated_update_shab_den_plan_trig
+         AFTER UPDATE
+            ON shab_den_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'SHAB_DEN_PLAN',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'SHAB_DEN_PLAN',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_SHAB_DEN_PLAN_trig
+CREATE TRIGGER replicated_delete_shab_den_plan_trig
+         AFTER DELETE
+            ON shab_den_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'SHAB_DEN_PLAN',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

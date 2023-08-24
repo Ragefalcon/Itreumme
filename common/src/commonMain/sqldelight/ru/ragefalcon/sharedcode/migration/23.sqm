@@ -1,0 +1,45 @@
+CREATE TABLE IF NOT EXISTS shabrasxod2 (
+    _id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    sort     INTEGER NOT NULL,
+    name     TEXT NOT NULL,
+    namer    TEXT NOT NULL,
+    summar   REAL NOT NULL,
+    typer    TEXT NOT NULL,
+    schet_id INTEGER NOT NULL,
+    schpl_id INTEGER
+);
+INSERT INTO shabrasxod2 (_id,sort,name,namer,summar,typer,schet_id,schpl_id)
+   SELECT _id, _id AS sort, name,namer,summar,typer,schet_id,schpl_id FROM shabrasxod;
+DROP TABLE IF EXISTS shabrasxod;
+ALTER TABLE shabrasxod2 RENAME TO shabrasxod;
+
+CREATE TABLE IF NOT EXISTS shabdoxod2 (
+    _id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    sort     INTEGER NOT NULL,
+    name     TEXT NOT NULL,
+    named    TEXT NOT NULL,
+    summad   REAL NOT NULL,
+    typed    TEXT NOT NULL,
+    schet_id INTEGER NOT NULL
+);
+INSERT INTO shabdoxod2 (_id,sort,name,named,summad,typed,schet_id)
+   SELECT _id, _id AS sort, name,named,summad,typed,schet_id FROM shabdoxod;
+DROP TABLE IF EXISTS shabdoxod;
+ALTER TABLE shabdoxod2 RENAME TO shabdoxod;
+
+CREATE TRIGGER IF NOT EXISTS sort_insert_shabrasxod_trig
+         AFTER INSERT
+            ON shabrasxod
+      FOR EACH ROW
+BEGIN
+    UPDATE shabrasxod SET sort = new._id WHERE _id = new._id;
+END;
+
+CREATE TRIGGER IF NOT EXISTS sort_insert_shabdoxod_trig
+         AFTER INSERT
+            ON shabdoxod
+      FOR EACH ROW
+BEGIN
+    UPDATE shabdoxod SET sort = new._id WHERE _id = new._id;
+END;
+

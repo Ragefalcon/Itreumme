@@ -1,0 +1,98 @@
+-- Таблица: spis_binding_node_tree_skill
+CREATE TABLE spis_binding_node_tree_skill (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    id_parent INTEGER NOT NULL,
+    id_child  INTEGER NOT NULL,
+    quest_id  INTEGER NOT NULL DEFAULT 0,
+    quest_key_id  INTEGER NOT NULL DEFAULT 0
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_binding_node_tree_skill(
+     id_tree,
+     id_parent,
+     id_child,
+     quest_id
+                )
+VALUES (?, ?, ?, ?);
+
+
+deleteParentBind:
+DELETE FROM spis_binding_node_tree_skill  WHERE id_child = :id_child;
+
+
+selectForTree:
+SELECT * FROM spis_binding_node_tree_skill WHERE id_tree = :id_tree;
+-- SELECT par_id, (SELECT id_child FROM spis_binding_node_tree_skill WHERE id_parent = par_id) AS array_child
+-- FROM (SELECT DISTINCT id_parent AS par_id FROM spis_binding_node_tree_skill);
+
+selectWholeBranchParent:
+SELECT * FROM (
+WITH RECURSIVE cte AS (
+    SELECT 0 AS level, spis_binding_node_tree_skill._id, spis_binding_node_tree_skill.id_tree AS id_treeW, spis_binding_node_tree_skill.id_child AS id_childW, spis_binding_node_tree_skill.id_parent AS id_parentW
+        FROM spis_binding_node_tree_skill WHERE id_tree = :id_tree --, (SELECT DISTINCT id_child AS par_id FROM spis_binding_node_tree_skill) AS spischild
+    UNION ALL
+    SELECT cte.level + 1, c._id, cte.id_treeW, cte.id_childW AS id_childW, c.id_parent AS id_parentW
+        FROM spis_binding_node_tree_skill c INNER JOIN cte ON cte.id_parentW = c.id_child AND c.id_tree = :id_tree
+) SELECT * FROM cte ORDER BY id_childW);
+
+selectWholeBranchChild:
+SELECT * FROM (
+WITH RECURSIVE cte AS (
+    SELECT 0 AS level, spis_binding_node_tree_skill._id, spis_binding_node_tree_skill.id_tree AS id_treeW, spis_binding_node_tree_skill.id_child AS id_childW, spis_binding_node_tree_skill.id_parent AS id_parentW
+        FROM spis_binding_node_tree_skill WHERE id_tree = :id_tree --, (SELECT DISTINCT id_child AS par_id FROM spis_binding_node_tree_skill) AS spischild
+    UNION ALL
+    SELECT cte.level + 1, c._id, cte.id_treeW, c.id_child AS id_childW, cte.id_parentW AS id_parentW
+        FROM spis_binding_node_tree_skill c INNER JOIN cte ON c.id_parent = cte.id_childW AND c.id_tree = :id_tree
+) SELECT * FROM cte ORDER BY id_parentW);
+
+
+
+
+-- Триггер: replicated_insert_spis_binding_node_tree_skill_trig
+CREATE TRIGGER replicated_insert_spis_binding_node_tree_skill_trig
+         AFTER INSERT
+            ON spis_binding_node_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_binding_node_tree_skill',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_binding_node_tree_skill_trig
+CREATE TRIGGER replicated_update_spis_binding_node_tree_skill_trig
+         AFTER UPDATE
+            ON spis_binding_node_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_binding_node_tree_skill',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_binding_node_tree_skill',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_binding_node_tree_skill_trig
+CREATE TRIGGER replicated_delete_spis_binding_node_tree_skill_trig
+         AFTER DELETE
+            ON spis_binding_node_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_binding_node_tree_skill',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

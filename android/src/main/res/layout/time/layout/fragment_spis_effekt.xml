@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:fitsSystemWindows="true"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".ui.time.TimeAddVxodPanelFragment" android:layout_gravity="center">
+
+    <!--    <ImageView-->
+    <!--            android:src="@drawable/back_add_layout"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent" android:id="@+id/back_add_vxod_tpanel"/>-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_add_tpanel"
+            android:transitionName="cl_select_parent_plan_stap_tpanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/bg_analiz_main"
+            android:layout_gravity="center">
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintHeight_default="wrap"
+                app:layout_constraintHeight_max="450dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/butt_cancel_tpanel"
+                app:layout_constraintTop_toBottomOf="@+id/text_name">
+
+            <!--            <android.support.v7.widget.RecyclerView-->
+            <!--                    android:layout_width="match_parent"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    app:layout_constrainedHeight="true"-->
+            <!--                    app:layout_constraintTop_ToTopOf="parent"-->
+            <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                    app:layout_constraintStart_toStartOf="parent"-->
+            <!--                    app:layout_constraintBottom_toBottomOf="parent"/>-->
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_effekt_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/item_effekt"
+                    tools:itemCount="50"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintVertical_bias="0.0"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+                android:id="@+id/text_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorEffektShkal_Year"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:shadowColor="#000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="2"
+                tools:text="Продукты"
+                android:fontFamily="sans-serif-medium" android:clickable="false"
+                android:textAlignment="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="8dp" android:layout_marginStart="16dp" android:layout_marginEnd="16dp"/>
+        <Button
+                android:id="@+id/butt_cancel_tpanel"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/ic_baseline_expand_more_24"
+        />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

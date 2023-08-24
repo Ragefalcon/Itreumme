@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/navig_tutatores"
+            app:startDestination="@id/permissions_fragment">
+
+    <fragment
+            android:id="@+id/permissions_fragment"
+            android:name="ru.ragefalcon.tutatores.ui.start.PermissionsFragment"
+            android:label="Permissions" >
+        <action android:id="@+id/actionPermissionsToSelector"
+                app:destination="@id/start_dialog_fragment"/>
+    </fragment>
+    <fragment
+            android:id="@+id/start_dialog_fragment"
+            android:name="ru.ragefalcon.tutatores.ui.start.StartDialogFragment"
+            android:label="StartDialog" >
+        <action android:id="@+id/actionStartToTime"
+                app:destination="@id/timeMainScreen"/>
+        <action android:id="@+id/actionStartToAvatar"
+                app:destination="@id/avatarMainScreen"/>
+        <action android:id="@+id/actionStartToFinance"
+                app:destination="@id/finance_main_screen"/>
+        <action android:id="@+id/actionStartToJournal"
+                app:destination="@id/journalMainScreen"/>
+    </fragment>
+    <fragment android:id="@+id/finance_main_screen"
+              android:name="ru.ragefalcon.tutatores.ui.finance.FinanceMainScreen"
+              android:label="fragment_main_finscreen"
+              tools:layout="@layout/fragment_main_finscreen"
+    />
+    <fragment android:id="@+id/timeMainScreen"
+              android:name="ru.ragefalcon.tutatores.ui.time.TimeMainScreen"
+              android:label="TimeMainScreen"
+              tools:layout="@layout/fragment_time"
+    >
+        <action android:id="@+id/action_timeMainScreen_to_finance_main_screen"
+                app:destination="@id/finance_main_screen" app:enterAnim="@android:anim/slide_in_left"/>
+        <action android:id="@+id/action_timeMainScreen_to_settingsMainScreen" app:destination="@id/settingsMainScreen"/>
+        <action android:id="@+id/action_timeMainScreen_to_addvxodpanel" app:destination="@id/timeAddVxodPanelFragment"/>
+        <action android:id="@+id/action_timeMainScreen_to_addplanpanel" app:destination="@id/timeAddPlanPanelFragment"/>
+        <action android:id="@+id/action_timeMainScreen_to_addplanstappanel" app:destination="@id/timeAddPlanStapPanelFragment"/>
+        <action android:id="@+id/action_timeMainScreen_to_adddenplanpanel" app:destination="@id/timeAddDenPlanPanelFragment"/>
+    </fragment>
+    <fragment android:id="@+id/timeAddVxodPanelFragment"
+              android:name="ru.ragefalcon.tutatores.ui.time.TimeAddVxodPanelFragment"
+              android:label="fragment_time_add_panel"
+              tools:layout="@layout/fragment_time_add_vxod_panel"/>
+    <fragment android:id="@+id/timeAddPlanPanelFragment"
+              android:name="ru.ragefalcon.tutatores.ui.time.deprecated.TimeAddPlanPanelFragment"
+              android:label="fragment_time_add_panel"
+              tools:layout="@layout/fragment_time_add_plan_panel"/>
+    <fragment android:id="@+id/timeAddPlanStapPanelFragment"
+              android:name="ru.ragefalcon.tutatores.ui.time.TimeAddPlanStapPanelFragment"
+              android:label="fragment_time_add_panel"
+              tools:layout="@layout/fragment_time_add_plan_stap_panel">
+        <action android:id="@+id/action_addplanstappanel_to_SelectPlan" app:destination="@id/selectPlanPanelFragment"/>
+        <action android:id="@+id/action_addplanstappanel_to_SelectPlanStap" app:destination="@id/selectPlanStapPanelFragment"/>
+    </fragment>
+    <fragment android:id="@+id/timeAddDenPlanPanelFragment"
+              android:name="ru.ragefalcon.tutatores.ui.time.TimeAddDenPlanPanelFragment"
+              android:label="fragment_time_add_panel"
+              tools:layout="@layout/fragment_time_add_den_plan_panel">
+        <action android:id="@+id/action_adddenplanpanel_to_SelectPlan" app:destination="@id/selectPlanPanelFragment"/>
+        <action android:id="@+id/action_adddenplanpanel_to_SelectPlanStap" app:destination="@id/selectPlanStapPanelFragment"/>
+    </fragment>
+    <fragment android:id="@+id/selectPlanPanelFragment"
+              android:name="ru.ragefalcon.tutatores.ui.time.SelectedPlanPanelFragment"
+              android:label="fragment_time_add_panel"
+              tools:layout="@layout/fragment_select_plan_panel"/>
+    <fragment android:id="@+id/selectPlanStapPanelFragment"
+              android:name="ru.ragefalcon.tutatores.ui.time.SelectedPlanStapPanelFragment"
+              android:label="fragment_time_add_panel"
+              tools:layout="@layout/fragment_select_plan_stap_panel"/>
+    <fragment android:id="@+id/settingsMainScreen"
+              android:name="ru.ragefalcon.tutatores.ui.settings.SettingsMainScreen"
+              android:label="SettingsMainScreen"
+              tools:layout="@layout/fragment_settings"
+    />
+    <fragment android:id="@+id/journalMainScreen"
+              android:name="ru.ragefalcon.tutatores.ui.journal.JournalMainScreen"
+              android:label="JournalMainScreen"
+              tools:layout="@layout/fragment_spis_bloknot"
+    >
+    </fragment>
+    <fragment android:id="@+id/avatarMainScreen"
+              android:name="ru.ragefalcon.tutatores.ui.avatar.AvatarMainScreen"
+              android:label="AvatarMainScreen"
+              tools:layout="@layout/fragment_main_avatar"
+    >
+    </fragment>
+</navigation>

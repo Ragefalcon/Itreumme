@@ -1,0 +1,120 @@
+
+-- Таблица: statik_hour_goal
+CREATE TABLE statik_hour_goal (
+    _id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_goal INTEGER NOT NULL,
+    data1   INTEGER NOT NULL,
+    data2   INTEGER NOT NULL,
+    hour    REAL
+);
+
+selectStatikHourGoal:
+SELECT _id,data1,round(hour,2) AS hour FROM statik_hour_goal WHERE id_goal = :id_goal ORDER BY data1;
+
+
+-- Триггер: update_tab_statik_hour_trig1
+CREATE TRIGGER update_tab_statik_hour_trig1
+         AFTER UPDATE
+            ON statik_hour_goal
+          WHEN new.hour = -1
+BEGIN
+    UPDATE statik_hour_goal
+       SET hour = (
+               SELECT SUM(sum_hour) AS obs
+                 FROM (
+                          SELECT sum_hour
+                            FROM den_plan
+                           WHERE (privplan IN (
+                                      SELECT DISTINCT id_plan
+                                        FROM spis_plan_goal
+                                       WHERE id_goal = new.id_goal AND
+                                             stap = 0
+                                  )
+OR
+                                  stap_prpl IN (
+                                 WITH RECURSIVE cte AS (
+                                         SELECT spis_stap_plan._id
+                                           FROM spis_stap_plan
+                                          WHERE spis_stap_plan._id IN (
+                                                    SELECT stap
+                                                      FROM spis_plan_goal
+                                                     WHERE id_goal = new.id_goal AND
+                                                           stap <> 0
+                                                )
+                                         UNION ALL
+                                         SELECT c._id
+                                           FROM spis_stap_plan c
+                                                INNER JOIN
+                                                cte p ON p._id = c.parent_id
+                                     )
+                                     SELECT _id
+                                       FROM cte
+                                 )
+                                 ) AND
+                                 new.data1 <= data AND
+                                 data <= new.data2
+                      )
+           )
+     WHERE _id = new._id;
+END;
+
+
+-- Триггер: update_tab_statik_hour_trig2
+CREATE TRIGGER update_tab_statik_hour_trig2
+         AFTER INSERT
+            ON statik_hour_goal
+          WHEN new.hour = -1
+BEGIN
+    UPDATE statik_hour_goal
+       SET hour = (
+               SELECT SUM(sum_hour) AS obs
+                 FROM (
+                          SELECT sum_hour
+                            FROM den_plan
+                           WHERE (privplan IN (
+                                      SELECT DISTINCT id_plan
+                                        FROM spis_plan_goal
+                                       WHERE id_goal = new.id_goal AND
+                                             stap = 0
+                                  )
+OR
+                                  stap_prpl IN (
+                                 WITH RECURSIVE cte AS (
+                                         SELECT spis_stap_plan._id
+                                           FROM spis_stap_plan
+                                          WHERE spis_stap_plan._id IN (
+                                                    SELECT stap
+                                                      FROM spis_plan_goal
+                                                     WHERE id_goal = new.id_goal AND
+                                                           stap <> 0
+                                                )
+                                         UNION ALL
+                                         SELECT c._id
+                                           FROM spis_stap_plan c
+                                                INNER JOIN
+                                                cte p ON p._id = c.parent_id
+                                     )
+                                     SELECT _id
+                                       FROM cte
+                                 )
+                                 ) AND
+                                 new.data1 <= data AND
+                                 data <= new.data2
+                      )
+           )
+     WHERE _id = new._id;
+END;
+
+
+-- Триггер: update_tab_statik_hour_trig3
+CREATE TRIGGER update_tab_statik_hour_trig3
+         AFTER UPDATE
+            ON statik_hour_goal
+          WHEN new.hour = 0 OR
+               new.hour IS NULL
+BEGIN
+    DELETE FROM statik_hour_goal
+          WHERE _id = new._id;
+END;
+
+

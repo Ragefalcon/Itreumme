@@ -1,0 +1,30 @@
+----555555555555555555555555
+updateFromVers3to4Check:
+SELECT ((SELECT COUNT(*) FROM spis_stap_idea)-(SELECT COUNT(*) FROM spis_stap_idea_fts4));
+
+updateFromVers3to4Select:
+SELECT _id, name,opis FROM spis_stap_idea;
+
+updateFromVers3to4:
+INSERT OR REPLACE INTO spis_stap_idea_fts4(
+    docid,
+    name,
+    opis
+) VALUES (:docid, :name_fts, :opis_fts);
+----555555555555555555555555
+
+
+------30-3030303030303030
+-- insertOpisStapPlanToComplexMig{
+-- }
+
+selectComplexOpisTextMig:
+SELECT opis_id, text FROM complex_opis_text WHERE opis_id NOT IN (SELECT docid FROM complex_opis_text_fts4);
+
+updateComplexOpisTextMig:
+INSERT OR REPLACE INTO complex_opis_text_fts4(
+    docid,
+    text
+) VALUES (:docid, :text);
+------30-3030303030303030
+

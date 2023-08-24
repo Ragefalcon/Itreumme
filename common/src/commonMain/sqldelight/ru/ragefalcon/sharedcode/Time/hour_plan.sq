@@ -1,0 +1,7 @@
+
+-- Таблица: HOUR_PLAN
+CREATE TABLE hour_plan (
+    _id  INTEGER PRIMARY KEY AUTOINCREMENT,
+    hour REAL
+);
+

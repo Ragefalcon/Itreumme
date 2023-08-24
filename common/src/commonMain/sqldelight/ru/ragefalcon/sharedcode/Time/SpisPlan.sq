@@ -1,0 +1,220 @@
+-- Таблица: spis_plan
+CREATE TABLE spis_plan (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    vajn  INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    gotov REAL NOT NULL,
+    data1 INTEGER NOT NULL,
+    data2 INTEGER NOT NULL,
+    opis  TEXT NOT NULL,
+    stat  INTEGER NOT NULL,
+    quest_id  INTEGER NOT NULL DEFAULT 0,
+    quest_key_id  INTEGER NOT NULL DEFAULT 0,
+    direction  INTEGER NOT NULL DEFAULT 0,
+    sort  INTEGER NOT NULL DEFAULT 0
+);
+
+getLastIndex:
+SELECT last_insert_rowid();
+
+insertOrReplacePlan:
+INSERT OR REPLACE INTO spis_plan(
+     vajn,
+     name,
+     gotov,
+     data1,
+     data2,
+     opis,
+     stat,
+     direction
+               )
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+updatePlan:
+UPDATE spis_plan SET name = :name,
+                  opis = :opis,
+                  vajn = :vajn,
+                  data1 = :data1,
+                  data2 = :data2,
+                  direction = :direction
+              WHERE _id = :id;
+
+changeSortToUp{
+    UPDATE spis_plan SET sort = sort-1 WHERE sort <= :newsort AND sort > :oldsort ;
+    UPDATE spis_plan SET sort = :newsort WHERE _id = :id;
+}
+changeSortToDown{
+    UPDATE spis_plan SET sort = sort+1 WHERE sort < :oldsort AND sort >= :newsort ;
+    UPDATE spis_plan SET sort = :newsort WHERE _id = :id;
+}
+
+
+updateGotovPlan:
+UPDATE spis_plan SET gotov = :gotov WHERE _id = :id;
+
+updateStatPlan:
+UPDATE spis_plan SET stat = :stat WHERE _id = :id;
+
+unlockQuestPlan:
+UPDATE spis_plan SET stat = :stat WHERE quest_id = :quest_id AND quest_key_id = :quest_key_id AND stat IN :statlock;
+
+deletePlan{
+DELETE FROM spis_plan WHERE _id = :id;
+DELETE FROM bind_for_schet_plan WHERE element_id = :id AND type_element = :typePlanId;
+DELETE FROM complex_opis_image WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_plan' AND item_id = :id);
+DELETE FROM complex_opis_link WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_plan' AND item_id = :id);
+DELETE FROM complex_opis_image_group WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_plan' AND item_id = :id);
+DELETE FROM complex_opis_checkbox WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_plan' AND item_id = :id);
+DELETE FROM complex_opis_text_fts4 WHERE docid IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_plan' AND item_id = :id);
+DELETE FROM complex_opis_text WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_plan' AND item_id = :id);
+DELETE FROM complex_opis WHERE table_name = 'spis_plan' AND item_id = :id;
+}
+
+selectOpenPlan:
+SELECT spis_plan.*, spis_schet_pl.open, spis_schet_pl.min_aim,spis_schet_pl.max_aim,sum_on_schet_pl.summa,
+(SELECT hour FROM hour_plan WHERE hour_plan._id = spis_plan._id) AS hour,
+(SELECT COUNT(*) FROM (WITH RECURSIVE cte AS (
+    SELECT _id, parent_id FROM spis_stap_plan WHERE stat NOT IN :closeStap AND idplan = spis_plan._id AND parent_id = -1
+    UNION ALL
+    SELECT c._id, c.parent_id FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id AND c.idplan = spis_plan._id  AND c.stat NOT IN :closeStap
+) SELECT cte._id FROM cte)) AS open_countstap,
+(SELECT COUNT(*) FROM spis_stap_plan WHERE spis_stap_plan.idplan = spis_plan._id) AS countstap,
+-- IFNULL((SELECT spis_quest.name FROM spis_quest,spis_quest_element WHERE spis_quest_element.element_id = spis_plan._id AND spis_quest_element.type_element = 'plan' AND spis_quest_element.quest_id = spis_quest._id),"") AS namequest
+IFNULL((SELECT spis_quest.name FROM spis_quest WHERE spis_quest._id = quest_id),"") AS namequest,
+--                  ( CASE WHEN min_aim <> -1 THEN (SELECT TOTAL(sumrub) FROM rasxod WHERE schpl_id = sum_on_schet_pl._id) ELSE 0 END) AS sumRasxod
+(SELECT TOTAL(sumrub) FROM rasxod WHERE schpl_id = sum_on_schet_pl._id) AS sumRasxod
+FROM spis_plan
+LEFT JOIN  bind_for_schet_plan ON spis_plan._id = bind_for_schet_plan.element_id AND bind_for_schet_plan.type_element = :typePlanId
+LEFT JOIN spis_schet_pl ON spis_schet_pl._id = bind_for_schet_plan.schet_plan_id
+LEFT JOIN sum_on_schet_pl ON sum_on_schet_pl._id = bind_for_schet_plan.schet_plan_id
+WHERE stat NOT IN :stat
+ORDER BY sort DESC;
+
+selectOpenPlanForSelection:
+SELECT *,
+(SELECT hour FROM hour_plan WHERE hour_plan._id = spis_plan._id) AS hour,
+(SELECT COUNT(*) FROM (WITH RECURSIVE cte AS (
+    SELECT _id, parent_id FROM spis_stap_plan WHERE stat NOT IN :closeStap AND idplan = spis_plan._id AND parent_id = -1
+    UNION ALL
+    SELECT c._id, c.parent_id FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id AND c.idplan = spis_plan._id  AND c.stat NOT IN :closeStap
+) SELECT cte._id FROM cte)) AS open_countstap,
+(SELECT COUNT(*) FROM spis_stap_plan WHERE spis_stap_plan.idplan = spis_plan._id) AS countstap,
+-- IFNULL((SELECT spis_quest.name FROM spis_quest,spis_quest_element WHERE spis_quest_element.element_id = spis_plan._id AND spis_quest_element.type_element = 'plan' AND spis_quest_element.quest_id = spis_quest._id),"") AS namequest
+IFNULL((SELECT spis_quest.name FROM spis_quest WHERE spis_quest._id = quest_id),"") AS namequest
+FROM spis_plan
+WHERE stat NOT IN :stat
+ORDER BY sort DESC;
+
+selectAllPlan:
+SELECT *,
+(SELECT hour FROM hour_plan WHERE hour_plan._id = spis_plan._id) AS hour,
+(SELECT COUNT(*) FROM (WITH RECURSIVE cte AS (
+    SELECT _id, parent_id FROM spis_stap_plan WHERE stat NOT IN :closeStap AND idplan = spis_plan._id AND parent_id = -1
+    UNION ALL
+    SELECT c._id, c.parent_id FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id AND c.idplan = spis_plan._id  AND c.stat NOT IN :closeStap
+) SELECT cte._id FROM cte)) AS open_countstap,
+(SELECT COUNT(*) FROM spis_stap_plan WHERE spis_stap_plan.idplan = spis_plan._id) AS countstap,
+--          IFNULL((SELECT spis_quest.name FROM spis_quest,spis_quest_element WHERE spis_quest_element.element_id = spis_plan._id AND spis_quest_element.type_element = 'plan' AND spis_quest_element.quest_id = spis_quest._id),"") AS namequest
+IFNULL((SELECT spis_quest.name FROM spis_quest WHERE spis_quest._id = quest_id),"") AS namequest
+FROM spis_plan
+ORDER BY sort DESC;
+
+selectOpenPlanIn:
+SELECT *,(SELECT hour FROM hour_plan WHERE hour_plan._id = spis_plan._id) AS hour,
+(SELECT COUNT(*) FROM (WITH RECURSIVE cte AS (
+    SELECT _id, parent_id FROM spis_stap_plan WHERE stat NOT IN :closeStap AND idplan = spis_plan._id AND parent_id = -1
+    UNION ALL
+    SELECT c._id, c.parent_id FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id AND c.idplan = spis_plan._id  AND c.stat NOT IN :closeStap
+) SELECT cte._id FROM cte)) AS open_countstap,
+(SELECT COUNT(*) FROM spis_stap_plan WHERE spis_stap_plan.idplan = spis_plan._id) AS countstap,
+--          IFNULL((SELECT spis_quest.name FROM spis_quest,spis_quest_element WHERE spis_quest_element.element_id = spis_plan._id AND spis_quest_element.type_element = 'plan' AND spis_quest_element.quest_id = spis_quest._id),"") AS namequest
+IFNULL((SELECT spis_quest.name FROM spis_quest WHERE spis_quest._id = quest_id),"") AS namequest
+FROM spis_plan
+WHERE stat NOT IN :stat AND _id NOT IN :array_iskl
+ORDER BY sort DESC;
+
+
+
+-- Триггер: sort_insert_spis_goal_trig
+CREATE TRIGGER IF NOT EXISTS sort_insert_spis_plan_trig
+         AFTER INSERT
+            ON spis_plan
+      FOR EACH ROW
+BEGIN
+    UPDATE spis_plan SET sort = new._id WHERE _id = new._id;
+END;
+
+
+-- Триггер: insert_plan_trig1
+CREATE TRIGGER IF NOT EXISTS insert_plan_trig1
+         AFTER INSERT
+            ON spis_plan
+BEGIN
+    INSERT INTO hour_plan VALUES (
+                              new._id,
+                              0
+                          );
+END;
+
+
+-- Триггер: delete_plan_trig2
+CREATE TRIGGER IF NOT EXISTS delete_plan_trig2
+         AFTER DELETE
+            ON spis_plan
+BEGIN
+    DELETE FROM spis_plan_goal
+          WHERE id_plan = old._id;
+    DELETE FROM hour_plan
+          WHERE _id = old._id;
+    UPDATE den_plan
+       SET stap_prpl = 0,
+           privplan = 0
+     WHERE privplan = old._id;
+END;
+
+
+-- Триггер: replicated_insert_spis_plan_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_plan_trig
+         AFTER INSERT
+            ON spis_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_plan_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_plan_trig
+         AFTER UPDATE
+            ON spis_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_plan_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_plan_trig
+         AFTER DELETE
+            ON spis_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_plan',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

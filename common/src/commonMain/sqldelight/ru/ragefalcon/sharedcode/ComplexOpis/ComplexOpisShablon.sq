@@ -1,0 +1,85 @@
+CREATE TABLE IF NOT EXISTS complex_opis_shablon (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    name     TEXT NOT NULL,
+    colorNum     INTEGER NOT NULL,
+    font_size     INTEGER NOT NULL,
+    cursive     INTEGER NOT NULL,
+    bold     INTEGER NOT NULL,
+    size_preview   INTEGER,
+    width_limit   INTEGER,
+    enable_text   INTEGER,
+    text_before   INTEGER,
+    many_type     INTEGER,
+    link          TEXT
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO complex_opis_shablon(
+    name,
+    colorNum,
+    font_size,
+    cursive,
+    bold,
+    size_preview,
+    width_limit,
+    enable_text,
+    text_before,
+    many_type,
+    link
+)
+VALUES (:name, :colorNum, :font_size, :cursive, :bold, :size_preview, :width_limit, :enable_text, :text_before, :many_type, :link);
+
+
+delete:
+DELETE FROM complex_opis_shablon WHERE _id = :id;
+
+selectComplexOpisShablon:
+SELECT * FROM complex_opis_shablon;
+
+
+-- Триггер: replicated_insert_complex_opis_shablon_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_complex_opis_shablon_trig
+         AFTER INSERT
+            ON complex_opis_shablon
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_shablon',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_complex_opis_shablon_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_complex_opis_shablon_trig
+         AFTER UPDATE
+            ON complex_opis_shablon
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_shablon',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_shablon',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_complex_opis_shablon_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_complex_opis_shablon_trig
+         AFTER DELETE
+            ON complex_opis_shablon
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_shablon',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

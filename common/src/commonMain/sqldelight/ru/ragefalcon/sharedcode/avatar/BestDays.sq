@@ -1,0 +1,72 @@
+
+
+
+-- Таблица: bestdays
+CREATE TABLE IF NOT EXISTS bestdays (
+    _id  INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    data INTEGER NOT NULL,
+    icon_enable INTEGER NOT NULL DEFAULT 0
+);
+
+selectBestDay:
+SELECT * FROM bestdays ORDER BY data DESC;
+
+insertBestDay:
+INSERT OR REPLACE INTO bestdays(
+     name,
+     data
+                )
+VALUES (?, ?);
+
+deleteBestDay:
+DELETE FROM bestdays WHERE _id = :id;
+
+enableIcon:
+UPDATE bestdays SET icon_enable = :enable WHERE _id = :id;
+
+-- Триггер: replicated_insert_bestdays_trig
+CREATE TRIGGER replicated_insert_bestdays_trig
+         AFTER INSERT
+            ON bestdays
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'bestdays',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_bestdays_trig
+CREATE TRIGGER replicated_update_bestdays_trig
+         AFTER UPDATE
+            ON bestdays
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'bestdays',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'bestdays',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_bestdays_trig
+CREATE TRIGGER replicated_delete_bestdays_trig
+         AFTER DELETE
+            ON bestdays
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'bestdays',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

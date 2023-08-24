@@ -1,0 +1,81 @@
+CREATE TABLE IF NOT EXISTS intrerface_settings (
+    _id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    codename        TEXT NOT NULL,
+    intparam    INTEGER NOT NULL,
+    doubleparam      REAL NOT NULL,
+    stringparam TEXT NOT NULL
+);
+
+selectInterfaceSettings:
+SELECT * FROM intrerface_settings;
+
+insert:
+    INSERT OR REPLACE INTO intrerface_settings(
+         codename,
+         intparam,
+         doubleparam,
+         stringparam
+                    )
+    VALUES (:codename,
+            :intparam,
+            :double,
+            :stringparam);
+
+clearFromDeprecated:
+DELETE FROM intrerface_settings WHERE codename NOT IN :spis_sett;
+
+updateLong:
+UPDATE intrerface_settings SET intparam = :intparam WHERE codename = :codename;
+
+updateDouble:
+UPDATE intrerface_settings SET doubleparam = :doubleparam WHERE codename = :codename;
+
+updateString:
+UPDATE intrerface_settings SET stringparam = :stringparam WHERE codename = :codename;
+
+-- Триггер: replicated_insert_intrerface_settings_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_intrerface_settings_trig
+         AFTER INSERT
+            ON intrerface_settings
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'intrerface_settings',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+-- Триггер: replicated_update_intrerface_settings_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_intrerface_settings_trig
+         AFTER UPDATE
+            ON intrerface_settings
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'intrerface_settings',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'intrerface_settings',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_intrerface_settings_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_intrerface_settings_trig
+         AFTER DELETE
+            ON intrerface_settings
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'intrerface_settings',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+

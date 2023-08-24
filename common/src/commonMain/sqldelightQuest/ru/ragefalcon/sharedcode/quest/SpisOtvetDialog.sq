@@ -1,0 +1,24 @@
+CREATE TABLE spis_otvet_dialog  (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    dialog_id INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    order_number INTEGER NOT NULL
+
+);
+
+selectAll:
+SELECT * FROM spis_otvet_dialog;
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_otvet_dialog(dialog_id, text,order_number)
+    VALUES (:dialog_id, :text,:order_number);
+
+update:
+UPDATE spis_otvet_dialog SET text = :text WHERE _id = :id;
+
+delete{
+DELETE FROM spis_otvet_dialog WHERE _id = :id;
+DELETE FROM common_trigger
+           WHERE parent_element_id = :id AND parent_type_element = :parent_type_element_otvet;
+}
+

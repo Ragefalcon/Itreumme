@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#464D45</color>
+    <color name="colorPrimary0">#008577</color>
+    <color name="colorTextAdd">#013C36</color>
+    <color name="safsdfasdf">#237700</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent0">#FFD9E5</color>
+    <color name="colorAccent">#4F534F</color>
+    <color name="colorRasxodItem0">#FFD9E5</color>
+    <color name="colorRasxodItem">#FFF1F5</color>
+    <color name="colorRasxodTheme0">#FF8800</color>
+    <color name="colorRasxodTheme">#FFE2C1</color>
+    <color name="colorDoxodItem0">#DAFFD9</color>
+    <color name="colorDoxodItem">#EBFFEB</color>
+    <color name="colorDoxodItemText">#059C00</color>
+    <color name="colorDoxodTheme0">#44991F</color>
+    <color name="colorDoxodTheme">#CEE1C6</color>
+    <color name="colorSchetItem0">#FFF7D9</color>
+    <color name="colorSchetItem">#FFFAE6</color>
+    <color name="colorSchetItemText">#9C7500</color>
+    <color name="colorSchetTheme0">#99851F</color>
+    <color name="colorSchetTheme">#E4E0C7</color>
+    <color name="colorMyMainTheme">#464D45</color>
+    <color name="colorStatTimeSquareTint_00">#FFF42B</color>
+    <color name="colorStatTimeSquareTint_01">#FFFFFF</color>
+    <color name="colorStatTimeSquareTint_02">#7FFAF6</color>
+    <color name="colorStatTimeSquareTint_03">#FF5858</color>
+    <color name="colorStatTint_00">#FFFFFF</color>
+    <color name="colorStatTint_01">#2FA61D</color>
+    <color name="colorStatTint_02">#7FFAF6</color>
+    <color name="colorStatTint_03">#FFF42B</color>
+    <color name="colorStatTint_04">#FFA825</color>
+    <color name="colorStatTint_05">#FF5858</color>
+
+
+    <color name="colorEffektShkal_Nedel">#89B62D</color>
+    <color name="colorEffektShkal_Month">#2DB82D</color>
+    <color name="colorEffektShkal_Year">#82D882</color>
+
+    <color name="colorEffektShkal_Back">#DAA4AE</color>
+    <color name="colorEffektShkal_BackRed">#E0573E</color>
+
+    <color name="colorBackRamk">#ACB8A5</color>
+    <color name="colorBackGr1">#728766</color>
+    <color name="colorBackGr2">#576350</color>
+    <color name="colorBackGr3">#31372D</color>
+
+    <color name="colorTransparent">#00000000</color>
+    <color name="colorMyBeg">@color/colorSchetItem</color>
+</resources>

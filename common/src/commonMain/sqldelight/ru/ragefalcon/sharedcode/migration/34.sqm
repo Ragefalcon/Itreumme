@@ -1,0 +1,119 @@
+CREATE TABLE IF NOT EXISTS spis_next_action (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    stap_id  INTEGER NOT NULL DEFAULT 0,
+    common_id  INTEGER NOT NULL DEFAULT 0,
+    sort  INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS spis_next_action_common (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    name      TEXT NOT NULL,
+    vajn      INTEGER NOT NULL,
+    privplan  INTEGER NOT NULL,
+    stap_prpl INTEGER NOT NULL
+);
+
+-- Триггер: sort_insert_spis_goal_trig
+CREATE TRIGGER IF NOT EXISTS sort_insert_spis_next_action_trig
+         AFTER INSERT
+            ON spis_next_action
+      FOR EACH ROW
+BEGIN
+    UPDATE spis_next_action SET sort = new._id WHERE _id = new._id;
+END;
+
+
+
+-- Триггер: replicated_insert_spis_next_action_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_next_action_trig
+         AFTER INSERT
+            ON spis_next_action
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_next_action_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_next_action_trig
+         AFTER UPDATE
+            ON spis_next_action
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_next_action_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_next_action_trig
+         AFTER DELETE
+            ON spis_next_action
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+
+-- Триггер: replicated_insert_spis_next_action_common_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_next_action_common_trig
+         AFTER INSERT
+            ON spis_next_action_common
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action_common',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_next_action_common_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_next_action_common_trig
+         AFTER UPDATE
+            ON spis_next_action_common
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action_common',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action_common',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_next_action_common_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_next_action_common_trig
+         AFTER DELETE
+            ON spis_next_action_common
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_next_action_common',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

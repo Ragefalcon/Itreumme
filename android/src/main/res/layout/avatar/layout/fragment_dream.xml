@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                                   android:layout_height="match_parent">
+
+    <Button
+            android:id="@+id/butt_add_dream"
+            android:backgroundTint="@drawable/sel_col_tint_butt_inv"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/ic_add_butt"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="8dp"/>
+    <TextView
+            android:id="@+id/tv_name_spisok"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="false"
+            android:layout_alignParentBottom="false"
+            android:textColor="@color/colorRasxodTheme0"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:shadowColor="@android:color/background_dark"
+            android:layout_alignStart="@+id/view"
+            android:fontFamily="sans-serif-medium"
+            app:layout_constraintStart_toEndOf="@+id/butt_toggle_open_dream"
+            app:layout_constraintTop_toTopOf="@+id/butt_toggle_open_dream"
+            android:layout_marginStart="16dp"
+            android:text="Мечты:"
+            app:layout_constraintBottom_toBottomOf="@+id/butt_toggle_open_dream"
+            app:layout_constraintEnd_toStartOf="@+id/butt_add_dream" android:layout_marginEnd="16dp"/>
+    <ToggleButton
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/butt_toggle_open_dream"
+            android:background="@drawable/bg_round_check"
+            android:textIsSelectable="false"
+            android:checked="false"
+            android:textOn=""
+            android:textOff=""
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp" android:layout_marginStart="8dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_dreams"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            tools:listitem="@layout/item_dream"
+            tools:itemCount="15"
+            app:layout_constraintTop_toBottomOf="@+id/butt_toggle_open_dream"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp" android:layout_marginTop="8dp" android:layout_marginBottom="8dp"
+            app:layout_constraintHorizontal_bias="0.0" app:layout_constraintVertical_bias="0.0"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

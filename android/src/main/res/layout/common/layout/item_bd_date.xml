@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="wrap_content">
+
+    <ru.ragefalcon.tutatores.ui.element_fragment.MyDateSelect
+            android:text="ru.ragefalcon.tutatores.ui.element_fragment.MyDateSelect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FDEFD6"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:shadowColor="#C6000000"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="2"
+            android:fontFamily="sans-serif-medium"
+            android:id="@+id/myDate_bd"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:background="@drawable/bg_analiz_main"
+            android:paddingTop="5dp" android:paddingEnd="20dp"
+            android:paddingBottom="6dp" android:paddingStart="20dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

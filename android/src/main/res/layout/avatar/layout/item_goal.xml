@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<androidx.cardview.widget.CardView -->
+<!--                                   android:id="@+id/app_item"-->
+<!--                                   android:layout_width="match_parent"-->
+<!--                                   android:layout_height="wrap_content"-->
+<!--                                   android:foreground="?android:attr/selectableItemBackground"-->
+<!--                                   android:clickable="true"-->
+<!--                                   app:cardElevation="4dp"-->
+<!--                                   app:cardCornerRadius="6dp"-->
+<!--                                   android:layout_marginBottom="2dp" android:layout_marginTop="2dp"-->
+<!--                                   android:layout_marginLeft="4dp" android:layout_marginRight="4dp"-->
+<!--                                   android:longClickable="false"-->
+<!--                                   app:cardBackgroundColor="@color/colorSchetItem0"-->
+<!--                                   android:visibility="visible">-->
+
+    <!--    android:foreground="?android:attr/selectableItemBackground"-->
+    <!--    app:cardBackgroundColor="@drawable/bc_itemdenplan"-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/cl_goal_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp" android:paddingBottom="18dp"
+            android:paddingStart="15dp" android:paddingEnd="15dp"
+            android:background="@drawable/bg_idea_item"
+    >
+
+        <ImageView
+                android:layout_width="4dp"
+                android:layout_height="0dp"
+                app:srcCompat="@drawable/bc_itemdenplan"
+                android:id="@+id/iv_sel_ind_goal"
+                android:scaleType="fitXY"
+                android:cropToPadding="true"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+                android:id="@+id/tv_goal_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentBottom="false"
+                android:textColor="@color/colorDoxodTheme0"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:shadowColor="@android:color/background_dark"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="4"
+                android:layout_alignStart="@+id/view"
+                tools:text="245.5"
+                android:fontFamily="sans-serif-medium"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" android:textAlignment="viewEnd"
+        />
+        <TextView
+                android:id="@+id/tv_name_goal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentBottom="false"
+                android:textColor="@color/colorStatTint_04"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:shadowColor="@android:color/background_dark"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="4"
+                android:layout_alignStart="@+id/view"
+                tools:text="Продукты"
+                android:fontFamily="sans-serif-medium"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textAlignment="viewStart" app:layout_constraintEnd_toStartOf="@+id/tv_goal_hour"
+                app:layout_constraintStart_toEndOf="@+id/iv_sel_ind_goal" android:layout_marginStart="8dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
+<!--</androidx.cardview.widget.CardView>-->

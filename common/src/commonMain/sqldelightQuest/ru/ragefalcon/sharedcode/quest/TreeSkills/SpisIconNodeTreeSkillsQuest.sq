@@ -1,0 +1,37 @@
+-- Таблица: spis_node_tree_skills
+CREATE TABLE spis_icon_node_tree_skills_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    extension  TEXT NOT NULL,
+    type_ramk INTEGER NOT NULL
+);
+
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+select:
+SELECT * FROM spis_icon_node_tree_skills_quest;
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_icon_node_tree_skills_quest(
+     extension,
+     type_ramk
+                )
+VALUES (?, ?);
+
+update:
+UPDATE spis_icon_node_tree_skills_quest SET
+                  extension = :extension,
+                  type_ramk = :type_ramk
+              WHERE _id = :id;
+
+
+
+delete{
+UPDATE spis_node_tree_skills_quest SET
+                  icon = -1
+              WHERE icon = :id;
+UPDATE spis_node_tree_skills_quest SET
+                  icon_complete = -1
+              WHERE icon_complete = :id;
+DELETE FROM spis_icon_node_tree_skills_quest  WHERE _id = :id;
+}

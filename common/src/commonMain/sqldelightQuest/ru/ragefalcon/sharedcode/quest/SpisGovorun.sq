@@ -1,0 +1,35 @@
+CREATE TABLE spis_govorun (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    opis TEXT NOT NULL,
+    image_file TEXT NOT NULL
+);
+
+selectAll:
+SELECT * FROM spis_govorun;
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_govorun(name, opis, image_file)
+    VALUES (:name, :opis, :image_file);
+
+update:
+UPDATE spis_govorun SET name = :name, opis = :opis, image_file = :image_file WHERE _id = :id;
+
+delete{
+UPDATE spis_dialog SET
+govorun_id = -1
+WHERE govorun_id = :id;
+DELETE FROM spis_govorun WHERE _id = :id;
+}
+
+-- update{
+-- UPDATE spis_dialog SET
+-- name = :name,
+-- maintext = :maintext,
+-- govorun_name = :govorun_name,
+-- govorun_id = :govorun_id
+-- WHERE _id = :id;
+--     UPDATE common_trigger
+--        SET child_name = :name
+--      WHERE child_id = :id AND type_trig_id IN :type_trig_id;
+-- }

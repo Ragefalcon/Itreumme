@@ -1,0 +1,66 @@
+CREATE TABLE quest_common_trigger (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    quest_id TEXT NOT NULL,
+    parent_type_element TEXT NOT NULL,
+    parent_element_id INTEGER NOT NULL,
+    type_trig_id INTEGER NOT NULL,
+    child_id INTEGER NOT NULL,
+    child_name TEXT NOT NULL,
+    act_code INTEGER NOT NULL
+);
+
+selectAll:
+SELECT * FROM quest_common_trigger;
+
+selectForParent:
+SELECT * FROM quest_common_trigger WHERE quest_id = :quest_id AND parent_type_element = :type AND parent_element_id = :id;
+
+insertOrReplace:
+INSERT OR REPLACE INTO quest_common_trigger(quest_id,parent_type_element,parent_element_id,type_trig_id,child_id,child_name,act_code)
+    VALUES (:quest_id, :elem_type,:elem_id, :type_trig_id, :child_id,:child_name, :act_code);
+
+-- Триггер: replicated_insert_quest_common_trigger_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_quest_common_trigger_trig
+         AFTER INSERT
+            ON quest_common_trigger
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_common_trigger',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_quest_common_trigger_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_quest_common_trigger_trig
+         AFTER UPDATE
+            ON quest_common_trigger
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_common_trigger',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_common_trigger',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_quest_common_trigger_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_quest_common_trigger_trig
+         AFTER DELETE
+            ON quest_common_trigger
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_common_trigger',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

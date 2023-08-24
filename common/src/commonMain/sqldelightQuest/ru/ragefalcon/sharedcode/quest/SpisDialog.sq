@@ -1,0 +1,34 @@
+CREATE TABLE spis_dialog (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    maintext TEXT NOT NULL,
+    govorun_id INTEGER NOT NULL
+);
+
+--     govorun_name TEXT NOT NULL,
+selectAll:
+SELECT *, IFNULL((SELECT name FROM spis_govorun WHERE spis_govorun._id = spis_dialog.govorun_id),"") AS govorun_name FROM spis_dialog;
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_dialog(name, maintext,  govorun_id)
+    VALUES (:name, :maintext, :govorun_id);
+
+delete{
+DELETE FROM common_trigger
+           WHERE parent_element_id IN (SELECT _id FROM spis_otvet_dialog WHERE dialog_id = :id) AND parent_type_element = :parent_type_element_otvet;
+DELETE FROM common_trigger
+           WHERE child_id = :id AND type_trig_id IN :type_trig_id_dialog;
+DELETE FROM spis_otvet_dialog WHERE dialog_id = :id;
+DELETE FROM spis_dialog WHERE _id = :id;
+}
+
+update{
+UPDATE spis_dialog SET
+name = :name,
+maintext = :maintext,
+govorun_id = :govorun_id
+WHERE _id = :id;
+    UPDATE common_trigger
+       SET child_name = :name
+     WHERE child_id = :id AND type_trig_id IN :type_trig_id;
+}

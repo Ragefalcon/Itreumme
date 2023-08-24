@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:fitsSystemWindows="true"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".ui.time.TimeAddVxodPanelFragment">
+
+    <!--    <ImageView-->
+    <!--            android:src="@drawable/back_add_layout"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent" android:id="@+id/back_add_vxod_tpanel"/>-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_add_tpanel"
+            android:transitionName="cl_select_parent_plan_tpanel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="400dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="30dp"
+            android:background="@drawable/bg_sel_priv_plan"
+    >
+
+        <CheckBox
+                android:id="@+id/cb_hours"
+                android:text="часы"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorMyBeg" app:layout_constraintBottom_toTopOf="@+id/butt_cancel_tpanel"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginBottom="8dp" app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toStartOf="@+id/cb_povtors" android:checked="true"
+                android:textColorHighlight="@color/colorDoxodItem0" android:buttonTint="@color/colorDoxodItem0"/>
+        <CheckBox
+                android:id="@+id/cb_povtors"
+                android:text="повторы"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/colorMyBeg" app:layout_constraintStart_toEndOf="@+id/cb_hours"
+                app:layout_constraintBottom_toBottomOf="@+id/cb_hours" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5" android:checked="true"
+                android:buttonTint="@color/colorDoxodItem0"/>
+        <TextView
+                android:text="Перенести из шаблона:"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/name_parent_plan4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:fontFamily="sans-serif"
+                android:textColor="@drawable/sel_col_tint_butt_inv"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:shadowColor="@android:color/background_dark"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toTopOf="@+id/cb_hours"/>
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_den_plan_shab_list"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:listitem="@layout/item_den_shablon"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                app:layout_constraintBottom_toTopOf="@+id/name_parent_plan4" android:layout_marginBottom="8dp"/>
+        <Button
+                android:text="Выбрать"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/butt_sel_denplan_shab_onpanel"
+                app:layout_constraintBottom_toBottomOf="@+id/butt_cancel_tpanel"
+                app:layout_constraintLeft_toRightOf="@+id/butt_cancel_tpanel"
+                app:layout_constraintRight_toRightOf="parent" android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
+        <Button
+                android:text="Отмена"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/butt_cancel_tpanel" android:elevation="6dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent" android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

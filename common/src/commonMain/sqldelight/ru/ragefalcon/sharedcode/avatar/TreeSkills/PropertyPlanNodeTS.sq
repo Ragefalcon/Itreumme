@@ -1,0 +1,121 @@
+-- Таблица: property_plan_node_ts
+CREATE TABLE property_plan_node_ts (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_node   INTEGER NOT NULL,
+    privplan  INTEGER NOT NULL,
+    stap_prpl INTEGER NOT NULL,
+    porog_hour  REAL NOT NULL,
+    quest_id  INTEGER NOT NULL DEFAULT 0,
+    quest_key_id  INTEGER NOT NULL DEFAULT 0
+);
+
+-- CREATE TEMP TABLE indenplan(
+--   _id INTEGER  NOT NULL,
+--   name TEXT  NOT NULL,
+--   sum_hour REAL  NOT NULL,
+--   data INTEGER  NOT NULL
+-- );
+
+insertOrReplace:
+INSERT OR REPLACE INTO property_plan_node_ts(
+     id_node,
+     privplan,
+     stap_prpl,
+     porog_hour,
+     quest_id
+
+                )
+VALUES (?, ?, ?, ?, ?);
+
+update:
+UPDATE property_plan_node_ts SET
+                  privplan = :privplan,
+                  stap_prpl = :stap_prpl,
+                  porog_hour = :sum_hour
+              WHERE id_node = :id_node;
+
+
+delete:
+DELETE FROM property_plan_node_ts  WHERE id_node = :id_node;
+
+completePlanUpdate:
+UPDATE spis_node_tree_skills SET complete = :complete WHERE _id IN (SELECT id_node FROM property_plan_node_ts WHERE (privplan = :privplan AND stap_prpl = -1) OR stap_prpl = :stap_prpl);
+
+selectSpisNodeForPlanOrStap:
+SELECT spis_node_tree_skills.* FROM spis_node_tree_skills,spis_level_tree_skill WHERE spis_node_tree_skills._id IN (SELECT id_node FROM property_plan_node_ts WHERE (privplan = :privplan AND stap_prpl = -1) OR stap_prpl = :stap_prpl)
+AND spis_level_tree_skill.id_tree = spis_node_tree_skills.id_tree AND spis_level_tree_skill.num_level = spis_node_tree_skills.level;
+
+selectPlanNodeTreeSkills:
+SELECT spis_node_tree_skills.*, ic1.extension AS ext1, ic1.type_ramk AS type1, ic2.extension AS ext2, ic2.type_ramk AS type2,  property_plan_node_ts.porog_hour,property_plan_node_ts.privplan,property_plan_node_ts.stap_prpl,
+( CASE :type_tree
+                WHEN  "KIT" THEN 1
+                WHEN "LEVELS" THEN IFNULL((SELECT open_level FROM spis_level_tree_skill WHERE num_level = level AND spis_level_tree_skill.id_tree = :id_tree),0)
+                WHEN "TREE" THEN
+                    CASE  WHEN (SELECT COUNT(*) FROM  spis_binding_node_tree_skill WHERE spis_node_tree_skills._id = spis_binding_node_tree_skill.id_child)=0 THEN 1
+                          ELSE CASE WHEN (SELECT COUNT(*) FROM spis_node_tree_skills AS copy_spis_node, spis_binding_node_tree_skill
+                                        WHERE spis_node_tree_skills._id = spis_binding_node_tree_skill.id_child
+                                            AND spis_binding_node_tree_skill.id_parent = copy_spis_node._id
+                                            AND copy_spis_node.complete <> :codNodeComplete)=0 THEN 1
+                                    ELSE 0 END
+                          END
+                ELSE 0 END) AS open_node,
+    ( CASE :type_tree
+            WHEN  "KIT" THEN 1
+            WHEN "TREE" THEN 1
+            WHEN "LEVELS" THEN  (SELECT COUNT(*) FROM spis_must_complete_node_for_level
+                                        WHERE spis_must_complete_node_for_level.id_tree = :id_tree --spis_must_complete_node_for_level.num_level = level AND
+                                        AND spis_must_complete_node_for_level.id_node = spis_node_tree_skills._id) = 1
+    ELSE 0 END) AS must_node
+FROM property_plan_node_ts, spis_node_tree_skills
+LEFT JOIN spis_icon_node_tree_skills ic1 ON spis_node_tree_skills.icon = ic1._id
+LEFT JOIN spis_icon_node_tree_skills ic2 ON spis_node_tree_skills.icon_complete = ic2._id
+WHERE spis_node_tree_skills._id = property_plan_node_ts.id_node AND spis_node_tree_skills.id_tree = :id_tree AND id_type_node = :id_type_plan  ;
+-- LEFT JOIN spis_icon_node_tree_skills ON spis_node_tree_skills.icon = spis_icon_node_tree_skills._id
+
+
+-- Триггер: replicated_insert_property_plan_node_ts_trig
+CREATE TRIGGER replicated_insert_property_plan_node_ts_trig
+         AFTER INSERT
+            ON property_plan_node_ts
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_plan_node_ts',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_property_plan_node_ts_trig
+CREATE TRIGGER replicated_update_property_plan_node_ts_trig
+         AFTER UPDATE
+            ON property_plan_node_ts
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_plan_node_ts',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_plan_node_ts',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_property_plan_node_ts_trig
+CREATE TRIGGER replicated_delete_property_plan_node_ts_trig
+         AFTER DELETE
+            ON property_plan_node_ts
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_plan_node_ts',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

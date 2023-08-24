@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".ui.time.DenPlanFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+                                                       android:layout_height="match_parent"
+    >
+
+        <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/lay_seldate_dp"
+                                                           android:visibility="visible"
+                                                           tools:visibility="visible"
+                                                           android:layout_width="0dp"
+                                                           android:layout_height="wrap_content"
+                                                           app:layout_constraintBottom_toTopOf="@+id/cl_butt_den_plan_tab"
+                                                           app:layout_constraintEnd_toEndOf="parent"
+                                                           app:layout_constraintStart_toStartOf="parent">
+            <ToggleButton
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:id="@+id/butt_toggle_bestday"
+                    android:background="@drawable/bg_flag_check"
+                    android:textIsSelectable="false"
+                    android:checked="false"
+                    android:textOn=""
+                    android:textOff=""
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="8dp" app:layout_constraintStart_toEndOf="@+id/butt_date_dp_left"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="8dp" app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintEnd_toStartOf="@+id/et_date_dp"/>
+            <TextView android:id="@+id/et_date_dp"
+                      android:visibility="visible"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      app:layout_constraintTop_toTopOf="parent"
+                      app:layout_constraintBottom_toBottomOf="parent"
+                      android:fontFamily="sans-serif"
+                      android:textColor="@drawable/sel_col_tint_butt_inv"
+                      tools:text="30 мар. 2020 (пн)"
+                      android:textAllCaps="false"
+                      android:textSize="20sp" app:layout_constraintStart_toEndOf="@+id/butt_toggle_bestday"
+                      app:layout_constraintEnd_toStartOf="@+id/butt_date_dp_right"
+                      app:layout_constraintHorizontal_bias="0.5"/>
+            <Button android:id="@+id/butt_date_dp_right"
+                    android:visibility="visible"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_chevron_right_black_24dp"
+                    android:shadowColor="#00FFFFFF"
+                    app:layout_constraintTop_toTopOf="@+id/et_date_dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/et_date_dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:backgroundTint="@drawable/sel_col_tint_butt_inv"
+                    android:layout_marginEnd="16dp" app:layout_constraintStart_toEndOf="@+id/et_date_dp"
+                    app:layout_constraintHorizontal_bias="0.5"/>
+            <Button android:id="@+id/butt_date_dp_left"
+                    android:visibility="visible"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@+id/et_date_dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/et_date_dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:background="@drawable/ic_chevron_left_black_24dp"
+                    android:shadowColor="#00FFFFFF"
+                    android:backgroundTint="@drawable/sel_col_tint_butt_inv"
+                    android:layout_marginStart="16dp" app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintEnd_toStartOf="@+id/butt_toggle_bestday"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_denplan_list"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toTopOf="@+id/lay_seldate_dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="0.0"
+                tools:listitem="@layout/item_denplan"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_butt_den_plan_tab"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+        >
+            <SeekBar
+                    android:id="@+id/sb_gotov_den_plan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/butt_add_den_plan"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:thumb="@drawable/gotov_thumb_progress"
+                    android:progressDrawable="@drawable/gotov_progress_draw"
+                    android:progress="40"
+                    android:progressBackgroundTintMode="multiply"
+                    android:progressTintMode="multiply"
+                    android:splitTrack="false"
+                    android:thumbTintMode="multiply"
+                    android:secondaryProgress="75"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="30dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp" app:layout_constraintStart_toEndOf="@+id/butt_add_napom"/>
+            <Button
+                    android:id="@+id/butt_add_den_plan"
+                    android:backgroundTint="@drawable/sel_col_tint_butt_inv"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginEnd="32dp"
+                    android:background="@drawable/ic_add_butt"
+            />
+            <Button
+                    android:id="@+id/butt_add_napom"
+                    android:backgroundTint="@drawable/sel_col_tint_butt_inv"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:background="@drawable/ic_notification_important"
+                    app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="32dp"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

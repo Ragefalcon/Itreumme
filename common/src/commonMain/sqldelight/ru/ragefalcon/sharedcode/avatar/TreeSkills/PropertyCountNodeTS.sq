@@ -1,0 +1,97 @@
+-- Таблица: property_count_node_ts
+CREATE TABLE property_count_node_ts (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_node   INTEGER NOT NULL,
+    priv_counter  INTEGER NOT NULL,
+    count_value  INTEGER NOT NULL,
+    max_value INTEGER NOT NULL,
+    porog_value  INTEGER NOT NULL,
+    quest_id  INTEGER NOT NULL DEFAULT 0,
+    quest_key_id  INTEGER NOT NULL DEFAULT 0
+);
+
+-- CREATE TEMP TABLE indenplan(
+--   _id INTEGER  NOT NULL,
+--   name TEXT  NOT NULL,
+--   sum_hour REAL  NOT NULL,
+--   data INTEGER  NOT NULL
+-- );
+
+insertOrReplace:
+INSERT OR REPLACE INTO property_count_node_ts(
+     id_node,
+     priv_counter,
+     count_value,
+     max_value,
+     porog_value,
+     quest_id
+                )
+VALUES (?, ?, ?, ?, ?, ?);
+
+update:
+UPDATE property_count_node_ts SET
+                  priv_counter = :privplan,
+                  count_value = :privplan,
+                  max_value = :stap_prpl,
+                  porog_value = :sum_hour
+              WHERE id_node = :id_node;
+
+
+
+delete:
+DELETE FROM property_count_node_ts  WHERE id_node = :id_node;
+
+
+select:
+SELECT *
+-- (SELECT TOTAL(hour) AS obs FROM (SELECT hour FROM  sum_hour_stap_plan,spis_plan_goal WHERE property_count_node_ts._id = spis_plan_goal.id_goal AND spis_plan_goal.stap = sum_hour_stap_plan._id UNION
+--  SELECT hour FROM hour_plan,spis_plan_goal WHERE  property_count_node_ts._id = spis_plan_goal.id_goal AND hour_plan._id = spis_plan_goal.id_plan AND spis_plan_goal.stap = 0) ) AS hour
+FROM property_count_node_ts ORDER BY id_node;
+
+
+-- Триггер: replicated_insert_property_count_node_ts_trig
+CREATE TRIGGER replicated_insert_property_count_node_ts_trig
+         AFTER INSERT
+            ON property_count_node_ts
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_count_node_ts',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_property_count_node_ts_trig
+CREATE TRIGGER replicated_update_property_count_node_ts_trig
+         AFTER UPDATE
+            ON property_count_node_ts
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_count_node_ts',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_count_node_ts',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_property_count_node_ts_trig
+CREATE TRIGGER replicated_delete_property_count_node_ts_trig
+         AFTER DELETE
+            ON property_count_node_ts
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_count_node_ts',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

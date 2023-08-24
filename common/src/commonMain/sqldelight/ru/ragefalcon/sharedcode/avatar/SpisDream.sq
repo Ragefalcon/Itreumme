@@ -1,0 +1,156 @@
+-- Таблица: spis_dream
+CREATE TABLE spis_dream (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    lvl   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    data1 INTEGER NOT NULL,
+    opis  TEXT NOT NULL,
+    stat  INTEGER NOT NULL,
+    foto  INTEGER NOT NULL
+);
+
+insertOrReplaceDreams:
+INSERT OR REPLACE INTO spis_dream(
+     lvl,
+     name,
+     data1,
+     opis,
+     stat,
+     foto
+                )
+VALUES (0, ?, ?, ?, ?, ?);
+
+updateDreams:
+UPDATE spis_dream SET
+--                   lvl = :lvl,
+                  name = :name,
+                  data1 = :data1,
+                  opis = :opis,
+                  foto = :foto
+              WHERE _id = :id;
+
+updateStatDream:
+UPDATE spis_dream SET stat = :stat WHERE _id = :id;
+
+changeLvlToUp{
+    UPDATE spis_dream SET lvl = lvl-1 WHERE lvl <= :newsort AND lvl > :oldsort ;
+    UPDATE spis_dream SET lvl = :newsort WHERE _id = :id;
+}
+changeLvlToDown{
+    UPDATE spis_dream SET lvl = lvl+1 WHERE lvl < :oldsort AND lvl >= :newsort ;
+    UPDATE spis_dream SET lvl = :newsort WHERE _id = :id;
+-- 11 22 33 44 55
+--
+-- 11 52 23 34 45
+-- 5 - new 2 old 5
+--
+-- 11 32 43 54 25
+-- 2 - new 5 old 2
+}
+
+
+deleteDream:
+DELETE FROM spis_dream  WHERE _id = :id;
+
+
+selectDreams:
+SELECT *, 0 AS hour
+-- (SELECT TOTAL(hour) AS obs FROM (SELECT hour FROM  sum_hour_stap_plan,spis_plan_goal WHERE spis_dream._id = spis_plan_goal.id_goal AND spis_plan_goal.stap = sum_hour_stap_plan._id UNION
+--  SELECT hour FROM hour_plan,spis_plan_goal WHERE  spis_dream._id = spis_plan_goal.id_goal AND hour_plan._id = spis_plan_goal.id_plan AND spis_plan_goal.stap = 0) ) AS hour
+FROM spis_dream WHERE stat <> :stat ORDER BY lvl;
+
+
+selectHourDream:
+WITH stapin(_id) AS (WITH RECURSIVE cte AS (SELECT spis_stap_plan._id
+                     	                            FROM spis_stap_plan WHERE spis_stap_plan._id IN (SELECT stap FROM spis_plan_goal WHERE  id_goal = :iddream AND stap <> 0 )
+                     	                              UNION ALL SELECT c._id FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id )
+                			                         SELECT _id FROM cte
+                			                         ),
+     inden_plan(_id,name,sum_hour,data) AS (SELECT _id,name,sum_hour,data FROM den_plan WHERE (
+                                              privplan IN (SELECT id_plan FROM spis_plan_goal WHERE  id_goal = :iddream AND stap = 0)
+                                              OR
+                                              stap_prpl IN stapin))
+	SELECT (SELECT TOTAL(sum_hour) FROM inden_plan WHERE
+        data > strftime('%s000', :now_date / 1000, 'unixepoch', '-7 days')
+        AND
+        data <= :now_date
+        ) AS sum_week,
+  (SELECT TOTAL(sum_hour) FROM inden_plan WHERE
+        data > strftime('%s000', :now_date / 1000, 'unixepoch', '-1 month')
+        AND
+        data <= :now_date
+  ) AS sum_month,
+  (SELECT TOTAL(sum_hour) FROM inden_plan WHERE
+        data > strftime('%s000', :now_date / 1000, 'unixepoch', '-1 year')
+        AND
+        data <= :now_date
+  ) AS sum_year,
+  (SELECT TOTAL(sum_hour) FROM inden_plan
+  ) AS sum_all,
+  (SELECT COUNT(*) FROM spis_plan_goal WHERE id_goal = :iddream) AS privscount;
+
+
+-- Триггер: lvl_insert_spis_dream_trig
+CREATE TRIGGER IF NOT EXISTS lvl_insert_spis_dream_trig
+         AFTER INSERT
+            ON spis_dream
+      FOR EACH ROW
+BEGIN
+    UPDATE spis_dream SET lvl = new._id WHERE _id = new._id;
+END;
+
+
+-- Триггер: delete_privs_dream
+CREATE TRIGGER IF NOT EXISTS delete_privs_dream
+         AFTER DELETE
+            ON spis_dream
+BEGIN
+    DELETE FROM spis_plan_goal WHERE id_goal = old._id;
+    DELETE FROM spis_idea_goal WHERE id_goal = old._id;
+END;
+
+-- Триггер: replicated_insert_spis_dream_trig
+CREATE TRIGGER replicated_insert_spis_dream_trig
+         AFTER INSERT
+            ON spis_dream
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_dream',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_dream_trig
+CREATE TRIGGER replicated_update_spis_dream_trig
+         AFTER UPDATE
+            ON spis_dream
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_dream',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_dream',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_dream_trig
+CREATE TRIGGER replicated_delete_spis_dream_trig
+         AFTER DELETE
+            ON spis_dream
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_dream',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

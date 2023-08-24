@@ -1,0 +1,96 @@
+
+
+
+
+
+
+-- Таблица: effekt
+CREATE TABLE effekt (
+    _id    INTEGER PRIMARY KEY AUTOINCREMENT,
+    name   TEXT NOT NULL,
+    idplan INTEGER NOT NULL,
+    norma  REAL NOT NULL
+);
+
+insertOrReplaceEffekt:
+INSERT OR REPLACE INTO effekt(
+    name,
+    idplan,
+    norma
+)
+VALUES (?,?,?);
+
+selectEffektWithHour:
+SELECT *,
+(SELECT TOTAL(sum_hour) AS obs FROM den_plan WHERE
+                (privplan = effekt.idplan OR stap_prpl = effekt.idplan)
+                AND data <= :date
+                AND data > strftime('%s000', :date / 1000, 'unixepoch', '-7 days')) AS sumNedel,
+(SELECT TOTAL(sum_hour) AS obs FROM den_plan WHERE
+                (privplan = effekt.idplan OR stap_prpl = effekt.idplan)
+                AND data <= :date
+                AND data > strftime('%s000', :date / 1000, 'unixepoch', '-1 month')) AS sumMonth,
+(SELECT TOTAL(sum_hour) AS obs FROM den_plan WHERE
+                (privplan = effekt.idplan OR stap_prpl = effekt.idplan)
+                AND data <= :date
+                AND data > strftime('%s000', :date / 1000, 'unixepoch', '-1 year')) AS sumYear
+FROM  effekt;
+ --UNION ALL SELECT den_plan._id AS _id, den_plan.name AS name, den_plan.privplan AS idplan, den_plan.gotov AS norma, 0 AS sumNedel, 0 AS sumMonth, 0 AS sumYear FROM den_plan WHERE _id = -666 ;
+-- FROM  ((SELECT effekt.* FROM effekt UNION ALL SELECT den_plan._id, den_plan.name, den_plan.privplan AS idplan, den_plan.gotov AS norma FROM den_plan WHERE _id = -666)) ;
+
+
+updateEffekt:
+UPDATE effekt SET name = :name,
+                  norma = :norma
+              WHERE _id = :id;
+
+deleteEffekt:
+DELETE FROM effekt WHERE _id = :id;
+
+-- Триггер: replicated_insert_effekt_trig
+CREATE TRIGGER replicated_insert_effekt_trig
+         AFTER INSERT
+            ON effekt
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'effekt',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_effekt_trig
+CREATE TRIGGER replicated_update_effekt_trig
+         AFTER UPDATE
+            ON effekt
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'effekt',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'effekt',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_effekt_trig
+CREATE TRIGGER replicated_delete_effekt_trig
+         AFTER DELETE
+            ON effekt
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'effekt',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+

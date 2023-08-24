@@ -1,0 +1,17 @@
+INSERT INTO complex_opis (table_name,item_id,sort)
+   SELECT 'spis_bloknot' AS table_name, _id AS item_id, 1 AS sort FROM spis_bloknot WHERE opis <> '';
+INSERT INTO complex_opis_text (opis_id, text, colorNum, font_size, cursive, bold)
+   SELECT complex_opis._id AS opis_id, spis_bloknot.opis AS text, 1 AS colorNum, 3 AS font_size, 0 AS cursive, 0 AS bold FROM complex_opis
+   INNER JOIN spis_bloknot ON table_name = 'spis_bloknot' AND item_id = spis_bloknot._id AND  spis_bloknot.opis <> '';
+
+INSERT INTO complex_opis (table_name,item_id,sort)
+   SELECT 'spis_idea' AS table_name, _id AS item_id, 1 AS sort FROM spis_idea WHERE opis <> '';
+INSERT INTO complex_opis_text (opis_id, text, colorNum, font_size, cursive, bold)
+   SELECT complex_opis._id AS opis_id, spis_idea.opis AS text, 1 AS colorNum, 3 AS font_size, 0 AS cursive, 0 AS bold FROM complex_opis
+   INNER JOIN spis_idea ON table_name = 'spis_idea' AND item_id = spis_idea._id AND  spis_idea.opis <> '';
+
+INSERT INTO complex_opis (table_name,item_id,sort)
+   SELECT 'spis_stap_idea' AS table_name, _id AS item_id, 1 AS sort FROM spis_stap_idea WHERE opis <> '';
+INSERT INTO complex_opis_text (opis_id, text, colorNum, font_size, cursive, bold)
+   SELECT complex_opis._id AS opis_id, spis_stap_idea.opis AS text, 1 AS colorNum, 3 AS font_size, 0 AS cursive, 0 AS bold FROM complex_opis
+   INNER JOIN spis_stap_idea ON table_name = 'spis_stap_idea' AND item_id = spis_stap_idea._id AND  spis_stap_idea.opis <> '';

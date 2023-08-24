@@ -1,0 +1,38 @@
+selectSrokForPlanAndStap:
+SELECT mainSpis.*, spis_plan.name AS name_plan, spis_plan.quest_id,
+ IFNULL((SELECT group_concat(data) FROM (SELECT DISTINCT data FROM den_plan WHERE gotov > 0 AND ((privplan = plan_id AND stap_id = 0) OR (privplan = plan_id AND stap_id <> 0 AND stap_prpl = stap_id))) ),'') AS spis_date
+ FROM
+    (SELECT (_id * 10) AS id, _id AS plan_id, 0 AS stap_id, vajn, gotov,name, data1, data2, stat FROM spis_plan WHERE data1 <= :dtEnd AND data1 > 1 AND stat NOT IN :closePlanStat
+    UNION ALL
+    SELECT * FROM (
+        SELECT id, plan_id, stap_id, vajn, gotov,name, data1, data2,
+            (CASE WHEN parent > 0 THEN CASE WHEN (
+                WITH RECURSIVE cte AS (
+                    SELECT _id, parent_id, stat FROM spis_stap_plan WHERE _id = parent
+                    UNION ALL
+                    SELECT c._id, c.parent_id, c.stat FROM spis_stap_plan c INNER JOIN cte ON c._id = cte.parent_id
+                ) SELECT COUNT(*) FROM cte WHERE stat IN :closeStapStat) > 0
+              THEN -777 ELSE statIn END ELSE statIn END) AS stat
+         FROM (
+              SELECT (spis_stap_plan._id * 10 + 1) AS id, spis_stap_plan.idplan AS plan_id, spis_stap_plan._id AS stap_id, parent_id AS parent,
+                        spis_stap_plan.marker AS vajn, spis_stap_plan.gotov,spis_stap_plan.name, spis_stap_plan.data1, spis_stap_plan.data2, spis_stap_plan.stat AS statIn
+                        FROM spis_stap_plan LEFT JOIN spis_plan ON spis_plan._id = spis_stap_plan.idplan
+                        WHERE spis_stap_plan.data1 <= :dtEnd AND spis_stap_plan.data1 > 1 AND spis_stap_plan.stat NOT IN :closeStapStat AND spis_plan.stat NOT IN :closePlanStat
+    -- SELECT (_id * 10 + 1) AS id, idplan AS plan_id, _id AS stap_id, parent_id AS parent, marker AS vajn, gotov,name, data1, data2, stat AS statIn FROM spis_stap_plan WHERE data1 <= :dtEnd AND data1 > 1 AND stat NOT IN :closeStapStat
+         )
+     ) WHERE stat <> -777) mainSpis
+ LEFT JOIN spis_plan WHERE spis_plan._id = mainSpis.plan_id
+ ORDER BY plan_id;
+-- т.к. тут и планы и этапы id могут совпадать, поэтому выше идет манипуляция с _id
+
+selectTimelineForPlan:
+SELECT mainSpis.*,
+ IFNULL((SELECT group_concat(data) FROM (SELECT DISTINCT data FROM den_plan WHERE gotov > 0 AND ((privplan = plan_id AND stap_id = 0) OR (privplan = plan_id AND stap_id <> 0 AND stap_prpl = stap_id))) ),'') AS spis_date
+ FROM
+    (SELECT (_id * 10) AS id, _id AS plan_id, 0 AS stap_id, vajn, gotov,name, data1, data2, stat, quest_id, 96623360000000 AS sort FROM spis_plan WHERE _id = :idplan
+    UNION ALL
+     SELECT (spis_stap_plan._id * 10 + 1) AS id, idplan AS plan_id, _id AS stap_id, marker AS vajn, gotov,name, data1, data2, stat , quest_id,
+             IFNULL((SELECT MAX(data) FROM den_plan WHERE gotov > 0 AND privplan = spis_stap_plan.idplan AND stap_prpl = spis_stap_plan._id),0) AS sort
+        FROM spis_stap_plan WHERE spis_stap_plan.idplan = :idplan
+    ) mainSpis WHERE sort <> 0 OR data1 <> 0
+ ORDER BY mainSpis.sort DESC, mainSpis.data1;

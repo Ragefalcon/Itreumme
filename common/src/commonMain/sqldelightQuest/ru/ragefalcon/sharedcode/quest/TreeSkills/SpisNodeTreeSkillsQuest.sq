@@ -1,0 +1,127 @@
+-- Таблица: spis_node_tree_skills
+CREATE TABLE spis_node_tree_skills_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    opis  TEXT NOT NULL,
+    id_type_node INTEGER NOT NULL,
+    level INTEGER NOT NULL,
+    icon  INTEGER NOT NULL,
+    icon_complete INTEGER NOT NULL,
+    visible_stat INTEGER NOT NULL
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_node_tree_skills_quest(
+     id_tree,
+     name,
+     opis,
+     id_type_node,
+     level,
+     icon,
+     icon_complete,
+     visible_stat
+                )
+VALUES (?, ?, ?, ?,?,?, ?, ?);
+
+update{
+UPDATE spis_node_tree_skills_quest SET
+                  name = :name,
+                  opis = :opis,
+                  level = :level,
+                  icon = :icon,
+                  icon_complete = :icon_complete,
+                  visible_stat = :visible_stat
+              WHERE _id = :id;
+    UPDATE common_trigger
+       SET child_name = :name
+     WHERE child_id = :id AND type_trig_id IN :type_start_trig_id;
+}
+
+
+delete{
+DELETE FROM common_trigger
+     WHERE parent_element_id = :id AND parent_type_element = :parent_type_element_node;
+DELETE FROM common_trigger
+                WHERE child_id = :id AND type_trig_id IN :type_trig_start_node;
+
+DELETE FROM spis_node_tree_skills_quest  WHERE _id = :id;
+DELETE FROM spis_binding_node_tree_skill_quest  WHERE id_child = :id;
+DELETE FROM spis_binding_node_tree_skill_quest  WHERE id_parent = :id;
+DELETE FROM property_plan_node_ts_quest  WHERE id_node = :id;
+DELETE FROM property_count_node_ts_quest  WHERE id_node = :id;
+DELETE FROM spis_must_complete_node_for_level_quest  WHERE id_node = :id;
+}
+
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+selectHandNodes:
+SELECT spis_node_tree_skills_quest.*, ic1.extension AS ext1, ic1.type_ramk AS type1, ic2.extension AS ext2, ic2.type_ramk AS type2,
+                 ( CASE :type_tree
+                WHEN  "KIT" THEN 1
+                WHEN "TREE" THEN 1
+                WHEN "LEVELS" THEN  (SELECT COUNT(*) FROM spis_must_complete_node_for_level_quest
+                WHERE spis_must_complete_node_for_level_quest.id_tree = :id_tree
+                AND spis_must_complete_node_for_level_quest.id_node = spis_node_tree_skills_quest._id) = 1
+                ELSE 0 END) AS must_node
+-- (SELECT TOTAL(hour) AS obs FROM (SELECT hour FROM  sum_hour_stap_plan,spis_plan_goal WHERE spis_node_tree_skills._id = spis_plan_goal.id_goal AND spis_plan_goal.stap = sum_hour_stap_plan._id UNION
+--  SELECT hour FROM hour_plan,spis_plan_goal WHERE  spis_node_tree_skills._id = spis_plan_goal.id_goal AND hour_plan._id = spis_plan_goal.id_plan AND spis_plan_goal.stap = 0) ) AS hour
+FROM spis_node_tree_skills_quest
+LEFT JOIN spis_icon_node_tree_skills_quest ic1 ON spis_node_tree_skills_quest.icon = ic1._id
+LEFT JOIN spis_icon_node_tree_skills_quest ic2 ON spis_node_tree_skills_quest.icon_complete = ic2._id
+WHERE id_tree = :id_tree AND id_type_node = :id_type_hand;
+
+selectAllNodesForSelect:
+SELECT spis_node_tree_skills_quest.*, ic1.extension AS ext1, ic1.type_ramk AS type1, ic2.extension AS ext2, ic2.type_ramk AS type2,
+                 ( CASE :type_tree
+                WHEN  "KIT" THEN 1
+                WHEN "TREE" THEN 1
+                WHEN "LEVELS" THEN  (SELECT COUNT(*) FROM spis_must_complete_node_for_level_quest
+                WHERE spis_must_complete_node_for_level_quest.id_tree = :id_tree
+                AND spis_must_complete_node_for_level_quest.id_node = spis_node_tree_skills_quest._id) = 1
+                ELSE 0 END) AS must_node
+-- (SELECT TOTAL(hour) AS obs FROM (SELECT hour FROM  sum_hour_stap_plan,spis_plan_goal WHERE spis_node_tree_skills._id = spis_plan_goal.id_goal AND spis_plan_goal.stap = sum_hour_stap_plan._id UNION
+--  SELECT hour FROM hour_plan,spis_plan_goal WHERE  spis_node_tree_skills._id = spis_plan_goal.id_goal AND hour_plan._id = spis_plan_goal.id_plan AND spis_plan_goal.stap = 0) ) AS hour
+FROM spis_node_tree_skills_quest
+LEFT JOIN spis_icon_node_tree_skills_quest ic1 ON spis_node_tree_skills_quest.icon = ic1._id
+LEFT JOIN spis_icon_node_tree_skills_quest ic2 ON spis_node_tree_skills_quest.icon_complete = ic2._id
+WHERE id_tree = :id_tree;
+
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+
+-- Триггер: update_spis_node_tree_skills_trig1
+CREATE TRIGGER update_spis_node_tree_skills_trig1
+         AFTER UPDATE
+            ON spis_node_tree_skills_quest
+      FOR EACH ROW
+          WHEN old.level <> new.level AND (SELECT COUNT(*) FROM spis_binding_node_tree_skill_quest WHERE id_parent = old._id) <> 0
+BEGIN
+UPDATE spis_node_tree_skills_quest
+    SET level = IFNULL((SELECT MAX(level) FROM spis_node_tree_skills_quest AS snts2
+                    WHERE snts2._id IN (SELECT sbnts.id_parent FROM spis_binding_node_tree_skill_quest AS sbnts WHERE sbnts.id_child = spis_node_tree_skills_quest._id)),0)+1 --spis_node_tree_skills.
+    WHERE _id IN (SELECT id_child FROM spis_binding_node_tree_skill_quest WHERE id_parent = old._id);
+END;
+
+
+-- Триггер: delete_spis_node_tree_skills_trig1
+CREATE TRIGGER delete_spis_node_tree_skills_trig1
+         AFTER DELETE
+            ON spis_node_tree_skills_quest
+      FOR EACH ROW
+          WHEN (SELECT COUNT(*) FROM spis_binding_node_tree_skill_quest WHERE id_parent = old._id) <> 0
+BEGIN
+UPDATE spis_node_tree_skills_quest
+    SET level = IFNULL((SELECT MAX(level) FROM spis_node_tree_skills_quest AS snts2
+                    WHERE snts2._id IN (SELECT sbnts.id_parent FROM spis_binding_node_tree_skill_quest AS sbnts WHERE sbnts.id_child = spis_node_tree_skills_quest._id)),0)+1 --spis_node_tree_skills.
+    WHERE _id IN (SELECT id_child FROM spis_binding_node_tree_skill_quest WHERE id_parent = old._id);
+END;
+
+
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------

@@ -1,0 +1,64 @@
+CREATE TABLE spis_quest_element (
+    _id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    quest_id    INTEGER NOT NULL,
+    element_id    INTEGER NOT NULL,
+    type_element        TEXT NOT NULL
+);
+
+getQuestId:
+SELECT quest_id FROM spis_quest_element WHERE type_element = :type_element AND element_id = :element_id;
+
+insertOrReplacePlan:
+INSERT OR REPLACE INTO spis_quest_element(
+     quest_id,
+     element_id,
+     type_element
+               )
+VALUES (?,?, ?);
+
+
+-- Триггер: replicated_insert_spis_quest_element_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_quest_element_trig
+         AFTER INSERT
+            ON spis_quest_element
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest_element',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_quest_element_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_quest_element_trig
+         AFTER UPDATE
+            ON spis_quest_element
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest_element',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest_element',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_quest_element_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_quest_element_trig
+         AFTER DELETE
+            ON spis_quest_element
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest_element',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:fitsSystemWindows="false"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="wrap_content"
+                                                   tools:context=".ui.time.TimeAddVxodPanelFragment">
+
+    <!--    <ImageView-->
+    <!--            android:src="@drawable/back_add_layout"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent" android:id="@+id/back_add_vxod_tpanel"/>-->
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--            android:id="@+id/cl_add_tpanel"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:minHeight="400dp"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            android:layout_marginStart="30dp"-->
+    <!--            android:layout_marginTop="30dp"-->
+    <!--            android:layout_marginEnd="30dp"-->
+    <!--            android:layout_marginBottom="30dp"-->
+    <!--            android:background="@drawable/bg_add_time_panel"-->
+    <!--    >-->
+
+    <ru.ragefalcon.tutatores.ui.element_fragment.MyTimeSelect
+            android:text="12.34.3455"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/time_napom"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:fontFamily="sans-serif"
+            android:textColor="@drawable/sel_col_tint_butt_inv"
+            tools:text="30 мар. 2020 (пн)"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:shadowColor="@android:color/background_dark"
+            app:layout_constraintTop_toBottomOf="@+id/date_napom"
+            android:layout_marginEnd="32dp" android:layout_marginTop="8dp"/>
+    <ru.ragefalcon.tutatores.ui.element_fragment.MyDateSelect
+            android:text="12.34.3455"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/date_napom"
+            android:fontFamily="sans-serif"
+            android:textColor="@drawable/sel_col_tint_butt_inv"
+            tools:text="30 мар. 2020 (пн)"
+            android:textAllCaps="false"
+            android:textSize="20sp"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:shadowColor="@android:color/background_dark"
+            app:layout_constraintTop_toBottomOf="@+id/edit_opis_napom"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="32dp" android:layout_marginTop="8dp"/>
+    <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textColorHint="@color/colorSchetTheme"
+            android:id="@+id/edit_name_napom"
+    >
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Название напоминания"
+                android:textColorHint="@color/colorSchetTheme"
+                android:inputType="text"
+                android:textColor="@color/colorMyBeg"
+                tools:text="Новое напоминание"
+                style="@style/Profile.EditText.Single"
+                android:enabled="true"
+                android:cursorVisible="true"
+                android:id="@+id/edit_name_napom_text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="400dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_name_napom"
+            android:textColorHint="@color/colorSchetTheme"
+            android:id="@+id/edit_opis_napom"
+            android:layout_marginTop="8dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_opis_napom_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Описание напоминания"
+                android:inputType="textMultiLine|text"
+                tools:text="666"
+                android:textColor="@color/colorMyBeg"
+                style="@style/Profile.EditText.Single"
+                android:enabled="true"
+                android:ems="10"
+                android:cursorVisible="true" android:gravity="fill_horizontal"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

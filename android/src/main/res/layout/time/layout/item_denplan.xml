@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                   xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                   android:layout_height="wrap_content"
+                                   android:foreground="?android:attr/selectableItemBackground"
+                                   android:clickable="true"
+                                   card_view:cardElevation="4dp"
+                                   card_view:cardCornerRadius="6dp"
+                                   android:animateLayoutChanges="true"
+                                   android:layout_marginBottom="2dp" android:layout_marginTop="2dp"
+                                   android:layout_marginLeft="4dp" android:layout_marginRight="4dp"
+                                   android:longClickable="false"
+                                   card_view:cardBackgroundColor="@color/colorSchetItem0"
+                                   android:visibility="visible" android:id="@+id/card_view_item">
+    <!--    android:foreground="?android:attr/selectableItemBackground"-->
+    <!--    card_view:cardBackgroundColor="@drawable/bc_itemdenplan"-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:background="?attr/selectableItemBackground" android:layout_height="wrap_content"
+            android:clickable="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" card_view:layout_constraintStart_toEndOf="@+id/iv_stat_dp"
+                card_view:layout_constraintTop_toTopOf="parent" android:id="@+id/cl_text"
+                android:layout_marginTop="4dp">
+
+            <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progbar_gotov"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:progress="50" android:progressTint="#12B500"
+                    android:layout_marginEnd="12dp" card_view:layout_constraintEnd_toEndOf="parent"
+                    card_view:layout_constraintTop_toBottomOf="@+id/text_name"/>
+            <TextView
+                    android:id="@+id/text_privplan"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    tools:text="Привязанный план"
+                    android:textSize="10sp"
+                    android:clickable="false"
+                    android:longClickable="false"
+                    android:contextClickable="false"
+                    android:linksClickable="false"
+                    android:fontFamily="sans-serif-medium"
+                    android:background="@drawable/bg_add_time_panel"
+                    android:textColor="@color/colorSchetItem"
+                    card_view:layout_constraintStart_toStartOf="parent" android:layout_marginStart="71dp"
+                    card_view:layout_constraintTop_toBottomOf="@+id/text_time1" android:paddingStart="10dp"
+                    android:paddingEnd="10dp"/>
+            <TextView
+                    android:id="@+id/text_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="#BC8527"
+                    android:shadowColor="#C6000000"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="Продукты"
+                    android:fontFamily="sans-serif-medium" android:clickable="false"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    card_view:layout_constraintTop_toTopOf="parent" card_view:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="71dp" card_view:layout_constraintEnd_toStartOf="@+id/text_sumhour"/>
+            <TextView
+                    android:id="@+id/text_time1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Печеньки"
+                    android:textColor="@android:color/holo_green_dark"
+                    android:textSize="14sp"
+                    android:fontFamily="sans-serif-medium" android:clickable="false"
+                    card_view:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="71dp" card_view:layout_constraintTop_toBottomOf="@+id/text_name"/>
+            <TextView
+                    android:id="@+id/text_sumhour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="2000"
+                    android:layout_alignParentTop="true"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="@color/safsdfasdf"
+                    android:shadowDx="2"
+                    android:shadowDy="2"
+                    android:shadowRadius="4"
+                    android:shadowColor="@android:color/background_dark"
+                    android:clickable="false"
+                    card_view:layout_constraintTop_toTopOf="@+id/text_name"
+                    android:layout_marginEnd="12dp"
+                    card_view:layout_constraintEnd_toEndOf="parent"
+                    card_view:layout_constraintBottom_toBottomOf="@+id/text_name"/>
+            <TextView
+                    android:id="@+id/text_time2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_name"
+                    tools:text="Кошелек"
+                    android:textColor="@android:color/holo_green_dark"
+                    android:textSize="14sp" android:fontFamily="sans-serif-medium" android:clickable="false"
+                    card_view:layout_constraintTop_toBottomOf="@+id/text_name"
+                    card_view:layout_constraintStart_toEndOf="@+id/text_time1" android:layout_marginStart="32dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <View
+                android:id="@+id/view_svertext"
+                android:layout_width="1dp"
+                tools:layout_width="200dp"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:layout_height="2dp"
+                android:clickable="false"
+                card_view:layout_constraintStart_toStartOf="@+id/text_opis"
+                android:background="@drawable/ic_simple_rect"
+                android:backgroundTint="@color/colorSchetItemText"
+                card_view:layout_constraintEnd_toEndOf="@+id/text_opis"
+                card_view:layout_constraintTop_toBottomOf="@+id/cl_text"
+                android:alpha="0.5"
+        />
+
+        <TextView
+                android:id="@+id/text_opis"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                card_view:layout_constraintTop_toBottomOf="@+id/cl_text"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="8dp"
+                tools:text="20 марта 2020"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                android:textAlignment="textStart"
+                android:clickable="false"
+                android:textColor="#7C5D00"
+                android:textStyle="bold"
+                card_view:layout_constraintStart_toStartOf="@+id/iv_stat_dp"
+                android:layout_marginStart="4dp" android:visibility="invisible" tools:visibility="visible"
+        />
+        <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp" card_view:srcCompat="@drawable/ic_stat_00"
+                android:id="@+id/iv_stat_dp"
+                card_view:tint="@color/colorRasxodTheme0"
+                android:tintMode="multiply"
+                card_view:layout_constraintTop_toTopOf="@+id/cl_text"
+                card_view:layout_constraintStart_toEndOf="@+id/imageView" android:layout_marginStart="4dp"
+                card_view:layout_constraintBottom_toBottomOf="@+id/cl_text"/>
+        <ImageView
+                android:layout_width="4dp"
+                android:layout_height="0dp" card_view:srcCompat="@drawable/bc_itemdenplan"
+                android:id="@+id/imageView"
+                android:scaleType="fitXY"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:layout_constraintStart_toStartOf="parent"
+                android:cropToPadding="true" android:visibility="visible" android:layout_marginStart="4dp"
+                card_view:layout_constraintBottom_toBottomOf="@+id/text_opis"
+                android:layout_marginTop="8dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

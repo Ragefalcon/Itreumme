@@ -1,0 +1,636 @@
+-- Таблица: spis_stap_plan
+CREATE TABLE spis_stap_plan (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    parent_id INTEGER NOT NULL,
+    name      TEXT NOT NULL,
+    gotov     REAL NOT NULL,
+    data1     INTEGER NOT NULL,
+    data2     INTEGER NOT NULL,
+    opis      TEXT NOT NULL,
+    stat      INTEGER NOT NULL,
+    svernut   TEXT NOT NULL, --INTEGER AS Boolean NOT NULL, -- DEFAULT 0 NOT NULL
+    idplan    INTEGER NOT NULL,
+    quest_id  INTEGER NOT NULL DEFAULT 0,
+    quest_key_id  INTEGER NOT NULL DEFAULT 0,
+    marker  INTEGER NOT NULL DEFAULT 0,
+    sort  INTEGER NOT NULL DEFAULT 0
+);
+
+insertOrReplaceStapPlan:
+INSERT OR REPLACE INTO spis_stap_plan(
+     parent_id,
+     name,
+     gotov,
+     data1,
+     data2,
+     opis,
+     stat,
+     svernut,
+     idplan,
+     marker,
+     quest_id
+                )
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updatePlanStap:
+UPDATE spis_stap_plan SET
+                  parent_id = :parent_id,
+                  name = :name,
+                  data1 = :data1,
+                  data2 = :data2,
+                  opis = :opis,
+                  idplan = :idplan,
+                  marker = :marker
+              WHERE _id = :id;
+
+
+changeSortToUp{
+    UPDATE spis_stap_plan SET sort = sort-1 WHERE sort <= :newsort AND sort > :oldsort ;
+    UPDATE spis_stap_plan SET sort = :newsort WHERE _id = :id;
+}
+changeSortToDown{
+    UPDATE spis_stap_plan SET sort = sort+1 WHERE sort < :oldsort AND sort >= :newsort ;
+    UPDATE spis_stap_plan SET sort = :newsort WHERE _id = :id;
+}
+
+updateGotovPlanStap:
+UPDATE spis_stap_plan SET gotov = :gotov WHERE _id = :id;
+
+updateMarkerPlanStap:
+UPDATE spis_stap_plan SET marker = :marker WHERE _id = :id;
+
+updateParentPlanStap:
+UPDATE spis_stap_plan SET parent_id = :parent WHERE _id = :id;
+
+updateStatPlanStap{
+    UPDATE spis_stap_plan SET stat = :stat WHERE _id = :id;
+    DELETE FROM spis_next_action WHERE stap_id > 0 AND stap_id NOT IN (SELECT _id FROM spis_stap_plan WHERE stat = :statNext);
+}
+
+deletePlanStap{
+DELETE FROM spis_stap_plan WHERE _id = :id;
+DELETE FROM bind_for_schet_plan WHERE element_id = :id AND type_element = :typePlanStapId;
+DELETE FROM complex_opis_image WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_stap_plan' AND item_id = :id);
+DELETE FROM complex_opis_link WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_stap_plan' AND item_id = :id);
+DELETE FROM complex_opis_image_group WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_stap_plan' AND item_id = :id);
+DELETE FROM complex_opis_checkbox WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_stap_plan' AND item_id = :id);
+DELETE FROM complex_opis_text_fts4 WHERE docid IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_stap_plan' AND item_id = :id);
+DELETE FROM complex_opis_text WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_stap_plan' AND item_id = :id);
+DELETE FROM complex_opis WHERE table_name = 'spis_stap_plan' AND item_id = :id;
+}
+
+unlockQuestPlanStap:
+UPDATE spis_stap_plan SET stat = :stat WHERE quest_id = :quest_id AND quest_key_id = :quest_key_id AND stat IN :statlock;
+
+
+countOpenStapPlan:
+SELECT COUNT(*) FROM (
+WITH RECURSIVE cte AS (
+    SELECT _id
+        FROM spis_stap_plan WHERE
+                stat NOT IN :iskstat AND idplan = :idpl AND parent_id = -1
+    UNION ALL
+    SELECT  c._id
+        FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id AND c.idplan = :idpl  AND c.stat NOT IN :iskstat
+) SELECT _id FROM cte );
+
+openStapPlan:
+WITH RECURSIVE cte AS (
+    SELECT 0 AS level, printf('%015d', sort ) AS sortCTE , _id, parent_id, name, gotov, data1, data2, opis, svernut, stat, marker, sort, quest_id, quest_key_id
+        FROM spis_stap_plan WHERE
+                stat NOT IN :iskstat AND idplan = :idpl AND parent_id = -1
+    UNION ALL
+    SELECT cte.level + 1,  CAST(cte.sortCTE || '/' || printf('%015d', c.sort ) AS TEXT) AS sortCTE, c._id, c.parent_id, c.name, c.gotov, c.data1, c.data2, c.opis, c.svernut,
+    (CASE cte.stat WHEN :codInvis THEN :codInvis WHEN :codBlock THEN :codInvis ELSE c.stat END) AS stat, c.marker, c.sort,
+     c.quest_id, c.quest_key_id
+        FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id
+--         AND (cte.svernut = 'false' OR cte.svernut = 'False')
+        AND c.idplan = :idpl  AND c.stat NOT IN :iskstat  -- ORDER BY parentSort, sort DESC
+) SELECT level, cte._id, parent_id, name, gotov, data1, data2, opis, svernut, stat, marker, sortCTE, sort, quest_id, quest_key_id, spis_schet_pl.open, spis_schet_pl.min_aim,spis_schet_pl.max_aim,sum_on_schet_pl.summa,
+            (SELECT hour FROM sum_hour_stap_plan WHERE sum_hour_stap_plan._id = cte._id) AS hour,
+            (SELECT COUNT(*) FROM spis_stap_plan WHERE spis_stap_plan.parent_id = cte._id AND cte.stat NOT IN :iskstat ) AS stapcount,
+            (CASE sum_on_schet_pl._id WHEN sum_on_schet_pl._id > 0 THEN (SELECT TOTAL(sumrub) FROM rasxod WHERE schpl_id = sum_on_schet_pl._id) ELSE 0 END) AS sumRasxod
+    FROM cte
+    LEFT JOIN  bind_for_schet_plan ON cte._id = bind_for_schet_plan.element_id AND bind_for_schet_plan.type_element = :typePlanStapId
+    LEFT JOIN spis_schet_pl ON spis_schet_pl._id = bind_for_schet_plan.schet_plan_id
+    LEFT JOIN sum_on_schet_pl ON sum_on_schet_pl._id = bind_for_schet_plan.schet_plan_id
+    ORDER BY sortCTE
+    ;
+
+allStapPlan:
+    SELECT _id, parent_id, name, gotov, data1, data2, opis, svernut, stat, marker, sort, marker, sort, quest_id, quest_key_id,
+     (SELECT hour FROM sum_hour_stap_plan WHERE sum_hour_stap_plan._id = spis_stap_plan._id) AS hour,
+     (SELECT COUNT(*) FROM spis_stap_plan WHERE spis_stap_plan.parent_id = spis_stap_plan._id ) AS stapcount
+        FROM spis_stap_plan;
+
+openStapPlanForSelect:
+WITH RECURSIVE cte AS (
+    SELECT 0 AS level, printf('%015d', sort ) AS sortCTE , _id, parent_id, name, gotov, data1, data2, opis, svernut, stat, marker, sort, quest_id, quest_key_id
+        FROM spis_stap_plan WHERE
+                stat NOT IN :iskstat AND idplan = :idpl AND parent_id = -1 AND _id NOT IN :iskl
+    UNION ALL
+    SELECT cte.level + 1, CAST(cte.sortCTE || '/' || printf('%015d', c.sort ) AS TEXT), c._id, c.parent_id, c.name, c.gotov, c.data1, c.data2, c.opis, c.svernut,
+    (CASE cte.stat WHEN :codInvis THEN :codInvis WHEN :codBlock THEN :codInvis ELSE c.stat END) AS stat, c.marker, c.sort, c.quest_id, c.quest_key_id
+        FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id
+--         AND (cte.svernut = 'false' OR cte.svernut = 'False')
+         AND c.idplan = :idpl  AND c.stat NOT IN :iskstat AND c._id NOT IN :iskl
+) SELECT level, _id, parent_id, name, gotov, data1, data2, opis, svernut, stat, marker, sortCTE, sort, quest_id, quest_key_id,
+        (SELECT hour FROM sum_hour_stap_plan WHERE sum_hour_stap_plan._id = cte._id) AS hour,
+        (SELECT COUNT(*) FROM spis_stap_plan WHERE spis_stap_plan.parent_id = cte._id AND cte.stat NOT IN :iskstat ) AS stapcount FROM cte ORDER BY sortCTE;
+
+expandStapPlan:
+UPDATE spis_stap_plan SET svernut = :sver WHERE _id = :id;
+
+
+-- Триггер: sort_insert_spis_stap_plan_trig
+CREATE TRIGGER IF NOT EXISTS sort_insert_spis_stap_plan_trig
+         AFTER INSERT
+            ON spis_stap_plan
+      FOR EACH ROW
+BEGIN
+    UPDATE spis_stap_plan SET sort = new._id WHERE _id = new._id;
+END;
+
+
+-- Триггер: insert_stap_plan_trig1
+CREATE TRIGGER insert_stap_plan_trig1
+         AFTER INSERT
+            ON spis_stap_plan
+BEGIN
+    INSERT INTO sum_hour_stap_plan VALUES (
+                                       new._id,
+                                       0,
+                                       CASE WHEN new.parent_id NOT IN (
+                                               SELECT _id
+                                                 FROM spis_plan
+                                           )
+                                       THEN new.parent_id ELSE '0' END
+                                   );
+    INSERT INTO hour_stap_plan VALUES (
+                                   new._id,
+                                   0
+                               );
+END;
+
+
+-- Триггер: update_stap_plan_trig3
+CREATE TRIGGER update_stap_plan_trig3
+         AFTER UPDATE
+            ON spis_stap_plan
+          WHEN old.parent_id <> new.parent_id
+BEGIN
+    DELETE FROM statik_hour_goal
+          WHERE data1 IN (
+                    SELECT DISTINCT strftime('%s000', data / 1000, 'unixepoch', 'start of month') AS data1
+                      FROM den_plan
+                     WHERE ( (stap_prpl IN (
+                           WITH RECURSIVE cte AS (
+                                   SELECT spis_stap_plan._id
+                                     FROM spis_stap_plan
+                                    WHERE spis_stap_plan._id = old._id
+                                   UNION ALL
+                                   SELECT c._id
+                                     FROM spis_stap_plan c
+                                          INNER JOIN
+                                          cte p ON p._id = c.parent_id
+                               )
+                               SELECT _id
+                                 FROM cte
+                           )
+                           ) )
+                )
+AND
+                id_goal IN (
+        SELECT _id
+          FROM (
+                   SELECT _id
+                     FROM spis_dream
+                   UNION ALL
+                   SELECT _id
+                     FROM spis_goal
+               )
+         WHERE _id IN (
+                   SELECT DISTINCT id_goal
+                     FROM spis_plan_goal
+                    WHERE stap IN (
+                              SELECT _id
+                                FROM (
+                                     WITH RECURSIVE cte AS (
+                                             SELECT spis_stap_plan._id,
+                                                    spis_stap_plan.parent_id
+                                               FROM spis_stap_plan
+                                              WHERE spis_stap_plan._id = old.parent_id
+                                             UNION ALL
+                                             SELECT c._id,
+                                                    c.parent_id
+                                               FROM spis_stap_plan c
+                                                    INNER JOIN
+                                                    cte p ON c._id = p.parent_id
+                                         )
+                                         SELECT _id
+                                           FROM cte
+                                     )
+                          )
+OR
+                          (stap = 0 AND
+                           id_plan = old.parent_id)
+               )
+    );
+
+    INSERT INTO statik_hour_goal SELECT NULL AS _id,
+                                        id_goal1,
+                                        data1,
+                                        data2,
+                                        '-1' AS hour
+                                   FROM (
+                                            SELECT DISTINCT strftime('%s000', data / 1000, 'unixepoch', 'start of month') AS data1,
+                                                            strftime('%s000', data / 1000, 'unixepoch', 'start of month', '1 month', '-1 days') AS data2
+                                              FROM den_plan
+                                             WHERE ( (stap_prpl IN (
+                                                   WITH RECURSIVE cte AS (
+                                                           SELECT spis_stap_plan._id
+                                                             FROM spis_stap_plan
+                                                            WHERE spis_stap_plan._id = old._id
+                                                           UNION ALL
+                                                           SELECT c._id
+                                                             FROM spis_stap_plan c
+                                                                  INNER JOIN
+                                                                  cte p ON p._id = c.parent_id
+                                                       )
+                                                       SELECT _id
+                                                         FROM cte
+                                                   )
+                                                   ) )
+                                        )
+                                        CROSS JOIN
+                                        (
+                                            SELECT _id AS id_goal1
+                                              FROM (
+                                                       SELECT _id
+                                                         FROM spis_dream
+                                                       UNION ALL
+                                                       SELECT _id
+                                                         FROM spis_goal
+                                                   )
+                                             WHERE _id IN (
+                                                       SELECT DISTINCT id_goal
+                                                         FROM spis_plan_goal
+                                                        WHERE stap IN (
+                                                                  SELECT _id
+                                                                    FROM (
+                                                                         WITH RECURSIVE cte AS (
+                                                                                 SELECT spis_stap_plan._id,
+                                                                                        spis_stap_plan.parent_id
+                                                                                   FROM spis_stap_plan
+                                                                                  WHERE spis_stap_plan._id = old.parent_id
+                                                                                 UNION ALL
+                                                                                 SELECT c._id,
+                                                                                        c.parent_id
+                                                                                   FROM spis_stap_plan c
+                                                                                        INNER JOIN
+                                                                                        cte p ON c._id = p.parent_id
+                                                                             )
+                                                                             SELECT _id
+                                                                               FROM cte
+                                                                         )
+                                                              )
+OR
+                                                              (stap = 0 AND
+                                                               id_plan = old.parent_id)
+                                                   )
+                                        );
+    DELETE FROM statik_hour_goal
+          WHERE data1 IN (
+                    SELECT DISTINCT strftime('%s000', data / 1000, 'unixepoch', 'start of month') AS data1
+                      FROM den_plan
+                     WHERE ( (stap_prpl IN (
+                           WITH RECURSIVE cte AS (
+                                   SELECT spis_stap_plan._id
+                                     FROM spis_stap_plan
+                                    WHERE spis_stap_plan._id = new._id
+                                   UNION ALL
+                                   SELECT c._id
+                                     FROM spis_stap_plan c
+                                          INNER JOIN
+                                          cte p ON p._id = c.parent_id
+                               )
+                               SELECT _id
+                                 FROM cte
+                           )
+                           ) )
+                )
+AND
+                id_goal IN (
+        SELECT _id
+          FROM (
+                   SELECT _id
+                     FROM spis_dream
+                   UNION ALL
+                   SELECT _id
+                     FROM spis_goal
+               )
+         WHERE _id IN (
+                   SELECT DISTINCT id_goal
+                     FROM spis_plan_goal
+                    WHERE stap IN (
+                              SELECT _id
+                                FROM (
+                                     WITH RECURSIVE cte AS (
+                                             SELECT spis_stap_plan._id,
+                                                    spis_stap_plan.parent_id
+                                               FROM spis_stap_plan
+                                              WHERE spis_stap_plan._id = new.parent_id
+                                             UNION ALL
+                                             SELECT c._id,
+                                                    c.parent_id
+                                               FROM spis_stap_plan c
+                                                    INNER JOIN
+                                                    cte p ON c._id = p.parent_id
+                                         )
+                                         SELECT _id
+                                           FROM cte
+                                     )
+                          )
+OR
+                          (stap = 0 AND
+                           id_plan = new.parent_id)
+               )
+    );
+    INSERT INTO statik_hour_goal SELECT NULL AS _id,
+                                        id_goal1,
+                                        data1,
+                                        data2,
+                                        '-1' AS hour
+                                   FROM (
+                                            SELECT DISTINCT strftime('%s000', data / 1000, 'unixepoch', 'start of month') AS data1,
+                                                            strftime('%s000', data / 1000, 'unixepoch', 'start of month', '1 month', '-1 days') AS data2
+                                              FROM den_plan
+                                             WHERE ( (stap_prpl IN (
+                                                   WITH RECURSIVE cte AS (
+                                                           SELECT spis_stap_plan._id
+                                                             FROM spis_stap_plan
+                                                            WHERE spis_stap_plan._id = new._id
+                                                           UNION ALL
+                                                           SELECT c._id
+                                                             FROM spis_stap_plan c
+                                                                  INNER JOIN
+                                                                  cte p ON p._id = c.parent_id
+                                                       )
+                                                       SELECT _id
+                                                         FROM cte
+                                                   )
+                                                   ) )
+                                        )
+                                        CROSS JOIN
+                                        (
+                                            SELECT _id AS id_goal1
+                                              FROM (
+                                                       SELECT _id
+                                                         FROM spis_dream
+                                                       UNION ALL
+                                                       SELECT _id
+                                                         FROM spis_goal
+                                                   )
+                                             WHERE _id IN (
+                                                       SELECT DISTINCT id_goal
+                                                         FROM spis_plan_goal
+                                                        WHERE stap IN (
+                                                                  SELECT _id
+                                                                    FROM (
+                                                                         WITH RECURSIVE cte AS (
+                                                                                 SELECT spis_stap_plan._id,
+                                                                                        spis_stap_plan.parent_id
+                                                                                   FROM spis_stap_plan
+                                                                                  WHERE spis_stap_plan._id = new.parent_id
+                                                                                 UNION ALL
+                                                                                 SELECT c._id,
+                                                                                        c.parent_id
+                                                                                   FROM spis_stap_plan c
+                                                                                        INNER JOIN
+                                                                                        cte p ON c._id = p.parent_id
+                                                                             )
+                                                                             SELECT _id
+                                                                               FROM cte
+                                                                         )
+                                                              )
+OR
+                                                              (stap = 0 AND
+                                                               id_plan = new.parent_id)
+                                                   )
+                                        );
+    UPDATE sum_hour_stap_plan
+       SET parent_id = CASE WHEN new.parent_id IN (
+                   SELECT _id
+                     FROM spis_plan
+               )
+           THEN '0' ELSE new.parent_id END
+     WHERE old._id = _id;
+    UPDATE sum_hour_stap_plan
+       SET hour = (
+           WITH RECURSIVE cte AS (
+                   SELECT 0 AS level,
+                          CAST (spis_stap_plan._id AS TEXT ) AS sort,
+                          spis_stap_plan._id,
+                          (
+                              SELECT hour
+                                FROM hour_stap_plan
+                               WHERE hour_stap_plan._id = spis_stap_plan._id
+                          )
+                          AS hour
+                     FROM spis_stap_plan
+                    WHERE spis_stap_plan._id = old.parent_id
+                   UNION ALL
+                   SELECT p.level + 1,
+                          CAST (p.sort || '/' || CAST (c._id AS TEXT) AS TEXT ),
+                          c._id,
+                          (
+                              SELECT hour
+                                FROM hour_stap_plan
+                               WHERE hour_stap_plan._id = c._id
+                          )
+                          AS hour
+                     FROM spis_stap_plan c
+                          INNER JOIN
+                          cte p ON p._id = c.parent_id
+               )
+               SELECT (
+                      WITH RECURSIVE abc AS (
+                              SELECT _id,
+                                     hour,
+                                     sort
+                                FROM cte a
+                               WHERE a._id = cte._id
+                              UNION ALL
+                              SELECT c._id,
+                                     c.hour,
+                                     c.sort
+                                FROM cte c
+                                     INNER JOIN
+                                     abc p ON c.sort = CAST (p.sort || '/' || CAST (c._id AS TEXT) AS TEXT )
+                          )
+                          SELECT SUM(hour)
+                            FROM abc
+                      )
+                      AS hour
+                 FROM cte
+                WHERE _id = old.parent_id
+           )
+     WHERE old.parent_id = _id;
+    UPDATE sum_hour_stap_plan
+       SET hour = (
+           WITH RECURSIVE cte AS (
+                   SELECT 0 AS level,
+                          CAST (spis_stap_plan._id AS TEXT ) AS sort,
+                          spis_stap_plan._id,
+                          (
+                              SELECT hour
+                                FROM hour_stap_plan
+                               WHERE hour_stap_plan._id = spis_stap_plan._id
+                          )
+                          AS hour
+                     FROM spis_stap_plan
+                    WHERE spis_stap_plan._id = new.parent_id
+                   UNION ALL
+                   SELECT p.level + 1,
+                          CAST (p.sort || '/' || CAST (c._id AS TEXT) AS TEXT ),
+                          c._id,
+                          (
+                              SELECT hour
+                                FROM hour_stap_plan
+                               WHERE hour_stap_plan._id = c._id
+                          )
+                          AS hour
+                     FROM spis_stap_plan c
+                          INNER JOIN
+                          cte p ON p._id = c.parent_id
+               )
+               SELECT (
+                      WITH RECURSIVE abc AS (
+                              SELECT _id,
+                                     hour,
+                                     sort
+                                FROM cte a
+                               WHERE a._id = cte._id
+                              UNION ALL
+                              SELECT c._id,
+                                     c.hour,
+                                     c.sort
+                                FROM cte c
+                                     INNER JOIN
+                                     abc p ON c.sort = CAST (p.sort || '/' || CAST (c._id AS TEXT) AS TEXT )
+                          )
+                          SELECT SUM(hour)
+                            FROM abc
+                      )
+                      AS hour
+                 FROM cte
+                WHERE _id = new.parent_id
+           )
+     WHERE new.parent_id = _id;
+END;
+
+-- Триггер: update_stap_plan_trig4
+--  Обновляет подэтапы, ежедневные планы, а также часы когда у этапа меняется родительский проект
+CREATE TRIGGER update_stap_plan_trig4
+         AFTER UPDATE
+            ON spis_stap_plan
+          WHEN old.idplan <> new.idplan
+BEGIN
+    UPDATE spis_stap_plan
+       SET idplan = new.idplan
+     WHERE parent_id = new._id;
+
+    UPDATE den_plan
+       SET privplan = new.idplan
+     WHERE stap_prpl = new._id;
+
+    UPDATE hour_plan
+       SET hour = CASE WHEN old.idplan NOT IN (
+                   SELECT privplan
+                     FROM den_plan
+               )
+           THEN '0' ELSE (
+                   SELECT SUM(sum_hour) AS obs
+                     FROM den_plan
+                    WHERE den_plan.privplan = old.idplan
+               )
+           END
+     WHERE old.idplan = _id;
+
+    UPDATE hour_plan
+       SET hour = CASE WHEN new.idplan NOT IN (
+                   SELECT privplan
+                     FROM den_plan
+               )
+           THEN '0' ELSE (
+                   SELECT SUM(sum_hour) AS obs
+                     FROM den_plan
+                    WHERE den_plan.privplan = new.idplan
+               )
+           END
+     WHERE new.idplan = _id;
+END;
+
+
+-- Триггер: delete_stap_plan_trig2
+CREATE TRIGGER delete_stap_plan_trig2
+         AFTER DELETE
+            ON spis_stap_plan
+BEGIN
+    DELETE FROM sum_hour_stap_plan
+          WHERE _id = old._id;
+    DELETE FROM hour_stap_plan
+          WHERE _id = old._id;
+    UPDATE den_plan
+       SET stap_prpl = 0,
+           privplan = 0
+     WHERE stap_prpl = old._id;
+END;
+
+
+-- Триггер: replicated_insert_spis_stap_plan_trig
+CREATE TRIGGER replicated_insert_spis_stap_plan_trig
+         AFTER INSERT
+            ON spis_stap_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_stap_plan',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_stap_plan_trig
+CREATE TRIGGER replicated_update_spis_stap_plan_trig
+         AFTER UPDATE
+            ON spis_stap_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_stap_plan',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_stap_plan',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_stap_plan_trig
+CREATE TRIGGER replicated_delete_spis_stap_plan_trig
+         AFTER DELETE
+            ON spis_stap_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_stap_plan',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

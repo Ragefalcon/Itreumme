@@ -1,0 +1,103 @@
+CREATE TABLE IF NOT EXISTS spis_set_color_library (
+        _id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL
+);
+
+-- Триггер: replicated_insert_spis_set_color_library_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_set_color_library_trig
+         AFTER INSERT
+            ON spis_set_color_library
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_set_color_library',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+-- Триггер: replicated_update_spis_set_color_library_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_set_color_library_trig
+         AFTER UPDATE
+            ON spis_set_color_library
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_set_color_library',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_set_color_library',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_set_color_library_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_set_color_library_trig
+         AFTER DELETE
+            ON spis_set_color_library
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_set_color_library',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+CREATE TABLE IF NOT EXISTS color_library (
+        _id INTEGER PRIMARY KEY AUTOINCREMENT,
+        set_id INTEGER NOT NULL,
+        color TEXT NOT NULL
+);
+
+-- Триггер: replicated_insert_color_library_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_color_library_trig
+         AFTER INSERT
+            ON color_library
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'color_library',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+-- Триггер: replicated_update_color_library_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_color_library_trig
+         AFTER UPDATE
+            ON color_library
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'color_library',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'color_library',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_color_library_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_color_library_trig
+         AFTER DELETE
+            ON color_library
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'color_library',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+

@@ -1,0 +1,61 @@
+-- Таблица: popravka_kurs
+CREATE TABLE tabB (
+    _id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    name     TEXT,
+    num  INTEGER
+);
+
+CREATE TABLE tabC (
+    _id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    name     TEXT,
+    num  INTEGER
+);
+
+CREATE TABLE tabA (
+    _id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    name     TEXT,
+    num  INTEGER
+);
+
+selAllTabA:
+SELECT * FROM tabA;
+insertTabA:
+    INSERT INTO tabA(name,num) VALUES (?,?);
+
+
+
+selAllTabB:
+SELECT * FROM tabB;
+selectSumTabB:
+SELECT TOTAL(num) FROM tabB;
+insertTabB:
+    INSERT INTO tabB(name,num) VALUES (?,?);
+
+selAllTabC:
+SELECT * FROM tabC;
+selectSumTabC:
+SELECT TOTAL(num) FROM  (SELECT TOTAL(num) AS num FROM tabC UNION ALL SELECT num FROM tabA WHERE _id = -666); --  (SELECT tabC.num, (SELECT _id FROM tabA WHERE _id = -1) FROM tabC);
+insertTabC:
+    INSERT INTO tabC(name,num) VALUES (?,?);
+
+
+
+-- Триггер: insert_sum_oper_week_trig1
+CREATE TRIGGER insert_tabA
+         AFTER INSERT
+            ON tabA
+       --   WHEN new.num = 0
+BEGIN
+    INSERT INTO tabB (_id,name,num)
+                       VALUES (new._id,new.name,new.num);
+END;
+
+-- Триггер: insert_sum_oper_week_trig1
+CREATE TRIGGER insert_tabB
+         AFTER INSERT
+            ON tabB
+       --   WHEN new.num = 0
+BEGIN
+    INSERT INTO tabC (_id,name,num)
+                       VALUES (new._id,new.name,new.num);
+END;

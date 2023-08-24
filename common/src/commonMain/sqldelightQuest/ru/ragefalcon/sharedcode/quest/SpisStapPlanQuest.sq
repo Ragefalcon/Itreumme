@@ -1,0 +1,122 @@
+-- Таблица: spis_stap_plan
+CREATE TABLE spis_stap_plan_quest (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    parent_id INTEGER NOT NULL,
+    name      TEXT NOT NULL,
+    hour     REAL NOT NULL,
+    srok     INTEGER NOT NULL,
+    statsrok     INTEGER NOT NULL,
+    opis      TEXT NOT NULL,
+    commstat      INTEGER NOT NULL,
+    svernut   TEXT NOT NULL, --INTEGER AS Boolean NOT NULL, -- DEFAULT 0 NOT NULL
+    idplan    INTEGER NOT NULL
+);
+
+insertOrReplaceStapPlan:
+INSERT OR REPLACE INTO spis_stap_plan_quest(
+     parent_id,
+     name,
+     hour,
+     srok,
+     statsrok,
+     opis,
+     commstat,
+     svernut,
+     idplan
+                )
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updatePlanStap{
+UPDATE spis_stap_plan_quest SET
+                  parent_id = :parent_id,
+                  name = :name,
+                  hour = :hour,
+                  srok = :srok,
+                  statsrok = :statsrok,
+                  opis = :opis,
+                  commstat = :commstat,
+                  idplan = :idplan
+              WHERE _id = :id;
+
+    UPDATE common_trigger
+       SET child_name = :name
+     WHERE child_id = :id AND type_trig_id IN :type_trig_id;
+}
+
+-- updateGotovPlanStap:
+-- UPDATE spis_stap_plan_quest SET gotov = :gotov WHERE _id = :id;
+--
+-- updateStatPlanStap:
+-- UPDATE spis_stap_plan_quest SET stat = :stat WHERE _id = :id;
+
+deletePlanStap{
+DELETE FROM spis_stap_plan_quest WHERE _id = :id;
+DELETE FROM common_trigger
+     WHERE parent_element_id = :id AND parent_type_element = :parent_type_element_stap_plan;
+DELETE FROM common_trigger
+                WHERE child_id = :id AND type_trig_id IN :type_trig_id_stap_plan;
+}
+
+
+countOpenStapPlan:
+SELECT COUNT(*) FROM (
+WITH RECURSIVE cte AS (
+    SELECT _id
+        FROM spis_stap_plan_quest WHERE
+                commstat<>:iskstat AND idplan = :idpl AND parent_id = -1
+    UNION ALL
+    SELECT  c._id
+        FROM spis_stap_plan_quest c INNER JOIN cte ON cte._id = c.parent_id AND c.idplan = :idpl  AND c.commstat<>:iskstat
+) SELECT _id FROM cte );
+
+-- allStapPlan:
+-- SELECT * FROM spis_stap_plan_quest;
+
+openStapPlan:
+WITH RECURSIVE cte AS (
+    SELECT 0 AS level, CAST(_id AS TEXT) AS sort , _id, parent_id, name, hour, srok, statsrok, opis, svernut, commstat, idplan
+        FROM spis_stap_plan_quest WHERE
+                commstat<>:iskstat AND idplan = :idpl AND parent_id = -1
+    UNION ALL
+    SELECT cte.level + 1, CAST(cte.sort || '/' || CAST(c._id AS TEXT) AS TEXT), c._id, c.parent_id, c.name, c.hour, c.srok, c.statsrok, c.opis, c.svernut, c.commstat, c.idplan
+        FROM spis_stap_plan_quest c INNER JOIN cte ON cte._id = c.parent_id
+        AND (cte.svernut = 'false' OR cte.svernut = 'False') AND c.idplan = :idpl  AND c.commstat<>:iskstat
+) SELECT level, _id, parent_id, name, hour, srok, statsrok, opis, svernut, commstat, idplan,
+        (SELECT COUNT(*) FROM spis_stap_plan_quest WHERE spis_stap_plan_quest.parent_id = cte._id AND cte.commstat<>:iskstat ) AS stapcount FROM cte ORDER BY sort;
+
+allStapPlan:
+    SELECT _id, parent_id, name, hour, srok, statsrok, opis, svernut, commstat, idplan,
+     (SELECT COUNT(*) FROM spis_stap_plan_quest WHERE spis_stap_plan_quest.parent_id = spis_stap_plan_quest._id ) AS stapcount
+        FROM spis_stap_plan_quest;
+
+openStapPlanForSelect:
+WITH RECURSIVE cte AS (
+    SELECT 0 AS level, CAST(_id AS TEXT) AS sort , _id, parent_id, name, hour, srok, statsrok, opis, svernut, commstat, idplan
+        FROM spis_stap_plan_quest WHERE
+                commstat<>:iskstat AND idplan = :idpl AND parent_id = -1 AND _id NOT IN :iskl
+    UNION ALL
+    SELECT cte.level + 1, CAST(cte.sort || '/' || CAST(c._id AS TEXT) AS TEXT), c._id, c.parent_id, c.name, c.hour, c.srok, c.statsrok, c.opis, c.svernut, c.commstat, c.idplan
+        FROM spis_stap_plan_quest c INNER JOIN cte ON cte._id = c.parent_id
+        AND (cte.svernut = 'false' OR cte.svernut = 'False') AND c.idplan = :idpl  AND c.commstat<>:iskstat AND c._id NOT IN :iskl
+) SELECT level, _id, parent_id, name, hour, srok, statsrok, opis, svernut, commstat, idplan,
+        (SELECT COUNT(*) FROM spis_stap_plan_quest WHERE spis_stap_plan_quest.parent_id = cte._id AND cte.commstat<>:iskstat ) AS stapcount FROM cte ORDER BY sort;
+
+expandStapPlan:
+UPDATE spis_stap_plan_quest SET svernut = :sver WHERE _id = :id;
+
+-- Триггер: update_stap_plan_trig4
+--  Обновляет подэтапы, ежедневные планы, а также часы когда у этапа меняется родительский проект
+CREATE TRIGGER update_stap_plan_trig4
+         AFTER UPDATE
+            ON spis_stap_plan_quest
+          WHEN old.idplan <> new.idplan
+BEGIN
+    UPDATE spis_stap_plan_quest
+       SET idplan = new.idplan
+     WHERE parent_id = new._id;
+
+--     UPDATE den_plan
+--        SET privplan = new.idplan
+--      WHERE stap_prpl = new._id;
+
+END;

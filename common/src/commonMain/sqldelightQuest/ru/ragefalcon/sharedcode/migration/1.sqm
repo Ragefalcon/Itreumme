@@ -1,0 +1,170 @@
+CREATE TABLE IF NOT EXISTS spis_otvet_dialog  (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    dialog_id INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    order_number INTEGER NOT NULL
+);
+-- ALTER TABLE spis_otvet_dialog ADD COLUMN order_number INTEGER NOT NULL DEFAULT 0;
+
+CREATE TABLE IF NOT EXISTS spis_dialog (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    maintext TEXT NOT NULL,
+    govorun_id INTEGER NOT NULL
+);
+
+-- INSERT OR REPLACE INTO spis_dialog_2 SELECT _id,name,maintext,govorun_id FROM spis_dialog;
+
+-- DROP TABLE IF EXISTS spis_dialog;
+
+-- ALTER TABLE spis_dialog_2 RENAME TO spis_dialog;
+
+CREATE TABLE IF NOT EXISTS spis_govorun (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    opis TEXT NOT NULL,
+    image_file TEXT NOT NULL
+);
+-- ALTER TABLE spis_govorun ADD COLUMN opis TEXT NOT NULL DEFAULT "";
+
+-- Таблица: spis_tree_skill
+CREATE TABLE IF NOT EXISTS spis_tree_skill_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_area   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    id_type_tree INTEGER NOT NULL,
+    opis  TEXT NOT NULL,
+    icon  INTEGER NOT NULL,
+    visible_stat INTEGER NOT NULL
+);
+
+-- Таблица: spis_node_tree_skills
+CREATE TABLE IF NOT EXISTS spis_node_tree_skills_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    opis  TEXT NOT NULL,
+    id_type_node INTEGER NOT NULL,
+    level INTEGER NOT NULL,
+    icon  INTEGER NOT NULL,
+    icon_complete INTEGER NOT NULL,
+    visible_stat INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS spis_icon_node_tree_skills_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    extension  TEXT NOT NULL,
+    type_ramk INTEGER NOT NULL
+);
+
+-----------------------------
+-- Таблица: spis_level_tree_skill_quest
+CREATE TABLE IF NOT EXISTS spis_level_tree_skill_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    num_level INTEGER NOT NULL,
+    opis  TEXT NOT NULL,
+    proc_porog REAL NOT NULL,
+    visible_stat  INTEGER NOT NULL
+);
+
+-- Триггер: insert_spis_level_tree_skill_quest_trig
+CREATE TRIGGER IF NOT EXISTS insert_spis_level_tree_skill_quest_trig1
+         BEFORE INSERT
+            ON spis_level_tree_skill_quest
+      FOR EACH ROW
+BEGIN
+UPDATE spis_level_tree_skill_quest SET num_level = num_level + 1 WHERE id_tree = new.id_tree AND num_level >= new.num_level;
+UPDATE spis_node_tree_skills_quest
+    SET level = level + 1
+    WHERE level >= new.num_level AND id_tree = new.id_tree;
+END;
+
+-- Триггер: delete_spis_level_tree_skill_quest_trig
+CREATE TRIGGER IF NOT EXISTS delete_spis_level_tree_skill_quest_trig1
+         AFTER DELETE
+            ON spis_level_tree_skill_quest
+      FOR EACH ROW
+BEGIN
+UPDATE spis_level_tree_skill_quest SET num_level = num_level - 1 WHERE id_tree = old.id_tree AND num_level > old.num_level;
+UPDATE spis_node_tree_skills_quest
+    SET level = level - 1
+    WHERE level > old.num_level AND id_tree = old.id_tree;
+END;
+
+
+CREATE TABLE IF NOT EXISTS property_count_node_ts_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+--     id_tree   INTEGER NOT NULL,
+    id_node   INTEGER NOT NULL,
+    priv_counter  INTEGER NOT NULL,
+    count_value  INTEGER NOT NULL,
+    max_value INTEGER NOT NULL,
+    porog_value  INTEGER NOT NULL
+);
+
+-- Таблица: property_plan_node_ts_quest
+CREATE TABLE IF NOT EXISTS property_plan_node_ts_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+--     id_tree   INTEGER NOT NULL,
+    id_node   INTEGER NOT NULL,
+    privplan  INTEGER NOT NULL,
+    stap_prpl INTEGER NOT NULL,
+    porog_hour  REAL NOT NULL
+);
+
+-- Таблица: spis_binding_node_tree_skill_quest
+CREATE TABLE IF NOT EXISTS spis_binding_node_tree_skill_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    id_parent INTEGER NOT NULL,
+    id_child  INTEGER NOT NULL
+);
+
+-- Таблица: spis_must_complete_node_for_level_quest
+CREATE TABLE IF NOT EXISTS spis_must_complete_node_for_level_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    num_level INTEGER NOT NULL,
+    id_node  INTEGER NOT NULL
+);
+
+
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+
+-- Триггер: update_spis_node_tree_skills_trig1
+CREATE TRIGGER IF NOT EXISTS update_spis_node_tree_skills_trig1
+         AFTER UPDATE
+            ON spis_node_tree_skills_quest
+      FOR EACH ROW
+          WHEN old.level <> new.level AND (SELECT COUNT(*) FROM spis_binding_node_tree_skill_quest WHERE id_parent = old._id) <> 0
+BEGIN
+UPDATE spis_node_tree_skills_quest
+    SET level = IFNULL((SELECT MAX(level) FROM spis_node_tree_skills_quest AS snts2
+                    WHERE snts2._id IN (SELECT sbnts.id_parent FROM spis_binding_node_tree_skill_quest AS sbnts WHERE sbnts.id_child = spis_node_tree_skills_quest._id)),0)+1 --spis_node_tree_skills.
+    WHERE _id IN (SELECT id_child FROM spis_binding_node_tree_skill_quest WHERE id_parent = old._id);
+END;
+
+
+-- Триггер: delete_spis_node_tree_skills_trig1
+CREATE TRIGGER IF NOT EXISTS delete_spis_node_tree_skills_trig1
+         AFTER DELETE
+            ON spis_node_tree_skills_quest
+      FOR EACH ROW
+          WHEN (SELECT COUNT(*) FROM spis_binding_node_tree_skill_quest WHERE id_parent = old._id) <> 0
+BEGIN
+UPDATE spis_node_tree_skills_quest
+    SET level = IFNULL((SELECT MAX(level) FROM spis_node_tree_skills_quest AS snts2
+                    WHERE snts2._id IN (SELECT sbnts.id_parent FROM spis_binding_node_tree_skill_quest AS sbnts WHERE sbnts.id_child = spis_node_tree_skills_quest._id)),0)+1 --spis_node_tree_skills.
+    WHERE _id IN (SELECT id_child FROM spis_binding_node_tree_skill_quest WHERE id_parent = old._id);
+END;
+
+
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------

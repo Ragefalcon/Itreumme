@@ -1,0 +1,67 @@
+CREATE TABLE IF NOT EXISTS complex_opis_image (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    opis_id   INTEGER NOT NULL,
+    sort   INTEGER NOT NULL
+);
+
+insertOrReplace:
+INSERT OR REPLACE INTO complex_opis_image(
+    opis_id,
+    sort
+)
+VALUES (:opis_id, :sort);
+
+update:
+UPDATE complex_opis_image SET opis_id = :opis_id, sort = :sort WHERE _id = :id;
+
+updateSort:
+UPDATE complex_opis_image SET sort = :sort WHERE _id = :id;
+
+delete:
+DELETE FROM complex_opis_image WHERE _id = :id;
+
+-- Триггер: replicated_insert_complex_opis_image_trig
+CREATE TRIGGER replicated_insert_complex_opis_image_trig
+         AFTER INSERT
+            ON complex_opis_image
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_complex_opis_image_trig
+CREATE TRIGGER replicated_update_complex_opis_image_trig
+         AFTER UPDATE
+            ON complex_opis_image
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_complex_opis_image_trig
+CREATE TRIGGER replicated_delete_complex_opis_image_trig
+         AFTER DELETE
+            ON complex_opis_image
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'complex_opis_image',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

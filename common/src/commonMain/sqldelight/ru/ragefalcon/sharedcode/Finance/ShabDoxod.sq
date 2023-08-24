@@ -1,0 +1,106 @@
+
+-- Таблица: shabdoxod
+CREATE TABLE shabdoxod (
+    _id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    sort     INTEGER NOT NULL,
+    name     TEXT NOT NULL,
+    named    TEXT NOT NULL,
+    summad   REAL NOT NULL,
+    typed    TEXT NOT NULL,
+    schet_id INTEGER NOT NULL
+);
+
+selectShablonDoxod:
+SELECT *, spis_schet.name AS schetName
+FROM shabdoxod
+LEFT JOIN spis_schet ON spis_schet._id = shabdoxod.schet_id
+ORDER BY shabdoxod.sort DESC;
+
+insertOrReplaceShablonDoxod:
+INSERT OR REPLACE INTO shabdoxod(
+     sort,
+     name,
+     named,
+     summad,
+     typed,
+     schet_id
+                )
+VALUES (0, ?, ?, ?, ?, ?);
+
+updateShablonDoxod:
+UPDATE shabdoxod SET name = :name,
+                  named = :named,
+                  summad = :summad,
+                  typed = :typed,
+                  schet_id = :schet_id
+              WHERE _id = :id;
+
+
+changeSortToUp{
+    UPDATE shabdoxod SET sort = sort-1 WHERE sort <= :newsort AND sort > :oldsort ;
+    UPDATE shabdoxod SET sort = :newsort WHERE _id = :id;
+}
+changeSortToDown{
+    UPDATE shabdoxod SET sort = sort+1 WHERE sort < :oldsort AND sort >= :newsort ;
+    UPDATE shabdoxod SET sort = :newsort WHERE _id = :id;
+}
+
+deleteShablonDoxod:
+DELETE FROM shabdoxod WHERE _id = :id;
+
+-- Триггер: replicated_insert_shabdoxod_trig
+CREATE TRIGGER IF NOT EXISTS sort_insert_shabdoxod_trig
+         AFTER INSERT
+            ON shabdoxod
+      FOR EACH ROW
+BEGIN
+    UPDATE shabdoxod SET sort = new._id WHERE _id = new._id;
+END;
+
+
+-- Триггер: replicated_insert_shabdoxod_trig
+CREATE TRIGGER replicated_insert_shabdoxod_trig
+         AFTER INSERT
+            ON shabdoxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'shabdoxod',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_shabdoxod_trig
+CREATE TRIGGER replicated_update_shabdoxod_trig
+         AFTER UPDATE
+            ON shabdoxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'shabdoxod',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'shabdoxod',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_shabdoxod_trig
+CREATE TRIGGER replicated_delete_shabdoxod_trig
+         AFTER DELETE
+            ON shabdoxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'shabdoxod',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

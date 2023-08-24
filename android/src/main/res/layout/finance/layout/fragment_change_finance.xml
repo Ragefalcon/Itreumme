@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:elevation="5dp"
+        android:layout_height="match_parent"
+>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/change_layout"
+            android:visibility="invisible"
+            tools:visibility="visible"
+    >
+
+        <ImageView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:srcCompat="@drawable/back_add_layout"
+                android:id="@+id/iv_backchangelay"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:clickable="true"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="50dp"
+                android:background="@drawable/bg_analiz_main"
+                android:id="@+id/add_panel">
+
+            <Button
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:id="@+id/butt_delete_fin"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:background="@drawable/ic_delete"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp" android:backgroundTint="@drawable/sel_col_tint_butt_inv"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_delete_fin"
+                    app:layout_constraintRight_toRightOf="@+id/butt_delete_fin"
+                    app:layout_constraintLeft_toLeftOf="@+id/butt_delete_fin"
+                    app:layout_constraintTop_toBottomOf="@+id/butt_delete_fin"
+                    android:fontFamily="sans-serif"
+                    android:textColor="@color/colorMyBeg"
+                    android:text="Удалить"
+                    android:textAllCaps="false"
+                    android:textSize="20sp" app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp" android:textAlignment="center"/>
+            <Button
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:id="@+id/butt_change_fin" android:elevation="6dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_delete_fin"
+                    android:background="@drawable/ic_change"
+                    android:layout_marginTop="32dp"
+                    android:backgroundTint="@drawable/sel_col_tint_butt_inv"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_change_fin"
+                app:layout_constraintRight_toRightOf="@+id/butt_change_fin"
+                app:layout_constraintLeft_toLeftOf="@+id/butt_change_fin"
+                app:layout_constraintTop_toBottomOf="@+id/butt_change_fin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/colorMyBeg"
+                android:text="Изменить"
+                android:textAllCaps="false"
+                android:layout_marginTop="1dp"
+                android:layout_marginBottom="16dp"
+                android:textSize="20sp"/>
+            <Button
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:id="@+id/butt_back_change_fin" android:elevation="6dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:background="@drawable/ic_back"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="@drawable/sel_col_tint_butt_inv"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

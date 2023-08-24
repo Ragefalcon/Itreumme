@@ -1,0 +1,104 @@
+-- Таблица: spis_tree_skill
+CREATE TABLE spis_tree_skill (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_area   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    id_type_tree INTEGER NOT NULL,
+    opis  TEXT NOT NULL,
+    open_edit INTEGER NOT NULL,
+    icon  INTEGER NOT NULL,
+    quest_id  INTEGER NOT NULL DEFAULT 0,
+    quest_key_id  INTEGER NOT NULL DEFAULT 0
+);
+
+insertOrReplaceTreeSkill:
+INSERT OR REPLACE INTO spis_tree_skill(
+     id_area,
+     name,
+     id_type_tree,
+     opis,
+     open_edit,
+     icon
+                )
+VALUES (?, ?, ?, ?, ?, ?);
+
+
+
+updateTreeSkill:
+UPDATE spis_tree_skill SET
+                  id_area = :id_area,
+                  name = :name,
+                  opis = :opis,
+                  icon = :icon
+              WHERE _id = :id;
+
+setOpenEditTreeSkill:
+UPDATE spis_tree_skill SET
+                  open_edit = :open_edit
+              WHERE _id = :id;
+
+unlockTree:
+UPDATE spis_tree_skill SET
+                  open_edit = :stat
+              WHERE quest_id = :quest_id AND quest_key_id = :quest_key_id AND open_edit IN :statlock;
+
+deleteTreeSkill:
+DELETE FROM spis_tree_skill  WHERE _id = :id;
+
+
+selectTreeSkill:
+SELECT *,
+IFNULL((SELECT spis_quest.name FROM spis_quest WHERE spis_quest._id = quest_id),"") AS namequest,
+(SELECT COUNT(*) FROM spis_node_tree_skills WHERE id_tree = spis_tree_skill._id AND complete = :codNodeComplete) AS complete_count_node,
+(SELECT COUNT(*) FROM spis_node_tree_skills WHERE id_tree = spis_tree_skill._id) AS count_node
+-- (SELECT TOTAL(hour) AS obs FROM (SELECT hour FROM  sum_hour_stap_plan,spis_plan_goal WHERE spis_tree_skill._id = spis_plan_goal.id_goal AND spis_plan_goal.stap = sum_hour_stap_plan._id UNION
+--  SELECT hour FROM hour_plan,spis_plan_goal WHERE  spis_tree_skill._id = spis_plan_goal.id_goal AND hour_plan._id = spis_plan_goal.id_plan AND spis_plan_goal.stap = 0) ) AS hour
+FROM spis_tree_skill ORDER BY id_area;
+
+
+-- Триггер: replicated_insert_spis_tree_skill_trig
+CREATE TRIGGER replicated_insert_spis_tree_skill_trig
+         AFTER INSERT
+            ON spis_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_tree_skill',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_tree_skill_trig
+CREATE TRIGGER replicated_update_spis_tree_skill_trig
+         AFTER UPDATE
+            ON spis_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_tree_skill',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_tree_skill',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_tree_skill_trig
+CREATE TRIGGER replicated_delete_spis_tree_skill_trig
+         AFTER DELETE
+            ON spis_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_tree_skill',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

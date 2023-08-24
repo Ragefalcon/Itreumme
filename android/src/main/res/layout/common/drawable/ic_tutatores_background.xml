@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Атрибут android:opacity=”opaque” крайне важен для предотвращения черных миганий при переходе к вашей теме -->
+<layer-list  android:opacity="opaque"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+
+>
+
+    <item android:drawable="@color/colorMyMainTheme"/>
+<!--    <item>-->
+<!--        <shape android:shape="rectangle" >-->
+<!--            <gradient-->
+<!--                    android:angle="0"-->
+<!--                    android:centerColor="#00000000"-->
+<!--                    android:centerX="0.8"-->
+<!--                    android:endColor="#77000000"-->
+<!--                    android:startColor="#00000000" />-->
+<!--        </shape>-->
+<!--    </item>-->
+<!--    <item>-->
+<!--        <shape android:shape="rectangle" >-->
+<!--            <gradient-->
+<!--                    android:angle="90"-->
+<!--                    android:centerColor="#00000000"-->
+<!--                    android:centerX="0.8"-->
+<!--                    android:endColor="#77000000"-->
+<!--                    android:startColor="#00000000" />-->
+<!--        </shape>-->
+<!--    </item>-->
+<!--    <item>-->
+<!--        <shape android:shape="rectangle" >-->
+<!--            <gradient-->
+<!--                    android:angle="180"-->
+<!--                    android:centerColor="#00000000"-->
+<!--                    android:centerX="0.8"-->
+<!--                    android:endColor="#77000000"-->
+<!--                    android:startColor="#00000000" />-->
+<!--        </shape>-->
+<!--    </item>-->
+<!--    <item>-->
+<!--        <shape android:shape="rectangle" >-->
+<!--            <gradient-->
+<!--                    android:angle="270"-->
+<!--                    android:centerColor="#00000000"-->
+<!--                    android:centerX="0.8"-->
+<!--                    android:endColor="#77000000"-->
+<!--                    android:startColor="#00000000" />-->
+<!--    android:width="500px"-->
+<!--    android:height="500px"-->
+<!--        </shape>-->
+<!--    </item>-->
+    <item
+            android:width="500px"
+            android:height="500px"
+            android:gravity="center"
+            android:drawable="@drawable/ic_my_logo_500"
+    />
+
+</layer-list>

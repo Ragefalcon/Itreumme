@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/avatarMainScreen"
+                android:icon="@drawable/ic_round_avatar_24"
+                android:textColor="@color/colorSchetItem"
+                android:title="Аватар"/>
+        <item
+                android:id="@+id/timeMainScreen"
+                android:icon="@drawable/ic_baseline_access_time_24"
+                android:textColor="@color/colorSchetItem"
+                android:title="Время"/>
+        <item
+                android:id="@+id/journalMainScreen"
+                android:icon="@drawable/ic_change"
+                android:textColor="@color/colorSchetItem"
+                android:title="Журнал"/>
+<!--        android:actionLayout="@layout/item_my_popup"-->
+        <item
+                android:id="@+id/finance_main_screen"
+                android:icon="@drawable/ic_baseline_attach_money_24"
+                android:title="Финансы"/>
+<!--        <item-->
+<!--                android:title=" hkjhklj  ">-->
+<!--                        <menu>-->
+<!--                <group-->
+<!--                        android:id="@+id/menu_top"-->
+<!--                        android:checkableBehavior="single">-->
+<!--                    <item-->
+<!--                            android:id="@+id/id1"-->
+<!--                            android:title="Title1" />-->
+
+<!--                    <item-->
+<!--                            android:id="@+id/id2"-->
+<!--                            android:title="Title2" />-->
+<!--                </group>-->
+<!--            </menu>-->
+<!--        </item>-->
+    </group>
+
+    <group
+            android:id="@+id/menu_settings"
+            android:checkableBehavior="single">
+        <item
+                android:id="@+id/settingsMainScreen"
+                android:icon="@drawable/ic_round_settings_24"
+                android:textColor="@color/colorSchetItem"
+                android:textSize="30dp"
+                android:padding="20dp"
+                android:title="Настройки"/>
+    </group>
+
+
+<!--    <group-->
+<!--            android:id="@+id/menu_tmp1"-->
+<!--            android:checkableBehavior="single">-->
+<!--     </group>-->
+
+<!--    <group-->
+<!--            android:id="@+id/menu_tmp2"-->
+<!--            android:checkableBehavior="single">-->
+<!--     </group>-->
+
+    <group
+            android:id="@+id/menu_exit"
+            android:checkableBehavior="single">
+        <item
+                android:id="@+id/exitApp"
+                android:icon="@drawable/ic_round_replay_circle_filled_24"
+                android:textColor="@color/colorSchetItem"
+                android:title="Выход"/>
+    </group>
+<!--    <group android:checkableBehavior="single"-->
+<!--    android:menuCategory="alternative">-->
+<!--    <item-->
+<!--            android:id="@+id/exitApp"-->
+<!--            android:icon="@drawable/ic_round_replay_circle_filled_24"-->
+<!--            android:textColor="@color/colorSchetItem"-->
+<!--            android:title="Выход"/>-->
+<!--</group>-->
+<!--    <item android:title="Фрагменты 3 и 4">-->
+<!--        <menu>-->
+<!--            <item-->
+<!--                    android:id="@+id/fragment3"-->
+<!--                    android:icon="@drawable/ic_launcher_background"-->
+<!--                    android:title="Фрагмент 3"/>-->
+<!--            <item-->
+<!--                    android:id="@+id/fragment4"-->
+<!--                    android:icon="@drawable/ic_launcher_background"-->
+<!--                    android:title="Фрагмент 4"/>-->
+<!--        </menu>-->
+<!--    </item>-->
+
+</menu>

@@ -1,0 +1,23 @@
+INSERT INTO complex_opis (table_name,item_id,sort)
+   SELECT 'napom' AS table_name, _id AS item_id, 1 AS sort FROM napom WHERE opis <> '';
+INSERT INTO complex_opis_text (opis_id, text, colorNum, font_size, cursive, bold)
+   SELECT complex_opis._id AS opis_id, napom.opis AS text, 1 AS colorNum, 3 AS font_size, 0 AS cursive, 0 AS bold FROM complex_opis
+   INNER JOIN napom ON table_name = 'napom' AND item_id = napom._id AND  napom.opis <> '';
+
+INSERT INTO complex_opis (table_name,item_id,sort)
+   SELECT 'den_plan' AS table_name, _id AS item_id, 1 AS sort FROM den_plan WHERE opis <> '';
+INSERT INTO complex_opis_text (opis_id, text, colorNum, font_size, cursive, bold)
+   SELECT complex_opis._id AS opis_id, den_plan.opis AS text, 1 AS colorNum, 3 AS font_size, 0 AS cursive, 0 AS bold FROM complex_opis
+   INNER JOIN den_plan ON table_name = 'den_plan' AND item_id = den_plan._id AND  den_plan.opis <> '';
+
+INSERT INTO complex_opis (table_name,item_id,sort)
+   SELECT 'vxod' AS table_name, _id AS item_id, 1 AS sort FROM vxod WHERE opis <> '';
+INSERT INTO complex_opis_text (opis_id, text, colorNum, font_size, cursive, bold)
+   SELECT complex_opis._id AS opis_id, vxod.opis AS text, 1 AS colorNum, 3 AS font_size, 0 AS cursive, 0 AS bold FROM complex_opis
+   INNER JOIN vxod ON table_name = 'vxod' AND item_id = vxod._id AND  vxod.opis <> '';
+
+INSERT INTO complex_opis (table_name,item_id,sort)
+   SELECT 'shab_den_plan' AS table_name, _id AS item_id, 1 AS sort FROM shab_den_plan WHERE opis <> '';
+INSERT INTO complex_opis_text (opis_id, text, colorNum, font_size, cursive, bold)
+   SELECT complex_opis._id AS opis_id, shab_den_plan.opis AS text, 1 AS colorNum, 3 AS font_size, 0 AS cursive, 0 AS bold FROM complex_opis
+   INNER JOIN shab_den_plan ON table_name = 'shab_den_plan' AND item_id = shab_den_plan._id AND  shab_den_plan.opis <> '';

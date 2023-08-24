@@ -1,0 +1,72 @@
+CREATE TABLE spis_dialog_quest (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    quest_id    INTEGER NOT NULL,
+    key_id    INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    maintext TEXT NOT NULL,
+    govorun_name TEXT NOT NULL,
+    govorun_id INTEGER NOT NULL
+);
+
+selectAll:
+SELECT * FROM spis_dialog_quest;
+
+selectDialogEvent:
+SELECT *,IFNULL((SELECT image_file FROM spis_govorun_quest WHERE spis_govorun_quest.quest_id = :quest_id AND spis_govorun_quest.key_id = govorun_id),"") AS image_govorun,
+        IFNULL((SELECT name FROM spis_quest WHERE spis_quest._id = :quest_id),"") AS quest_name
+ FROM spis_dialog_quest WHERE quest_id = :quest_id AND key_id = :key_id;
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_dialog_quest( quest_id, key_id, name, maintext, govorun_name, govorun_id)
+    VALUES ( :quest_id,:key_id,:name, :maintext, :govorun_name, :govorun_id);
+
+delete{
+DELETE FROM spis_otvet_dialog_quest WHERE dialog_id = :id;
+DELETE FROM spis_dialog_quest WHERE _id = :id;
+}
+
+-- Триггер: replicated_insert_spis_dialog_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_dialog_quest_trig
+         AFTER INSERT
+            ON spis_dialog_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_dialog_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_dialog_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_dialog_quest_trig
+         AFTER UPDATE
+            ON spis_dialog_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_dialog_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_dialog_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_dialog_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_dialog_quest_trig
+         AFTER DELETE
+            ON spis_dialog_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_dialog_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

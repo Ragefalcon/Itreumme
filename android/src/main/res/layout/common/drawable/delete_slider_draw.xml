@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+            android:id="@android:id/background"
+            android:drawable="@drawable/bg_stap_plan"
+            android:top="20dp"
+            android:right="20dp"
+            android:left="23dp"
+            android:bottom="20dp"
+    />
+    <item android:id="@android:id/secondaryProgress"
+          android:top="160dp"
+          android:right="160dp"
+          android:left="160dp"
+          android:bottom="160dp"
+    >
+
+        <!--    >-->
+        <scale
+                android:drawable="@drawable/bg_analiz_main"
+                android:scaleWidth="100%"
+        />
+    </item>
+    <item android:id="@android:id/progress"
+          android:top="10dp"
+          android:right="10dp"
+          android:left="13dp"
+          android:bottom="10dp"
+    >
+        <scale
+                android:drawable="@drawable/bg_delete_slider_prog"
+                android:scaleWidth="100%"
+        />
+    </item>
+    <item
+            android:width="30dp"
+            android:height="30dp"
+            android:top="3dp"
+            android:left="5dp"
+            android:gravity="center|center"
+            android:drawable="@drawable/ic_baseline_forward_24_pink"
+    />
+    <item
+            android:width="30dp"
+            android:height="30dp"
+            android:top="3dp"
+            android:left="60dp"
+            android:gravity="center|center"
+            android:drawable="@drawable/ic_baseline_forward_24_pink"
+    />
+    <item
+            android:width="30dp"
+            android:height="30dp"
+            android:top="3dp"
+            android:left="-50dp"
+            android:gravity="center|center"
+            android:drawable="@drawable/ic_baseline_forward_24_pink"
+    />
+    <item
+            android:width="50dp"
+            android:height="50dp"
+            android:right="-38dp"
+            android:color="@color/colorMyMainTheme"
+            android:gravity="center|right"
+            android:drawable="@drawable/ic_round_delete_forever_24_red"
+    />
+</layer-list>

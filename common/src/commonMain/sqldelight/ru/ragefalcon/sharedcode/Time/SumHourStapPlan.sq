@@ -1,0 +1,131 @@
+
+
+-- Таблица: sum_hour_stap_plan
+CREATE TABLE sum_hour_stap_plan (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    hour      REAL,
+    parent_id INTEGER
+);
+
+
+-- Триггер: update_sum_hour_stap_trig2
+CREATE TRIGGER update_sum_hour_stap_trig2
+         AFTER UPDATE
+            ON sum_hour_stap_plan
+          WHEN new.parent_id <> 0 AND
+               old.hour <> new.hour
+BEGIN
+    UPDATE sum_hour_stap_plan
+       SET hour = (
+           WITH RECURSIVE cte AS (
+                   SELECT 0 AS level,
+                          CAST (spis_stap_plan._id AS TEXT) AS sort, --VARCHAR(128)
+                          spis_stap_plan._id,
+                          (
+                              SELECT hour
+                                FROM hour_stap_plan
+                               WHERE hour_stap_plan._id = spis_stap_plan._id
+                          )
+                          AS hour
+                     FROM spis_stap_plan
+                    WHERE spis_stap_plan._id = new.parent_id
+                   UNION ALL
+                   SELECT p.level + 1,
+                          CAST (p.sort || '/' || CAST (c._id AS TEXT) AS TEXT ),
+                          c._id,
+                          (
+                              SELECT hour
+                                FROM hour_stap_plan
+                               WHERE hour_stap_plan._id = c._id
+                          )
+                          AS hour
+                     FROM spis_stap_plan c
+                          INNER JOIN
+                          cte p ON p._id = c.parent_id
+               )
+               SELECT (
+                      WITH RECURSIVE abc AS (
+                              SELECT _id,
+                                     hour,
+                                     sort
+                                FROM cte a
+                               WHERE a._id = cte._id
+                              UNION ALL
+                              SELECT c._id,
+                                     c.hour,
+                                     c.sort
+                                FROM cte c
+                                     INNER JOIN
+                                     abc p ON c.sort = CAST (p.sort || '/' || CAST (c._id AS TEXT) AS TEXT )
+                          )
+                          SELECT SUM(hour)
+                            FROM abc
+                      )
+                      AS hour
+                 FROM cte
+                WHERE _id = new.parent_id
+           )
+     WHERE new.parent_id = _id;
+END;
+
+
+-- Триггер: delete_sum_hour_stap_trig3
+CREATE TRIGGER delete_sum_hour_stap_trig3
+         AFTER DELETE
+            ON sum_hour_stap_plan
+          WHEN old.parent_id <> 0 AND
+               old.hour <> 0
+BEGIN
+    UPDATE sum_hour_stap_plan
+       SET hour = (
+           WITH RECURSIVE cte AS (
+                   SELECT 0 AS level,
+                          CAST (spis_stap_plan._id AS TEXT ) AS sort,
+                          spis_stap_plan._id,
+                          (
+                              SELECT hour
+                                FROM hour_stap_plan
+                               WHERE hour_stap_plan._id = spis_stap_plan._id
+                          )
+                          AS hour
+                     FROM spis_stap_plan
+                    WHERE spis_stap_plan._id = old.parent_id
+                   UNION ALL
+                   SELECT p.level + 1,
+                          CAST (p.sort || '/' || CAST (c._id AS TEXT) AS TEXT ),
+                          c._id,
+                          (
+                              SELECT hour
+                                FROM hour_stap_plan
+                               WHERE hour_stap_plan._id = c._id
+                          )
+                          AS hour
+                     FROM spis_stap_plan c
+                          INNER JOIN
+                          cte p ON p._id = c.parent_id
+               )
+               SELECT (
+                      WITH RECURSIVE abc AS (
+                              SELECT _id,
+                                     hour,
+                                     sort
+                                FROM cte a
+                               WHERE a._id = cte._id
+                              UNION ALL
+                              SELECT c._id,
+                                     c.hour,
+                                     c.sort
+                                FROM cte c
+                                     INNER JOIN
+                                     abc p ON c.sort = CAST (p.sort || '/' || CAST (c._id AS TEXT) AS TEXT )
+                          )
+                          SELECT SUM(hour)
+                            FROM abc
+                      )
+                      AS hour
+                 FROM cte
+                WHERE _id = old.parent_id
+           )
+     WHERE old.parent_id = _id;
+END;
+

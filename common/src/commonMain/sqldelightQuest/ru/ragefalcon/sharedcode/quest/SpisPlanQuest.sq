@@ -1,0 +1,150 @@
+-- Таблица: spis_plan
+CREATE TABLE spis_plan_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    vajn  INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    opis  TEXT NOT NULL,
+    hour REAL NOT NULL,
+    srok INTEGER NOT NULL,
+    statsrok INTEGER NOT NULL,
+    commstat  INTEGER NOT NULL
+);
+
+insertOrReplacePlan:
+INSERT OR REPLACE INTO spis_plan_quest(
+     vajn,
+     name,
+     opis,
+     hour,
+     srok,
+     statsrok,
+     commstat
+               )
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+updatePlan{
+UPDATE spis_plan_quest SET
+                  vajn = :vajn,
+                  name = :name,
+                  opis = :opis,
+                  hour = :hour,
+                  srok = :srok,
+                  statsrok = :statsrok,
+                  commstat = :commstat
+              WHERE _id = :id;
+    UPDATE common_trigger
+       SET child_name = :name
+     WHERE child_id = :id AND type_trig_id IN :type_trig_id;
+}
+
+deletePlan{
+DELETE FROM spis_plan_quest WHERE _id = :id;
+DELETE FROM common_trigger
+     WHERE parent_element_id = :id AND parent_type_element = :parent_type_element_plan;
+DELETE FROM common_trigger
+                WHERE child_id = :id AND type_trig_id IN :type_trig_id_plan;
+
+}
+
+
+-- selectOpenPlan:
+-- SELECT *,
+-- (SELECT hour FROM hour_plan WHERE hour_plan._id = spis_plan._id) AS hour,
+--          (SELECT COUNT(*) FROM spis_stap_plan WHERE spis_stap_plan.idplan = spis_plan._id) AS countstap
+-- FROM spis_plan
+-- WHERE stat <> :stat
+-- ORDER BY vajn;
+--
+selectAllPlan:
+SELECT *,
+-- ,(SELECT hour FROM hour_plan WHERE hour_plan._id = spis_plan._id) AS hour,
+         (SELECT COUNT(*) FROM spis_stap_plan_quest WHERE spis_stap_plan_quest.idplan = spis_plan_quest._id) AS countstap
+FROM spis_plan_quest
+ORDER BY vajn;
+
+
+-- Триггер: replicated_update_spis_plan_trig
+CREATE TRIGGER update_name_plan_in_spis_trig
+         AFTER UPDATE
+            ON spis_plan_quest
+          WHEN old.name <> new.name
+BEGIN
+    UPDATE common_trigger
+       SET child_name = new.name
+     WHERE child_id = new._id AND type_trig_id = 1;
+END;
+
+
+-- -- Триггер: insert_plan_trig1
+-- CREATE TRIGGER insert_plan_trig1
+--          AFTER INSERT
+--             ON spis_plan
+-- BEGIN
+--     INSERT INTO hour_plan VALUES (
+--                               new._id,
+--                               0
+--                           );
+-- END;
+--
+--
+-- -- Триггер: delete_plan_trig2
+-- CREATE TRIGGER delete_plan_trig2
+--          AFTER DELETE
+--             ON spis_plan
+-- BEGIN
+--     DELETE FROM spis_plan_goal
+--           WHERE id_plan = old._id;
+--     DELETE FROM hour_plan
+--           WHERE _id = old._id;
+--     UPDATE den_plan
+--        SET stap_prpl = 0,
+--            privplan = 0
+--      WHERE privplan = old._id;
+-- END;
+--
+--
+-- -- Триггер: replicated_insert_spis_plan_trig
+-- CREATE TRIGGER replicated_insert_spis_plan_trig
+--          AFTER INSERT
+--             ON spis_plan
+--       FOR EACH ROW
+-- BEGIN
+--     INSERT OR IGNORE INTO system_replicate_record VALUES (
+--                                                       'spis_plan',
+--                                                       new._id,
+--                                                       'false'
+--                                                   );
+-- END;
+--
+--
+-- -- Триггер: replicated_update_spis_plan_trig
+-- CREATE TRIGGER replicated_update_spis_plan_trig
+--          AFTER UPDATE
+--             ON spis_plan
+--       FOR EACH ROW
+-- BEGIN
+--     INSERT OR IGNORE INTO system_replicate_record VALUES (
+--                                                       'spis_plan',
+--                                                       new._id,
+--                                                       'false'
+--                                                   );
+--     INSERT OR IGNORE INTO system_replicate_record VALUES (
+--                                                       'spis_plan',
+--                                                       old._id,
+--                                                       'false'
+--                                                   );
+-- END;
+--
+--
+-- -- Триггер: replicated_delete_spis_plan_trig
+-- CREATE TRIGGER replicated_delete_spis_plan_trig
+--          AFTER DELETE
+--             ON spis_plan
+--       FOR EACH ROW
+-- BEGIN
+--     INSERT OR IGNORE INTO system_replicate_record VALUES (
+--                                                       'spis_plan',
+--                                                       old._id,
+--                                                       'false'
+--                                                   );
+-- END;

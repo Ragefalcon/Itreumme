@@ -1,0 +1,91 @@
+CREATE TABLE IF NOT EXISTS bind_for_schet_plan (
+    _id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    type_element  INTEGER NOT NULL,
+    element_id     INTEGER NOT NULL,
+    schet_plan_id INTEGER NOT NULL
+);
+
+selectBindWithName:
+SELECT bind_for_schet_plan.*,
+ (  CASE type_element
+ WHEN :typePlanId THEN spis_plan.name
+ WHEN :typePlanStapId THEN  CAST(ssp.stapname || " -> [" || ssp.planname || "]" AS TEXT) -- spis_stap_plan.name --
+ WHEN :typeGoalId THEN  spis_goal.name
+ ELSE "" END) AS name,
+(  CASE type_element
+ WHEN :typePlanId THEN spis_plan.stat
+ WHEN :typePlanStapId THEN  ssp.stapstat  -- spis_stap_plan.name --
+ WHEN :typeGoalId THEN  CAST(spis_goal.gotov AS INTEGER) -- spis_stap_plan.name --
+ ELSE 0 END) AS stat
+ FROM bind_for_schet_plan
+LEFT JOIN spis_schet_pl ON bind_for_schet_plan.schet_plan_id = spis_schet_pl._id
+-- LEFT JOIN spis_stap_plan ON bind_for_schet_plan.element_id = spis_stap_plan._id AND type_element = :typePlanStapId
+LEFT JOIN (SELECT spis_stap_plan._id , spis_stap_plan.stat AS stapstat, spis_stap_plan.name AS stapname, spis_plan.name AS planname FROM spis_stap_plan LEFT JOIN spis_plan ON spis_stap_plan.idplan = spis_plan._id) AS ssp ON bind_for_schet_plan.element_id = ssp._id AND type_element = :typePlanStapId
+LEFT JOIN spis_plan ON bind_for_schet_plan.element_id = spis_plan._id AND type_element = :typePlanId
+LEFT JOIN spis_goal ON bind_for_schet_plan.element_id = spis_goal._id AND type_element = :typeGoalId
+WHERE spis_schet_pl.open = 1;
+
+insertOrReplaceBind:
+INSERT OR REPLACE INTO bind_for_schet_plan(
+     type_element,
+     element_id,
+     schet_plan_id
+                )
+VALUES ( ?, ?, ?);
+
+deleteBind:
+DELETE FROM bind_for_schet_plan WHERE type_element = :type_element AND element_id = :element_id;
+
+getSchetPlan:
+SELECT schet_plan_id FROM bind_for_schet_plan WHERE type_element = :type_element AND element_id = :element_id;
+
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+-- Триггер: replicated_insert_bind_for_schet_plan_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_bind_for_schet_plan_trig
+         AFTER INSERT
+            ON bind_for_schet_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'bind_for_schet_plan',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_bind_for_schet_plan_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_bind_for_schet_plan_trig
+         AFTER UPDATE
+            ON bind_for_schet_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'bind_for_schet_plan',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'bind_for_schet_plan',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_bind_for_schet_plan_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_bind_for_schet_plan_trig
+         AFTER DELETE
+            ON bind_for_schet_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'bind_for_schet_plan',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+

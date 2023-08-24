@@ -1,0 +1,189 @@
+DROP TRIGGER IF EXISTS update_perevod_trig1;
+-- Триггер: update_perevod_trig1
+CREATE TRIGGER IF NOT EXISTS update_perevod_trig1
+         AFTER UPDATE
+            ON perevod
+BEGIN
+    UPDATE sum_on_schet
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT summa * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schet_id = new.schsp_id
+                          UNION ALL
+                          SELECT summa AS summa
+                            FROM doxod
+                           WHERE schet_id = new.schsp_id
+                          UNION ALL
+                          SELECT sumsp * ( -1) AS summa
+                            FROM perevod
+                           WHERE schsp_id = new.schsp_id
+                          UNION ALL
+                          SELECT sumz AS summa
+                            FROM perevod
+                           WHERE schz_id = new.schsp_id
+                      )
+           )
+     WHERE _id = new.schsp_id;
+    UPDATE sum_on_schet
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT summa * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schet_id = new.schz_id
+                          UNION ALL
+                          SELECT summa AS summa
+                            FROM doxod
+                           WHERE schet_id = new.schz_id
+                          UNION ALL
+                          SELECT sumsp * ( -1) AS summa
+                            FROM perevod
+                           WHERE schsp_id = new.schz_id
+                          UNION ALL
+                          SELECT sumz AS summa
+                            FROM perevod
+                           WHERE schz_id = new.schz_id
+                      )
+           )
+     WHERE _id = new.schz_id;
+-----------------------------
+    UPDATE sum_on_schet
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT summa * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schet_id = old.schsp_id
+                          UNION ALL
+                          SELECT summa AS summa
+                            FROM doxod
+                           WHERE schet_id = old.schsp_id
+                          UNION ALL
+                          SELECT sumsp * ( -1) AS summa
+                            FROM perevod
+                           WHERE schsp_id = old.schsp_id
+                          UNION ALL
+                          SELECT sumz AS summa
+                            FROM perevod
+                           WHERE schz_id = old.schsp_id
+                      )
+           )
+     WHERE _id = old.schsp_id;
+    UPDATE sum_on_schet
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT summa * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schet_id = old.schz_id
+                          UNION ALL
+                          SELECT summa AS summa
+                            FROM doxod
+                           WHERE schet_id = old.schz_id
+                          UNION ALL
+                          SELECT sumsp * ( -1) AS summa
+                            FROM perevod
+                           WHERE schsp_id = old.schz_id
+                          UNION ALL
+                          SELECT sumz AS summa
+                            FROM perevod
+                           WHERE schz_id = old.schz_id
+                      )
+           )
+     WHERE _id = old.schz_id;
+END;
+
+CREATE TRIGGER IF NOT EXISTS update_perevod_trig2
+         AFTER UPDATE
+            ON perevod
+          WHEN new.sumsp <> new.sumz OR  old.sumsp <> old.sumz
+BEGIN
+    DELETE FROM popravka_kurs
+          WHERE data = new.data OR data = old.data;
+    INSERT INTO popravka_kurs VALUES (
+                                  NULL,
+                                  (
+                                      SELECT sum(ss)
+                                        FROM (
+                                                 SELECT round(sum(sss) * ( -1), 2) AS ss
+                                                   FROM (
+                                                            SELECT ( -1) * sum(sumrub) AS sss
+                                                              FROM rasxod
+                                                            UNION ALL
+                                                            SELECT sum(sumrub) AS sss
+                                                              FROM doxod
+                                                            UNION ALL
+                                                            SELECT sum(summa) AS sss
+                                                              FROM popravka_kurs
+                                                        )
+                                                 UNION ALL
+                                                 SELECT round(sum(sumsch), 2) AS ss
+                                                   FROM (
+                                                            SELECT (
+                                                                       SELECT sum(summa)
+                                                                         FROM (
+                                                                                  SELECT summa * ( -1) AS summa
+                                                                                    FROM rasxod
+                                                                                   WHERE rasxod.schet_id = spis_schet._id
+                                                                                  UNION ALL
+                                                                                  SELECT summa
+                                                                                    FROM doxod
+                                                                                   WHERE doxod.schet_id = spis_schet._id
+                                                                                  UNION ALL
+                                                                                  SELECT sumsp * ( -1)
+                                                                                    FROM perevod
+                                                                                   WHERE perevod.schsp_id = spis_schet._id
+                                                                                  UNION ALL
+                                                                                  SELECT sumz
+                                                                                    FROM perevod
+                                                                                   WHERE perevod.schz_id = spis_schet._id
+                                                                              )
+                                                                   )
+*                                                                  (
+                                                                       SELECT kurs
+                                                                         FROM spis_valut
+                                                                        WHERE _id = val_id
+                                                                   )
+                                                                   AS sumsch
+                                                              FROM spis_schet
+                                                             WHERE open = 'true'
+                                                        )
+                                             )
+                                  ),
+                                  1,
+                                  new.data
+                              );
+
+-----------------------------
+-----------------------------
+    UPDATE sum_on_schet_pl
+       SET summa = (
+               SELECT round(total(summa), 2)
+                 FROM (
+                          SELECT sumrub AS summa
+                            FROM doxod
+--                            WHERE 1 = new.schsp_id
+                          UNION ALL
+                          SELECT sumrub * ( -1) AS summa
+                            FROM rasxod
+                           WHERE schpl_id = 1
+                          UNION ALL
+                          SELECT summa
+                            FROM popravka_kurs
+                           WHERE schz_id = 1
+                          UNION ALL
+                          SELECT summa
+                            FROM perevod_pl
+                           WHERE schz_id = 1
+                          UNION ALL
+                          SELECT summa * ( -1) AS summa
+                            FROM perevod_pl
+                           WHERE schsp_id = 1
+                      )
+           )
+     WHERE _id = 1;
+
+END;
+

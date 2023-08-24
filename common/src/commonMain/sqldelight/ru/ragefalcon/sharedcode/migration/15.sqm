@@ -1,0 +1,7 @@
+CREATE TRIGGER IF NOT EXISTS lvl_insert_spis_goal_trig
+         AFTER INSERT
+            ON spis_goal
+      FOR EACH ROW
+BEGIN
+    UPDATE spis_goal SET lvl = new._id WHERE _id = new._id;
+END;

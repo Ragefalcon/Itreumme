@@ -1,0 +1,67 @@
+-- Таблица: hour_stap_plan
+CREATE TABLE hour_stap_plan (
+    _id  INTEGER PRIMARY KEY AUTOINCREMENT,
+    hour REAL
+);
+
+
+-- Триггер: update_sum_hour_stap_trig1
+CREATE TRIGGER update_sum_hour_stap_trig1
+         AFTER UPDATE
+            ON hour_stap_plan
+          WHEN old.hour <> new.hour
+BEGIN
+    UPDATE sum_hour_stap_plan
+       SET hour = (
+           WITH RECURSIVE cte AS (
+                   SELECT 0 AS level,
+                          CAST (spis_stap_plan._id AS TEXT ) AS sort,
+                          spis_stap_plan._id,
+                          (
+                              SELECT hour
+                                FROM hour_stap_plan
+                               WHERE hour_stap_plan._id = spis_stap_plan._id
+                          )
+                          AS hour
+                     FROM spis_stap_plan
+                    WHERE spis_stap_plan._id = new._id
+                   UNION ALL
+                   SELECT p.level + 1,
+                          CAST (p.sort || '/' || CAST (c._id AS TEXT) AS TEXT ),
+                          c._id,
+                          (
+                              SELECT hour
+                                FROM hour_stap_plan
+                               WHERE hour_stap_plan._id = c._id
+                          )
+                          AS hour
+                     FROM spis_stap_plan c
+                          INNER JOIN
+                          cte p ON p._id = c.parent_id
+               )
+               SELECT (
+                      WITH RECURSIVE abc AS (
+                              SELECT _id,
+                                     hour,
+                                     sort
+                                FROM cte a
+                               WHERE a._id = cte._id
+                              UNION ALL
+                              SELECT c._id,
+                                     c.hour,
+                                     c.sort
+                                FROM cte c
+                                     INNER JOIN
+                                     abc p ON c.sort = CAST (p.sort || '/' || CAST (c._id AS TEXT) AS TEXT )
+                          )
+                          SELECT SUM(hour)
+                            FROM abc
+                      )
+                      AS hour
+                 FROM cte
+                WHERE _id = new._id
+           )
+     WHERE _id = new._id;
+END;
+
+

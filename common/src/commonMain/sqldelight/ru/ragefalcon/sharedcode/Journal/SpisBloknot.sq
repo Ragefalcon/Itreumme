@@ -1,0 +1,83 @@
+
+-- Таблица: spis_bloknot
+CREATE TABLE spis_bloknot (
+    _id  INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    opis TEXT NOT NULL
+);
+
+selectBloknot:
+SELECT *,
+          (SELECT COUNT(*) FROM spis_idea WHERE spis_idea.bloknot = spis_bloknot._id) AS countidea
+FROM spis_bloknot ORDER BY name;
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_bloknot(
+    name     ,
+    opis
+)
+VALUES (?, ?);
+
+update:
+UPDATE spis_bloknot SET name = :name,
+                  opis = :opis
+              WHERE _id = :id;
+
+delete{
+DELETE FROM spis_bloknot WHERE _id = :id;
+DELETE FROM complex_opis_image WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_bloknot' AND item_id = :id);
+DELETE FROM complex_opis_link WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_bloknot' AND item_id = :id);
+DELETE FROM complex_opis_image_group WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_bloknot' AND item_id = :id);
+DELETE FROM complex_opis_checkbox WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_bloknot' AND item_id = :id);
+DELETE FROM complex_opis_text_fts4 WHERE docid IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_bloknot' AND item_id = :id);
+DELETE FROM complex_opis_text WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_bloknot' AND item_id = :id);
+DELETE FROM complex_opis WHERE table_name = 'spis_bloknot' AND item_id = :id;
+}
+
+
+-- Триггер: replicated_insert_spis_bloknot_trig
+CREATE TRIGGER replicated_insert_spis_bloknot_trig
+         AFTER INSERT
+            ON spis_bloknot
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_bloknot',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_bloknot_trig
+CREATE TRIGGER replicated_update_spis_bloknot_trig
+         AFTER UPDATE
+            ON spis_bloknot
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_bloknot',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_bloknot',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_bloknot_trig
+CREATE TRIGGER replicated_delete_spis_bloknot_trig
+         AFTER DELETE
+            ON spis_bloknot
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_bloknot',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

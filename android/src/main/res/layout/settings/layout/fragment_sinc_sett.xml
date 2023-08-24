@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent">
+    <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/prog_load"
+            android:progressDrawable="@drawable/gotov_progress_draw"
+            tools:progress="10"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp"/>
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_drive_file_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:listitem="@layout/item_rasxod"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp" app:layout_constraintBottom_toTopOf="@+id/prog_load"
+            app:layout_constraintTop_toBottomOf="@+id/scrollView2" android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"/>
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/relativeLayout">
+
+        <com.google.android.gms.common.SignInButton
+                android:id="@+id/sign_in_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" tools:ignore="MissingConstraints"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp" android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true" android:layout_marginStart="0dp">
+        </com.google.android.gms.common.SignInButton>
+        <Button
+                android:text="Выйти"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/butt_exit"
+                android:paddingBottom="10dp" android:paddingTop="10dp" android:layout_marginBottom="24dp"
+                android:layout_toEndOf="@+id/sign_in_button" android:layout_marginStart="0dp"
+        />
+        <Button
+                android:text="Old BD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/butt_old_my_base"
+                android:paddingBottom="0dp" android:paddingTop="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_below="@+id/sign_in_button" android:layout_toEndOf="@id/buttGetFiles"
+                android:layout_marginStart="0dp"/>
+        <Button
+                android:text="База из сети"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/butt_network_my_base"
+                android:paddingBottom="0dp" android:paddingTop="0dp"
+                android:layout_toEndOf="@+id/butt_exit"
+                android:layout_marginTop="0dp" android:layout_alignParentTop="true"/>
+        <Button
+                android:text="toD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/butt_bd_to_device"
+                android:paddingBottom="0dp" android:paddingTop="0dp"
+                android:layout_marginTop="0dp" android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/butt_network_my_base" android:layout_marginStart="0dp"/>
+        <Button
+                android:text="New BD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/butt_upload_my_base"
+                android:paddingBottom="0dp" android:paddingTop="0dp"
+                android:layout_below="@+id/sign_in_button"/>
+        <Button
+                android:text="New Fold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/butt_new_folder"
+                android:paddingBottom="0dp" android:paddingTop="0dp"
+                android:layout_below="@+id/sign_in_button" android:layout_toEndOf="@+id/butt_old_my_base"
+                android:layout_marginStart="0dp"/>
+        <Button
+                android:text="Files"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/buttGetFiles"
+                android:layout_marginBottom="0dp" android:layout_marginTop="0dp"
+                android:layout_below="@+id/sign_in_button" android:layout_toEndOf="@id/butt_upload_my_base"
+                android:layout_marginStart="0dp"/>
+    </RelativeLayout>
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="200dp" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/scrollView2">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="vertical">
+            <TextView
+                    android:text="TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tv_authCode"
+                    android:textColor="#000000"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="serif-monospace"
+                    android:textSize="18sp"
+            />
+        </LinearLayout>
+    </ScrollView>
+    <!--            android:maxHeight="300dp"-->
+</androidx.constraintlayout.widget.ConstraintLayout>

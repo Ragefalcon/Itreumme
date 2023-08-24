@@ -1,0 +1,96 @@
+
+
+
+
+
+
+-- Таблица: typerasxod
+CREATE TABLE typerasxod (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    typer     TEXT NOT NULL,
+    planschet TEXT NOT NULL,
+    schpl_id  INTEGER NOT NULL,
+    open      TEXT NOT NULL
+);
+
+selectAllOpen:
+SELECT * FROM typerasxod WHERE open = 'true';
+
+selectAllOpenForPLan:
+SELECT * FROM typerasxod WHERE open = 'true';
+
+selectTypeRasxodForSett:
+SELECT *,
+        (SELECT COUNT(*) AS count FROM rasxod WHERE type_id = typerasxod._id) AS countoper
+--         0 AS countoper
+    FROM typerasxod WHERE open <> :openn;
+
+insertOrReplace:
+INSERT OR REPLACE INTO typerasxod(
+    typer,
+    planschet,
+    schpl_id,
+    open
+)
+VALUES (?, "На распределение", 1,"true");
+
+updateTyperasxodName:
+UPDATE typerasxod SET typer = :name WHERE _id = :id;
+
+updateTyperasxodSchetPlan:
+UPDATE typerasxod SET planschet = :planschet, schpl_id = :schpl_id WHERE _id = :id;
+
+updateTyperasxodOpen:
+UPDATE typerasxod SET open = :openn WHERE _id = :id;
+
+deleteTyperasxod:
+DELETE FROM typerasxod WHERE _id = :id;
+
+
+
+-- Триггер: replicated_insert_typerasxod_trig
+CREATE TRIGGER replicated_insert_typerasxod_trig
+         AFTER INSERT
+            ON typerasxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'typerasxod',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_typerasxod_trig
+CREATE TRIGGER replicated_update_typerasxod_trig
+         AFTER UPDATE
+            ON typerasxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'typerasxod',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'typerasxod',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_typerasxod_trig
+CREATE TRIGGER replicated_delete_typerasxod_trig
+         AFTER DELETE
+            ON typerasxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'typerasxod',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

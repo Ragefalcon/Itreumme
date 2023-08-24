@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AspectRatioImageView">
+        <attr name="aspectRatio" format="float"/>
+    </declare-styleable>
+    <declare-styleable name="CircleImageView">
+        <attr name="cv_borderColor" format="color"/>
+        <attr name="cv_borderWidth" format="dimension"/>
+    </declare-styleable>
+
+    <attr name="colorAccentedSurface" format="reference"/>
+    <attr name="colorTextAdd" format="reference"/>
+    <attr name="colorDivider" format="reference"/>
+    <attr name="colorIcon" format="reference"/>
+    <attr name="colorIndicator" format="reference"/>
+    <attr name="colorItems" format="reference"/>
+    <attr name="colorArchive" format="reference"/>
+    <attr name="colorTitle" format="reference"/>
+    <attr name="colorMess" format="reference"/>
+    <attr name="colorCounter" format="reference"/>
+    <attr name="colorBG_swipe" format="reference"/>
+    <attr name="colorBG" format="reference"/>
+    <attr name="colorSnackbar" format="reference"/>
+    <attr name="colorCheckDoneUser" format="reference"/>
+
+    <attr name="itemMyTextSize" format="dimension" />
+    <attr name="itemMyPadding" format="dimension" />
+    <attr name="colorNavigationItem" format="color" />
+    <attr name="colorNavigationItemSelected" format="color" />
+
+    <attr name="drawableNavigationItemBackground" format="reference" />
+
+</resources>

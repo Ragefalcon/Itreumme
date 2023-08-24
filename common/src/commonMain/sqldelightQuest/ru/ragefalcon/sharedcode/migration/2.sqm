@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS spis_must_complete_node_for_level_quest2 (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    id_node  INTEGER NOT NULL
+);
+INSERT INTO spis_must_complete_node_for_level_quest2 (_id, id_tree, id_node)
+   SELECT _id, id_tree, id_node FROM spis_must_complete_node_for_level_quest;
+DROP TABLE IF EXISTS spis_must_complete_node_for_level_quest;
+ALTER TABLE spis_must_complete_node_for_level_quest2 RENAME TO spis_must_complete_node_for_level_quest;

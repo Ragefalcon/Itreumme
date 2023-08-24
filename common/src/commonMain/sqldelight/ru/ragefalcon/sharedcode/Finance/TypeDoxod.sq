@@ -1,0 +1,83 @@
+
+
+
+
+-- Таблица: typedoxod
+CREATE TABLE typedoxod (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    typed TEXT NOT NULL,
+    open  TEXT NOT NULL
+);
+
+selectAllOpen:
+SELECT *
+FROM typedoxod WHERE open = 'true';
+
+selectTypedoxodForSett:
+SELECT *,
+        (SELECT COUNT(*) AS count FROM doxod WHERE type_id = typedoxod._id) AS countoper
+--         0 AS countoper
+    FROM typedoxod WHERE open <> :openn;
+
+insertOrReplace:
+INSERT OR REPLACE INTO typedoxod(
+    typed,
+    open
+)
+VALUES (?, "true");
+
+updateTypedoxodName:
+UPDATE typedoxod SET typed = :name WHERE _id = :id;
+
+updateTypedoxodOpen:
+UPDATE typedoxod SET open = :openn WHERE _id = :id;
+
+deleteTypedoxod:
+DELETE FROM typedoxod WHERE _id = :id;
+
+
+-- Триггер: replicated_insert_typedoxod_trig
+CREATE TRIGGER replicated_insert_typedoxod_trig
+         AFTER INSERT
+            ON typedoxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'typedoxod',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_typedoxod_trig
+CREATE TRIGGER replicated_update_typedoxod_trig
+         AFTER UPDATE
+            ON typedoxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'typedoxod',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'typedoxod',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_typedoxod_trig
+CREATE TRIGGER replicated_delete_typedoxod_trig
+         AFTER DELETE
+            ON typedoxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'typedoxod',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;

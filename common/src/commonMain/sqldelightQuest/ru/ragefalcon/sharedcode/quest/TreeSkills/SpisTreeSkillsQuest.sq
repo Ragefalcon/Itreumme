@@ -1,0 +1,48 @@
+-- Таблица: spis_tree_skill
+CREATE TABLE spis_tree_skill_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_area   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    id_type_tree INTEGER NOT NULL,
+    opis  TEXT NOT NULL,
+    icon  INTEGER NOT NULL,
+    visible_stat INTEGER NOT NULL
+);
+
+insertOrReplaceTreeSkill:
+INSERT OR REPLACE INTO spis_tree_skill_quest(
+     id_area,
+     name,
+     id_type_tree,
+     opis,
+     icon,
+     visible_stat
+                )
+VALUES (?, ?, ?, ?, ?, ?);
+
+
+updateTreeSkill{
+UPDATE spis_tree_skill_quest SET
+                  id_area = :id_area,
+                  name = :name,
+                  opis = :opis,
+                  icon = :icon,
+                  visible_stat = :visible_stat
+              WHERE _id = :id;
+    UPDATE common_trigger
+       SET child_name = :name
+     WHERE child_id = :id AND type_trig_id IN :type_start_trig_id;
+}
+
+
+deleteTreeSkill{
+DELETE FROM common_trigger
+                WHERE child_id = :id AND type_trig_id IN :type_trig_start_tree;
+DELETE FROM spis_tree_skill_quest  WHERE _id = :id;
+}
+
+
+selectTreeSkillQuest:
+SELECT *,
+(SELECT COUNT(*) FROM spis_node_tree_skills_quest WHERE id_tree = spis_tree_skill_quest._id) AS count_node
+FROM spis_tree_skill_quest ORDER BY id_area;

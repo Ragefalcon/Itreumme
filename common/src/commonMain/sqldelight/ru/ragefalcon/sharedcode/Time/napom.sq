@@ -1,0 +1,110 @@
+--
+-- Файл сгенерирован с помощью SQLiteStudio v3.2.1 в Пн янв 18 15:19:57 2021
+--
+-- Использованная кодировка текста: System
+--
+-- PRAGMA foreign_keys = off;
+-- BEGIN TRANSACTION;
+
+-- Таблица: napom
+CREATE TABLE napom (
+    _id    INTEGER PRIMARY KEY AUTOINCREMENT,
+    idplan INTEGER NOT NULL,
+    idstap INTEGER NOT NULL,
+    name   TEXT NOT NULL,
+    opis   TEXT NOT NULL,
+    data   INTEGER NOT NULL,
+    time   TEXT NOT NULL,
+    gotov  TEXT NOT NULL --INTEGER AS Boolean DEFAULT 0
+);
+
+insertOrReplaceNapom:
+INSERT OR REPLACE INTO napom(
+    idplan,
+    idstap,
+    name,
+    opis,
+    data,
+    time,
+    gotov
+)
+VALUES (?,?,?,?, ?, ?, ?);
+
+selectWorkNapom:
+SELECT * FROM napom WHERE ((gotov = 'false' OR gotov = 'False') AND data < :data1)
+OR (
+(data < strftime('%s000', :data1 / 1000, 'unixepoch', '1 days')) AND data >= :data1 )
+;
+
+selectNapomForCalendar:
+SELECT * FROM napom WHERE data >= ? AND data < ?;
+
+updateVypNapom:
+UPDATE napom SET gotov = :gotov, data = :data WHERE _id = :id;
+
+updateNapom:
+UPDATE napom SET name = :name,
+                  opis = :opis,
+                  data = :data,
+                  time = :time
+              WHERE _id = :id;
+
+deleteNapom{
+DELETE FROM napom WHERE _id = :id;
+DELETE FROM complex_opis_image WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'napom' AND item_id = :id);
+DELETE FROM complex_opis_link WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'napom' AND item_id = :id);
+DELETE FROM complex_opis_image_group WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'napom' AND item_id = :id);
+DELETE FROM complex_opis_checkbox WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'napom' AND item_id = :id);
+DELETE FROM complex_opis_text_fts4 WHERE docid IN (SELECT _id FROM complex_opis WHERE table_name = 'napom' AND item_id = :id);
+DELETE FROM complex_opis_text WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'napom' AND item_id = :id);
+DELETE FROM complex_opis WHERE table_name = 'napom' AND item_id = :id;
+}
+
+
+-- Триггер: replicated_insert_napom_trig
+CREATE TRIGGER replicated_insert_napom_trig
+         AFTER INSERT
+            ON napom
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'napom',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_napom_trig
+CREATE TRIGGER replicated_update_napom_trig
+         AFTER UPDATE
+            ON napom
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'napom',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'napom',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_napom_trig
+CREATE TRIGGER replicated_delete_napom_trig
+         AFTER DELETE
+            ON napom
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'napom',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+

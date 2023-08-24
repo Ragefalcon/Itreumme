@@ -1,0 +1,108 @@
+-- Таблица: shabrasxod
+CREATE TABLE shabrasxod (
+    _id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    sort     INTEGER NOT NULL,
+    name     TEXT NOT NULL,
+    namer    TEXT NOT NULL,
+    summar   REAL NOT NULL,
+    typer    TEXT NOT NULL,
+    schet_id INTEGER NOT NULL,
+    schpl_id INTEGER
+);
+
+selectShablonRasxod:
+SELECT *, spis_schet.name AS schetName
+FROM shabrasxod
+LEFT JOIN spis_schet ON spis_schet._id = shabrasxod.schet_id
+ORDER BY shabrasxod.sort DESC ;
+
+insertOrReplaceShablonRasxod:
+INSERT OR REPLACE INTO shabrasxod(
+     sort,
+     name,
+     namer,
+     summar,
+     typer,
+     schet_id,
+     schpl_id
+                )
+VALUES (0, ?, ?, ?, ?, ?, ?);
+
+updateShablonRasxod:
+UPDATE shabrasxod SET name = :name,
+                  namer = :namer,
+                  summar = :summar,
+                  typer = :typer,
+                  schet_id = :schet_id,
+                  schpl_id = IFNULL(:schpl_id,(SELECT schpl_id FROM typerasxod WHERE _id = :typer))
+              WHERE _id = :id;
+
+changeSortToUp{
+    UPDATE shabrasxod SET sort = sort-1 WHERE sort <= :newsort AND sort > :oldsort ;
+    UPDATE shabrasxod SET sort = :newsort WHERE _id = :id;
+}
+changeSortToDown{
+    UPDATE shabrasxod SET sort = sort+1 WHERE sort < :oldsort AND sort >= :newsort ;
+    UPDATE shabrasxod SET sort = :newsort WHERE _id = :id;
+}
+
+deleteShablonRasxod:
+DELETE FROM shabrasxod WHERE _id = :id;
+
+
+-- Триггер: replicated_insert_shabrasxod_trig
+CREATE TRIGGER IF NOT EXISTS sort_insert_shabrasxod_trig
+         AFTER INSERT
+            ON shabrasxod
+      FOR EACH ROW
+BEGIN
+    UPDATE shabrasxod SET sort = new._id WHERE _id = new._id;
+END;
+
+
+-- Триггер: replicated_insert_shabrasxod_trig
+CREATE TRIGGER replicated_insert_shabrasxod_trig
+         AFTER INSERT
+            ON shabrasxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'shabrasxod',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_shabrasxod_trig
+CREATE TRIGGER replicated_update_shabrasxod_trig
+         AFTER UPDATE
+            ON shabrasxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'shabrasxod',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'shabrasxod',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_shabrasxod_trig
+CREATE TRIGGER replicated_delete_shabrasxod_trig
+         AFTER DELETE
+            ON shabrasxod
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'shabrasxod',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

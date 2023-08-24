@@ -1,0 +1,32 @@
+-- Таблица: spis_must_complete_node_for_level_quest
+CREATE TABLE spis_must_complete_node_for_level_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    id_node  INTEGER NOT NULL
+);
+
+selectRez:
+SELECT * FROM spis_must_complete_node_for_level_quest WHERE id_node = :id_node;
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_must_complete_node_for_level_quest(
+     id_tree,
+     id_node
+                )
+VALUES (?, ?);
+
+updateBind{
+DELETE FROM spis_must_complete_node_for_level_quest  WHERE id_node = :id_node;
+INSERT OR REPLACE INTO spis_must_complete_node_for_level_quest(
+     id_tree,
+     id_node
+                )
+VALUES (:id_tree, :id_node);
+SELECT 1 AS rez;
+}
+
+
+deleteBind{
+DELETE FROM spis_must_complete_node_for_level_quest  WHERE id_node = :id_node;
+SELECT 1 AS rez;
+}

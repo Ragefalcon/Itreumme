@@ -1,0 +1,637 @@
+
+
+-- Таблица: den_plan
+CREATE TABLE den_plan (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    vajn      INTEGER NOT NULL,
+    name      TEXT NOT NULL,
+    gotov     REAL NOT NULL,
+    data      INTEGER NOT NULL,
+    time1     TEXT NOT NULL,
+    time2     TEXT NOT NULL,
+    opis      TEXT NOT NULL,
+    privplan  INTEGER NOT NULL,
+    stap_prpl INTEGER NOT NULL,
+    sum_hour  REAL NOT NULL,
+    exp       REAL NOT NULL
+--     ,
+--     delpole   INTEGER DEFAULT 9 NOT NULL
+);
+
+lastIndex:
+SELECT last_insert_rowid();
+
+selectDenPlan:
+--SELECT *, (CASE WHEN (SELECT name AS bbb FROM spis_plan WHERE spis_plan._id = privplan) IS NOT NULL THEN  bbb ELSE '' END) AS nameprpl FROM den_plan --SELECT name FROM spis_plan WHERE _id = privplan
+-- SELECT *, IFNULL((SELECT name AS bbb FROM spis_plan WHERE spis_plan._id = privplan),'') AS nameprpl, IFNULL((SELECT name FROM spis_stap_plan WHERE spis_stap_plan._id = stap_prpl),'') AS namestap FROM den_plan --SELECT name FROM spis_plan WHERE _id = privplan
+SELECT den_plan.*,
+IFNULL(spis_plan.name,'') AS nameprpl , IFNULL(spis_stap_plan.name,'') AS namestap
+FROM  den_plan
+LEFT JOIN spis_plan ON den_plan.privplan = spis_plan._id
+LEFT JOIN spis_stap_plan ON den_plan.stap_prpl = spis_stap_plan._id
+WHERE den_plan.data >= ? AND den_plan.data < ?
+ORDER BY time1;
+
+selectDenPlanForCalendar:
+--SELECT *, (CASE WHEN (SELECT name AS bbb FROM spis_plan WHERE spis_plan._id = privplan) IS NOT NULL THEN  bbb ELSE '' END) AS nameprpl FROM den_plan --SELECT name FROM spis_plan WHERE _id = privplan
+-- SELECT *, IFNULL((SELECT name AS bbb FROM spis_plan WHERE spis_plan._id = privplan),'') AS nameprpl, IFNULL((SELECT name FROM spis_stap_plan WHERE spis_stap_plan._id = stap_prpl),'') AS namestap FROM den_plan --SELECT name FROM spis_plan WHERE _id = privplan
+SELECT den_plan.*,
+IFNULL(spis_plan.name,'') AS nameprpl , IFNULL(spis_stap_plan.name,'') AS namestap
+FROM  den_plan
+LEFT JOIN spis_plan ON den_plan.privplan = spis_plan._id
+LEFT JOIN spis_stap_plan ON den_plan.stap_prpl = spis_stap_plan._id
+WHERE den_plan.data >= ? AND den_plan.data < ? AND den_plan.vajn <> -1
+ORDER BY time1;
+
+selectDenPlanForHistoryPlan:
+SELECT den_plan.*,
+IFNULL(spis_plan.name,'') AS nameprpl , IFNULL(spis_stap_plan.name,'') AS namestap
+FROM den_plan
+LEFT JOIN spis_plan ON den_plan.privplan = spis_plan._id
+LEFT JOIN spis_stap_plan ON den_plan.stap_prpl = spis_stap_plan._id
+WHERE privplan = :privplan -- den_plan.data >= ? AND den_plan.data < ?
+ORDER BY data DESC, time1 DESC;
+
+selectDenPlanForHistoryStapPlan:
+SELECT den_plan.*,
+IFNULL(spis_plan.name,'') AS nameprpl , IFNULL(spis_stap_plan.name,'') AS namestap
+FROM den_plan
+LEFT JOIN spis_plan ON den_plan.privplan = spis_plan._id
+LEFT JOIN spis_stap_plan ON den_plan.stap_prpl = spis_stap_plan._id
+WHERE stap_prpl IN (
+                   WITH RECURSIVE cte AS (
+                       SELECT _id
+                           FROM spis_stap_plan WHERE _id =  :stap_prpl
+                       UNION ALL
+                       SELECT  c._id
+                           FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id
+                   ) SELECT _id FROM cte ) -- den_plan.data >= ? AND den_plan.data < ?
+ORDER BY data DESC, time1 DESC;
+
+selectSumHourForHistoryPlanDiag:
+SELECT year, month, monthyear, sumyear, sum,  dataFdM, ( CASE WHEN maxSum<>0 THEN sum/maxSum ELSE 0.0 END ) AS proc FROM (
+    SELECT round(TOTAL(r2.sum_hour),2) AS sum,
+           strftime("%Y", r2.data / 1000, 'unixepoch') AS year, -- data / 1000 / 3600 / 24 * 24 * 3600
+           strftime("%m", r2.data / 1000, 'unixepoch') AS month, -- data / 1000 / 3600 / 24 * 24 * 3600
+           strftime("%Y-%m", r2.data / 1000, 'unixepoch') AS monthyear, -- data / 1000 / 3600 / 24 * 24 * 3600
+                                        CAST( strftime('%s000', r2.data / 1000, 'unixepoch', 'start of month') AS INTEGER) AS dataFdM,
+          (SELECT MAX(sum) FROM (SELECT round(TOTAL(sum_hour),2) AS sum,
+                                 strftime("%Y-%m", data / 1000, 'unixepoch') AS monthyear
+                                 FROM (SELECT sum_hour,data FROM den_plan
+                                                WHERE privplan = :privplan) GROUP BY strftime("%Y-%m", data / 1000, 'unixepoch') )) AS maxSum,
+          (SELECT round(TOTAL(sum_hour),2) AS sum
+                                 FROM (SELECT sum_hour,data
+                                                FROM den_plan
+                                                WHERE privplan = :privplan) WHERE strftime("%Y", data / 1000, 'unixepoch') = strftime("%Y", r2.data / 1000, 'unixepoch') ) AS sumyear
+    FROM (SELECT den_plan.*
+          FROM den_plan
+          WHERE privplan = :privplan) r2  GROUP BY strftime("%Y-%m", r2.data / 1000, 'unixepoch') ) --LEFT JOIN (SELECT * FROM rasxod WHERE type_id = :typerasx ) r1 ON r2._id = r1._id
+ORDER BY monthyear DESC;
+
+selectSumHourForHistoryStapPlanDiag:
+SELECT year, month, monthyear, sumyear, sum,  dataFdM, ( CASE WHEN maxSum<>0 THEN sum/maxSum ELSE 0.0 END ) AS proc FROM (
+    SELECT round(TOTAL(r2.sum_hour),2) AS sum,
+           strftime("%Y", r2.data / 1000, 'unixepoch') AS year, -- data / 1000 / 3600 / 24 * 24 * 3600
+           strftime("%m", r2.data / 1000, 'unixepoch') AS month, -- data / 1000 / 3600 / 24 * 24 * 3600
+           strftime("%Y-%m", r2.data / 1000, 'unixepoch') AS monthyear, -- data / 1000 / 3600 / 24 * 24 * 3600
+                                        CAST( strftime('%s000', r2.data / 1000, 'unixepoch', 'start of month') AS INTEGER) AS dataFdM,
+          (SELECT MAX(sum) FROM (SELECT round(TOTAL(sum_hour),2) AS sum,
+                                 strftime("%Y-%m", data / 1000, 'unixepoch') AS monthyear
+                                 FROM (SELECT sum_hour,data FROM den_plan WHERE stap_prpl IN (
+                                                                    WITH RECURSIVE cte AS (
+                                                                        SELECT _id
+                                                                            FROM spis_stap_plan WHERE _id =  :stap_prpl
+                                                                        UNION ALL
+                                                                        SELECT  c._id
+                                                                            FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id
+                                                                    ) SELECT _id FROM cte )) GROUP BY strftime("%Y-%m", data / 1000, 'unixepoch') )) AS maxSum,
+          (SELECT round(TOTAL(sum_hour),2) AS sum
+                                 FROM (SELECT sum_hour,data FROM den_plan WHERE stap_prpl IN (
+                                                                    WITH RECURSIVE cte AS (
+                                                                        SELECT _id
+                                                                            FROM spis_stap_plan WHERE _id =  :stap_prpl
+                                                                        UNION ALL
+                                                                        SELECT  c._id
+                                                                            FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id
+                                                                    ) SELECT _id FROM cte )) WHERE strftime("%Y", data / 1000, 'unixepoch') = strftime("%Y", r2.data / 1000, 'unixepoch') ) AS sumyear
+    FROM (SELECT den_plan.* FROM den_plan WHERE stap_prpl IN (
+                             WITH RECURSIVE cte AS (
+                                 SELECT _id
+                                     FROM spis_stap_plan WHERE _id =  :stap_prpl
+                                 UNION ALL
+                                 SELECT  c._id
+                                     FROM spis_stap_plan c INNER JOIN cte ON cte._id = c.parent_id
+                             ) SELECT _id FROM cte )) r2  GROUP BY strftime("%Y-%m", r2.data / 1000, 'unixepoch') ) --LEFT JOIN (SELECT * FROM rasxod WHERE type_id = :typerasx ) r1 ON r2._id = r1._id
+ORDER BY monthyear DESC;
+
+selectHourFromVajn:
+SELECT TOTAL(sum_hour) AS hour, vajn, 'nedel' AS period FROM den_plan WHERE
+                data <= :date
+                AND data > strftime('%s000', :date / 1000, 'unixepoch', '-7 days') GROUP BY vajn
+      UNION
+SELECT TOTAL(sum_hour) AS hour, vajn, 'month' AS period FROM den_plan WHERE
+                data <= :date
+                AND data > strftime('%s000', :date / 1000, 'unixepoch', '-30 days') GROUP BY vajn
+      UNION
+SELECT TOTAL(sum_hour) AS hour, vajn, 'year' AS period FROM den_plan WHERE
+                data <= :date
+                AND data > strftime('%s000', :date / 1000, 'unixepoch', '-365 days') GROUP BY vajn;
+
+insertOrReplaceDenPlan:
+INSERT OR REPLACE INTO den_plan(
+     vajn,
+     name,
+     gotov,
+     data,
+     time1,
+     time2,
+     opis,
+     privplan,
+     stap_prpl,
+     sum_hour,
+     exp
+                )
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateDenPlan:
+UPDATE den_plan SET name = :name,
+                    opis = :opis,
+                    vajn = :vajn,
+                    data = :data,
+                    time1 = :time1,
+                    time2 = :time2,
+                    privplan = :privplan,
+                    stap_prpl = :stap_prpl,
+                    sum_hour = :sum_hour,
+                    exp = :exp
+              WHERE _id = :id;
+
+updateGotovDenPlan:
+UPDATE den_plan SET gotov = :gotov, sum_hour = :sum_hour, exp = :exp WHERE _id = :id;
+
+deleteDenPlan{
+DELETE FROM den_plan WHERE _id = :id;
+DELETE FROM complex_opis_image WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'den_plan' AND item_id = :id);
+DELETE FROM complex_opis_link WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'den_plan' AND item_id = :id);
+DELETE FROM complex_opis_image_group WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'den_plan' AND item_id = :id);
+DELETE FROM complex_opis_checkbox WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'den_plan' AND item_id = :id);
+DELETE FROM complex_opis_text_fts4 WHERE docid IN (SELECT _id FROM complex_opis WHERE table_name = 'den_plan' AND item_id = :id);
+DELETE FROM complex_opis_text WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'den_plan' AND item_id = :id);
+DELETE FROM complex_opis WHERE table_name = 'den_plan' AND item_id = :id;
+}
+
+-- Триггер: update_hour_stap_trig2
+CREATE TRIGGER update_hour_stap_trig2
+         AFTER UPDATE
+            ON den_plan
+          WHEN old.stap_prpl = new.stap_prpl AND
+               old.sum_hour <> new.sum_hour
+BEGIN
+    UPDATE hour_stap_plan
+       SET hour = (
+               SELECT SUM(sum_hour) AS obs
+                 FROM den_plan
+                WHERE den_plan.stap_prpl = new.stap_prpl
+           )
+     WHERE new.stap_prpl = _id;
+END;
+
+
+-- Триггер: update_hour_stap_trig1
+CREATE TRIGGER update_hour_stap_trig1
+         AFTER UPDATE
+            ON den_plan
+          WHEN old.stap_prpl <> new.stap_prpl
+BEGIN
+    UPDATE hour_stap_plan
+       SET hour = (
+               SELECT SUM(sum_hour) AS obs
+                 FROM den_plan
+                WHERE den_plan.stap_prpl = new.stap_prpl
+           )
+     WHERE new.stap_prpl = _id;
+    UPDATE hour_stap_plan
+       SET hour = CASE WHEN old.stap_prpl NOT IN (
+                   SELECT stap_prpl
+                     FROM den_plan
+               )
+           THEN '0' ELSE (
+                   SELECT SUM(sum_hour) AS obs
+                     FROM den_plan
+                    WHERE den_plan.stap_prpl = old.stap_prpl
+               )
+           END
+     WHERE old.stap_prpl = _id;
+END;
+
+
+-- Триггер: update_hour_plan_trig1
+CREATE TRIGGER update_hour_plan_trig1
+         AFTER UPDATE
+            ON den_plan
+          WHEN old.privplan <> new.privplan
+BEGIN
+    UPDATE hour_plan
+       SET hour = (
+               SELECT SUM(sum_hour) AS obs
+                 FROM den_plan
+                WHERE den_plan.privplan = new.privplan
+           )
+     WHERE new.privplan = _id;
+    UPDATE hour_plan
+       SET hour = CASE WHEN old.privplan NOT IN (
+                   SELECT privplan
+                     FROM den_plan
+               )
+           THEN '0' ELSE (
+                   SELECT SUM(sum_hour) AS obs
+                     FROM den_plan
+                    WHERE den_plan.privplan = old.privplan
+               )
+           END
+     WHERE old.privplan = _id;
+END;
+
+
+-- Триггер: update_hour_plan_trig2
+CREATE TRIGGER update_hour_plan_trig2
+         AFTER UPDATE
+            ON den_plan
+          WHEN old.privplan = new.privplan AND
+               old.sum_hour <> new.sum_hour
+BEGIN
+    UPDATE hour_plan
+       SET hour = (
+               SELECT SUM(sum_hour) AS obs
+                 FROM den_plan
+                WHERE den_plan.privplan = new.privplan
+           )
+     WHERE new.privplan = _id;
+END;
+
+
+-- Триггер: delete_den_plan_trig3
+CREATE TRIGGER delete_den_plan_trig3
+         AFTER DELETE
+            ON den_plan
+          WHEN old.privplan <> 0 AND
+               old.sum_hour <> 0
+BEGIN
+    UPDATE hour_stap_plan
+       SET hour = CASE WHEN old.stap_prpl NOT IN (
+                   SELECT stap_prpl
+                     FROM den_plan
+               )
+           THEN '0' ELSE (
+                   SELECT SUM(sum_hour) AS obs
+                     FROM den_plan
+                    WHERE den_plan.stap_prpl = old.stap_prpl
+               )
+           END
+     WHERE old.stap_prpl = _id;
+    UPDATE hour_plan
+       SET hour = CASE WHEN old.privplan NOT IN (
+                   SELECT privplan
+                     FROM den_plan
+               )
+           THEN '0' ELSE (
+                   SELECT SUM(sum_hour) AS obs
+                     FROM den_plan
+                    WHERE den_plan.privplan = old.privplan
+               )
+           END
+     WHERE old.privplan = _id;
+END;
+
+
+-- Триггер: update_statik_hour_trig1
+CREATE TRIGGER update_statik_hour_trig1
+         AFTER DELETE
+            ON den_plan
+          WHEN old.privplan <> 0 AND
+               old.sum_hour <> 0
+BEGIN
+    UPDATE statik_hour_goal
+       SET hour = '-1'
+     WHERE data1 <= old.data AND
+           data2 >= old.data AND
+           id_goal IN (
+        SELECT _id
+          FROM (
+                   SELECT _id
+                     FROM spis_dream
+                   UNION ALL
+                   SELECT _id
+                     FROM spis_goal
+               )
+         WHERE _id IN (
+                   SELECT DISTINCT id_goal
+                     FROM spis_plan_goal
+                    WHERE stap IN (
+                              SELECT _id
+                                FROM (
+                                     WITH RECURSIVE cte AS (
+                                             SELECT spis_stap_plan._id,
+                                                    spis_stap_plan.parent_id
+                                               FROM spis_stap_plan
+                                              WHERE spis_stap_plan._id = old.stap_prpl
+                                             UNION ALL
+                                             SELECT c._id,
+                                                    c.parent_id
+                                               FROM spis_stap_plan c
+                                                    INNER JOIN
+                                                    cte p ON c._id = p.parent_id
+                                         )
+                                         SELECT _id
+                                           FROM cte
+                                     )
+                          )
+OR
+                          (stap = 0 AND
+                           id_plan = old.privplan)
+               )
+    );
+END;
+
+
+-- Триггер: update_statik_hour_trig2
+CREATE TRIGGER update_statik_hour_trig2
+         AFTER UPDATE
+            ON den_plan
+          WHEN new.privplan <> 0 AND
+               old.privplan = new.privplan AND
+               old.stap_prpl = new.stap_prpl AND
+               old.data = new.data AND
+               old.sum_hour <> new.sum_hour
+BEGIN
+    DELETE FROM statik_hour_goal
+          WHERE data1 <= new.data AND
+                data2 >= new.data AND
+                id_goal IN (
+        SELECT _id
+          FROM (
+                   SELECT _id
+                     FROM spis_dream
+                   UNION ALL
+                   SELECT _id
+                     FROM spis_goal
+               )
+         WHERE _id IN (
+                   SELECT DISTINCT id_goal
+                     FROM spis_plan_goal
+                    WHERE stap IN (
+                              SELECT _id
+                                FROM (
+                                     WITH RECURSIVE cte AS (
+                                             SELECT spis_stap_plan._id,
+                                                    spis_stap_plan.parent_id
+                                               FROM spis_stap_plan
+                                              WHERE spis_stap_plan._id = new.stap_prpl
+                                             UNION ALL
+                                             SELECT c._id,
+                                                    c.parent_id
+                                               FROM spis_stap_plan c
+                                                    INNER JOIN
+                                                    cte p ON c._id = p.parent_id
+                                         )
+                                         SELECT _id
+                                           FROM cte
+                                     )
+                          )
+OR
+                          (stap = 0 AND
+                           id_plan = new.privplan)
+               )
+    );
+    INSERT INTO statik_hour_goal SELECT NULL AS _id,
+                                        id_goal,
+                                        strftime('%s000', new.data / 1000, 'unixepoch', 'start of month') AS data1,
+                                        strftime('%s000', new.data / 1000, 'unixepoch', 'start of month', '1 month', '-1 days') AS data2,
+                                        '-1' AS hour
+                                   FROM (
+                                            SELECT DISTINCT id_goal
+                                              FROM spis_plan_goal
+                                             WHERE stap IN (
+                                                       SELECT _id
+                                                         FROM (
+                                                              WITH RECURSIVE cte AS (
+                                                                      SELECT spis_stap_plan._id,
+                                                                             spis_stap_plan.parent_id
+                                                                        FROM spis_stap_plan
+                                                                       WHERE spis_stap_plan._id = new.stap_prpl
+                                                                      UNION ALL
+                                                                      SELECT c._id,
+                                                                             c.parent_id
+                                                                        FROM spis_stap_plan c
+                                                                             INNER JOIN
+                                                                             cte p ON c._id = p.parent_id
+                                                                  )
+                                                                  SELECT _id
+                                                                    FROM cte
+                                                              )
+                                                   )
+OR
+                                                   (stap = 0 AND
+                                                    id_plan = new.privplan)
+                                        );
+END;
+
+
+-- Триггер: update_statik_hour_trig3
+CREATE TRIGGER update_statik_hour_trig3
+         AFTER UPDATE
+            ON den_plan
+          WHEN old.privplan <> new.privplan OR
+               old.stap_prpl <> new.stap_prpl OR
+               (new.privplan <> 0 AND
+                old.data <> new.data)
+BEGIN
+    DELETE FROM statik_hour_goal
+          WHERE data1 <= old.data AND
+                data2 >= old.data AND
+                id_goal IN (
+        SELECT _id
+          FROM (
+                   SELECT _id
+                     FROM spis_dream
+                   UNION ALL
+                   SELECT _id
+                     FROM spis_goal
+               )
+         WHERE _id IN (
+                   SELECT DISTINCT id_goal
+                     FROM spis_plan_goal
+                    WHERE stap IN (
+                              SELECT _id
+                                FROM (
+                                     WITH RECURSIVE cte AS (
+                                             SELECT spis_stap_plan._id,
+                                                    spis_stap_plan.parent_id
+                                               FROM spis_stap_plan
+                                              WHERE spis_stap_plan._id = old.stap_prpl
+                                             UNION ALL
+                                             SELECT c._id,
+                                                    c.parent_id
+                                               FROM spis_stap_plan c
+                                                    INNER JOIN
+                                                    cte p ON c._id = p.parent_id
+                                         )
+                                         SELECT _id
+                                           FROM cte
+                                     )
+                          )
+OR
+                          (stap = 0 AND
+                           id_plan = old.privplan)
+               )
+    );
+    INSERT INTO statik_hour_goal SELECT NULL AS _id,
+                                        id_goal,
+                                        strftime('%s000', old.data / 1000, 'unixepoch', 'start of month') AS data1,
+                                        strftime('%s000', old.data / 1000, 'unixepoch', 'start of month', '1 month', '-1 days') AS data2,
+                                        '-1' AS hour
+                                   FROM (
+                                            SELECT DISTINCT id_goal
+                                              FROM spis_plan_goal
+                                             WHERE stap IN (
+                                                       SELECT _id
+                                                         FROM (
+                                                              WITH RECURSIVE cte AS (
+                                                                      SELECT spis_stap_plan._id,
+                                                                             spis_stap_plan.parent_id
+                                                                        FROM spis_stap_plan
+                                                                       WHERE spis_stap_plan._id = old.stap_prpl
+                                                                      UNION ALL
+                                                                      SELECT c._id,
+                                                                             c.parent_id
+                                                                        FROM spis_stap_plan c
+                                                                             INNER JOIN
+                                                                             cte p ON c._id = p.parent_id
+                                                                  )
+                                                                  SELECT _id
+                                                                    FROM cte
+                                                              )
+                                                   )
+OR
+                                                   (stap = 0 AND
+                                                    id_plan = old.privplan)
+                                        );
+    DELETE FROM statik_hour_goal
+          WHERE data1 <= new.data AND
+                data2 >= new.data AND
+                id_goal IN (
+        SELECT _id
+          FROM (
+                   SELECT _id
+                     FROM spis_dream
+                   UNION ALL
+                   SELECT _id
+                     FROM spis_goal
+               )
+         WHERE _id IN (
+                   SELECT DISTINCT id_goal
+                     FROM spis_plan_goal
+                    WHERE stap IN (
+                              SELECT _id
+                                FROM (
+                                     WITH RECURSIVE cte AS (
+                                             SELECT spis_stap_plan._id,
+                                                    spis_stap_plan.parent_id
+                                               FROM spis_stap_plan
+                                              WHERE spis_stap_plan._id = new.stap_prpl
+                                             UNION ALL
+                                             SELECT c._id,
+                                                    c.parent_id
+                                               FROM spis_stap_plan c
+                                                    INNER JOIN
+                                                    cte p ON c._id = p.parent_id
+                                         )
+                                         SELECT _id
+                                           FROM cte
+                                     )
+                          )
+OR
+                          (stap = 0 AND
+                           id_plan = new.privplan)
+               )
+    );
+    INSERT INTO statik_hour_goal SELECT NULL AS _id,
+                                        id_goal,
+                                        strftime('%s000', new.data / 1000, 'unixepoch', 'start of month') AS data1,
+                                        strftime('%s000', new.data / 1000, 'unixepoch', 'start of month', '1 month', '-1 days') AS data2,
+                                        '-1' AS hour
+                                   FROM (
+                                            SELECT DISTINCT id_goal
+                                              FROM spis_plan_goal
+                                             WHERE stap IN (
+                                                       SELECT _id
+                                                         FROM (
+                                                              WITH RECURSIVE cte AS (
+                                                                      SELECT spis_stap_plan._id,
+                                                                             spis_stap_plan.parent_id
+                                                                        FROM spis_stap_plan
+                                                                       WHERE spis_stap_plan._id = new.stap_prpl
+                                                                      UNION ALL
+                                                                      SELECT c._id,
+                                                                             c.parent_id
+                                                                        FROM spis_stap_plan c
+                                                                             INNER JOIN
+                                                                             cte p ON c._id = p.parent_id
+                                                                  )
+                                                                  SELECT _id
+                                                                    FROM cte
+                                                              )
+                                                   )
+OR
+                                                   (stap = 0 AND
+                                                    id_plan = new.privplan)
+                                        );
+END;
+
+
+-- Триггер: replicated_insert_den_plan_trig
+CREATE TRIGGER replicated_insert_den_plan_trig
+         AFTER INSERT
+            ON den_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'den_plan',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_den_plan_trig
+CREATE TRIGGER replicated_update_den_plan_trig
+         AFTER UPDATE
+            ON den_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'den_plan',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'den_plan',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_den_plan_trig
+CREATE TRIGGER replicated_delete_den_plan_trig
+         AFTER DELETE
+            ON den_plan
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'den_plan',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+

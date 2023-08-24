@@ -1,0 +1,173 @@
+
+-- Таблица: spis_stap_idea
+CREATE TABLE spis_stap_idea (
+    _id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    name    TEXT NOT NULL,
+    opis    TEXT NOT NULL,
+    idea_id INTEGER NOT NULL,
+    data    INTEGER NOT NULL,
+    stat    INTEGER NOT NULL
+);
+
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_stap_idea(
+    name     ,
+    opis     ,
+    idea_id     ,
+    data     ,
+    stat
+)
+VALUES (:name, :opis, ?, ?, ?);
+
+insertOrReplaceFTS:
+INSERT OR REPLACE INTO spis_stap_idea_fts4(
+    docid,
+    name,
+    opis
+)
+VALUES (:docid, :name_fts, :opis_fts);
+
+
+update{
+UPDATE spis_stap_idea SET
+                  name = :name,
+                  opis = :opis,
+                  idea_id = :idea_id,
+                  data = :data,
+                  stat = :stat
+              WHERE _id = :id;
+UPDATE spis_stap_idea_fts4 SET
+                  name = :name_fts,
+                  opis = :opis_fts
+              WHERE docid = :id;
+}
+
+delete{
+DELETE FROM spis_stap_idea WHERE _id = :id;
+DELETE FROM spis_stap_idea_fts4 WHERE docid = :id;
+DELETE FROM complex_opis_image WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_stap_idea' AND item_id = :id);
+DELETE FROM complex_opis_link WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_stap_idea' AND item_id = :id);
+DELETE FROM complex_opis_image_group WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_stap_idea' AND item_id = :id);
+DELETE FROM complex_opis_checkbox WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_stap_idea' AND item_id = :id);
+DELETE FROM complex_opis_text_fts4 WHERE docid IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_stap_idea' AND item_id = :id);
+DELETE FROM complex_opis_text WHERE opis_id IN (SELECT _id FROM complex_opis WHERE table_name = 'spis_stap_idea' AND item_id = :id);
+DELETE FROM complex_opis WHERE table_name = 'spis_stap_idea' AND item_id = :id;
+}
+
+
+updateFromVers3to4Check:
+SELECT ((SELECT COUNT(*) FROM spis_stap_idea)-(SELECT COUNT(*) FROM spis_stap_idea_fts4));
+
+updateFromVers3to4Select:
+SELECT _id, name,opis FROM spis_stap_idea;
+
+updateFromVers3to4:
+INSERT OR REPLACE INTO spis_stap_idea_fts4(
+    docid,
+    name,
+    opis
+) VALUES (:docid, :name_fts, :opis_fts);
+
+
+
+selectIdeaStapInIdea:
+    SELECT * FROM spis_stap_idea WHERE idea_id = :idIdea
+        ORDER BY CASE WHEN :sortField = 'name' THEN name WHEN :sortField = 'stat' THEN stat ELSE name END;
+
+selectIdeaStapInIdeaWithSearch:
+    SELECT spis_stap_idea.* FROM spis_stap_idea , spis_stap_idea_fts4
+         WHERE spis_stap_idea.idea_id = :idIdea AND spis_stap_idea.[_id] = spis_stap_idea_fts4.[docid] AND spis_stap_idea_fts4 MATCH :searchStr --.opis OR spis_stap_idea_fts4.name MATCH :searchStr )
+        ORDER BY CASE WHEN :sortField = 'name' THEN spis_stap_idea.name WHEN :sortField = 'stat' THEN stat ELSE spis_stap_idea.name END;
+-- CASE
+--   WHEN :searchStr = '*' THEN
+--   ELSE
+--     SELECT spis_stap_idea.* FROM spis_stap_idea
+--         WHERE idea_id = :idIdea
+--         ORDER BY CASE WHEN :sortField = 'name' THEN spis_stap_idea.name WHEN :sortField = 'stat' THEN stat ELSE spis_stap_idea.name END
+--   END
+
+-- SELECT spis_stap_idea.* FROM spis_stap_idea , spis_stap_idea_fts4
+--     WHERE idea_id = :idIdea AND spis_stap_idea.[_id] = spis_stap_idea_fts4.[docid] AND spis_stap_idea_fts4.opis MATCH :searchStr
+--     ORDER BY CASE WHEN :sortField = 'name' THEN spis_stap_idea.name WHEN :sortField = 'stat' THEN stat ELSE spis_stap_idea.name END;
+
+--     WHERE idea_id = :idIdea AND spis_stap_idea.[_id] = spis_stap_idea_fts4.[docid] AND spis_stap_idea_fts4.opis MATCH 'F*'  OR spis_stap_idea.opis = :searchStr
+--     WHERE idea_id = :idIdea AND CASE WHEN :searchStr = '**' THEN 1 ELSE spis_stap_idea.[_id] = spis_stap_idea_fts4.[docid] AND spis_stap_idea_fts4.opis MATCH :searchStr  END
+--     WHERE  CASE WHEN :searchStr = '' THEN idea_id = :idIdea AND spis_stap_idea.[_id] = spis_stap_idea_fts4.[docid] ELSE idea_id = :idIdea AND spis_stap_idea.[_id] = spis_stap_idea_fts4.[docid] AND spis_stap_idea_fts4.opis MATCH :searchStr  END
+-- 			String str=L"select DISTINCT idea_id as _id from 'SPIS_STAP_IDEA' , SPIS_STAP_IDEA_FTS4 WHERE SPIS_STAP_IDEA.idea_id IN( WITH cte AS (SELECT SPIS_IDEA._id "
+-- 									  "	FROM SPIS_IDEA WHERE SPIS_IDEA.bloknot = '"+ TutGlobObj->TutFrJour1->FrIdea_01->FrSpisIdea_01->ReadIdBlok() +"' "
+-- 									  " UNION ALL SELECT c._id "
+-- 									  "	FROM SPIS_IDEA c INNER JOIN cte p ON p._ID = c.bloknot ) "
+-- 									  " SELECT _id FROM cte ) and "
+-- 							+ "SPIS_STAP_IDEA.[_id]=SPIS_STAP_IDEA_FTS4.[DOCID] AND SPIS_STAP_IDEA_FTS4 MATCH '"
+
+CREATE VIRTUAL TABLE spis_stap_idea_fts4 USING FTS4 (
+--     content='spis_stap_idea',
+    name TEXT NOT NULL,
+    opis TEXT,
+);
+
+
+-- Триггер: replicated_insert_spis_stap_idea_trig
+CREATE TRIGGER replicated_insert_spis_stap_idea_trig
+         AFTER INSERT
+            ON spis_stap_idea
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_stap_idea',
+                                                      new._id,
+                                                      'true'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_stap_idea_fts4_help',
+-                                                     1,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_stap_idea_trig
+CREATE TRIGGER replicated_update_spis_stap_idea_trig
+         AFTER UPDATE
+            ON spis_stap_idea
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_stap_idea',
+                                                      new._id,
+                                                      'true'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_stap_idea',
+                                                      old._id,
+                                                      'true'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_stap_idea_fts4_help',
+-                                                     1,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_stap_idea_trig
+CREATE TRIGGER replicated_delete_spis_stap_idea_trig
+         AFTER DELETE
+            ON spis_stap_idea
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_stap_idea',
+                                                      old._id,
+                                                      'true'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_stap_idea_fts4_help',
+-                                                     1,
+                                                      'false'
+                                                  );
+END;
+

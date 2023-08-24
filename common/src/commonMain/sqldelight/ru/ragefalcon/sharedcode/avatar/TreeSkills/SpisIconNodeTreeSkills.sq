@@ -1,0 +1,42 @@
+-- Таблица: spis_node_tree_skills
+CREATE TABLE spis_icon_node_tree_skills (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    extension  TEXT NOT NULL,
+    type_ramk INTEGER NOT NULL,
+    quest_id  INTEGER NOT NULL DEFAULT 0,
+    quest_key_id  INTEGER NOT NULL DEFAULT 0
+);
+
+lastInsertRowId:
+SELECT last_insert_rowid();
+
+select:
+SELECT * FROM spis_icon_node_tree_skills WHERE quest_id = 0;
+
+selectQuest:
+SELECT * FROM spis_icon_node_tree_skills WHERE quest_id = :quest_id;
+
+insertOrReplace:
+INSERT OR REPLACE INTO spis_icon_node_tree_skills(
+     extension,
+     type_ramk
+                )
+VALUES (?, ?);
+
+update:
+UPDATE spis_icon_node_tree_skills SET
+                  extension = :extension,
+                  type_ramk = :type_ramk
+              WHERE _id = :id;
+
+
+
+delete{
+UPDATE spis_node_tree_skills SET
+                  icon = -1
+              WHERE icon = :id;
+UPDATE spis_node_tree_skills SET
+                  icon_complete = -1
+              WHERE icon_complete = :id;
+DELETE FROM spis_icon_node_tree_skills  WHERE _id = :id;
+}

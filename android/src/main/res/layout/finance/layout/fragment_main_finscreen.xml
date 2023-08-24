@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:fitsSystemWindows="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.finance.FinanceMainScreen"
+        android:id="@+id/cl_backgr"
+        android:background="@color/colorRasxodTheme"
+>
+    <View
+            android:layout_width="0dp"
+            android:id="@+id/v_backgr"
+            android:background="@color/colorRasxodTheme" app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="0dp" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent" app:layout_constraintRight_toRightOf="parent"
+            android:visibility="invisible"/>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ui.finance.FinanceMainScreen"
+            android:id="@+id/main_lay"
+    >
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <Button
+            android:id="@+id/butt_add"
+            android:backgroundTint="@drawable/sel_color_tint_butt"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/butt_filter"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/ic_add_butt"
+    />
+    <TextView
+            android:text="0.0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_allCapital"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:gravity="right" android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:shadowColor="@android:color/background_dark"
+            android:shadowDx="2" android:shadowDy="2"
+            android:shadowRadius="5" android:paddingRight="16dp"
+            android:paddingLeft="16dp"
+            android:background="@drawable/bg_analiz_main"
+    />
+    <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/lay_seldate"
+                                                       android:visibility="visible"
+                                                       tools:visibility="visible"
+                                                       android:layout_width="0dp"
+                                                       android:layout_height="wrap_content"
+                                                       app:layout_constraintLeft_toRightOf="@id/butt_analiz"
+                                                       app:layout_constraintRight_toLeftOf="@id/butt_add"
+                                                       app:layout_constraintTop_toTopOf="@+id/butt_add"
+                                                       app:layout_constraintBottom_toBottomOf="@+id/butt_add"
+    >
+        <TextView android:id="@+id/et_maindate"
+                  android:visibility="visible"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  android:fontFamily="sans-serif"
+                  android:textColor="@drawable/sel_color_tint_butt"
+                  tools:text="30 мар. 2020 (пн)"
+                  android:textAllCaps="false"
+                  android:textSize="20sp"
+        />
+        <Button android:id="@+id/butt_maindate_right"
+                android:visibility="visible"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/et_maindate"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/ic_chevron_right_black_24dp"
+                android:shadowColor="#00FFFFFF"
+                app:layout_constraintTop_toTopOf="@+id/et_maindate"
+                app:layout_constraintBottom_toBottomOf="@+id/et_maindate"
+                app:layout_constraintEnd_toEndOf="parent" android:backgroundTint="@drawable/sel_color_tint_butt"/>
+        <Button android:id="@+id/butt_maindate_left"
+                android:visibility="visible"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/et_maindate"
+                app:layout_constraintBottom_toBottomOf="@+id/et_maindate"
+                app:layout_constraintRight_toLeftOf="@+id/et_maindate"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/ic_chevron_left_black_24dp"
+                android:shadowColor="#00FFFFFF"
+                android:backgroundTint="@drawable/sel_color_tint_butt"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/lay_selperiod"
+                                                       android:layout_width="0dp"
+                                                       android:layout_height="wrap_content"
+                                                       app:layout_constraintLeft_toRightOf="@id/butt_analiz"
+                                                       app:layout_constraintRight_toLeftOf="@id/butt_add"
+                                                       app:layout_constraintTop_toTopOf="@+id/butt_add"
+                                                       app:layout_constraintBottom_toBottomOf="@+id/butt_add"
+                                                       android:visibility="invisible"
+                                                       tools:visibility="invisible"
+    >
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/et_enddate"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:fontFamily="sans-serif"
+                android:textColor="@drawable/sel_color_tint_butt"
+                android:text="30.12.2021"
+                tools:text="30.12.2021"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:layout_marginEnd="24dp" android:visibility="visible"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/et_begindate"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/et_enddate"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:fontFamily="sans-serif"
+                android:textColor="@drawable/sel_color_tint_butt"
+                android:text="30.12.2020"
+                tools:text="30.12.2020"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="44dp" android:visibility="visible"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <ToggleButton android:id="@+id/butt_analiz"
+                  android:layout_width="48dp"
+                  android:layout_height="48dp"
+                  android:layout_marginStart="16dp"
+                  android:layout_marginBottom="8dp"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintBottom_toTopOf="@+id/butt_filter"
+                  android:background="@drawable/ic_analiz"
+                  android:backgroundTint="@drawable/sel_color_tint_butt_toggle"
+                  android:checked="false"
+                  android:textOff=""
+                  android:textOn=""
+    />
+    <!--    <ToggleButton-->
+<!--            android:textOff="Н"-->
+<!--            android:textOn="Н"-->
+<!--            android:text="Н"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_width="55dp"-->
+<!--            android:id="@+id/butt_week"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/butt_month"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:layout_marginEnd="13dp"/>-->
+<!--    <ToggleButton-->
+<!--            android:textOff="М"-->
+<!--            android:textOn="М"-->
+<!--            android:text="М"-->
+<!--            android:layout_width="55dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/butt_month"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/butt_filter"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/butt_year"-->
+<!--            android:layout_marginEnd="12dp"/>-->
+<!--    <ToggleButton-->
+<!--            android:textOff="Г"-->
+<!--            android:textOn="Г"-->
+<!--            android:text="Г"-->
+<!--            android:layout_width="55dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/butt_year"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/butt_filter"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/tb_period"-->
+<!--            android:layout_marginEnd="13dp"/>-->
+<!--    <ToggleButton-->
+<!--            android:text="П"-->
+<!--            android:layout_width="55dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/tb_period"-->
+<!--            android:inputType="date"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/butt_filter"-->
+<!--            app:layout_constraintRight_toRightOf="parent"-->
+<!--            android:layout_marginRight="40dp"-->
+<!--            android:focusableInTouchMode="false"-->
+<!--            android:selectAllOnFocus="false"-->
+<!--            android:textOff="П"-->
+<!--            android:textOn="П"-->
+<!--    />-->
+    <ToggleButton android:id="@+id/butt_filter"
+                  android:layout_width="48dp"
+                  android:layout_height="48dp"
+                  android:layout_marginStart="16dp"
+                  app:layout_constraintStart_toStartOf="parent"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  android:background="@drawable/ic_filter"
+                  android:layout_marginBottom="16dp"
+                  android:backgroundTint="@drawable/sel_color_tint_butt_toggle"
+                  android:textOff=""
+                  android:textOn=""
+    />
+    <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            app:layout_constraintTop_toTopOf="@id/butt_filter"
+            app:layout_constraintBottom_toBottomOf="@id/butt_filter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/butt_filter"
+    >
+        <RadioButton
+                android:id="@+id/butt_week"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_segmented_left"
+                android:button="@android:color/transparent"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Н"
+                android:textColor="@drawable/txt_segmented" />
+
+        <RadioButton
+                android:id="@+id/butt_month"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_segmented_center"
+                android:button="@android:color/transparent"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="М"
+                android:textColor="@drawable/txt_segmented" />
+        <RadioButton
+                android:id="@+id/butt_year"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_segmented_center"
+                android:button="@android:color/transparent"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="Г"
+                android:textColor="@drawable/txt_segmented" />
+
+        <RadioButton
+                android:id="@+id/tb_period"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_segmented_right"
+                android:button="@android:color/transparent"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="П"
+                android:textColor="@drawable/txt_segmented" />
+    </RadioGroup>
+
+    <View
+            android:layout_width="0dp"
+            android:layout_height="0dp" android:id="@+id/view_bottom"
+            app:layout_constraintTop_toBottomOf="@+id/butt_filter"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+    <com.google.android.material.tabs.TabLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/tab_lay"
+            app:tabMode="fixed"
+            app:layout_constraintTop_toBottomOf="@+id/tv_allCapital"
+            app:tabIndicatorFullWidth="true"
+            android:fitsSystemWindows="true"
+            app:tabMaxWidth="0dp"
+            app:tabTextColor="@color/colorMyMainTheme">
+
+        <com.google.android.material.tabs.TabItem
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Tab5"/>
+        <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Monday"/>
+
+        <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tuesday"/>
+
+        <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wednesday"/>
+    </com.google.android.material.tabs.TabLayout>
+    <androidx.viewpager.widget.ViewPager
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/butt_add"
+            app:layout_constraintTop_toBottomOf="@+id/tab_lay"
+            android:id="@+id/vp_finance">
+    </androidx.viewpager.widget.ViewPager>
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent" -->
+    <!--            android:id="@+id/add_layout"-->
+    <!--            app:layout_constraintTop_toTopOf="parent"-->
+    <!--            android:elevation="5dp" -->
+    <!--            android:visibility="invisible" -->
+    <!--            tools:visibility="visible"-->
+    <!--    >-->
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

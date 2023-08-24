@@ -1,0 +1,11 @@
+-- selectDialog{
+-- ATTACH 'path.dp' AS qbd;
+-- SELECT COUNT(*) FROM sqlite_master;
+-- }
+-- CREATE TABLE items (
+--     id INTEGER PRIMARY KEY AUTOINCREMENT,
+--     list_id INTEGER NOT NULL,
+--     created INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--     content TEXT NOT NULL,
+--     FOREIGN KEY (list_id) REFERENCES lists (id)
+-- );

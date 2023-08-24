@@ -1,0 +1,13 @@
+-- Таблица: system_replicate_record
+CREATE TABLE system_replicate_record (
+    name     TEXT,
+    id       INTEGER,
+    fts_have INTEGER AS Boolean DEFAULT 0,
+    PRIMARY KEY (
+        name,
+        id
+    )
+);
+
+cleanReplicateRecord:
+DELETE FROM system_replicate_record;

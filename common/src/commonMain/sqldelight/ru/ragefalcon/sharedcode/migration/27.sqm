@@ -1,0 +1,1 @@
+ALTER TABLE complex_opis_image_group ADD COLUMN text_before INTEGER NOT NULL DEFAULT 0;

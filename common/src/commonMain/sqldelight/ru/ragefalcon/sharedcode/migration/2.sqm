@@ -1,0 +1,1000 @@
+CREATE TABLE IF NOT EXISTS spis_quest (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    name  TEXT NOT NULL,
+    dateopen  INTEGER NOT NULL,
+    complete INTEGER NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS quest_mainparam (
+    _id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    quest_id    INTEGER NOT NULL,
+    name        TEXT NOT NULL,
+    intparam    INTEGER NOT NULL,
+    stringparam TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS spis_quest_element (
+    _id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    quest_id    INTEGER NOT NULL,
+    element_id    INTEGER NOT NULL,
+    type_element        TEXT NOT NULL
+);
+
+
+
+-- Триггер: replicated_insert_spis_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_quest_trig
+         AFTER INSERT
+            ON spis_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_quest_trig
+         AFTER UPDATE
+            ON spis_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_quest_trig
+         AFTER DELETE
+            ON spis_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+
+-- Триггер: replicated_insert_spis_quest_element_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_quest_element_trig
+         AFTER INSERT
+            ON spis_quest_element
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest_element',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_quest_element_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_quest_element_trig
+         AFTER UPDATE
+            ON spis_quest_element
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest_element',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest_element',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_quest_element_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_quest_element_trig
+         AFTER DELETE
+            ON spis_quest_element
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_quest_element',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_insert_quest_mainparam_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_quest_mainparam_trig
+         AFTER INSERT
+            ON quest_mainparam
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_mainparam',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_quest_mainparam_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_quest_mainparam_trig
+         AFTER UPDATE
+            ON quest_mainparam
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_mainparam',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_mainparam',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_quest_mainparam_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_quest_mainparam_trig
+         AFTER DELETE
+            ON quest_mainparam
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_mainparam',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+CREATE TABLE IF NOT EXISTS dialog_line (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    type_message TEXT NOT NULL,
+    subtype_id    INTEGER NOT NULL,
+    key_id    INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    datetime     INTEGER NOT NULL,
+    minimaze INTEGER NOT NULL
+);
+
+-- Триггер: replicated_insert_dialog_line_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_dialog_line_trig
+         AFTER INSERT
+            ON dialog_line
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'dialog_line',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_dialog_line_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_dialog_line_trig
+         AFTER UPDATE
+            ON dialog_line
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'dialog_line',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'dialog_line',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_dialog_line_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_dialog_line_trig
+         AFTER DELETE
+            ON dialog_line
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'dialog_line',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+-- DROP TABLE IF EXISTS common_trigger;
+CREATE TABLE IF NOT EXISTS quest_common_trigger (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    quest_id TEXT NOT NULL,
+    parent_type_element TEXT NOT NULL,
+    parent_element_id INTEGER NOT NULL,
+    type_trig_id INTEGER NOT NULL,
+    child_id INTEGER NOT NULL,
+    child_name TEXT NOT NULL,
+    act_code INTEGER NOT NULL
+);
+-- ALTER TABLE spis_quest ADD COLUMN complete INTEGER NOT NULL DEFAULT 0;
+
+-- Триггер: replicated_insert_quest_common_trigger_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_quest_common_trigger_trig
+         AFTER INSERT
+            ON quest_common_trigger
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_common_trigger',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_quest_common_trigger_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_quest_common_trigger_trig
+         AFTER UPDATE
+            ON quest_common_trigger
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_common_trigger',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_common_trigger',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_quest_common_trigger_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_quest_common_trigger_trig
+         AFTER DELETE
+            ON quest_common_trigger
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'quest_common_trigger',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+CREATE TABLE IF NOT EXISTS spis_otvet_dialog_quest  (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    quest_id    INTEGER NOT NULL,
+    key_id    INTEGER NOT NULL,
+    dialog_id INTEGER NOT NULL,
+    text TEXT NOT NULL,
+    order_number INTEGER NOT NULL
+
+);
+
+-- Триггер: replicated_insert_spis_otvet_dialog_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_otvet_dialog_quest_trig
+         AFTER INSERT
+            ON spis_otvet_dialog_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_otvet_dialog_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_otvet_dialog_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_otvet_dialog_quest_trig
+         AFTER UPDATE
+            ON spis_otvet_dialog_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_otvet_dialog_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_otvet_dialog_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_otvet_dialog_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_otvet_dialog_quest_trig
+         AFTER DELETE
+            ON spis_otvet_dialog_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_otvet_dialog_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+CREATE TABLE IF NOT EXISTS spis_dialog_quest (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    quest_id    INTEGER NOT NULL,
+    key_id    INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    maintext TEXT NOT NULL,
+    govorun_name TEXT NOT NULL,
+    govorun_id INTEGER NOT NULL
+);
+
+
+-- Триггер: replicated_insert_spis_dialog_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_dialog_quest_trig
+         AFTER INSERT
+            ON spis_dialog_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_dialog_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_dialog_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_dialog_quest_trig
+         AFTER UPDATE
+            ON spis_dialog_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_dialog_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_dialog_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_dialog_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_dialog_quest_trig
+         AFTER DELETE
+            ON spis_dialog_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_dialog_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+CREATE TABLE IF NOT EXISTS spis_govorun_quest (
+    _id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    quest_id    INTEGER NOT NULL,
+    key_id    INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    opis TEXT NOT NULL,
+    image_file TEXT NOT NULL
+);
+
+-- Триггер: replicated_insert_spis_govorun_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_govorun_quest_trig
+         AFTER INSERT
+            ON spis_govorun_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_govorun_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_govorun_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_govorun_quest_trig
+         AFTER UPDATE
+            ON spis_govorun_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_govorun_quest',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_govorun_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_govorun_quest_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_govorun_quest_trig
+         AFTER DELETE
+            ON spis_govorun_quest
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_govorun_quest',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+CREATE TABLE IF NOT EXISTS spis_tree_skill (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_area   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    id_type_tree INTEGER NOT NULL,
+    opis  TEXT NOT NULL,
+    open_edit INTEGER NOT NULL,
+    icon  INTEGER NOT NULL
+);
+
+-- Триггер: replicated_insert_spis_tree_skill_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_tree_skill_trig
+         AFTER INSERT
+            ON spis_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_tree_skill',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_tree_skill_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_tree_skill_trig
+         AFTER UPDATE
+            ON spis_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_tree_skill',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_tree_skill',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_tree_skill_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_tree_skill_trig
+         AFTER DELETE
+            ON spis_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_tree_skill',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+-- Таблица: spis_node_tree_skills
+CREATE TABLE IF NOT EXISTS spis_node_tree_skills (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    opis  TEXT NOT NULL,
+    id_type_node INTEGER NOT NULL,
+    complete INTEGER NOT NULL,
+    level INTEGER NOT NULL,
+    icon  INTEGER NOT NULL
+);
+
+-- Триггер: replicated_insert_spis_node_tree_skills_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_node_tree_skills_trig
+         AFTER INSERT
+            ON spis_node_tree_skills
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_node_tree_skills',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_node_tree_skills_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_node_tree_skills_trig
+         AFTER UPDATE
+            ON spis_node_tree_skills
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_node_tree_skills',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_node_tree_skills',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_node_tree_skills_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_node_tree_skills_trig
+         AFTER DELETE
+            ON spis_node_tree_skills
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_node_tree_skills',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+-- Таблица: property_plan_node_ts
+CREATE TABLE IF NOT EXISTS property_plan_node_ts (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+--     id_tree   INTEGER NOT NULL,
+    id_node   INTEGER NOT NULL,
+    privplan  INTEGER NOT NULL,
+    stap_prpl INTEGER NOT NULL,
+    porog_hour  REAL NOT NULL
+);
+
+
+-- Триггер: replicated_insert_property_plan_node_ts_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_property_plan_node_ts_trig
+         AFTER INSERT
+            ON property_plan_node_ts
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_plan_node_ts',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_property_plan_node_ts_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_property_plan_node_ts_trig
+         AFTER UPDATE
+            ON property_plan_node_ts
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_plan_node_ts',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_plan_node_ts',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_property_plan_node_ts_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_property_plan_node_ts_trig
+         AFTER DELETE
+            ON property_plan_node_ts
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_plan_node_ts',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+-- Таблица: property_count_node_ts
+CREATE TABLE IF NOT EXISTS property_count_node_ts (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+--     id_tree   INTEGER NOT NULL,
+    id_node   INTEGER NOT NULL,
+    priv_counter  INTEGER NOT NULL,
+    count_value  INTEGER NOT NULL,
+    max_value INTEGER NOT NULL,
+    porog_value  INTEGER NOT NULL
+);
+
+-- Триггер: replicated_insert_property_count_node_ts_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_property_count_node_ts_trig
+         AFTER INSERT
+            ON property_count_node_ts
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_count_node_ts',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_property_count_node_ts_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_property_count_node_ts_trig
+         AFTER UPDATE
+            ON property_count_node_ts
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_count_node_ts',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_count_node_ts',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_property_count_node_ts_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_property_count_node_ts_trig
+         AFTER DELETE
+            ON property_count_node_ts
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'property_count_node_ts',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+-- Таблица: spis_level_tree_skill
+CREATE TABLE IF NOT EXISTS spis_level_tree_skill (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    name  TEXT NOT NULL,
+    num_level INTEGER NOT NULL,
+    opis  TEXT NOT NULL,
+    proc_porog REAL NOT NULL,
+    open_level  INTEGER NOT NULL
+);
+
+-- Триггер: replicated_insert_spis_level_tree_skill_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_level_tree_skill_trig
+         AFTER INSERT
+            ON spis_level_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_level_tree_skill',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_level_tree_skill_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_level_tree_skill_trig
+         AFTER UPDATE
+            ON spis_level_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_level_tree_skill',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_level_tree_skill',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_level_tree_skill_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_level_tree_skill_trig
+         AFTER DELETE
+            ON spis_level_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_level_tree_skill',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+-- Таблица: spis_binding_node_tree_skill
+CREATE TABLE IF NOT EXISTS spis_binding_node_tree_skill (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    id_parent INTEGER NOT NULL,
+    id_child  INTEGER NOT NULL
+);
+
+-- Триггер: replicated_insert_spis_binding_node_tree_skill_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_binding_node_tree_skill_trig
+         AFTER INSERT
+            ON spis_binding_node_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_binding_node_tree_skill',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_binding_node_tree_skill_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_binding_node_tree_skill_trig
+         AFTER UPDATE
+            ON spis_binding_node_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_binding_node_tree_skill',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_binding_node_tree_skill',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_binding_node_tree_skill_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_binding_node_tree_skill_trig
+         AFTER DELETE
+            ON spis_binding_node_tree_skill
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_binding_node_tree_skill',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+-- Таблица: spis_must_complete_node_for_level
+CREATE TABLE IF NOT EXISTS spis_must_complete_node_for_level (
+    _id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_tree   INTEGER NOT NULL,
+    num_level INTEGER NOT NULL,
+    id_node  INTEGER NOT NULL
+);
+
+-- Триггер: replicated_insert_spis_must_complete_node_for_level_trig
+CREATE TRIGGER IF NOT EXISTS replicated_insert_spis_must_complete_node_for_level_trig
+         AFTER INSERT
+            ON spis_must_complete_node_for_level
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_must_complete_node_for_level',
+                                                      new._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_update_spis_must_complete_node_for_level_trig
+CREATE TRIGGER IF NOT EXISTS replicated_update_spis_must_complete_node_for_level_trig
+         AFTER UPDATE
+            ON spis_must_complete_node_for_level
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_must_complete_node_for_level',
+                                                      new._id,
+                                                      'false'
+                                                  );
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_must_complete_node_for_level',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-- Триггер: replicated_delete_spis_must_complete_node_for_level_trig
+CREATE TRIGGER IF NOT EXISTS replicated_delete_spis_must_complete_node_for_level_trig
+         AFTER DELETE
+            ON spis_must_complete_node_for_level
+      FOR EACH ROW
+BEGIN
+    INSERT OR IGNORE INTO system_replicate_record VALUES (
+                                                      'spis_must_complete_node_for_level',
+                                                      old._id,
+                                                      'false'
+                                                  );
+END;
+
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+-- Триггер: update_spis_node_tree_skills_trig1
+DROP TRIGGER IF EXISTS update_spis_node_tree_skills_trig1;
+CREATE TRIGGER IF NOT EXISTS update_spis_node_tree_skills_trig1
+         AFTER UPDATE
+            ON spis_node_tree_skills
+       FOR EACH ROW
+         WHEN old.level <> new.level AND (SELECT COUNT(*) FROM spis_binding_node_tree_skill WHERE id_parent = old._id) <> 0
+BEGIN
+UPDATE spis_node_tree_skills
+    SET level = IFNULL((SELECT MAX(level) FROM spis_node_tree_skills AS snts2
+                    WHERE snts2._id IN (SELECT sbnts.id_parent FROM spis_binding_node_tree_skill AS sbnts WHERE sbnts.id_child = spis_node_tree_skills._id)),0)+1 --spis_node_tree_skills.
+    WHERE _id IN (SELECT id_child FROM spis_binding_node_tree_skill WHERE id_parent = old._id);
+END;
+
+-- DROP TRIGGER IF EXISTS update_spis_node_tree_skills_trig2;
+
+-- Триггер: delete_spis_node_tree_skills_trig1
+DROP TRIGGER IF EXISTS delete_spis_node_tree_skills_trig1;
+CREATE TRIGGER IF NOT EXISTS delete_spis_node_tree_skills_trig1
+         AFTER DELETE
+            ON spis_node_tree_skills
+       FOR EACH ROW
+         WHEN (SELECT COUNT(*) FROM spis_binding_node_tree_skill WHERE id_parent = old._id) <> 0
+BEGIN
+UPDATE spis_node_tree_skills
+    SET level = IFNULL((SELECT MAX(level) FROM spis_node_tree_skills AS snts2
+                    WHERE snts2._id IN (SELECT sbnts.id_parent FROM spis_binding_node_tree_skill AS sbnts WHERE sbnts.id_child = spis_node_tree_skills._id)),0)+1 --spis_node_tree_skills.
+    WHERE _id IN (SELECT id_child FROM spis_binding_node_tree_skill WHERE id_parent = old._id);
+END;
+
+-- PRAGMA  recursive_triggers = 1;
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+
+-- ALTER TABLE spis_tree_skill ADD COLUMN open_edit INTEGER NOT NULL DEFAULT 1;
+
+-- Триггер: delete_spis_level_tree_skill_trig
+-- DROP TRIGGER IF EXISTS delete_spis_level_tree_skill_trig1;
+CREATE TRIGGER IF NOT EXISTS delete_spis_level_tree_skill_trig1
+         AFTER DELETE
+            ON spis_level_tree_skill
+      FOR EACH ROW
+BEGIN
+UPDATE spis_level_tree_skill SET num_level = num_level - 1 WHERE id_tree = old.id_tree AND num_level > old.num_level;
+UPDATE spis_node_tree_skills
+    SET level = level - 1
+    WHERE level > old.num_level AND id_tree = old.id_tree;
+END;
+
+-- Триггер: insert_spis_level_tree_skill_trig
+-- DROP TRIGGER IF EXISTS insert_spis_level_tree_skill_trig1;
+CREATE TRIGGER IF NOT EXISTS insert_spis_level_tree_skill_trig1
+         BEFORE INSERT
+            ON spis_level_tree_skill
+      FOR EACH ROW
+BEGIN
+UPDATE spis_level_tree_skill SET num_level = num_level + 1 WHERE id_tree = new.id_tree AND num_level >= new.num_level;
+UPDATE spis_node_tree_skills
+    SET level = level + 1
+    WHERE level >= new.num_level AND id_tree = new.id_tree;
+END;
+
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+-----------------------------------------------
+

@@ -89,3 +89,6 @@ actual open class ItrCommObserveObj<T> actual constructor(observeObj: MyObserveO
 Где `journalSpis.spisStapIdea` это `ItrCommObserveObj<ItemIdeaStap>`, а `listStapIdea` является `List<ItemIdeaStap>`.
 
 
+
+---
+[На главную](/)

@@ -67,3 +67,7 @@ class AnyFragment() : BaseFragmentVM<AnyFragmentXMLname_Binding>(
     var varWithSaveInstanceState: AnyTypeForBundle? by instanceState(startValue)
 }
 ```
+
+
+---
+[На главную](/)

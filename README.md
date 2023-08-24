@@ -97,9 +97,9 @@ Jetpack Compose еще только подходил к релизу, поэто
 В интерфейсе используются различные переходы и анимации.
 
 Некоторые решения, которые могут показаться интересными:
-- [универсальные айтемы и адаптер для RecyclerView](/android/main/java/ru/ragefalcon/tutatores/adapter/unirvadapter/)
-- [класс фрагментов, который упрощает работу с ними](/android/main/java/ru/ragefalcon/tutatores/commonfragments/)
-- [различные Custom View для отображения диаграмм, графиков и др.](/android/main/java/ru/ragefalcon/tutatores/ui/)
+- [универсальные айтемы и адаптер для RecyclerView](/android/src/main/java/ru/ragefalcon/tutatores/adapter/unirvadapter/)
+- [класс фрагментов, который упрощает работу с ними](/android/src/main/java/ru/ragefalcon/tutatores/commonfragments/)
+- [различные Custom View для отображения диаграмм, графиков и др.](/android/src/main/java/ru/ragefalcon/tutatores/ui/)
 
 ### Desktop
 <table>

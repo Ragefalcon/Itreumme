@@ -17,3 +17,7 @@
 <a  href="ru/ragefalcon/tutatores/ui/element_fragment/MyDateSelect.kt">MyDateSelect</a>
 и <a  href="ru/ragefalcon/tutatores/ui/element_fragment/MyTimeSelect.kt">MyTimeSelect</a>
 наследуется от `TextView`.
+
+
+---
+[На главную](/)

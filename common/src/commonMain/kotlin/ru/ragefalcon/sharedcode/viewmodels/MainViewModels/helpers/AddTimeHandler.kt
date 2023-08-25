@@ -125,7 +125,6 @@ class AddTimeHandler(
             data = data.withOffset().longMinusTimeLocal(),
             id = id
         )
-//        println("data1 add = ${data.withOffset().minusTime()}")
     }
 
     fun delNapom(
@@ -336,20 +335,6 @@ class AddTimeHandler(
         item: ItemDenPlan,
         gotov: Double,
     ) {
-//        val time1 = timeFromHHmmss(item.time1)
-//        var time2 = timeFromHHmmss(item.time2)
-//        if (time2<time1) time2 += 24*60*60*1000
-//        val hourMls =
-//            (time2 - time1) * gotov / 100.0
-//        val hour = hourMls.toDouble() / 1000F / 60F / 60F
-//        val exp: Double = when (item.vajn) {
-//            0L -> hour * 1.25
-//            1L -> hour //* 1.0
-//            2L -> hour * 0.5
-//            3L -> hour * 0.25
-//            else -> 0.0
-//        }
-//        item.gotov = gotov.toDouble()
         item.setGotov(gotov) { hour, gotov1, exp ->
             mdb.denPlanQueries.updateGotovDenPlan(
                 gotov = gotov1,
@@ -402,7 +387,6 @@ class AddTimeHandler(
         data2: Long,
         opis: List<ItemComplexOpis>,
         direction: Boolean
-//        opis: String
     ): List<PairId> {
         mdb.spisPlanQueries.updatePlan(
             id = id,
@@ -434,18 +418,12 @@ class AddTimeHandler(
 
     fun updStatPlan(
         item: ItemPlan,
-//        id: Long,
-//        quest_id: Long,
         stat: TypeStatPlan
     ) {
         mdb.spisPlanQueries.transaction {
             mdb.spisPlanQueries.updateStatPlan(stat = stat.codValue, id = item.id.toLong())
             if (stat == TypeStatPlan.COMPLETE) {
-//                mdb.spisQuestElementQueries.getQuestId(TypeQuestElement.PLAN.code, id).executeAsList().let {
-//                    it.firstOrNull()?.let { quest_id ->
                 commonFun.runTriggerReact(quest_id = item.quest_id.toString(), TypeParentOfTrig.PLAN, item.quest_key_id)
-//                    }
-//                }
                 mdb.propertyPlanNodeTSQueries.completePlanUpdate(
                     TypeStatNodeTree.COMPLETE.codValue,
                     item.id.toLong(),
@@ -455,7 +433,6 @@ class AddTimeHandler(
                     .let { listNode ->
                         listNode.forEach {
                             mdb.spisLevelTreeSkillsQueries.updateCompleteLevel(
-//                                it.level,
                                 it.id_tree,
                                 cod_node_visib = TypeStatNodeTree.VISIB.codValue,
                                 cod_node_complete = TypeStatNodeTree.COMPLETE.codValue
@@ -473,7 +450,6 @@ class AddTimeHandler(
                         .let { listNode ->
                             listNode.forEach {
                                 mdb.spisLevelTreeSkillsQueries.updateCompleteLevel(
-//                                    it.level,
                                     it.id_tree,
                                     cod_node_visib = TypeStatNodeTree.VISIB.codValue,
                                     cod_node_complete = TypeStatNodeTree.COMPLETE.codValue
@@ -501,7 +477,6 @@ class AddTimeHandler(
         data1: Long,
         data2: Long,
         opis: List<ItemComplexOpis>,
-//        opis: String
         stat: TypeStatPlanStap,
         svernut: String,
         idplan: Long,
@@ -540,7 +515,6 @@ class AddTimeHandler(
         data2: Long,
         opis: List<ItemComplexOpis>,
         marker: Long,
-//        opis: String
         idplan: Long
     ): List<PairId> {
         mdb.spisStapPlanQueries.updatePlanStap(
@@ -581,8 +555,6 @@ class AddTimeHandler(
 
     fun updStatPlanStap(
         item: ItemPlanStap,
-//        id: Long,
-//        quest_id: Long,
         stat: TypeStatPlanStap
     ) {
         mdb.spisStapPlanQueries.transaction {
@@ -592,15 +564,11 @@ class AddTimeHandler(
                 statNext = TypeStatPlanStap.NEXTACTION.codValue
             )
             if (stat == TypeStatPlanStap.COMPLETE) {
-//                mdb.spisQuestElementQueries.getQuestId(TypeQuestElement.PLANSTAP.code, id).executeAsList().let {
-//                    it.firstOrNull()?.let { quest_id ->
                 commonFun.runTriggerReact(
                     quest_id = item.quest_id.toString(),
                     TypeParentOfTrig.PLANSTAP,
                     item.quest_key_id
                 )
-//                    }
-//                }
                 mdb.propertyPlanNodeTSQueries.completePlanUpdate(
                     TypeStatNodeTree.COMPLETE.codValue,
                     -4L,
@@ -610,7 +578,6 @@ class AddTimeHandler(
                     .let { listNode ->
                         listNode.forEach {
                             mdb.spisLevelTreeSkillsQueries.updateCompleteLevel(
-//                                it.level,
                                 it.id_tree,
                                 cod_node_visib = TypeStatNodeTree.VISIB.codValue,
                                 cod_node_complete = TypeStatNodeTree.COMPLETE.codValue
@@ -628,7 +595,6 @@ class AddTimeHandler(
                         .let { listNode ->
                             listNode.forEach {
                                 mdb.spisLevelTreeSkillsQueries.updateCompleteLevel(
-//                                    it.level,
                                     it.id_tree,
                                     cod_node_visib = TypeStatNodeTree.VISIB.codValue,
                                     cod_node_complete = TypeStatNodeTree.COMPLETE.codValue

@@ -4,27 +4,27 @@ import MainTabs.Avatar.Element.PanAddTreeSkills
 import MainTabs.Quest.Element.ComItemTreeSkillsOpened
 import MainTabs.Quest.Element.ComItemTreeSkillsQuestOpened
 import MainTabs.Quest.Element.PanAddTreeSkillsQuest
-import MyDialog.MyDialogLayout
-import MyList
-import androidx.compose.foundation.layout.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import common.*
 import MainTabs.Quest.Items.ComItemTreeSkills
 import MainTabs.Quest.Items.ComItemTreeSkillsQuest
+import MyDialog.MyDialogLayout
+import MyList
 import MyShowMessage
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.dp
+import common.*
 import extensions.ItemSkillsTreeState
 import extensions.getComposable
 import kotlinx.coroutines.delay
@@ -38,7 +38,7 @@ import viewmodel.QuestVM
 import viewmodel.StateVM
 
 
-class SkillsPanel(val quest: Boolean = false) { //  questDB: QuestDB? = null) {
+class SkillsPanel(val quest: Boolean = false) {
 
     val vypSkills = mutableStateOf(false)
     val rectListTree = mutableStateOf(Rect(Offset(10f, 10f), Size(10f, 10f)))
@@ -46,16 +46,8 @@ class SkillsPanel(val quest: Boolean = false) { //  questDB: QuestDB? = null) {
     val sizeItem = mutableStateOf(0)
     val startOpenAnimation = mutableStateOf(false)
 
-    //    val openTS = if (questDB != null) StateVM.openTreeSkillsQuest else StateVM.openTreeSkills
+
     val openTS = if (quest) StateVM.openTreeSkillsQuest else StateVM.openTreeSkills
-
-    init {
-        println("SkillPanel //----------")
-        println(this)
-        println(quest)
-        println("SkillPanel ----------//")
-
-    }
 
     @Composable
     private fun executeQuestOrNotQuestComposable(
@@ -89,7 +81,7 @@ class SkillsPanel(val quest: Boolean = false) { //  questDB: QuestDB? = null) {
         val state: LazyListState = rememberLazyListState()
         LaunchedEffect(openTS.value) {
             if (openTS.value) {
-//                QuestVM.openQuestDB?.myLetOrElse(
+
                 executeQuestOrNotQuest({ qDB ->
                     StateVM.selectionTreeSkillsQuest.selected?.let { treeSkills ->
                         TypeTreeSkills.Companion.getType(treeSkills.id_type_tree)?.let { typeTree ->
@@ -109,7 +101,7 @@ class SkillsPanel(val quest: Boolean = false) { //  questDB: QuestDB? = null) {
             if (openTS.value) {
                 TreeSkills(dialLay)
             } else {
-//                QuestVM.openQuestDB?.myLetOrElse({
+
                 executeQuestOrNotQuestComposable({ qDB ->
                     SpisTreeSkillsQuest(dialLay, state, qDB)
                 }) {
@@ -132,29 +124,24 @@ class SkillsPanel(val quest: Boolean = false) { //  questDB: QuestDB? = null) {
         val durationAnim = 300
         val topOffsetTree: Float by animateFloatAsState(
             targetValue = if (startOpenAnimation.value) 0f else zeroIfMinus(rectListTree.value.top + offsetItem.value),
-            // Configure the animation duration and easing.
             animationSpec = tween(durationMillis = durationAnim, easing = FastOutSlowInEasing)
         ) {
-            println("rectListTree = ${rectListTree.value}")
             if (!startOpenAnimation.value && openTS.value) openTS.value = false
         }
         val startOffsetTree: Float by animateFloatAsState(
             targetValue = if (startOpenAnimation.value) 0f else zeroIfMinus(rectListTree.value.left),
-            // Configure the animation duration and easing.
             animationSpec = tween(durationMillis = durationAnim, easing = FastOutSlowInEasing)
         ) {
             if (!startOpenAnimation.value && openTS.value) openTS.value = false
         }
         val endOffsetTree: Float by animateFloatAsState(
             targetValue = if (startOpenAnimation.value) 0f else 68f,
-            // Configure the animation duration and easing.
             animationSpec = tween(durationMillis = durationAnim, easing = FastOutSlowInEasing)
         ) {
             if (!startOpenAnimation.value && openTS.value) openTS.value = false
         }
         val bottomOffsetTree: Float by animateFloatAsState(
             targetValue = if (startOpenAnimation.value) 0f else zeroIfMinus(rectListTree.value.bottom - rectListTree.value.top - offsetItem.value - sizeItem.value),
-            // Configure the animation duration and easing.
             animationSpec = tween(durationMillis = durationAnim, easing = FastOutSlowInEasing)
         ) {
             if (!startOpenAnimation.value && openTS.value) openTS.value = false
@@ -172,21 +159,20 @@ class SkillsPanel(val quest: Boolean = false) { //  questDB: QuestDB? = null) {
                 StateVM.selectionTreeSkillsQuest.selected?.let { itemTreeSkill ->
                     ComItemTreeSkillsQuestOpened(dialLay, qDB, itemTreeSkill, StateVM.selectionTreeSkillsQuest,
                         openTree = {
-                            println("rectListTree quest close = ${rectListTree.value}")
                             startOpenAnimation.value = false
                         }
-                    ) { item, expanded ->
+                    ) { _, _ ->
                     }.getComposable()
                 }
             }) {
                 StateVM.selectionTreeSkills.selected?.let { itemTreeSkill ->
-                    ComItemTreeSkillsOpened(dialLay, itemTreeSkill,
+                    ComItemTreeSkillsOpened(
+                        dialLay,
+                        itemTreeSkill,
                         openTree = {
-                            println("rectListTree close = ${rectListTree.value}")
                             startOpenAnimation.value = false
-                            //                                println("stateList.layoutInfo.viewportStartOffset = ${stateList.layoutInfo.viewportStartOffset}")
-                            //                                println("stateList.layoutInfo.visibleItemsInfo[ind].offset = ${stateList.layoutInfo.visibleItemsInfo[ind].offset}")
-                        }, itemTreeSkillStyleState = ItemSkillsTreeState(MainDB.styleParam.avatarParam.skillTab.itemSkill)
+                        },
+                        itemTreeSkillStyleState = ItemSkillsTreeState(MainDB.styleParam.avatarParam.skillTab.itemSkill)
                     )
                 }
             }
@@ -203,36 +189,31 @@ class SkillsPanel(val quest: Boolean = false) { //  questDB: QuestDB? = null) {
                 "Ветвей навыков: ${MainDB.avatarSpis.spisTreeSkills.getState().value?.size ?: 0}",
                 Modifier.weight(1f).padding(horizontal = 10.dp)
             )
-//                modifier = Modifier.padding(horizontal = 60.dp),
+
             MyTextButtStyle1("+", modifier = Modifier.padding(end = 15.dp)) {
                 PanAddTreeSkills(dialLay)
             }
         }
         MainDB.styleParam.avatarParam.skillTab.itemSkill.getComposable(::ItemSkillsTreeState) { itemStyle ->
-            MyList(MainDB.avatarSpis.spisTreeSkills, Modifier.weight(1f).padding(horizontal = 60.dp).onGloballyPositioned {
-//            println("it.parentCoordinates = ${it.parentCoordinates?.size}")
-//            println("it.parentLayoutCoordinates = ${it.parentLayoutCoordinates?.size}")
-//            println("it.boundsInParent = ${it.boundsInParent()}")
-                rectListTree.value = it.boundsInParent()
-//            println("it.size = ${it.size}")
-            }, stateList) { ind, itemTreeSkill ->
-                if ( itemTreeSkill.stat != TypeStatTreeSkills.INVIS ) ComItemTreeSkills(itemTreeSkill, StateVM.selectionTreeSkills, //
+            MyList(
+                MainDB.avatarSpis.spisTreeSkills,
+                Modifier.weight(1f).padding(horizontal = 60.dp).onGloballyPositioned {
+                    rectListTree.value = it.boundsInParent()
+                },
+                stateList
+            ) { ind, itemTreeSkill ->
+                if (itemTreeSkill.stat != TypeStatTreeSkills.INVIS) ComItemTreeSkills(
+                    itemTreeSkill, StateVM.selectionTreeSkills,
                     openTree = {
                         StateVM.selectionTreeSkills.selected = it
                         StateVM.openTreeSkills.value = true
-//                    stateList.layoutInfo.visibleItemsInfo.forEach {
-//                        println("it.key = ${it.key}")
-//                        println("it.index = ${it.index}")
-//                    }
-//                    println("stateList.layoutInfo.visibleItemsInfo = ${stateList.layoutInfo.visibleItemsInfo}")
-//                    println("stateList.layoutInfo.totalItemsCount = ${stateList.layoutInfo.totalItemsCount}")
                         val visibleItem = stateList.layoutInfo.visibleItemsInfo.find { it.index == ind }
                         offsetItem.value = visibleItem?.offset ?: 0
                         sizeItem.value = visibleItem?.size ?: 0
                     }, itemTreeSkillStyleState = itemStyle
                 ) { item, expanded ->
                     @Composable
-                    fun visibMenu(){
+                    fun visibMenu() {
                         MyDropdownMenuItem(expanded, "Открыть редактирование") {
                             MainDB.addAvatar.setOpenEditTreeSkills(item.id.toLong(), OPEN_EDIT)
                         }
@@ -261,11 +242,12 @@ class SkillsPanel(val quest: Boolean = false) { //  questDB: QuestDB? = null) {
                                 }
                             }
                         }
+
                         VISIB -> visibMenu()
-                        COMPLETE -> {}/*TODO()*/
+                        COMPLETE -> Unit
                         UNBLOCKNOW -> visibMenu()
-                        BLOCK -> {}
-                        INVIS -> {}
+                        BLOCK -> Unit
+                        INVIS -> Unit
                     }
 
                 }
@@ -290,7 +272,7 @@ class SkillsPanel(val quest: Boolean = false) { //  questDB: QuestDB? = null) {
         MyList(qDB.spisQuest.spisTreeSkills, Modifier.weight(1f).padding(horizontal = 60.dp).onGloballyPositioned {
             rectListTree.value = it.boundsInParent()
         }, stateList) { ind, itemTreeSkill ->
-            ComItemTreeSkillsQuest(itemTreeSkill, StateVM.selectionTreeSkillsQuest, //
+            ComItemTreeSkillsQuest(itemTreeSkill, StateVM.selectionTreeSkillsQuest,
                 openTree = {
                     val visibleItem = stateList.layoutInfo.visibleItemsInfo.find { it.index == ind }
                     offsetItem.value = visibleItem?.offset ?: 0
@@ -315,6 +297,5 @@ class SkillsPanel(val quest: Boolean = false) { //  questDB: QuestDB? = null) {
     }
 
     fun zeroIfMinus(value: Float): Float = if (value < 0f) 0f else value
-
 }
 

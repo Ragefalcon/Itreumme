@@ -52,14 +52,15 @@ fun PanAddNodeTreeSkillsQuest(
     val mustNodeForLevel: MutableState<Boolean> = mutableStateOf(item?.must_node ?: false)
     val parentsId: MutableState<Array<Long>> = mutableStateOf(arrayOf<Long>())
 
-    val CB_spisStartVisible = MyComboBox(TypeStatQuestElementVisible.values().toList(), nameItem = { it.nameType }).apply {
-        item?.let {  itemTree ->
-            TypeStatQuestElementVisible.getType(item.visible_stat)?.let {
-                select(it)
-            }
+    val CB_spisStartVisible =
+        MyComboBox(TypeStatQuestElementVisible.values().toList(), nameItem = { it.nameType }).apply {
+            item?.let { itemTree ->
+                TypeStatQuestElementVisible.getType(item.visible_stat)?.let {
+                    select(it)
+                }
 
+            }
         }
-    }
 
     val cbSpisLevelTreeSkills = MyComboBox(
         questDB.spisQuest.spisLevelTreeSkills.getState().value ?: listOf(),
@@ -80,15 +81,15 @@ fun PanAddNodeTreeSkillsQuest(
             is ItemCountNodeTreeSkillsQuest -> {
                 cbSpisTypeNodeTreeSkills.select(TypeNodeTreeSkills.COUNTER_END)
             }
+
             is ItemPlanNodeTreeSkillsQuest -> {
                 cbSpisTypeNodeTreeSkills.select(TypeNodeTreeSkills.PLAN)
             }
-//            else -> {}
+
             is ItemHandNodeTreeSkillsQuest -> {
                 cbSpisTypeNodeTreeSkills.select(TypeNodeTreeSkills.HAND)
             }
         }
-
     }
 
     when (typeTree) {
@@ -122,30 +123,26 @@ fun PanAddNodeTreeSkillsQuest(
             }
             if (textName.value.text != "" && condition) MyTextButtStyle1(item?.let { "Изменить" } ?: "Добавить",
                 Modifier.padding(start = 5.dp)) {
-                        println("Добавить test0")
                 if (textName.value.text != "")
-                        println("Добавить test")
-                    item?.let {
-                        changeNode(it)
-                        questDB.questFun.resetSelectionNodeTreeSkills()
-                        questDB.questFun.setMarkerParentAndChildForNodeTreeSkills(it)
-                        dialPan.close()
-                    } ?: run {
-                        println("Добавить")
-                        addNode()
-                        questDB.questFun.resetSelectionNodeTreeSkills()
-                        dialPan.close()
-                    }
+                item?.let {
+                    changeNode(it)
+                    questDB.questFun.resetSelectionNodeTreeSkills()
+                    questDB.questFun.setMarkerParentAndChildForNodeTreeSkills(it)
+                    dialPan.close()
+                } ?: run {
+                    addNode()
+                    questDB.questFun.resetSelectionNodeTreeSkills()
+                    dialPan.close()
+                }
             }
         }
     }
 
     fun checkIdTreeAndTypeNode(funBD: (Long, Long) -> Unit) {
-//        StateVM.selectionTreeSkillsQuest.selected?.id?.let { id_tree ->
-            cbSpisTypeNodeTreeSkills.getSelected()?.id?.let { id_type_node ->
-                funBD(idTree, id_type_node)
-            }
-//        }
+
+        cbSpisTypeNodeTreeSkills.getSelected()?.id?.let { id_type_node ->
+            funBD(idTree, id_type_node)
+        }
     }
 
     @Composable
@@ -231,7 +228,6 @@ fun PanAddNodeTreeSkillsQuest(
                         )
                     }
                 }
-
             },
             addNode = {
                 checkIdTreeAndTypeNode { id_tree, id_type_node ->
@@ -265,18 +261,13 @@ fun PanAddNodeTreeSkillsQuest(
         mainOpis()
         MyOutlinedTextFieldInt("Максимальное значение", text_max_count)
         buttPanel(changeNode = {
-
         }, addNode = {
-
         }, true)
     }
 
 
     dialPan.dial = @Composable {
-
-//        val iconImage: MutableState<ImageBitmap?> = remember { mutableStateOf(null) }
-
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 RowVA {
                     IconNode(iconItem.value, "icon_skill_color_lamp.png", questDB.dirQuest,
@@ -286,11 +277,12 @@ fun PanAddNodeTreeSkillsQuest(
                     )
                     Text(
                         text = "❯❯❯",
-                        modifier = Modifier.align(Alignment.CenterVertically), //.padding(start = 10.dp)
+                        modifier = Modifier.align(Alignment.CenterVertically),
                         style = MyTextStyleParam.style1.copy(fontSize = 25.sp)
                     )
                     IconNode(iconItemComplete.value ?: iconItem.value, "icon_skill_color_lamp.png", questDB.dirQuest,
-                        complete = iconItemComplete.value?.let { TypeIconBorder.getType(it.type_ramk) != TypeIconBorder.NONE } ?: true,
+                        complete = iconItemComplete.value?.let { TypeIconBorder.getType(it.type_ramk) != TypeIconBorder.NONE }
+                            ?: true,
                         modifier = Modifier.clickable {
                             PanCreateIconNode(dialLayInner, icon = iconItemComplete, questDB)
                         }
@@ -299,21 +291,21 @@ fun PanAddNodeTreeSkillsQuest(
                 if (item == null) cbSpisTypeNodeTreeSkills.show()
 
                 when (typeTree) {
-                    TypeTreeSkills.KIT -> {
-                    }
+                    TypeTreeSkills.KIT -> Unit
                     TypeTreeSkills.LEVELS -> {
                         cbSpisLevelTreeSkills.show(Modifier.padding(top = 10.dp))
                         MyCheckbox(mustNodeForLevel, "Обязательно для выполнения")
                     }
+
                     TypeTreeSkills.TREE -> {
                         MyListRow(
                             questDB.spisQuest.spisNodeTreeSkillsSelection,
-                            Modifier.padding(top = 8.dp)//.heightIn(0.dp, 150.dp)
-                        ) { ind, nodeTreeSkills -> //.heightIn(0.dp, 150.dp) .height(150.dp)
-                            ComItemNodeTreeSkillsSelParentsQuest(nodeTreeSkills,questDB).getComposable()
+                            Modifier.padding(top = 8.dp)
+                        ) { ind, nodeTreeSkills ->
+                            ComItemNodeTreeSkillsSelParentsQuest(nodeTreeSkills, questDB).getComposable()
                         }
                         MyTextButtStyle1("Выбрать родителей") {
-                                PanSelectNodeParentsQuest(dialLayInner, questDB, parentsId, levelM)
+                            PanSelectNodeParentsQuest(dialLayInner, questDB, parentsId, levelM)
                         }
                     }
                 }
@@ -322,27 +314,23 @@ fun PanAddNodeTreeSkillsQuest(
                     TypeNodeTreeSkills.HAND -> {
                         handType()
                     }
+
                     TypeNodeTreeSkills.PLAN -> {
                         planType()
                     }
+
                     TypeNodeTreeSkills.COUNTER_END -> {
                         counterType()
                     }
-                    TypeNodeTreeSkills.COUNTER_ENDLESS -> {
-                    }
-                    TypeNodeTreeSkills.HOUR_END -> {
-                    }
-                    TypeNodeTreeSkills.HOUR_ENDLESS -> {
-                    }
-                    null -> {
-                    }
+
+                    TypeNodeTreeSkills.COUNTER_ENDLESS -> Unit
+                    TypeNodeTreeSkills.HOUR_END -> Unit
+                    TypeNodeTreeSkills.HOUR_ENDLESS -> Unit
+                    null -> Unit
                 }
             }
         }
         dialLayInner.getLay()
     }
-
     dialPan.show()
-
-
 }

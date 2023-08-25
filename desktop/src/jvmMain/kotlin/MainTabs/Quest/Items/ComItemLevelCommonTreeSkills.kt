@@ -4,8 +4,10 @@ import MainTabs.Avatar.Element.PanAddNodeTreeSkills
 import MainTabs.Quest.Element.ShowOpisNodeTreeSkills
 import MyDialog.MyDialogLayout
 import MyShowMessage
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,13 +15,13 @@ import androidx.compose.ui.unit.dp
 import common.*
 import extensions.ItemNodeTreeSkillsState
 import extensions.ItemSkillsTreeLevelState
-import ru.ragefalcon.sharedcode.models.data.*
+import ru.ragefalcon.sharedcode.models.data.ItemHandNodeTreeSkills
+import ru.ragefalcon.sharedcode.models.data.ItemNodeTreeSkills
+import ru.ragefalcon.sharedcode.models.data.ItemTreeSkill
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatNodeTree
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeTreeSkills
 import viewmodel.MainDB
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ComItemLevelCommonTreeSkills(
     dialLay: MyDialogLayout,
@@ -36,23 +38,13 @@ fun ComItemLevelCommonTreeSkills(
         MyCardStyle1(
             false, 0,
             {
-//            selection.selected = item
             },
             onDoubleClick = {
-//            item.sver = item.sver.not()
-//            expandedOpis.value = !expandedOpis.value
             },
-//            dropMenu = { exp -> dropMenu(item, exp) }
             styleSettings = itemTreeSkillStyleLevelState
         ) {
             BoxWithConstraints(Modifier.wrapContentSize()) {
                 Column(Modifier.align(Alignment.TopCenter), horizontalAlignment = Alignment.CenterHorizontally) {
-//                    with(LocalDensity.current) {
-//                        MyListRow(
-//                            listNode,
-//                            Modifier.padding(vertical = 8.dp).heightIn(0.dp, 280.dp),
-//                            maxWidth = this@BoxWithConstraints.maxWidth.toPx().toInt()
-//                        ) { nodeTreeSkills ->
                     PlateOrderLayout(Modifier.padding(vertical = 5.dp), alignmentCenter = true) {
                         listNode.forEach { nodeTreeSkills ->
                             if (nodeTreeSkills.complete != TypeStatNodeTree.INVIS) ComItemNodeLevelTreeSkills(
@@ -96,7 +88,7 @@ fun ComItemLevelCommonTreeSkills(
                             }
                         }
                     }
-//                    }
+
                 }
             }
         }
@@ -108,28 +100,17 @@ class ComItemLevelCommonTreeSkillsCheckable(
     val selection: SingleSelectionType<ItemNodeTreeSkills>,
     val listNode: List<ItemNodeTreeSkills>,
 ) {
-
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         MyCardStyle1(
             false, 0,
             {
-//            selection.selected = item
             },
             onDoubleClick = {
-//            item.sver = item.sver.not()
-//            expandedOpis.value = !expandedOpis.value
             },
-//            dropMenu = { exp -> dropMenu(item, exp) }
         ) {
             BoxWithConstraints(Modifier.wrapContentSize()) {
                 Column(Modifier.align(Alignment.TopCenter), horizontalAlignment = Alignment.CenterHorizontally) {
-//                    MyListRow(
-//                        listNode,
-//                        Modifier.padding(top = 8.dp).heightIn(0.dp, 150.dp),
-//                        maxWidth = this@BoxWithConstraints.maxWidth.value.toInt()
-//                    ) { nodeTreeSkills -> //.heightIn(0.dp, 150.dp) .height(150.dp)
                     PlateOrderLayout(Modifier.padding(vertical = 5.dp), alignmentCenter = true) {
                         listNode.forEach { nodeTreeSkills ->
                             if (nodeTreeSkills.complete != TypeStatNodeTree.INVIS) ComItemNodeLevelTreeSkillsCheckable(

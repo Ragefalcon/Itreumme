@@ -176,14 +176,15 @@ class MyComboBox<T : Any> private constructor(
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            LaunchedEffect( expanded.value){
+                            LaunchedEffect(expanded.value) {
                                 timeExpanded.value = Date().time
                             }
                             RowVA(
                                 modifier
                                     .withSimplePlate(panel)
                                     .clickable(interactionSource = interactionSource, indication = null) {
-                                        if (Date().time - timeExpanded.value > 100) expanded.value = true else expanded.value = false
+                                        if (Date().time - timeExpanded.value > 100) expanded.value =
+                                            true else expanded.value = false
                                     }
                                     .padding(5.dp)
                             ) {

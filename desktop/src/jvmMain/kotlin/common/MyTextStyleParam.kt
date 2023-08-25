@@ -16,8 +16,7 @@ class MyTextStyleParam() {
         val style1 = TextStyle(
             color = Color(0xFFFFF7D9),
             fontSize = 20.sp,
-            fontFamily = FontFamily.Default,// SansSerif,
-//                letterSpacing = 4.sp,
+            fontFamily = FontFamily.Default,
             textAlign = TextAlign.Center,
             shadow = Shadow(
                 color = Color.Black,
@@ -28,8 +27,7 @@ class MyTextStyleParam() {
         val style2 = TextStyle(
             color = Color(0xFFFFF7D9),
             fontSize = 20.sp,
-            fontFamily = FontFamily.Default,// .Monospace,
-//                letterSpacing = 4.sp,
+            fontFamily = FontFamily.Default,
             textAlign = TextAlign.Start,
             shadow = Shadow(
                 color = Color.Black.copy(alpha = 0.7f),
@@ -41,20 +39,14 @@ class MyTextStyleParam() {
             color = Color(0xFFFFF7D9),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Default,// .Monospace,
-//                letterSpacing = 4.sp,
+            fontFamily = FontFamily.Default,
             textAlign = TextAlign.Start,
-//                shadow = Shadow(
-//                    color = Color.Black.copy(alpha = 0.7f),
-//                    offset = Offset(1f, 1f),
-//                    blurRadius = 2f
-//                ),
         )
         val style4 = TextStyle(
             color = Color(0xFFFFF7D9),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Default,// .Monospace,
+            fontFamily = FontFamily.Default,
             textAlign = TextAlign.Start,
             shadow = Shadow(
                 color = Color.White.copy(alpha = 0.4f),
@@ -63,10 +55,10 @@ class MyTextStyleParam() {
             ),
         )
         val style5 = TextStyle(
-            color = MyColorARGB.colorBackRamk.plusWhite().toColor(),//Color(0xCFFFF7D9),
+            color = MyColorARGB.colorBackRamk.plusWhite().toColor(),
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Default,// .Monospace,
+            fontFamily = FontFamily.Default,
             textAlign = TextAlign.Start,
             shadow = Shadow(
                 color = Color.White.copy(alpha = 0.3f),

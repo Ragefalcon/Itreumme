@@ -4,11 +4,13 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.PaintingStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -22,7 +24,7 @@ import ru.ragefalcon.sharedcode.models.data.ItemHourVajn
 fun VajnHourDiagram(hours: List<ItemHourVajn>, modifier: Modifier = Modifier) {
     val otstupOut = 3.dp
     val otstupIn = 2.dp
-    val otstupBetween = Dp.Hairline // 1.5.dp
+    val otstupBetween = Dp.Hairline
     val otstupSum = otstupOut + otstupIn
     with(LocalDensity.current) {
         Canvas(
@@ -42,13 +44,6 @@ fun VajnHourDiagram(hours: List<ItemHourVajn>, modifier: Modifier = Modifier) {
             } else {
                 boxFr = canvasWidth
             }
-//                            val area = MyAreaCanvas(fizAreaSize.value, fizAreaSize.value, boxFr)
-/*
-                            drawRect(
-                                color = MyColorARGB.colorEffektShkal_Back.toColor(),// Color(0xFFefeb85),//fff589),
-                                size = Size(canvasWidth, canvasHeight),
-                            )
-*/
 
             val rectRamk = MyRectF(canvasWidth, canvasHeight, 0F, 0F).apply {
                 inset(otstupOut.toPx(), otstupOut.toPx())
@@ -75,14 +70,9 @@ fun VajnHourDiagram(hours: List<ItemHourVajn>, modifier: Modifier = Modifier) {
             if (koefMonth > koefMax) koefMax = koefMonth
             if (koefYear > koefMax) koefMax = koefYear
             var pBackgbColor = MyColorARGB.colorEffektShkal_Back
-//        if (koefMonth + koefYear + koefned > 1.5) pBackgbColor = MyColorARGB.colorEffektShkal_BackRed
 
             if (koefMax > 1F) {
-//            if (item.norma>0){
                 rectRamk.width = rectRamk.width / koefMax
-//            }   else    {
-//                rectRamk.left = rectRamk.right - rectRamk.width()/koefMax
-//            }
             }
 
             val innerRectHeight = canvasHeight - 2 * otstupSum.toPx()
@@ -90,7 +80,6 @@ fun VajnHourDiagram(hours: List<ItemHourVajn>, modifier: Modifier = Modifier) {
             val rectNedelBack = MyRectF(rectRamk).apply {
                 height = height * 3 / 5
             }
-
 
             fun drawMyRect(rectF: MyRectF, color: Color, stroke: Boolean = false) = drawIntoCanvas {
                 val rr = RRect.makeLTRB(
@@ -114,7 +103,6 @@ fun VajnHourDiagram(hours: List<ItemHourVajn>, modifier: Modifier = Modifier) {
                 cornerRadius = CornerRadius(5.dp.toPx(), 5.dp.toPx()),
                 style = Stroke(
                     width = 3.dp.toPx(),
-//                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
                 )
             )
             drawRoundRect(
@@ -123,8 +111,8 @@ fun VajnHourDiagram(hours: List<ItemHourVajn>, modifier: Modifier = Modifier) {
                 cornerRadius = CornerRadius(5.dp.toPx(), 5.dp.toPx()),
                 style = Stroke(
                     width = 2.dp.toPx(),
-//                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
-                )
+
+                    )
             )
             val rectSleep = MyRectF(
                 rectRamk.width * (2f / 24f),
@@ -132,21 +120,9 @@ fun VajnHourDiagram(hours: List<ItemHourVajn>, modifier: Modifier = Modifier) {
                 otstupIn.toPx() + rectRamk.width * (7f / 24f),
                 0F
             ).apply {
-//            inset(0f, 0)
+
             }
             drawMyRect(rectSleep, MyColorARGB.colorEffektShkal_Month.toColor())
-            /*drawLine(
-                Color.Red,
-                Offset(otstupIn.toPx() + rectRamk.width * (8f/24f),0f),
-                Offset(otstupIn.toPx() + rectRamk.width * (8f/24f),this.size.height), // 2*otstupIn.toPx() + rectRamk.height
-                4f
-            )*/
-//                        drawRoundRect(
-//                            color = pBackgbColor.plusWhite(4f).toColor(),
-//                            cornerRadius = CornerRadius(3.dp.toPx(), 3.dp.toPx()),
-//                            topLeft = rectRamk.offset,
-//                            size = rectRamk.size,
-//                        )
 
             var otstupNedel = otstupIn.toPx()
             var otstupMonth = otstupIn.toPx()
@@ -221,10 +197,7 @@ fun VajnHourDiagram(hours: List<ItemHourVajn>, modifier: Modifier = Modifier) {
                 drawMyRect(rectYear, colorHour)
                 drawMyRect(rectYear, Color(0xAA000000), true)
                 otstupYear += rectYear.width
-
-
             }
         }
     }
-
 }

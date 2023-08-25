@@ -28,7 +28,6 @@ import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.Interface.StyleVMspis
 private fun CommonInterfaceSetting.RazdelSetting.setLaunchedEffect(leFun: CoroutineScope.() -> Unit) {
     forEach {
         LaunchedEffect(it.itrObj.value) {
-//            println("leFun() - ${Date().time}")
             leFun()
         }
     }
@@ -39,34 +38,15 @@ private fun CommonInterfaceSetting.RazdelSetting.setLaunchedEffect(leFun: Corout
 
 @Composable
 fun <K : CommonInterfaceSetting.RazdelSetting, T> K.getComposable(getV: (K) -> T, content: @Composable (T) -> Unit) {
-/*
-    val itemMutab = remember {  mutableStateOf(getV(this)) }
-    setLaunchedEffect {
-        itemMutab.value = getV(this@getComposable)
-    }
-    content(itemMutab.value)
-*/
-//    println("<K: CommonInterfaceSetting.RazdelSetting, T> K.getComposable(")
     content(getV(this))
 }
-
-/*
-@Composable
-fun <T> CommonInterfaceSetting.RazdelSetting.getComposableTmp(getV: ()->T, content: @Composable (T) -> Unit) {
-    val itemMutab = remember {  mutableStateOf(getV()) }
-    setLaunchedEffect {
-        itemMutab.value = getV()
-    }
-    content(itemMutab.value)
-}
-*/
 
 
 fun CommonInterfaceSetting.MySettings.BrushStyleSetting.getValue(): Brush =
     if (this.GRADIENT_ENABLE.getValue()) LinearGradient(
-        this.GRADIENT_COLORS.getValue().map { it.toColor() }, //.compositeOver(Color.Transparent)
+        this.GRADIENT_COLORS.getValue().map { it.toColor() },
         angleInDegrees = this.GRADIENT_ANGLE.getValue().toFloat()
-    ) else //SolidColor(this.BRUSH_COLOR.getValue().toColor())
+    ) else
         Brush.horizontalGradient(this.BRUSH_COLOR.getValue().toColor().compositeOver(Color.Transparent)
             .let { listOf(it, it) })
 
@@ -92,7 +72,6 @@ fun Modifier.paddingStyle(style: CommonInterfaceSetting.MySettings.PaddingStyleI
         horizontal = style.PADDING_HORIZONTAL.getValue().dp, vertical = style.PADDING_VERTICAL.getValue().dp
     )
 
-
 fun CommonInterfaceSetting.MySettings.CornerStyleItemSetting.getPath(size: Size): Path = drawTicketPath(
     size,
     topStartShape = this.BORDER_CORNER_TYPE_TOPSTART.getValue(),
@@ -115,15 +94,10 @@ fun CommonInterfaceSetting.MySettings.CornerStyleItemSetting.getValue(
     hole: Boolean = false,
     limit: Double? = null
 ): CustomShape
-//= CutCornerShape(
-//    this.BORDER_CORNER_TOPSTART.getValue().dp,
-//    this.BORDER_CORNER_TOPEND.getValue().dp,
-//    this.BORDER_CORNER_BOTTOMEND.getValue().dp,
-//    this.BORDER_CORNER_BOTTOMSTART.getValue().dp)
 {
     fun testLimit(value: Double): Double = limit?.let { if (value > limit) limit else value } ?: value
     fun addDelta(value: Double): Double = testLimit(if (value - padding >= 0.0) value - padding else 0.0)
-//    println("CornerStyleItemSetting.getValue - ${Date().time}")
+
     return if (this.BORDER_CORNER_INDIVIDUALLY.getValue()) CustomShape(
         topStartShape = this.BORDER_CORNER_TYPE_TOPSTART.getValue(),
         topEndShape = this.BORDER_CORNER_TYPE_TOPEND.getValue(),
@@ -435,7 +409,7 @@ open class CommonItemStyleState(
     val paddingInner: Modifier = Modifier.paddingStyle(parent.inner_padding),
     val shapeCard: Shape = parent.corner.getValue(),
     val dropdown: DropDownMenuStyleState = DropDownMenuStyleState(parent.dropdown),
-//    val shapeCardShadow: Shape = parent.corner.getValue(true),
+
     val borderWidth: Dp = parent.back_and_border.BORDER_WIDTH.getValue().dp,
     val borderWidthActive: Dp = parent.back_and_border.BORDER_WIDTH_ACTIVE.getValue().dp,
     val background: Brush = parent.back_and_border.BACKGROUND.getValue(),
@@ -559,7 +533,7 @@ class ItemVxodStyleState(
                 parent.BORDER_BRUSH_4.getValue()
             ), parent.corner.getValue()
         ),
-//            parent.BORDER_BRUSH_GOTOV.getValue(),
+
 ) : ItemStyleWithOpisSettingState(parent, active)
 
 class ItemBloknotStyleState(
@@ -572,8 +546,8 @@ class ItemBloknotStyleState(
 class ItemIdeaStyleState(
     parent: StyleVMspis.InterfaceState.ItemIdeaStyle,
     active: Boolean = parent.ACTIVETED_ITEM_STYLE.getValue(),
-//    val buttOpenColor: Color = parent.COLOR_BUTT_OPEN.getValue().toColor(),
-//    val countTextStyle: TextStyle = parent.countText.getValue()
+
+
 ) : ItemStyleWithOpisSettingState(parent, active)
 
 class ItemIdeaStapStyleState(

@@ -1,7 +1,6 @@
 package ru.ragefalcon.tutatores.ui.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
@@ -9,24 +8,24 @@ import ru.ragefalcon.sharedcode.source.disk.DbArgs
 import ru.ragefalcon.sharedcode.viewmodels.ObserveModels.ObserveBaseViewModel
 import java.util.*
 
-class AndroidFinanceViewModel(application: Application): AndroidViewModel(application) {
-    private var ObserFM = ObserveBaseViewModel(DbArgs(getApplication(),"databasefff.db"))
+class AndroidFinanceViewModel(application: Application) : AndroidViewModel(application) {
+    private var ObserFM = ObserveBaseViewModel(DbArgs(getApplication(), "databasefff.db"))
 
-    fun addDateOwner(owner: LifecycleOwner){
+    fun addDateOwner(owner: LifecycleOwner) {
 
         dateOpor.observe(owner) {
             selPer.setDateOpor(it.time)
         }
         dateBegin.observe(owner) {
-            selPer.SetPeriodDates(it.time,dateEnd.value!!.time)
+            selPer.SetPeriodDates(it.time, dateEnd.value!!.time)
         }
         dateEnd.observe(owner) {
-            selPer.SetPeriodDates(dateBegin.value!!.time,it.time)
+            selPer.SetPeriodDates(dateBegin.value!!.time, it.time)
         }
-        dateOporDp.observe(owner){
-            if (keyDateChange){
+        dateOporDp.observe(owner) {
+            if (keyDateChange) {
                 keyDateChange = false
-            }   else {
+            } else {
                 timeFun.setDay(it.time)
             }
         }
@@ -51,14 +50,14 @@ class AndroidFinanceViewModel(application: Application): AndroidViewModel(applic
     val dateOpor = MutableLiveData<Date>().apply {
         this.value = Date(selPer.dateOporLong)
 
-        selPer.setUpdDO { dd->
+        selPer.setUpdDO { dd ->
             this.value = Date(dd)
         }
     }
 
     val dateBegin = MutableLiveData<Date>()
     val dateEnd = MutableLiveData<Date>().apply {
-        ObserFM.selPer.setUpdPer { aa,bb->
+        ObserFM.selPer.setUpdPer { aa, bb ->
             if (dateBegin.value != Date(aa)) dateBegin.value = Date(aa)
             if (this.value != Date(bb)) this.value = Date(bb)
         }
@@ -90,7 +89,7 @@ class AndroidFinanceViewModel(application: Application): AndroidViewModel(applic
     val dateOporDp = MutableLiveData<Date>().apply {
         this.value = Date(ObserFM.timeFun.getDay())
 
-        ObserFM.timeFun.setFunDateOporTimeUpd{ dd->
+        ObserFM.timeFun.setFunDateOporTimeUpd { dd ->
             keyDateChange = true
             this.value = Date(dd)
         }

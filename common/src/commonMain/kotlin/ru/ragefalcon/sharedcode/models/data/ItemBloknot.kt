@@ -10,5 +10,5 @@ class ItemBloknot(
     val opis: String,
     val countidea: Long,
     var sver: Boolean = true
-): Id_class (id_main = id), Parcelable {
+) : Id_class(id_main = id), Parcelable {
 }

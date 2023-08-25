@@ -25,37 +25,16 @@ fun <T : Any> MyList(
     reverse: Boolean = false,
     comItem: @Composable (Int, T) -> Unit
 ) {
-
-    /**
-     * Похоже НИКОГДА не стоит использовать state.layoutInfo в качестве параметра для Composable функций
-     *
-     * если использовать вот это:
-    //    LaunchedEffect(state.layoutInfo) {
-    //        println("LaunchedEffect(scroll.layoutInfo.viewportEndOffset, scroll.layoutInfo.viewportStartOffset){")
-    //        if (risScroll.value != state.layoutInfo.viewportEndOffset - state.layoutInfo.viewportStartOffset >= maxHeight)
-    //            risScroll.value = state.layoutInfo.viewportEndOffset - state.layoutInfo.viewportStartOffset >= maxHeight
-    //    }
-     *
-     * То в сочетании с rememberLazyListState который находится во внешней функции, это приводит к зацикливанию перерасчетов
-     * положения скролла и соответственно к перерисовке всего этого... println из LaunchedEffect(state.layoutInfo) даже не выводится.
-     *
-     * Я до конца так и не понял всю цепочку этой проблемы, но думаю лучше ее обходить стороной. Хотя можно проблема на самом деле
-     * в реализации VerticalScrollbar.
-     * */
-//    val risScroll = remember { mutableStateOf(false) }
-//    LaunchedEffect(state.layoutInfo) {
-//        println("LaunchedEffect(scroll.layoutInfo.viewportEndOffset, scroll.layoutInfo.viewportStartOffset){")
-//        if (risScroll.value != state.layoutInfo.viewportEndOffset - state.layoutInfo.viewportStartOffset >= maxHeight)
-//            risScroll.value = state.layoutInfo.viewportEndOffset - state.layoutInfo.viewportStartOffset >= maxHeight
-//    }
     if (list.isNotEmpty()) {
-//        StateVM.timerStop("MyList inn2")
-        BoxWithVScrollBarLazyList(modifier, state, dark = darkScroll, maxHeight = maxHeight, reverse = reverse) { scrollState ->
-//            StateVM.timerStop("MyList inn3")
+        BoxWithVScrollBarLazyList(
+            modifier,
+            state,
+            dark = darkScroll,
+            maxHeight = maxHeight,
+            reverse = reverse
+        ) { scrollState ->
             LazyColumn(state = scrollState, reverseLayout = reverse) {
-//                StateVM.timerStop("MyList inn4")
                 itemsIndexed(list) { ind, item ->
-//                    StateVM.timerStop("MyList comItem")
                     comItem(ind, item)
                 }
             }
@@ -96,18 +75,13 @@ fun <T : Any> MyList(
     maxHeight: Int = 0,
     reverse: Boolean = false,
     comItem: @Composable (Int, T) -> Unit
-    /**
-    LazyListState сюда(comItem) не стоит передовать, т.к. при определенных обстоятельствах айтему
-    уходят в бесконечный цикл обновления и это можно даже не заметить....
-    возможно стоит эту возможность вынести в отдельную не Composable функцию
-     */
 ) {
-//    StateVM.timerStart("MyList")
+
     stateObj.getState().value?.let { typeRList ->
-//        StateVM.timerStop("MyList inn1")
+
         MyList(typeRList, modifier, state, darkScroll, maxHeight, reverse, comItem)
     } ?: Spacer(modifier)
-//    StateVM.timerStop("MyList endFun")
+
 }
 
 @Composable
@@ -128,16 +102,16 @@ fun <T : Any> MyListPlate(
 fun <T : Any> MyListPlate(
     list: List<T>,
     modifier: Modifier = Modifier,
-//    state: LazyListState = rememberLazyListState(),
+
     darkScroll: Boolean = false,
     verticalScroll: Boolean = true,
     alignmentCenter: Boolean = false,
-//    maxHeight: Int = 0,
+
     comItem: @Composable (T) -> Unit
 ) {
     if (list.isNotEmpty()) {
         if (verticalScroll) BoxWithVScrollBar(modifier, dark = darkScroll) { scrollStateBox ->
-            Box(Modifier.verticalScroll(scrollStateBox, enabled = true)) { //fillMaxWidth().
+            Box(Modifier.verticalScroll(scrollStateBox, enabled = true)) {
                 PlateOrderLayout(alignmentCenter = alignmentCenter) {
                     list.forEach { item ->
                         comItem(item)
@@ -173,8 +147,8 @@ fun <T : Any> MyListRow(
                 state = scrollSt,
                 modifier = Modifier.scrollVerticalToHorizontal(scrollSt),
                 verticalAlignment = Alignment.CenterVertically
-            ) {//scrollState) {
-                itemsIndexed(list) { ind, item -> //.toList() ?: listOf()
+            ) {
+                itemsIndexed(list) { ind, item ->
                     comItem(ind, item)
                 }
             }
@@ -207,7 +181,7 @@ fun <T> MyListItems(
 ) {
     scope.apply {
         if (typeRList.isNotEmpty()) {
-            itemsIndexed(typeRList) { ind, item -> //.toList() ?: listOf()
+            itemsIndexed(typeRList) { ind, item ->
                 comItem(item)
             }
         }
@@ -225,7 +199,7 @@ fun <T> MyListItems(
     }
 }
 
-fun <T: Id_class> MyListItems(
+fun <T : Id_class> MyListItems(
     stateObj: ItrCommListObserveObj<T>,
     modifier: Modifier = Modifier,
     scope: LazyListScope,

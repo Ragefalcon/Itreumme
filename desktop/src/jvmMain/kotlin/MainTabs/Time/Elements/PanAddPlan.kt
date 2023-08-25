@@ -27,7 +27,6 @@ import java.util.*
 @OptIn(ExperimentalComposeUiApi::class)
 fun PanAddPlan(
     dialPan: MyDialogLayout,
-//    MainDB: MainMainDB,
     item: ItemPlan? = null,
     cancelListener: () -> Unit = {},
     listOp: List<ItemComplexOpis>? = null,
@@ -132,7 +131,8 @@ fun PanAddPlan(
                             cancelListener()
                             dialPan.close()
                         }
-                        MyTextButtStyle1(if (change) "Изменить" else "Добавить", Modifier.padding(start = 5.dp),
+                        MyTextButtStyle1(
+                            if (change) "Изменить" else "Добавить", Modifier.padding(start = 5.dp),
                             myStyleTextButton = TextButtonStyleState(buttAdd)
                         ) {
                             if (text_name.value.text != "") {
@@ -161,7 +161,7 @@ fun PanAddPlan(
                                             gotov = if (enabledGotov.value && !enabledDirection.value) 0.0 else -1.0,
                                             data1 = if (expandedDate.value && !enabledDirection.value) dateStart.value.time else 0,
                                             data2 = if (expandedDate.value && !enabledDirection.value) dateEnd.value.time else 1,
-                                            opis = opis, // text_opis.value.text,
+                                            opis = opis,
                                             stat = TypeStatPlan.VISIB,
                                             direction = enabledDirection.value
                                         )

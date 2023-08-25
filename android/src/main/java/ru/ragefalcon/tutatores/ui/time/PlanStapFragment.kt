@@ -76,11 +76,8 @@ class PlanStapFragment() : BaseFragmentVM<FragmentPlanStapBinding>(FragmentPlanS
          * https://habr.com/ru/post/515080/
          * */
         setSFMResultListener(callPlanStapChangeKey) { key, bundle ->
-            // Здесь можно передать любой тип, поддерживаемый Bundle-ом
-            Log.d("MyTut", "FragList: PlanStapChange");
             val result = bundle.getParcelable<ItemPlanStap>("bundleKey")
             result?.let {
-                Log.d("MyTut", "FragList: PlanStapChange rez not null");
                 freshFun.setFire {
                     rvmAdapter.removeInsertItem(
                         it,
@@ -190,12 +187,6 @@ class PlanStapFragment() : BaseFragmentVM<FragmentPlanStapBinding>(FragmentPlanS
              * она отключает анимацию по умолчанию при вызове метода onBind (если я не путаю)
              * */
             (rvPlanStapList?.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-
-//            stateViewModel.selectItemPlan.observe(viewLifecycleOwner) { plan ->
-//                plan?.let {
-//                    tvPlanNameFrsp.text = "${it.name}. Этапов: ${it.countstap}"
-//                }
-//            }
             lifecycleScope.launch(Dispatchers.Main) {
                 delay(10)
             }

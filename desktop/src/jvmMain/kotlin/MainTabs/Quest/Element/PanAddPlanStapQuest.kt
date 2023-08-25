@@ -20,16 +20,11 @@ import viewmodel.QuestVM
 
 fun PanAddPlanStapQuest(
     dialPan: MyDialogLayout,
-//    MainDatabase: MainDatabase,
     itemPlanStapParent: ItemPlanStapQuest? = null,
     itemPlanParent: ItemPlanQuest,
     item: ItemPlanStapQuest? = null
 ) {
     val dialLayInner = MyDialogLayout()
-//    val dateStart = mutableStateOf(item?.let { Date(it.data1) } ?: Date())
-//    val dateEnd = mutableStateOf(item?.let { Date(it.data2) } ?: Date().add(14, TimeUnits.DAY))
-//    val expandedDate = mutableStateOf((item?.data1?.withOffset() ?: 0L) != 0L)
-
 
     val selParents = BoxSelectParentPlanQuest(false).apply {
         selectionPlanParent.selected = itemPlanParent
@@ -47,7 +42,7 @@ fun PanAddPlanStapQuest(
     }
 
     val CB_spisStartVisible = MyComboBox(TypeStatPlan.getSelectList(), nameItem = { it.nameType }).apply {
-        item?.let {  itemPlanQ ->
+        item?.let { itemPlanQ ->
             TypeStatPlan.getType(itemPlanQ.commstat).let {
                 if (!TypeStatPlan.getIsklSelectList().contains(it)) select(it)
             }
@@ -55,13 +50,11 @@ fun PanAddPlanStapQuest(
         }
     }
 
-
     dialPan.dial = @Composable {
         QuestVM.withDBC { questDB ->
-
             val text_name = remember { mutableStateOf(TextFieldValue(item?.let { it.name } ?: "")) }
             val text_opis = remember { mutableStateOf(TextFieldValue(item?.let { it.opis } ?: "")) }
-            BackgroungPanelStyle1 { //modif ->
+            BackgroungPanelStyle1 {
                 Column(
                     Modifier.padding(15.dp).fillMaxWidth(0.8F).heightIn(0.dp, dialPan.layHeight.value * 0.8F),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -71,19 +64,11 @@ fun PanAddPlanStapQuest(
                         MyOutlinedTextField("Название проекта", text_name)
                         MyOutlinedTextField(
                             "Описание проекта", text_opis, Modifier
-//                        .heightIn(200.dp, 500.dp)
                                 .height(400.dp), TextAlign.Start
                         )
-//                        MyCheckbox(boolVal = expandedDate.value,
-//                        modifier = Modifier.padding(start = 20.dp),
-//                            label = "Указать сроки")
                     }
                     CB_spisStartVisible.show()
                     Column(Modifier.animateContentSize()) {
-//                        if (expandedDate.value) {
-//                            buttDatePicker(dialLayInner, dateStart)
-//                            buttDatePicker(dialLayInner, dateEnd)
-//                        }
                     }
                     Row {
                         MyTextButtStyle1("Отмена") {
@@ -126,6 +111,5 @@ fun PanAddPlanStapQuest(
         }
         dialLayInner.getLay()
     }
-
     dialPan.show()
 }

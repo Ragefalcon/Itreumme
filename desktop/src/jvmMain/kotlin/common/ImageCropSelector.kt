@@ -19,9 +19,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asSkiaBitmap
-import androidx.compose.ui.graphics.toAwtImage
-import androidx.compose.ui.graphics.toComposeImageBitmap
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.isCtrlPressed
 import androidx.compose.ui.input.key.key
@@ -38,41 +35,31 @@ import common.CropBoxForImageFile
 import common.EnumDiskretSeekBar
 import common.MyTextButtStyle1
 import extensions.*
-import org.jetbrains.skiko.toBufferedImage
 import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.tabElement
 import viewmodel.StateVM
-import java.awt.Image
+import java.awt.image.BufferedImage
 import java.io.File
 import javax.swing.JFileChooser
 import kotlin.math.roundToInt
-import java.awt.image.BufferedImage
-import java.util.*
 
 enum class RatioTabsEnum(override val nameTab: String, val ratio: Double) : tabElement {
-    rat16_9("16:9",16.0 / 9.0),
-    rat3_2("3:2",3.0 / 2.0),
-    rat3_1("3:1",3.0 / 1.0),
-    rat1_1("1:1",1.0 / 1.0),
-    Any("Любое",0.0);
+    rat16_9("16:9", 16.0 / 9.0),
+    rat3_2("3:2", 3.0 / 2.0),
+    rat3_1("3:1", 3.0 / 1.0),
+    rat1_1("1:1", 1.0 / 1.0),
+    Any("Любое", 0.0);
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ImageCropSelector(//cropImage: MutableState<ImageBitmap?>,
+fun ImageCropSelector(
     fileForCrop: CropBoxForImageFile, maxSize: Int? = 250, onlyJpg: Boolean = false, ratioWdivH: Double = 1.0
-) { //Pair<ByteArray, ImageOrientation>?
-
+) {
     val dialogLayout = MyDialogLayout()
     val updateImage: MutableState<Boolean> = remember { mutableStateOf(true) }
 
-//    var first by remember { mutableStateOf(false) }
     var ratio_WdivH by remember { mutableStateOf(ratioWdivH) }
-//    if (first && ratioWdivH != 0.0) {
-//        println("first && ratioWdivH")
-//        ratio_WdivH = ratioWdivH
-//        first =false
-//    }
 
     val ratioSeekBar = remember {
         EnumDiskretSeekBar(RatioTabsEnum::class, RatioTabsEnum.Any) {
@@ -85,10 +72,6 @@ fun ImageCropSelector(//cropImage: MutableState<ImageBitmap?>,
     val offsetY = remember { mutableStateOf(10f) }
     val offsetX2 = remember { mutableStateOf(10f) }
     val offsetY2 = remember { mutableStateOf(10f) }
-//        val offsetX = remember { Animatable(30f) }
-//        val offsetY = remember { Animatable(30f) }
-//        val offsetX2 = remember { Animatable(100f) }
-//        val offsetY2 = remember { Animatable(100f) }
     val imgWidth = remember { mutableStateOf(300) }
     val imgHeight = remember { mutableStateOf(300) }
     val imgPadd = 18.dp
@@ -149,25 +132,10 @@ fun ImageCropSelector(//cropImage: MutableState<ImageBitmap?>,
 
         fun addValueX(offset: MutableState<Float>, delta: Float, box: Float = 0f, topOffset: Boolean = true) {
             setValueX(offset, offset.value + delta, box, topOffset)
-/*
-            offset.value =
-                checkAddValue(
-                offset.value + delta,
-                imgWidth.value + imgPadd.toPx() - sufSize.toPx() / 2 - (if (topOffset) box else 0f),
-                imgPadd.toPx() - sufSize.toPx() / 2 + (if (!topOffset) box else 0f)
-            )
-*/
         }
 
         fun addValueY(offset: MutableState<Float>, delta: Float, box: Float = 0f, topOffset: Boolean = true) {
             setValueY(offset, offset.value + delta, box, topOffset)
-/*
-            offset.value = checkAddValue(
-                offset.value + delta,
-                imgHeight.value + imgPadd.toPx() - sufSize.toPx() / 2 - (if (topOffset) box else 0f),
-                imgPadd.toPx() - sufSize.toPx() / 2 + (if (!topOffset) box else 0f)
-            )
-*/
         }
 
         LaunchedEffect(
@@ -192,28 +160,17 @@ fun ImageCropSelector(//cropImage: MutableState<ImageBitmap?>,
                 } else {
                     top.value += (boxHeight - boxWidth / ratio_WdivH.toFloat()) / 2
                 }
-/*
-                if (boxWidth > boxHeight) {
-                    start.value += (boxWidth - boxHeight) / 2
-                } else {
-                    top.value += (boxHeight - boxWidth) / 2
-                }
-*/
             }
 
             boxSize.value = if (minOf(boxWidth, boxHeight) > 10f) minOf(boxWidth, boxHeight) else 10f
 
 
             if (updateImage.value) {
-                println("boxHeight.sliceForIcon = ${height()}")
-                println("boxHeight.sliceForIcon = ${height() / imgHeight.value.toFloat()}")
                 fileForCrop.sliceForIcon(
                     (start.value - imgPadd.toPx()) / imgWidth.value.toFloat(),
                     (top.value - imgPadd.toPx()) / imgHeight.value.toFloat(),
                     width() / imgWidth.value.toFloat(),
                     height() / imgHeight.value.toFloat(),
-//                    boxSize.value / imgWidth.value.toFloat(),
-//                    boxSize.value / imgHeight.value.toFloat(),
                     maxSize,
                     ratio_WdivH == 1.0
                 )
@@ -230,7 +187,6 @@ fun ImageCropSelector(//cropImage: MutableState<ImageBitmap?>,
                 )
             convertedImage.createGraphics().drawImage(it.toBufferedImage(), 0, 0, null)
             saveImage(convertedImage, jpegFiletoSave, 0.95f)
-//                        saveImage(it.toBufferedImage().toComposeImageBitmap().asSkiaBitmap().toBufferedImage(), jpegFiletoSave,0.95f)
             fileForCrop.setFile(jpegFiletoSave)
             true
         } ?: false
@@ -245,6 +201,7 @@ fun ImageCropSelector(//cropImage: MutableState<ImageBitmap?>,
                                 loadImageFromBuffer()
                             } else false
                         }
+
                         else -> false
                     }
                 }
@@ -266,19 +223,11 @@ fun ImageCropSelector(//cropImage: MutableState<ImageBitmap?>,
                             "Photo in JPEG and png format"
                         )
                     )
-//                            chooser.addChoosableFileFilter(OpenFileFilter("jpg", "Photo in JPEG format"))
-//                            chooser.addChoosableFileFilter(OpenFileFilter("png", "PNG image"))
-//                            chooser.addChoosableFileFilter(OpenFileFilter("svg", "Scalable Vector Graphic"))
-//                            val composeWindow = ComposeWindow()
                     val returnVal: Int =
-                        chooser.showDialog(null, "Открыть")// .showSaveDialog(ComposeWindow())
+                        chooser.showDialog(null, "Открыть")
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         StateVM.lastOpenDir = chooser.selectedFile.parent
                         fileForCrop.setFile(chooser.selectedFile)
-
-//                                        if (!iconFile.value.parentFile.exists()) Files.createDirectory(Paths.get(iconFile.value.parentFile.path)) else iconFile.value.delete()
-//                                    iconFile.value.createNewFile()
-//                                    iconFile.value.writeBytes(chooser.selectedFile.readBytes())
                     }
                 }
                 MyTextButtStyle1("из буфера", Modifier.padding(start = 10.dp, bottom = 10.dp)) {
@@ -304,12 +253,12 @@ fun ImageCropSelector(//cropImage: MutableState<ImageBitmap?>,
                                 imgWidth.value = it.size.width
                                 setValueX(offsetX, 0f)
                                 setValueY(offsetY, 0f)
-                                setValueX(offsetX2, imgPadd.toPx()/2f + imgWidth.value.toFloat())
-                                setValueY(offsetY2, imgPadd.toPx()/2f + imgHeight.value.toFloat())
+                                setValueX(offsetX2, imgPadd.toPx() / 2f + imgWidth.value.toFloat())
+                                setValueY(offsetY2, imgPadd.toPx() / 2f + imgHeight.value.toFloat())
                             }
                         }
                         .wrapContentSize(),
-                    contentScale = ContentScale.Fit, //Crop,// Fit,
+                    contentScale = ContentScale.Fit,
                 )
                 if (fileForCrop.openFile.value) {
                     Box(Modifier.offset {

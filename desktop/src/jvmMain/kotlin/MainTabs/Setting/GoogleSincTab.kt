@@ -5,7 +5,6 @@ import MyDialog.MyDialogLayout
 import MyList
 import MyShowMessage
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -24,9 +23,7 @@ import androidx.compose.ui.res.useResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import common.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import ru.ragefalcon.sharedcode.extensions.withOffset
 import ru.ragefalcon.sharedcode.source.disk.CommonName
 import uiItems.ComItemGFile
@@ -50,11 +47,9 @@ class GoogleSincTab(val dialLay: MyDialogLayout) {
 
     var refreshCount = 0
 
-
     fun changeBDtoNetworkBD() {
 
         val networkBD = File(StateVM.dirGoogle, CommonName.nameFromNetworkDBfile)
-//        val networkBD = File(System.getProperty("user.dir") + "\\testNetwork.db")
         if (networkBD.parentFile.exists()) {
             val fileName = MainDB.arg.path
             val myBD = File(fileName)
@@ -64,21 +59,14 @@ class GoogleSincTab(val dialLay: MyDialogLayout) {
         }
     }
 
-    init {
-
-    }
-
     @Composable
     fun show() {
         StateVM.ktorGOA
-
-
         Box() {
             Column(
                 Modifier.fillMaxSize().padding(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-//                Text(code.value, maxLines = 3)
                 Row {
                     Column {
                         if (!StateVM.authCodeGet.value && !StateVM.refresh_tokenGet.value) {
@@ -107,7 +95,7 @@ class GoogleSincTab(val dialLay: MyDialogLayout) {
                                     )
                                 })
                                     .clipToBounds(),
-                                contentScale = ContentScale.Fit// .Fit
+                                contentScale = ContentScale.Fit
                             )
                         } else {
                             MyTextButtStyle1("Revoke Token") {
@@ -121,7 +109,6 @@ class GoogleSincTab(val dialLay: MyDialogLayout) {
                     Spacer(Modifier.weight(0.3f))
                     statusToken()
                 }
-//                if (online.value) {
                 if (StateVM.access_tokenGet.value && StateVM.refresh_tokenGet.value && StateVM.authCodeGet.value) {
                     Row(Modifier.padding(5.dp), verticalAlignment = Alignment.CenterVertically) {
                         MyTextButtStyle1("Files") {
@@ -134,8 +121,11 @@ class GoogleSincTab(val dialLay: MyDialogLayout) {
                     Row(Modifier.padding(5.dp), verticalAlignment = Alignment.CenterVertically) {
                         MyOutlinedTextField("Имя нового файла", nameNewBD)
                         MyTextButtStyle1("Загрузить новый файл") {
-                            GlobalScope.launch {
-                                StateVM.ktorGOA.uploadFile(CommonName.nameMainDBfile, nameNewBD.value.text) { progress ->
+                            CoroutineScope(Dispatchers.Default).launch {
+                                StateVM.ktorGOA.uploadFile(
+                                    CommonName.nameMainDBfile,
+                                    nameNewBD.value.text
+                                ) { progress ->
                                     progressSett.value = progress
                                 }
                                 StateVM.ktorGOA.GetAppFilesList()
@@ -144,39 +134,38 @@ class GoogleSincTab(val dialLay: MyDialogLayout) {
                     }
                     LinearProgressIndicator(progressSett.value, modifier = Modifier.padding(top = 5.dp))
                     CircularProgressIndicator(progressSett.value, modifier = Modifier.padding(bottom = 5.dp))
-                        MyList(StateVM.listGFile ) { ind, item ->
-                            ComItemGFile(item) { item, expanded ->
-                                DropdownMenuItem(onClick = {
-                                    StateVM.ktorGOA.downloadFile(item.id) { progress ->
+                    MyList(StateVM.listGFile) { _, item ->
+                        ComItemGFile(item) { item, expanded ->
+                            DropdownMenuItem(onClick = {
+                                StateVM.ktorGOA.downloadFile(item.id) { progress ->
+                                    progressSett.value = progress
+                                }
+                                expanded.value = false
+                            }) {
+                                Text(text = "Загрузить", color = Color.White)
+                            }
+                            DropdownMenuItem(onClick = {
+                                CoroutineScope(Dispatchers.Default).launch {
+                                    StateVM.ktorGOA.overwriteFile(CommonName.nameMainDBfile, item.id) { progress ->
                                         progressSett.value = progress
-//                                progLoad.progress = (progress*100).toInt()
+                                        if (progress == 1F) progressSett.value = 0f
                                     }
-                                    expanded.value = false
-                                }) {
-                                    Text(text = "Загрузить", color = Color.White)
                                 }
-                                DropdownMenuItem(onClick = {
-                                    GlobalScope.launch {
-                                        StateVM.ktorGOA.overwriteFile(CommonName.nameMainDBfile, item.id) { progress ->
-                                            progressSett.value = progress
-                                            if (progress == 1F) progressSett.value = 0f
-                                        }
-                                    }
-                                    expanded.value = false
-                                }) {
-                                    Text(text = "Перезаписать", color = Color.White)
+                                expanded.value = false
+                            }) {
+                                Text(text = "Перезаписать", color = Color.White)
+                            }
+                            DropdownMenuItem(onClick = {
+                                CoroutineScope(Dispatchers.Default).launch {
+                                    StateVM.ktorGOA.deleteFile(item.id)
+                                    StateVM.ktorGOA.GetAppFilesList()
                                 }
-                                DropdownMenuItem(onClick = {
-                                    GlobalScope.launch {
-                                        StateVM.ktorGOA.deleteFile(item.id)
-                                        StateVM.ktorGOA.GetAppFilesList()
-                                    }
-                                    expanded.value = false
-                                }) {
-                                    Text(text = "Удалить", color = Color.White)
-                                }
+                                expanded.value = false
+                            }) {
+                                Text(text = "Удалить", color = Color.White)
                             }
                         }
+                    }
 
                 }
             }
@@ -185,7 +174,7 @@ class GoogleSincTab(val dialLay: MyDialogLayout) {
 }
 
 @Composable
-fun statusToken(){
+fun statusToken() {
     val online = mutableStateOf(false)
 
     var refreshCount = 0
@@ -231,7 +220,6 @@ fun statusToken(){
             sizeIcon = 25.dp
         )
         Text(textCodeTime.value, style = MyTextStyleParam.style1)
-//                        MyIconTextIndikatorStyle1(text = "expires_in",StateVM.expires_inGet)
     }
 }
 

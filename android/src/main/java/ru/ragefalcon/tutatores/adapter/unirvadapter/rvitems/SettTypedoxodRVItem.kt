@@ -32,7 +32,7 @@ class SettTypedoxodRVItem(
                 if (vh.itemView.isSelected) {
                     selectListener?.invoke(item)
                 }
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     tapListener?.invoke(item)
                 }

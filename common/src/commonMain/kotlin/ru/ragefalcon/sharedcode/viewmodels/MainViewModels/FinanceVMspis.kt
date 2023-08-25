@@ -2,7 +2,7 @@ package ru.ragefalcon.sharedcode.viewmodels.MainViewModels
 
 import ru.ragefalcon.sharedcode.source.disk.ItrCommObserveObj
 
-class FinanceVMspis (private val objForSpis: FinanceVMobjForSpis)  {
+class FinanceVMspis(private val objForSpis: FinanceVMobjForSpis) {
 
     /** Основные списки операций расходов, доходов и по выбранному счету */
     val rasxodSpisPeriod = ItrCommObserveObj(objForSpis.rasxodSpisPeriod.getMyObserveObj())
@@ -65,11 +65,8 @@ class FinanceVMspis (private val objForSpis: FinanceVMobjForSpis)  {
     val spisSchetWithSumm = ItrCommObserveObj(objForSpis.spisSchetWithSumm.getMyObserveObj())
     val spisSchetPlanWithSumm = ItrCommObserveObj(objForSpis.spisSchetPlanWithSumm.getMyObserveObj())
 
-//    val spisRasxodTypeByMonthWithDatePriv = ItrCommObserveObj(objForSpis.spisRasxodTypeByMonthWithDatePriv.getMyObserveObj())
     val spisRasxodTypeByMonthWithDate = ItrCommObserveObj(objForSpis.spisRasxodTypeByMonthWithDate)
     val spisDoxodRasxodByMonthOnYear = ItrCommObserveObj(objForSpis.spisDoxodRasxodByMonthOnYear)
-
-//    val sumOperWeek = ItrCommObserveObj(objForSpis.sumOperWeek.getMyObserveObj())
 
 
     /** общая сумма капитала */

@@ -12,21 +12,17 @@ class TimePageAdapter(fm: FragmentManager) :
     override fun getItem(position: Int): Fragment {
         when(TimeTypePanel.values()[position]){
             TimeTypePanel.DENPLAN -> return DenPlanFragment.newInstance()
-//            TimeTypePanel.DENPLAN -> return PlanTabFragment.newInstance()
             TimeTypePanel.GLOBALPLAN -> return PlanTabFragment.newInstance()
-//            TimeTypePanel.VXOD -> return PlanTabFragment.newInstance()
             TimeTypePanel.VXOD -> return VxodTabFragment.newInstance()
         }
     }
 
     override fun getItemPosition(`object`: Any): Int {
-//        return super.getItemPosition(`object`)
+
         return PagerAdapter.POSITION_NONE
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        //return super.getPageTitle(position)
-//                    return "asfsadf"
         return TimeTypePanel.values()[position].nameRazdel
     }
 

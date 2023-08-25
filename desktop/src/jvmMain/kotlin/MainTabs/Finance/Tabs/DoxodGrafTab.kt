@@ -76,7 +76,7 @@ class DoxodGrafTab(
                                                 this.maxHeight,
                                                 this.maxWidth
                                             ) * 0.8f
-                                        ),//.height(250.dp),//.fillMaxWidth(),
+                                        ),
                                     listRTM
                                 )
                             }
@@ -104,7 +104,7 @@ class DoxodGrafTab(
                                 MainDB.selPer.prevDate(PeriodSelecter.FinPeriod.Day)
                             }
                             dialLayInner?.let {
-                                buttDatePicker(it, MainDB.dateFin)//{ MainDB.dateFinObs = it }
+                                buttDatePicker(it, MainDB.dateFin)
                             }
                             MyTextButtStyle1(">") {
                                 MainDB.selPer.nextDate(PeriodSelecter.FinPeriod.Day)
@@ -114,8 +114,8 @@ class DoxodGrafTab(
                             }
                         } else {
                             dialLayInner?.let {
-                                buttDatePicker(it, MainDB.dateFinBegin)//{ MainDB.dateFinObs = it }
-                                buttDatePicker(it, MainDB.dateFinEnd)//{ MainDB.dateFinObs = it }
+                                buttDatePicker(it, MainDB.dateFinBegin)
+                                buttDatePicker(it, MainDB.dateFinEnd)
                             }
                         }
                     }
@@ -180,7 +180,7 @@ class DoxodGrafTab(
         Box(modifier.padding(vertical = 5.dp)) {
             mainContent()
             Image(
-                painterResource("ic_baseline_unfold_more_24.xml"), //BitmapPainter(
+                painterResource("ic_baseline_unfold_more_24.xml"),
                 "buttUnfold",
                 Modifier
                     .align(Alignment.TopEnd)
@@ -193,7 +193,7 @@ class DoxodGrafTab(
                             Box(modifier.weight(1f)) {
                                 mainContent(true, dialLayInner)
                                 Image(
-                                    painterResource("ic_baseline_unfold_less_24.xml"), //BitmapPainter(
+                                    painterResource("ic_baseline_unfold_less_24.xml"),
                                     "buttUnfold",
                                     Modifier
                                         .align(Alignment.TopEnd)

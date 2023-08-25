@@ -6,10 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemPrivsGoal
 import ru.ragefalcon.tutatores.R
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemPrivPlanOrStapBinding
-import ru.ragefalcon.tutatores.extensions.*
-import java.util.*
+import ru.ragefalcon.tutatores.extensions.dpToPx
+import ru.ragefalcon.tutatores.extensions.rotateElemItem
+import ru.ragefalcon.tutatores.extensions.sverOpis
+import ru.ragefalcon.tutatores.extensions.sverWidthElemItem
 
 class PrivsGoalRVItem(
     data: ItemPrivsGoal,
@@ -35,7 +38,6 @@ class PrivsGoalRVItem(
 
                 textSumhour.text = item.hour.roundToString(1)
                 if (item.stap != "0") {
-//                    val str = "${item.nameprpl}${if(item.namestap!="") " -> [${item.namestap}]" else ""}"
                     textNameStap.text = "${item.name}\n[${item.namePlan}]"
                     textNamePlan.visibility = ViewGroup.GONE
                     textNameStap.visibility = ViewGroup.VISIBLE
@@ -74,15 +76,6 @@ class PrivsGoalRVItem(
                             R.color.colorStatTimeSquareTint_03
                         ), android.graphics.PorterDuff.Mode.MULTIPLY
                     )
-                    /**
-                     * https://stackoverflow.com/questions/20121938/how-to-set-tint-for-an-image-view-programmatically-in-android/45571812#45571812
-                     *
-                     * У пользователя @Tad есть свой ответ в правильном направлении, но он работает только с API 21+.
-                     * Чтобы установить оттенок на всех версиях Android, используйте ImageViewCompat:
-                     * ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(yourTint));
-                     * Обратите внимание, что yourTintв этом случае должен быть "цвет int". Если у вас есть ресурс цвета, например R.color.blue, вам нужно сначала загрузить цвет int:
-                     * ContextCompat.getColor(context, R.color.blue);
-                     * */
                 }
                 sverItemOpis(item.sver, false)
                 ivStatDp.setOnClickListener {
@@ -95,7 +88,7 @@ class PrivsGoalRVItem(
                 if (vh.itemView.isSelected) {
                     selectListener?.invoke(item)
                 }
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     tapListener?.invoke(item)
                 }

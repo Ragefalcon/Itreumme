@@ -4,7 +4,6 @@ package MyDialog
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,15 +17,15 @@ fun MyEmptyPanel(
     showHideButton: Boolean = true,
     labelButton: String = "Скрыть",
     listener: () -> Unit = {},
-    body: @Composable ColumnScope.(MyDialogLayout,() -> Unit) -> Unit
+    body: @Composable ColumnScope.(MyDialogLayout, () -> Unit) -> Unit
 ) {
     val dialLayInner = MyDialogLayout()
 
     dialPan.dial = @Composable {
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
 
             Column(Modifier.padding(15.dp).animateContentSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-                body(dialLayInner){
+                body(dialLayInner) {
                     listener()
                     dialPan.close()
                 }

@@ -9,25 +9,26 @@ enum class TypeOpisBlock(val id: Long, val nameBlock: String) {
 }
 
 enum class TableNameForComplexOpis(val nameTable: String) {
-    spisNapom( "napom"),
-    spisDenPlan( "den_plan"),
-    spisNextAction( "spis_next_action"),
-    spisShabDenPlan( "shab_den_plan"),
-    spisVxod( "vxod"),
-    spisBloknot( "spis_bloknot"),
-    spisIdea( "spis_idea"),
-    spisIdeaStap( "spis_stap_idea"),
-    spisPlan( "spis_plan"),
+    spisNapom("napom"),
+    spisDenPlan("den_plan"),
+    spisNextAction("spis_next_action"),
+    spisShabDenPlan("shab_den_plan"),
+    spisVxod("vxod"),
+    spisBloknot("spis_bloknot"),
+    spisIdea("spis_idea"),
+    spisIdeaStap("spis_stap_idea"),
+    spisPlan("spis_plan"),
     spisPlanStap("spis_stap_plan")
     ;
 }
 
-enum class FilterSchetOper(val title: String){
+enum class FilterSchetOper(val title: String) {
     Rasxod("Расход"),
     Doxod("Доход"),
     Perevod("Перевод");
 }
-enum class FilterSchetPlanOper(val title: String){
+
+enum class FilterSchetPlanOper(val title: String) {
     Rasxod("Расход"),
     Doxod("Доход"),
     Popravka("Поправка на курс"),
@@ -35,14 +36,13 @@ enum class FilterSchetPlanOper(val title: String){
 }
 
 interface tabElement {
-    //    val codTab: String
     val nameTab: String
 }
 
 enum class MyTypeCorner(val id: Long, override val nameTab: String) : tabElement {
-    Round(1L,"круглый"),
-    Cut(2L,"срез"),
-    Ticket(3L,"вогнутый");
+    Round(1L, "круглый"),
+    Cut(2L, "срез"),
+    Ticket(3L, "вогнутый");
 
     companion object {
         fun getType(id: Long) = values().toList().find { it.id == id }
@@ -50,13 +50,12 @@ enum class MyTypeCorner(val id: Long, override val nameTab: String) : tabElement
 }
 
 enum class TypeIconBorder(val id: Long, val type: String) {
-//    LINE(1L, "Линейное"),
-    NONE(1L,"Без рамок"),
-    ROUND(2L,"Круглая рамка"),
-    SQUARE(3L,"Квадратная рамка"),
-    ROUNDCORNER(4L,"Круглые углы"),
-    CUTCORNER(5L,"Срезаные углы"),
-    TICKETCORNER(6L,"Вогнутые углы");
+    NONE(1L, "Без рамок"),
+    ROUND(2L, "Круглая рамка"),
+    SQUARE(3L, "Квадратная рамка"),
+    ROUNDCORNER(4L, "Круглые углы"),
+    CUTCORNER(5L, "Срезаные углы"),
+    TICKETCORNER(6L, "Вогнутые углы");
 
     companion object {
         fun getType(id: Long): TypeIconBorder? = values().toList().find { it.id == id }
@@ -64,7 +63,6 @@ enum class TypeIconBorder(val id: Long, val type: String) {
 }
 
 enum class TypeBindElementForSchetPlan(val id: Long) {
-//    LINE(1L, "Линейное"),
     GOAL(1L),
     PLAN(2L),
     PLANSTAP(3L);
@@ -75,7 +73,6 @@ enum class TypeBindElementForSchetPlan(val id: Long) {
 }
 
 enum class MarkerNodeTreeSkills(val id: Long) {
-//    LINE(1L, "Линейное"),
     DIRECTPARENT(1L),
     INDIRECTPARENT(2L),
     DIRECTCHILD(3L),
@@ -90,7 +87,6 @@ enum class MarkerNodeTreeSkills(val id: Long) {
 }
 
 enum class TypeTreeSkills(val id: Long, val nameType: String) {
-    //    LINE(1L, "Линейное"),
     KIT(1L, "Набор"),
     LEVELS(2L, "Уровни"),
     TREE(3L, "Дерево");
@@ -102,7 +98,6 @@ enum class TypeTreeSkills(val id: Long, val nameType: String) {
 }
 
 enum class TypeNodeTreeSkills(val id: Long, val nameType: String) {
-//    LINE(1L, "Линейное"),
     HAND(1L, "Ручное выполнение"),
     PLAN(2L, "Выполнение с проектом"),
     COUNTER_END(3L, "Конечный счетчик"),
@@ -131,8 +126,8 @@ enum class TypeStatPlan(val codValue: Long, val nameType: String) {
         fun getCloseSelectList(): List<TypeStatPlan> = listOf(COMPLETE, CLOSE)
         fun getSelectList(): List<TypeStatPlan> = values().filter { getIsklSelectList().contains(it).not() }
         fun getOpenList(): List<TypeStatPlan> = values().filter { getCloseSelectList().contains(it).not() }
-        fun getType(nameType: String): TypeStatPlan  = values().toList().find { it.nameType == nameType }  ?: VISIB
-        fun getType(code: Long): TypeStatPlan = values().toList().find { it.codValue == code }  ?: VISIB
+        fun getType(nameType: String): TypeStatPlan = values().toList().find { it.nameType == nameType } ?: VISIB
+        fun getType(code: Long): TypeStatPlan = values().toList().find { it.codValue == code } ?: VISIB
     }
 }
 
@@ -152,8 +147,8 @@ enum class TypeStatPlanStap(val codValue: Long, val nameType: String) {
         fun getCloseSelectList(): List<TypeStatPlanStap> = listOf(COMPLETE, CLOSE)
         fun getSelectList(): List<TypeStatPlanStap> = values().filter { getIsklSelectList().contains(it).not() }
         fun getOpenList(): List<TypeStatPlanStap> = values().filter { getCloseSelectList().contains(it).not() }
-        fun getType(nameType: String): TypeStatPlanStap  = values().toList().find { it.nameType == nameType }  ?: VISIB
-        fun getType(code: Long): TypeStatPlanStap = values().toList().find { it.codValue == code }  ?: VISIB
+        fun getType(nameType: String): TypeStatPlanStap = values().toList().find { it.nameType == nameType } ?: VISIB
+        fun getType(code: Long): TypeStatPlanStap = values().toList().find { it.codValue == code } ?: VISIB
     }
 }
 
@@ -167,9 +162,9 @@ enum class TypeStatNodeTree(val codValue: Long, val nameType: String) {
     companion object {
         fun getBlockList(): List<TypeStatNodeTree> = listOf(BLOCK, INVIS)
         fun getIsklSelectList(): List<TypeStatNodeTree> = listOf(COMPLETE, UNBLOCKNOW)
-        fun getSelectList(): List<TypeStatNodeTree> = values().filter { it != COMPLETE && it != UNBLOCKNOW}
-        fun getType(nameType: String): TypeStatNodeTree  = values().toList().find { it.nameType == nameType }  ?: VISIB
-        fun getType(code: Long): TypeStatNodeTree = values().toList().find { it.codValue == code }  ?: VISIB
+        fun getSelectList(): List<TypeStatNodeTree> = values().filter { it != COMPLETE && it != UNBLOCKNOW }
+        fun getType(nameType: String): TypeStatNodeTree = values().toList().find { it.nameType == nameType } ?: VISIB
+        fun getType(code: Long): TypeStatNodeTree = values().toList().find { it.codValue == code } ?: VISIB
     }
 }
 
@@ -182,13 +177,12 @@ enum class TypeStatTreeSkills(val codValue: Long, val nameType: String) {
     INVIS(-3L, "Не видно сразу");
 
     companion object {
-        fun getType(nameType: String): TypeStatTreeSkills  = values().toList().find { it.nameType == nameType }  ?: VISIB
-        fun getType(code: Long): TypeStatTreeSkills = values().toList().find { it.codValue == code }  ?: VISIB
+        fun getType(nameType: String): TypeStatTreeSkills = values().toList().find { it.nameType == nameType } ?: VISIB
+        fun getType(code: Long): TypeStatTreeSkills = values().toList().find { it.codValue == code } ?: VISIB
     }
 }
 
 enum class TypeStatQuestElementVisible(val codValue: Long, val nameType: String) {
-//    COMPLETE(10L, "Выполнен"),
     VISIB(0L, "Сразу видно"),
     BLOCK(-2L, "Видно, но заблокировано"),
     INVIS(-3L, "Не видно сразу");
@@ -200,41 +194,27 @@ enum class TypeStatQuestElementVisible(val codValue: Long, val nameType: String)
 }
 
 enum class TypeStartObjOfTrigger(val id: Long, val nameType: String) {
-    STARTPLAN(1L, "Старт проекта"), //"startPlan",
-    STARTDIALOG(2L, "Старт диалога"), //startDialog','
-    /**
-     * Кажется SUMTRIGGER логичнее было бы перенести в триггеры родители... впрочем можно подождать до реализации этого функционала.
-     * */
-    SUMTRIGGER(3L, "Группа условий"), //sumTrigger','
-    STARTSTAP(4L, "Старт этапа"), //startStap','
-    STARTTREE(6L, "Старт дерева"), //startStap','
-    STARTNODETREE(7L, "Старт узла дерева"), //startStap','
-    STARTLEVELTREE(8L, "Старт уровня дерева"), //startStap','
+    STARTPLAN(1L, "Старт проекта"),
+    STARTDIALOG(2L, "Старт диалога"),
+    SUMTRIGGER(3L, "Группа условий"),
+    STARTSTAP(4L, "Старт этапа"),
+    STARTTREE(6L, "Старт дерева"),
+    STARTNODETREE(7L, "Старт узла дерева"),
+    STARTLEVELTREE(8L, "Старт уровня дерева"),
+
     /**
      * INNERFINISH - сигнализирует о том, что диалоги или что-то еще из внутреннего квеста привело к ситуации,
      * когда программа должна отреагировать соответствующим образом. Например, после диалога о входящих открыть
      * соответствующую панель или выполнить соответствующее действие.
      * */
-    INNERFINISH(5L, "Внутренний триггер"); //startStap','
+    INNERFINISH(5L, "Внутренний триггер");
 
     companion object {
-        fun getListIdDialogTrigger():List<Long> = listOf(STARTDIALOG.id)
-        fun getListIdPlanTrigger():List<Long> = listOf(STARTPLAN.id)
-        fun getListIdStapPlanTrigger():List<Long> = listOf(STARTSTAP.id)
+        fun getListIdDialogTrigger(): List<Long> = listOf(STARTDIALOG.id)
+        fun getListIdPlanTrigger(): List<Long> = listOf(STARTPLAN.id)
+        fun getListIdStapPlanTrigger(): List<Long> = listOf(STARTSTAP.id)
 
         fun getType(code: Long): TypeStartObjOfTrigger? = values().toList().find { it.id == code }
-/*
-        {
-            return when (code) {
-                TypeTrigger.STARTPLAN.id -> TypeTrigger.STARTPLAN
-                TypeTrigger.STARTDIALOG.id -> TypeTrigger.STARTDIALOG
-                TypeTrigger.SUMTRIGGER.id -> TypeTrigger.SUMTRIGGER
-                TypeTrigger.STARTSTAP.id -> TypeTrigger.STARTSTAP
-                TypeTrigger.INNERFINISH.id -> TypeTrigger.INNERFINISH
-                else -> TypeTrigger.STARTDIALOG
-            }
-        }
-*/
     }
 }
 
@@ -252,24 +232,29 @@ enum class TypeParentOfTrig(val code: String) {
      * автоматически запускается этот триггер, который как раз приводит к запуску стартового диалога.
      * */
     STARTQUESTDIALOG("startQuestDialog"),
+
     /**
      * [OTVDIALOG] - свзязывает с событием выбора ответа в диалогах.
      * */
     OTVDIALOG("otvDialog"),
+
     /**
      * [PLAN] сигнализируют о выполнении проекта.
      * */
     PLAN(TypeQuestElement.PLAN.code),
+
     /**
      * [PLANSTAP] сигнализируют о выполнении этапа проекта.
      * */
     PLANSTAP(TypeQuestElement.PLANSTAP.code),
+
     /**
      * [INNERSTART] - говорит о старте внутреннего триггера, из тех что должны быть не доступны при составлении обычных квестов.
      * Они только для внутренних. Когда на действие изнутри программы стартует событие (в основном диалог) из [внутреннего]квеста.
      * Такие как: старт смены даты рождения, старт разбора входящих, диалоги при первом старте и т.д.
      * */
     INNERSTART("InnerStart"),
+
     /**
      * [NODETREESKILLS] - маркер триггера сигнализирующего о выполнении/достижении ачивки (узла дерева).
      * */

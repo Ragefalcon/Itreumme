@@ -17,7 +17,6 @@ import kotlin.math.min
 
 class DrawSektorDiagram {
 
-
     fun drawRasxodByType(canvas: DrawScope, sectorDiag: List<ItemSectorDiag>, density: Density) {
         canvas.apply {
             val centr = Point(canvas.size.width / 2.toFloat(), canvas.size.height / 2.toFloat())
@@ -46,14 +45,14 @@ class DrawSektorDiagram {
                     angle += delta
                     color += dd
                 }
-                drawSectorWhiter(myColorRaduga(color).toColor(), centr, radOut, radIn, angle, 270F - angle,2.dp.toPx())
+                drawSectorWhiter(myColorRaduga(color).toColor(), centr, radOut, radIn, angle, 270F - angle, 2.dp.toPx())
             }
         }
     }
 
     @Composable
     fun drawDiagram(modifier: Modifier = Modifier, sectorDiag: List<ItemSectorDiag>) {
-        val density  = LocalDensity.current
+        val density = LocalDensity.current
         Canvas(
             modifier = modifier.padding(horizontal = 13.dp)
                 .padding(bottom = 10.dp)

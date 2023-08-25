@@ -7,7 +7,9 @@ import ru.ragefalcon.sharedcode.models.data.ItemSettSchet
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.SettSchetRVItem
-import ru.ragefalcon.tutatores.commonfragments.*
+import ru.ragefalcon.tutatores.commonfragments.BaseFragmentVM
+import ru.ragefalcon.tutatores.commonfragments.MenuPopupButton
+import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentTabFinSettBinding
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
 
@@ -32,7 +34,7 @@ class FinSettSchetPage() : BaseFragmentVM<FragmentTabFinSettBinding>(FragmentTab
                         addFin.updSchetOpen(id = it.id.toLong(), true)
                     }
                     addButton(MenuPopupButton.DELETE) {
-                         addFin.delSchet(it.id.toLong())
+                        addFin.delSchet(it.id.toLong())
                     }
                     addButton(MenuPopupButton.CHANGE) {
                         showAddChangeFragDial(SettingAddSettSchetPanelFragment(it))
@@ -42,12 +44,13 @@ class FinSettSchetPage() : BaseFragmentVM<FragmentTabFinSettBinding>(FragmentTab
                     rvmAdapter.updateData(formUniRVItemList(listItem) { item ->
                         SettSchetRVItem(item, selectListener = {
                             selItem = it
-                        },longTapListener = {
-                            menuPopupSettSchet.showMenu(item,name = "${item.name}",{
-                                if (item.countoper == 0L) (it == MenuPopupButton.DELETE)||(it == MenuPopupButton.CHANGE)
-                                    else if (item.summa != 0.0) (it == MenuPopupButton.CHANGE)
-                                            else if (item.open_) (it == MenuPopupButton.CHANGE)||(it == MenuPopupButton.UNOPEN)
-                                                    else (it == MenuPopupButton.CHANGE)||(it == MenuPopupButton.OPEN) })
+                        }, longTapListener = {
+                            menuPopupSettSchet.showMenu(item, name = "${item.name}", {
+                                if (item.countoper == 0L) (it == MenuPopupButton.DELETE) || (it == MenuPopupButton.CHANGE)
+                                else if (item.summa != 0.0) (it == MenuPopupButton.CHANGE)
+                                else if (item.open_) (it == MenuPopupButton.CHANGE) || (it == MenuPopupButton.UNOPEN)
+                                else (it == MenuPopupButton.CHANGE) || (it == MenuPopupButton.OPEN)
+                            })
                         })
                     })
                     selItem?.let {

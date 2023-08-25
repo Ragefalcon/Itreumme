@@ -16,9 +16,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import common.*
-import ru.ragefalcon.sharedcode.extensions.TimeUnits
+import common.BackgroungPanelStyle1
+import common.BoxExpand
+import common.MyOutlinedTextField
+import common.MyTextButtStyle1
 import extensions.add
+import ru.ragefalcon.sharedcode.extensions.TimeUnits
 import ru.ragefalcon.sharedcode.models.data.ItemGoal
 import viewmodel.MainDB
 import java.util.*
@@ -28,14 +31,14 @@ fun PanAddGoal(
     item: ItemGoal? = null
 ) {
     val dialLayInner = MyDialogLayout()
-//    val stat = MySelectStat(item?.lvl ?: 0L, MySelectStat.statNabor2)
+
     val expandedSroki = mutableStateOf(false)
-    val dateEnd = mutableStateOf( Date().add(14,TimeUnits.DAY) )
+    val dateEnd = mutableStateOf(Date().add(14, TimeUnits.DAY))
 
     dialPan.dial = @Composable {
         val text_name = remember { mutableStateOf(TextFieldValue(item?.let { it.name } ?: "")) }
         val text_opis = remember { mutableStateOf(TextFieldValue(item?.let { it.opis } ?: "")) }
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 MyOutlinedTextField("Название цели", text_name)
                 MyOutlinedTextField(
@@ -45,7 +48,6 @@ fun PanAddGoal(
                     TextAlign.Start
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-//                    stat.show()
                     Spacer(Modifier.width(30.dp))
                     Checkbox(
                         expandedSroki.value,
@@ -60,10 +62,9 @@ fun PanAddGoal(
                         fontSize = 15.sp
                     )
                 }
-                BoxExpand(expandedSroki){
+                BoxExpand(expandedSroki) {
                     buttDatePicker(dialLayInner, dateEnd)
                 }
-
 
                 Row {
                     MyTextButtStyle1("Отмена") {
@@ -74,7 +75,6 @@ fun PanAddGoal(
                             item?.let {
                                 MainDB.addAvatar.updGoal(
                                     id = it.id.toLong(),
-//                                    lvl = stat.value,
                                     name = text_name.value.text,
                                     data1 = it.data1,
                                     data2 = if (expandedSroki.value) dateEnd.value.time else 0,
@@ -84,7 +84,6 @@ fun PanAddGoal(
                                 dialPan.close()
                             } ?: run {
                                 MainDB.addAvatar.addGoal(
-//                                    lvl = stat.value,
                                     name = text_name.value.text,
                                     data1 = Date().time,
                                     data2 = if (expandedSroki.value) dateEnd.value.time else 0,
@@ -100,6 +99,5 @@ fun PanAddGoal(
         }
         dialLayInner.getLay()
     }
-
     dialPan.show()
 }

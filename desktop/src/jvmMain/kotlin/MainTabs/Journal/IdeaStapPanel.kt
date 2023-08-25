@@ -14,14 +14,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import common.MyBoxOpisStyle
 import common.MyComplexOpisView
 import common.MyShadowBox
 import common.MyTextButtStyle1
@@ -30,7 +27,6 @@ import viewmodel.MainDB
 import viewmodel.StateVM
 
 class IdeaStapPanel() {
-
 
     @Composable
     fun show(dialLay: MyDialogLayout, columnScope: ColumnScope) {
@@ -56,7 +52,7 @@ class IdeaStapPanel() {
                                 )
                             }
                             DropdownMenuItem(onClick = {
-                                MainDB.addJournal.delStapIdea(item.id.toLong()){
+                                MainDB.addJournal.delStapIdea(item.id.toLong()) {
                                     MainDB.complexOpisSpis.spisComplexOpisForIdeaStap.delAllImageForItem(it)
                                 }
                                 expanded.value = false
@@ -74,7 +70,7 @@ class IdeaStapPanel() {
                     MyTextButtStyle1(
                         "+",
                         modifier = Modifier.padding(start = 0.dp),
-//                                modifierText = Modifier.padding(0.dp),
+
                         width = 70.dp,
                         height = 35.dp,
                         myStyleTextButton = TextButtonStyleState(MainDB.styleParam.journalParam.addIdeaStapButt)
@@ -114,7 +110,6 @@ class IdeaStapPanel() {
                                 list.indexOf(StateVM.selectionIdeaStap.selected).let { indexSel ->
                                     StateVM.selectionIdeaStap.selected =
                                         if (indexSel > 0) list[indexSel - 1] else list.lastOrNull()
-//                                    GlobalScope.launch(Dispatchers.IO) { scroll.scrollTo(0) }
                                 }
                             }
                             Box(Modifier.weight(1f)) {
@@ -137,9 +132,6 @@ class IdeaStapPanel() {
                                 list.indexOf(StateVM.selectionIdeaStap.selected).let { indexSel ->
                                     StateVM.selectionIdeaStap.selected =
                                         if (indexSel < list.count() - 1) list[indexSel + 1] else list[0]
-                                    /*   GlobalScope.launch(Dispatchers.IO) {
-                                           scroll.scrollTo(0)
-                                       }*/
                                 }
                             }
                         }

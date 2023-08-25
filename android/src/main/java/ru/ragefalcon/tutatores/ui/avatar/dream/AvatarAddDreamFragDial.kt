@@ -50,31 +50,22 @@ class AvatarAddDreamFragDial(item: ItemDream? = null) :
                 editOpisDreamText.setText(it.opis)
                 if (it.data1 != 0L) {
                     cbSrokDream.isChecked = true
-//                    dateStartDream.setDate(it.data1)
                     dateEndDream.setDate(it.data1)
                 }
             }
 
             vybStatDream.setTimeSquare()
-            var heightCl = 0
             clSrokDream.doOnPreDraw {
-                heightCl = clSrokDream.height
                 if (!cbSrokDream.isChecked) collapse(clSrokDream)
             }
-//            dateStartDream.setPattern("от dd MMM yyyy (EEE)")
             dateEndDream.setPattern("до dd MMM yyyy (EEE)")
             cbSrokDream.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
-//                dateStartDream.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-//                expand(clSrokDream,height = heightCl,duration = 300)
                     expand(clSrokDream, duration = 300)
                 } else {
                     collapse(clSrokDream, duration = 300)
                 }
             }
-
         }
-
     }
-
 }

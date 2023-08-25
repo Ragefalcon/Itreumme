@@ -33,7 +33,6 @@ abstract class DrawViewHelper @JvmOverloads constructor(
     protected var periodUpdate = (1000 / 60).toLong()
 
     fun onStart() {
-        // set timer to run every 16 milliseconds (fps = 1000 / 60)
         timer.scheduleAtFixedRate(task, 0.toLong(), periodUpdate)
     }
 

@@ -12,7 +12,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -39,7 +38,6 @@ import java.util.*
 class TimeSelectSlider2(dtStart: Date, dtEnd: Date) {
 
     private fun DateToInt(date: Date): Int {
-//        return ((date.withOffset().time/60f/1000f).toInt()%(24*60+1))/5f
         return (date.format("HH").toFloat() * 12f + date.format("mm").toFloat() / 5f).toInt()
     }
 
@@ -76,7 +74,7 @@ class TimeSelectSlider2(dtStart: Date, dtEnd: Date) {
 
     fun countToStr(countFive: Int): String = "${(countFive * 5 / 60F).toInt()} ч. ${(countFive * 5 % 60).toInt()} мин."
 
-    @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     private fun timeSelect(modifier: Modifier = Modifier, time: MutableState<Int>) {
 
@@ -116,7 +114,7 @@ class TimeSelectSlider2(dtStart: Date, dtEnd: Date) {
                 size = 17.sp.toPx()
             }
             var position by remember { mutableStateOf(0f) }
-// val sdfs: ClosedFloatingPointRange<Float> = 5f..6f
+
             var colorRect by remember { mutableStateOf(Color.Blue) }
 
             Column(modifier) {
@@ -141,16 +139,12 @@ class TimeSelectSlider2(dtStart: Date, dtEnd: Date) {
                     }
                 }
                 BoxWithConstraints(Modifier.fillMaxWidth()) {
-
                     val modifierCanvas by remember {
                         mutableStateOf<Modifier>(Modifier.width(this.maxWidth).height(shirDp)
                             .clickable(
                                 interactionSource = interactionSource,
                                 indication = null
                             ) {
-//                                println("clickkkk ====")
-//                    lColor.value = maxOf(0f, minOf(cursorPositionL.value.x / 1.dp.toPx(), 255f)) // - padding.toPx()
-//                    changeFromHSL()
                             }
                             .pointerMoveFilter(onMove = {
                                 if (zoomEnable) {
@@ -159,11 +153,10 @@ class TimeSelectSlider2(dtStart: Date, dtEnd: Date) {
                                     time.value = sectorAdd * 12 + (position / this.maxWidth.toPx() * 4 * 12).toInt()
                                 }
                                 cursorPositionL = it
-//                                println("cursorX = ${it.x}")
+
                                 false
                             })
                             .draggable(DraggableState { delta ->
-//                        println("delta = $delta")
                             }, Orientation.Horizontal, interactionSource = interactionSource)
                         )
                     }
@@ -198,53 +191,47 @@ class TimeSelectSlider2(dtStart: Date, dtEnd: Date) {
                                     if (!zoomEnable) setColor()
                                     zoomEnable = true
                                     dragNow = true
-//                                    println("Drag Start")
                                 }
+
                                 is DragInteraction.Stop -> {
                                     colorRect = Color.Blue
                                     dragNow = false
                                     zoomEnable = false
-//                                    println("Drag Stop")
                                 }
+
                                 is DragInteraction.Cancel -> {
                                     colorRect = Color.Blue
                                     dragNow = false
                                     zoomEnable = false
-//                                    println("Drag Cancel")
+
                                 }
+
                                 is PressInteraction.Press -> {
                                     if (!zoomEnable) setColor()
                                     zoomEnable = true
-//                                    println("PressInteraction.Press")
+
                                 }
+
                                 is PressInteraction.Release -> {
                                     colorRect = Color.Blue
                                     dragNow = false
                                     zoomEnable = false
-//                                    println("PressInteraction.Release")
+
                                 }
+
                                 is PressInteraction.Cancel -> {
                                     if (dragNow.not()) zoomEnable = false
-//                                    println("PressInteraction.Cancel")
+
                                 }
                             }
                         }
                     }
                     Canvas(
                         modifier = modifierCanvas
-/*
-                    .pointerInput(Unit) {
-                        detectDragGestures() { change, dragAmount ->
-//                        lColor.value =
-//                            maxOf(0f, minOf(lColor.value + dragAmount.x / 1.dp.toPx(), 255f)) // - padding.toPx()
-//                        changeFromHSL()
-                        }
-                    }
-*/
                     ) {
                         if (zoomEnable) {
                             for (i in 0..3) {
-//                    val rgb = hslToRgb(hColor.value / 255f, sColor.value / 255f, iw.toFloat() / 254f)
+
                                 drawRect(
                                     colorRect,
                                     Offset((this.size.width - between) / 4f * i + between, 0f),
@@ -268,7 +255,6 @@ class TimeSelectSlider2(dtStart: Date, dtEnd: Date) {
                             }
                         } else {
                             for (i in 0..5) {
-//                    val rgb = hslToRgb(hColor.value / 255f, sColor.value / 255f, iw.toFloat() / 254f)
                                 listColor.getOrNull(i)?.let {
                                     drawRect(
                                         it.second,
@@ -292,36 +278,9 @@ class TimeSelectSlider2(dtStart: Date, dtEnd: Date) {
                                 }
                             }
                         }
-/*
-                    drawRect(
-                        colorRect,//if (isPressedBy ) Color.Red else if (isDragBy) Color.Green else Color.White, //.copy(0.5f),
-                        Offset(0f, 0f),
-                        this.size,
-                        style = Stroke(1.5.dp.toPx())
-                    )
-*/
                         if (zoomEnable) {
-//                            val position =
-//                                if (cursorPositionL.x < 0f) 0f else if (cursorPositionL.x > this.size.width) this.size.width else cursorPositionL.x
-/*
-                            drawIntoCanvas {
-                                val textL = TextLine.make("${(time.value * 5 / 60F).toInt()} ч. ${(time.value * 5 % 60).toInt()} мин.", font)
-                                it.nativeCanvas.drawTextLine(
-                                    textL,
-                                    2.dp.toPx(),
-                                    shir - 2.dp.toPx() ,
-                                    p2.asFrameworkPaint()
-                                )
-                                it.nativeCanvas.drawTextLine(
-                                    textL,
-                                    2.dp.toPx(),
-                                    shir - 2.dp.toPx() ,
-                                    pY.asFrameworkPaint()
-                                )
-                            }
-*/
                             drawRect(
-                                Color.White, //.copy(0.5f),
+                                Color.White,
                                 Offset((position.dp - 1.5.dp).toPx(), -5.dp.toPx()),
                                 Size(3.dp.toPx(), shir + 10.dp.toPx()),
                                 style = Stroke(1.5.dp.toPx())
@@ -331,9 +290,7 @@ class TimeSelectSlider2(dtStart: Date, dtEnd: Date) {
                 }
             }
         }
-//        }
     }
-
 
     @Composable
     fun getComposable(modifier: Modifier = Modifier) {
@@ -357,7 +314,7 @@ class TimeSelectSlider2(dtStart: Date, dtEnd: Date) {
         }
         RowVA(
             modifier = modifier
-//                .fillMaxWidth()
+
                 .border(
                     width = 0.5.dp,
                     brush = Brush.horizontalGradient(
@@ -365,29 +322,26 @@ class TimeSelectSlider2(dtStart: Date, dtEnd: Date) {
                     ),
                     shape = RoundedCornerShape(10.dp)
                 )
-                .padding(horizontal = 10.dp, vertical = 7.dp)
-            ,
+                .padding(horizontal = 10.dp, vertical = 7.dp),
         ) {
             timeSelect(Modifier.weight(1f), timeStart)
-            Column(Modifier.width(80.dp),horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(Modifier.width(80.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    countToStr(if (fixDiap.value) widthDiap else (timeEnd.value - timeStart.value).let{ if (it>0) it else it + 24*12}),
+                    countToStr(if (fixDiap.value) widthDiap else (timeEnd.value - timeStart.value).let { if (it > 0) it else it + 24 * 12 }),
                     Modifier.padding(bottom = 5.dp),
                     color = Color.White,
                     fontSize = 14.sp
                 )
                 MyToggleButtIconStyle1(
                     "ic_round_repeat_24.xml",
-//                    modifier = Modifier.padding(horizontal = 20.dp),
+
                     value = fixDiap, sizeIcon = 30.dp,
                     myStyleToggleButton = ToggleButtonStyleState(MainDB.styleParam.timeParam.denPlanTab.panSelectShablon.buttSort)
-                ){
-                    widthDiap = (timeEnd.value - timeStart.value).let{ if (it>0) it else it + 24*12}
+                ) {
+                    widthDiap = (timeEnd.value - timeStart.value).let { if (it > 0) it else it + 24 * 12 }
                 }
             }
             timeSelect(Modifier.weight(1f), timeEnd)
         }
-
     }
-
 }

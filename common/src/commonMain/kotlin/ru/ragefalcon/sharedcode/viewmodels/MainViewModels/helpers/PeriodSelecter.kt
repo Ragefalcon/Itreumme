@@ -10,7 +10,7 @@ import ru.ragefalcon.sharedcode.extensions.*
 class PeriodSelecter() {
     enum class FinPeriod { Day, Week, Month, Year, SelectDates }
 
-    var dateOpor: DateTimeTz = DateTimeTz.nowLocal().unOffset ().minusTime() //fromUnixLocal(1309737600000)
+    var dateOpor: DateTimeTz = DateTimeTz.nowLocal().unOffset().minusTime()
         private set
     var dateOporLong: Long = 0
         get() = dateOpor.localUnix().unOffset()
@@ -28,15 +28,18 @@ class PeriodSelecter() {
         ffUpDateOpor = ff
         ff(dateOpor.localUnix())
     }
-    fun setDateOpor(xx: Long){
+
+    fun setDateOpor(xx: Long) {
         dateOpor = DateTimeTz.fromUnixLocal(xx.withOffset())
         updatePeriod()
     }
-    private var ffUpDatePer: (Long,Long) -> Unit = {aa,bb ->}
-    fun setUpdPer(ff: (Long,Long) -> Unit) {
+
+    private var ffUpDatePer: (Long, Long) -> Unit = { _, _ -> }
+    fun setUpdPer(ff: (Long, Long) -> Unit) {
         ffUpDatePer = ff
-        ffUpDatePer(dateBegin.localUnix().unOffset(),(dateEnd-0.days).localUnix().unOffset())
+        ffUpDatePer(dateBegin.localUnix().unOffset(), (dateEnd - 0.days).localUnix().unOffset())
     }
+
     fun SetPeriodDates(dtBegin: Long, dtEnd: Long) {
         dateBegin = DateTimeTz.fromUnixLocal(dtBegin.withOffset())
         dateEnd = DateTimeTz.fromUnixLocal(dtEnd.withOffset())
@@ -70,10 +73,9 @@ class PeriodSelecter() {
         when (vybPeriod) {
             FinPeriod.Day -> dateOpor += 1.days
             FinPeriod.Week -> dateOpor += 7.days
-            FinPeriod.Month -> dateOpor += 1.months // dateOpor.firstDayOfNextMonth()
+            FinPeriod.Month -> dateOpor += 1.months
             FinPeriod.Year -> dateOpor += 1.years
-            FinPeriod.SelectDates -> {
-            }
+            FinPeriod.SelectDates -> Unit
         }
         ffUpDateOpor(dateOpor.localUnix())
         updatePeriod()
@@ -83,10 +85,9 @@ class PeriodSelecter() {
         when (vybPeriod) {
             FinPeriod.Day -> dateOpor -= 1.days
             FinPeriod.Week -> dateOpor -= 7.days
-            FinPeriod.Month -> dateOpor -= 1.months // dateOpor.firstDayOfNextMonth()
+            FinPeriod.Month -> dateOpor -= 1.months
             FinPeriod.Year -> dateOpor -= 1.years
-            FinPeriod.SelectDates -> {
-            }
+            FinPeriod.SelectDates -> Unit
         }
         ffUpDateOpor(dateOpor.localUnix())
         updatePeriod()
@@ -96,7 +97,7 @@ class PeriodSelecter() {
         VybPeriod = FinPeriod.Day
         dateBegin = dateOpor
         dateEnd = dateBegin + 1.days
-        ffUpDatePer(dateBegin.localUnix().unOffset(),(dateEnd-0.days).localUnix().unOffset())
+        ffUpDatePer(dateBegin.localUnix().unOffset(), (dateEnd - 0.days).localUnix().unOffset())
         updateAll()
     }
 
@@ -104,7 +105,7 @@ class PeriodSelecter() {
         VybPeriod = FinPeriod.Week
         dateBegin = dateOpor.firstDayOfWeek()
         dateEnd = dateBegin + 7.days
-        ffUpDatePer(dateBegin.localUnix().unOffset(),(dateEnd-0.days).localUnix().unOffset())
+        ffUpDatePer(dateBegin.localUnix().unOffset(), (dateEnd - 0.days).localUnix().unOffset())
         updateAll()
     }
 
@@ -112,7 +113,7 @@ class PeriodSelecter() {
         VybPeriod = FinPeriod.Month
         dateBegin = dateOpor.firstDayOfMonth()
         dateEnd = dateOpor.firstDayOfNextMonth()
-        ffUpDatePer(dateBegin.localUnix().unOffset(),(dateEnd-0.days).localUnix().unOffset())
+        ffUpDatePer(dateBegin.localUnix().unOffset(), (dateEnd - 0.days).localUnix().unOffset())
         updateAll()
     }
 
@@ -120,7 +121,7 @@ class PeriodSelecter() {
         VybPeriod = FinPeriod.Year
         dateBegin = dateOpor.minusTime() - dateOpor.dayOfYear.days + 1.days
         dateEnd = dateBegin + 1.years
-        ffUpDatePer(dateBegin.localUnix().unOffset(),(dateEnd-0.days).localUnix().unOffset())
+        ffUpDatePer(dateBegin.localUnix().unOffset(), (dateEnd - 0.days).localUnix().unOffset())
         updateAll()
     }
 

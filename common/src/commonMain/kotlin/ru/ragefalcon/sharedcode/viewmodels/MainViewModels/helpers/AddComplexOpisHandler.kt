@@ -53,7 +53,6 @@ class AddComplexOpisHandler(private var mdb: Database) {
                             )
                             when (opis) {
                                 is ItemComplexOpisText -> {
-
                                     true
                                 }
 
@@ -83,13 +82,13 @@ class AddComplexOpisHandler(private var mdb: Database) {
                                         text_before = if (opis.textBefore) 1L else 0L
                                     )
                                     opis.spisImages.forEach { itemImg ->
-                                        if (itemImg.opis_id > 0){
+                                        if (itemImg.opis_id > 0) {
                                             mdb.complexOpisImageQueries.update(
                                                 opis_id = opis_id,
                                                 sort = itemImg.sort,
                                                 id = itemImg.id
                                             )
-                                        }   else    {
+                                        } else {
                                             mdb.complexOpisImageQueries.transactionWithResult<Long> {
                                                 mdb.complexOpisImageQueries.insertOrReplace(
                                                     opis_id = opis_id,
@@ -254,13 +253,13 @@ class AddComplexOpisHandler(private var mdb: Database) {
                                         text_before = if (opis.textBefore) 1L else 0L
                                     )
                                     opis.spisImages.forEach { itemImg ->
-                                        if (itemImg.opis_id > 0){
+                                        if (itemImg.opis_id > 0) {
                                             mdb.complexOpisImageQueries.update(
                                                 opis_id = opis_id,
                                                 sort = itemImg.sort,
                                                 id = itemImg.id
                                             )
-                                        }   else {
+                                        } else {
                                             mdb.complexOpisImageQueries.transactionWithResult<Long> {
                                                 mdb.complexOpisImageQueries.insertOrReplace(
                                                     opis_id = opis_id,
@@ -284,14 +283,6 @@ class AddComplexOpisHandler(private var mdb: Database) {
         return listNewId
     }
 
-    /*
-
-        fun delComplexOpis(
-            id: Long
-        ) {
-            mdb.spisBloknotQueries.delete(id = id)
-        }
-    */
     fun updComplexOpisCheckbox(
         opis_id: Long,
         check: Long

@@ -1,6 +1,9 @@
 package MainTabs
 
-import MainTabs.Finance.Element.*
+import MainTabs.Finance.Element.PanAddDoxod
+import MainTabs.Finance.Element.PanAddPerevod
+import MainTabs.Finance.Element.PanAddPerevodPlan
+import MainTabs.Finance.Element.PanAddRasx
 import MainTabs.Finance.Items.ComItemDoxodShab
 import MainTabs.Finance.Items.ComItemRasxodShab
 import MainTabs.Finance.Tabs.*
@@ -26,10 +29,6 @@ import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.tabElement
 import viewmodel.MainDB
 
 class MainFinTabs(private val dialLay: MyDialogLayout) {
-
-    init {
-        println("init MainFinTabs: $this")
-    }
 
     enum class FinPeriodTabs(override val nameTab: String) : tabElement {
         Week("Неделя"),
@@ -71,7 +70,7 @@ class MainFinTabs(private val dialLay: MyDialogLayout) {
         with(MainDB.styleParam.finParam) {
             Row(verticalAlignment = Alignment.CenterVertically) {
 
-//            MyTextToggleButtStyle1("Фильтр", MainDB.enableFilter)
+
                 MyToggleButtIconStyle1(
                     "ic_baseline_filter_alt_24.xml",
                     value = MainDB.enableFilter,
@@ -93,18 +92,14 @@ class MainFinTabs(private val dialLay: MyDialogLayout) {
                     ) {
                         MainDB.selPer.prevDate()
                     }
-//                    MyTextButtStyle1("<", Modifier.padding(end = 10.dp), myStyleTextButton = TextButtonStyleState(buttNextDate)) {
-//                        MainDB.selPer.prevDate(PeriodSelecter.FinPeriod.Day)
-//                    }
+
                     buttDatePickerWithButton(
                         dialLay,
                         MainDB.dateFin,
                         myStyleTextDate = TextButtonStyleState(buttDate),
                         myStyleTextArrow = TextButtonStyleState(buttNextDate)
                     )
-//                    MyTextButtStyle1(">", Modifier.padding(start = 10.dp), myStyleTextButton = TextButtonStyleState(buttNextDate)) {
-//                        MainDB.selPer.nextDate(PeriodSelecter.FinPeriod.Day)
-//                    }
+
                     MyTextButtStyle1(
                         "❯❯",
                         Modifier.padding(start = 15.dp),
@@ -128,8 +123,6 @@ class MainFinTabs(private val dialLay: MyDialogLayout) {
                         myStyleTextDate = TextButtonStyleState(buttDate),
                         myStyleTextArrow = TextButtonStyleState(buttNextDate)
                     )
-//                    buttDatePicker(dialLay, MainDB.dateFinBegin)
-//                    buttDatePicker(dialLay, MainDB.dateFinEnd)
                 }
                 MyTextButtStyle1(
                     "+",
@@ -244,7 +237,7 @@ class MainFinTabs(private val dialLay: MyDialogLayout) {
                     panelState.expandedSize =
                         (panelState.expandedSize + it).coerceAtLeast(panelState.expandedSizeMin)
                 },
-                color = Color.Transparent,// MyColorARGB.colorMyMainTheme.toColor(),
+                color = Color.Transparent,
                 splitStyle = {
                     Box(
                         Modifier.padding(vertical = 50.dp).fillMaxHeight().width(2.dp).background(

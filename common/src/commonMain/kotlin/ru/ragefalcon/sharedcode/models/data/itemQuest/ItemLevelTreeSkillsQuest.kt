@@ -1,8 +1,8 @@
 package ru.ragefalcon.sharedcode.models.data.itemQuest
 
-import ru.ragefalcon.sharedcode.models.data.Id_class
 import ru.ragefalcon.sharedcode.extensions.Parcelable
 import ru.ragefalcon.sharedcode.extensions.Parcelize
+import ru.ragefalcon.sharedcode.models.data.Id_class
 
 @Parcelize
 class ItemLevelTreeSkillsQuest(

@@ -15,13 +15,11 @@ import ru.ragefalcon.tutatores.databinding.FragmentMainAvatarBinding
 import ru.ragefalcon.tutatores.extensions.setMargins
 import ru.ragefalcon.tutatores.ui.avatar.dream.AvatarDreamTabFragment
 import ru.ragefalcon.tutatores.ui.avatar.goal.AvatarGoalTabFragment
-import ru.ragefalcon.tutatores.ui.settings.SettingsFinFragment
 
 
 class AvatarMainScreen : BaseFragmentVM<FragmentMainAvatarBinding>(FragmentMainAvatarBinding::inflate) {
 
     private lateinit var avatarPageAdapter: AvatarPageAdapter
-
     private lateinit var myActivity: Activity
 
     override fun onAttach(context: Context) {
@@ -65,10 +63,10 @@ enum class AvatarTabType(
     DREAM("Мечты", R.color.colorDoxodTheme, R.color.colorDoxodItem);
 }
 
-class AvatarPageAdapter(fm: FragmentActivity): FragmentStateAdapter(fm) {
+class AvatarPageAdapter(fm: FragmentActivity) : FragmentStateAdapter(fm) {
 
     override fun createFragment(position: Int): Fragment {
-        return when(AvatarTabType.values()[position]){
+        return when (AvatarTabType.values()[position]) {
             AvatarTabType.AVATAR -> AvatarAvatarFragment()
             AvatarTabType.HISTORY -> AvatarHistoryFragment()
             AvatarTabType.HOAL -> AvatarGoalTabFragment()

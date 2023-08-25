@@ -44,7 +44,6 @@ class SelectedIdeaPanel(
 class SelectedIdeaPanelFragment(parBloknot: ItemBloknot? = null, selItem: ItemIdea? = null, callbackKey: String? = null, arrayIskl: ArrayList<Long>? = null) :
     MyFragmentForDialogVM<FragmentSelectPlanStapPanelBinding>(FragmentSelectPlanStapPanelBinding::inflate) {
 
-
     var callbackKey: String? by instanceState(callbackKey)
 
     var parentBloknot: ItemBloknot? by instanceState(parBloknot)
@@ -72,7 +71,6 @@ class SelectedIdeaPanelFragment(parBloknot: ItemBloknot? = null, selItem: ItemId
                     journalFun.setBloknotForSpisIdeaForSelect(it.id.toLong(),arrayIskl ?: listOf())
                 }
                 var firstLoad = true
-//                timeFun.setOpenSpisPlanIn(false, arrayIskl ?: listOf())
                 journalSpis.spisIdeaForSelect.observe(viewLifecycleOwner) {
                     rvmAdapter.updateData(formUniRVItemList(it) { item ->
                         IdeaRVItem(item)

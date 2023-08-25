@@ -233,7 +233,6 @@ class TimeVMobjForSpis(private val mDB: Database, private val spisQueryListener:
                 )
             })
         }
-//        updateQuery(mDB.denPlanQueries.selectHourFromVajn())
     }
     var spisVajnHour = CommonObserveObj<List<ItemHourVajn>>()
 
@@ -391,7 +390,6 @@ class TimeVMobjForSpis(private val mDB: Database, private val spisQueryListener:
     }
 
     val spisAllPlanStap = UniConvertQueryAdapter<AllStapPlan, ItemPlanStap>() {
-//        println("itemPS name: ${it.name}, sver: ${it.svernut}")
         ItemPlanStap(
             level = -1,
             id = it._id.toString(),

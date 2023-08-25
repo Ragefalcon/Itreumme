@@ -21,8 +21,12 @@ class ComItemTypeRasxForPlans(
     val item: ItemTyperasxod,
 ) {
 
-    val CB_SchetPlan = MyComboBox(MainDB.finSpis.spisSchetPlan, nameItem = { it.name }, openButtAtLeft = false, listenerInStart = false) {
-        if (item.schpl_id != it.id.toLong()) MainDB.addFinFun.updTyperasxodSchetPlan(item.id.toLong(),it.name,it.id.toLong())
+    val CB_SchetPlan = MyComboBox(
+        MainDB.finSpis.spisSchetPlan, nameItem = { it.name }, openButtAtLeft = false, listenerInStart = false
+    ) {
+        if (item.schpl_id != it.id.toLong()) MainDB.addFinFun.updTyperasxodSchetPlan(
+            item.id.toLong(), it.name, it.id.toLong()
+        )
     }.apply {
         MainDB.finSpis.spisSchetPlan.getState().value?.find { it.id == item.schpl_id.toString() }?.let {
             select(it)
@@ -33,23 +37,17 @@ class ComItemTypeRasxForPlans(
     @Composable
     fun getComposable() {
         MyCardStyle1(
-            false, 0, {
-//                selection.selected = item
-//                expandedDropMenu.value = this.buttons.isSecondaryPressed
-            },
-//            dropMenu = { exp -> dropMenu(item, exp) }
-            backColor = if (!item.open)
-                Color.Red.toMyColorARGB().plusWhite().plusWhite().toColor().copy(alpha = 0.7f)// Color(0xFF468F45)
-            else
-                Color(0xFF464D45)
+            false,
+            0,
+            {},
+            backColor = if (!item.open) Color.Red.toMyColorARGB().plusWhite().plusWhite().toColor().copy(alpha = 0.7f)
+            else Color(0xFF464D45)
         ) {
-            RowVA (
+            RowVA(
                 modifier = Modifier.padding(5.dp).padding(horizontal = 10.dp),
             ) {
                 Text(
-                    modifier = Modifier.weight(1f),
-                    text = item.typer,
-                    style = MyTextStyleParam.style2
+                    modifier = Modifier.weight(1f), text = item.typer, style = MyTextStyleParam.style2
                 )
                 CB_SchetPlan.show()
             }

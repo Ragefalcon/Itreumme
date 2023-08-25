@@ -18,12 +18,10 @@ SELECT mainSpis.*, spis_plan.name AS name_plan, spis_plan.quest_id,
                         spis_stap_plan.marker AS vajn, spis_stap_plan.gotov,spis_stap_plan.name, spis_stap_plan.data1, spis_stap_plan.data2, spis_stap_plan.stat AS statIn
                         FROM spis_stap_plan LEFT JOIN spis_plan ON spis_plan._id = spis_stap_plan.idplan
                         WHERE spis_stap_plan.data1 <= :dtEnd AND spis_stap_plan.data1 > 1 AND spis_stap_plan.stat NOT IN :closeStapStat AND spis_plan.stat NOT IN :closePlanStat
-    -- SELECT (_id * 10 + 1) AS id, idplan AS plan_id, _id AS stap_id, parent_id AS parent, marker AS vajn, gotov,name, data1, data2, stat AS statIn FROM spis_stap_plan WHERE data1 <= :dtEnd AND data1 > 1 AND stat NOT IN :closeStapStat
          )
      ) WHERE stat <> -777) mainSpis
  LEFT JOIN spis_plan WHERE spis_plan._id = mainSpis.plan_id
  ORDER BY plan_id;
--- т.к. тут и планы и этапы id могут совпадать, поэтому выше идет манипуляция с _id
 
 selectTimelineForPlan:
 SELECT mainSpis.*,

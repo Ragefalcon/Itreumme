@@ -77,6 +77,7 @@ class AddFinanceHandler(private var mdb: Database) {
             schet_id = schet_id
         )
     }
+
     fun updShabDoxod(
         item: ItemShabDoxod,
         name: String,
@@ -187,7 +188,7 @@ class AddFinanceHandler(private var mdb: Database) {
         data: Long,
         schet: Long
     ): Boolean {
-        if (item.typedoxod_open && item.schet_open) { //&& item.schpl_open
+        if (item.typedoxod_open && item.schet_open) {
             mdb.doxodQueries.updateDoxod(
                 id = item.id.toLong(),
                 name = name,
@@ -204,7 +205,7 @@ class AddFinanceHandler(private var mdb: Database) {
     fun delDoxod(
         item: ItemDoxod
     ): Boolean {
-        if (item.typedoxod_open && item.schet_open) { //&& item.schpl_open
+        if (item.typedoxod_open && item.schet_open) {
             mdb.doxodQueries.deleteDoxod(id = item.id.toLong())
             return true
         }

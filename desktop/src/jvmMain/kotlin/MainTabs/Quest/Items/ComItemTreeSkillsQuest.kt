@@ -1,10 +1,10 @@
 package MainTabs.Quest.Items
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.mouseClickable
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -28,8 +28,7 @@ import java.io.File
 class ComItemTreeSkillsQuest(
     val item: ItemTreeSkillsQuest,
     val selection: SingleSelectionType<ItemTreeSkillsQuest>,
-//    val doubleClick: (ItemTreeSkillsQuest)->Unit = {},
-    val openTree: (ItemTreeSkillsQuest)->Unit = {},
+    val openTree: (ItemTreeSkillsQuest) -> Unit = {},
     val dropMenu: @Composable ColumnScope.(ItemTreeSkillsQuest, MutableState<Boolean>) -> Unit = { _, _ -> }
 ) {
     var expandedDropMenu = mutableStateOf(false)
@@ -42,8 +41,6 @@ class ComItemTreeSkillsQuest(
             selection.selected = item
         }, onDoubleClick = {
             openTree(item)
-//            item.sver = item.sver.not()
-//            expandedOpis.value = !expandedOpis.value
         },
             backColor = MyColorARGB.colorMyMainTheme.toColor(),
             dropMenu = { exp -> dropMenu(item, exp) }
@@ -58,7 +55,7 @@ class ComItemTreeSkillsQuest(
                             modifier = Modifier.padding(horizontal = 8.dp)
                         )
                         if (item.visibleStat == -2L || item.visibleStat == -3L) Image(
-                            painterResource(if (item.visibleStat == -2L) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"), //BitmapPainter(
+                            painterResource(if (item.visibleStat == -2L) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"),
                             "statDenPlan",
                             Modifier
                                 .height(50.dp)
@@ -70,11 +67,15 @@ class ComItemTreeSkillsQuest(
                     Column(Modifier.padding(5.dp).weight(1f)) {
                         Text(
                             text = "(${item.id_type_tree})(${item.countNode})${item.name}",
-                            modifier = Modifier.padding(5.dp),//.weight(1f)
+                            modifier = Modifier.padding(5.dp),
                             style = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start)
                         )
-                        PlateOrderLayout(){
-                            QuestVM.getTriggerMarkersForTriggerChilds(TypeStartObjOfTrigger.STARTTREE.id, item.id.toLong(), emptyMarker = (item.visibleStat == -2L || item.visibleStat == -3L))
+                        PlateOrderLayout() {
+                            QuestVM.getTriggerMarkersForTriggerChilds(
+                                TypeStartObjOfTrigger.STARTTREE.id,
+                                item.id.toLong(),
+                                emptyMarker = (item.visibleStat == -2L || item.visibleStat == -3L)
+                            )
                         }
                     }
                     if (selection.isActive(item)) MyButtDropdownMenuStyle2(

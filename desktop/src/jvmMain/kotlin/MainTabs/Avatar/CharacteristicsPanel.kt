@@ -32,67 +32,16 @@ import ru.ragefalcon.sharedcode.source.disk.getValue
 import viewmodel.MainDB
 
 @Composable
-fun myBackground2(modifier: Modifier) {  //, content: @Composable BoxWithConstraintsScope.()->Unit
+fun myBackground2(modifier: Modifier) {
     BoxWithConstraints(
         modifier
-//            .padding(vertical = 10.dp)
             .background(
-            Color.Black.copy(0.3f),
-//            RoundedCornerShape(15.dp)
-        ),
+                Color.Black.copy(0.3f),
+
+                ),
         contentAlignment = Alignment.Center
     ) {
-/*
-        Box(
-            Modifier.padding(vertical = 0.dp).fillMaxHeight().width(2.dp)
-                .align(Alignment.CenterEnd)
-                .background(
-                    Brush.verticalGradient(
-                        listOf(
-                            Color.Transparent,
-//                                                Color.Transparent,
-                            MyColorARGB.colorMyBorderStroke.toColor(),
-//                                                Color.Transparent,
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-        Box(
-            Modifier.padding(vertical = 0.dp).fillMaxHeight().width(2.dp)
-                .align(Alignment.CenterStart)
-                .background(
-                    Brush.verticalGradient(
-                        listOf(
-                            Color.Transparent,
-//                                                Color.Transparent,
-                            MyColorARGB.colorMyBorderStroke.toColor(),
-//                                                Color.Transparent,
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-*/
 
-/*
-        Box(
-            Modifier
-                .padding(top = 0.dp)
-                .height(2.dp)
-                .fillMaxWidth(1f)
-                .align(Alignment.TopCenter)
-                .background(
-                    Brush.horizontalGradient(
-                        listOf(
-                            Color.Transparent,
-                            MyColorARGB.colorMyBorderStroke.toColor(),
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-*/
         Box(Modifier.padding(top = 0.dp).height(170.dp).fillMaxWidth().align(Alignment.TopCenter)) {
             Box(
                 with(LocalDensity.current) {
@@ -103,7 +52,7 @@ fun myBackground2(modifier: Modifier) {  //, content: @Composable BoxWithConstra
                             brush = Brush.radialGradient(
                                 colors = listOf(
                                     MyColorARGB.colorMyBorderStroke.toColor(),
-//                                            MyColorARGB.colorMyBorderStroke.toColor(),
+
                                     Color.Transparent
                                 ),
                                 radius = this@BoxWithConstraints.maxWidth.toPx() / 1.17f,
@@ -116,8 +65,8 @@ fun myBackground2(modifier: Modifier) {  //, content: @Composable BoxWithConstra
                 }
             )
         }
-//        content()
-//            Spacer(Modifier.weight(1f))
+
+
         Box(Modifier.padding(bottom = 0.dp).height(170.dp).fillMaxWidth().align(Alignment.BottomCenter)) {
             Box(
                 with(LocalDensity.current) {
@@ -128,7 +77,7 @@ fun myBackground2(modifier: Modifier) {  //, content: @Composable BoxWithConstra
                             brush = Brush.radialGradient(
                                 colors = listOf(
                                     MyColorARGB.colorMyBorderStroke.toColor(),
-//                                            MyColorARGB.colorMyBorderStroke.toColor(),
+
                                     Color.Transparent
                                 ),
                                 radius = this@BoxWithConstraints.maxWidth.toPx() / 1.17f,
@@ -141,24 +90,6 @@ fun myBackground2(modifier: Modifier) {  //, content: @Composable BoxWithConstra
                 }
             )
         }
-/*
-        Box(
-            Modifier
-                .padding(bottom = 0.dp)
-                .height(2.dp)
-                .fillMaxWidth(1f)
-                .align(Alignment.BottomCenter)
-                .background(
-                    Brush.horizontalGradient(
-                        listOf(
-                            Color.Transparent,
-                            MyColorARGB.colorMyBorderStroke.toColor(),
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-*/
     }
 }
 
@@ -172,19 +103,14 @@ class CharacteristicsPanel {
         dialLay: MyDialogLayout,
         modifier: Modifier = Modifier
     ) {
-        with(MainDB.styleParam.avatarParam.characteristicsTab){
+        with(MainDB.styleParam.avatarParam.characteristicsTab) {
             Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-                MyShadowBox(plate.shadow.getValue(),Modifier.weight(1f).padding(vertical = 10.dp)) {
+                MyShadowBox(plate.shadow.getValue(), Modifier.weight(1f).padding(vertical = 10.dp)) {
                     BoxWithConstraints(
-                        Modifier//.weight(1f).padding(vertical = 10.dp)
+                        Modifier
                             .withSimplePlate(SimplePlateWithShadowStyleState(plate))
-                            .border(BORDER2_WIDTH.getValue().dp,BORDER2_BRUSH.getValue(),plate.SHAPE.getValue())
-                            .clip(plate.SHAPE.getValue())
-//                        .background(
-//                        Color.Black.copy(0.3f),
-//                        RoundedCornerShape(15.dp)
-//                    )
-                        , contentAlignment = Alignment.Center
+                            .border(BORDER2_WIDTH.getValue().dp, BORDER2_BRUSH.getValue(), plate.SHAPE.getValue())
+                            .clip(plate.SHAPE.getValue()), contentAlignment = Alignment.Center
                     ) {
                         if (VIGNETTE1.getValue()) myBackground2(Modifier.fillMaxSize())
                         if (VIGNETTE2.getValue()) BackBoxEllipsGradient(
@@ -197,13 +123,13 @@ class CharacteristicsPanel {
                             )
                         )
                         MainDB.avatarSpis.spisCharacteristics.getState().value?.let { listCharacteristics ->
-                            itemCharacteristic.getComposable(::ItemCharacteristicState){ itemStyle ->
+                            itemCharacteristic.getComposable(::ItemCharacteristicState) { itemStyle ->
                                 with(LocalDensity.current) {
                                     MyList(
                                         MainDB.avatarSpis.spisCharacteristics,
                                         Modifier
                                             .align(Alignment.Center)
-//                                .heightIn(0.dp, this@BoxWithConstraints.maxHeight * 0.9f)
+
                                             .padding(horizontal = 50.dp, vertical = 20.dp),
                                         maxHeight = (this@BoxWithConstraints.maxHeight * 0.9f - 44.dp).toPx().toInt()
                                     ) { ind, itemChar ->
@@ -223,30 +149,30 @@ class CharacteristicsPanel {
                                                 MainDB.avatarFun.setCharacteristicForGrafProgress(item.id)
                                                 MyFullScreenPanel(dialLay) { _, _ ->
                                                     MainDB.avatarSpis.spisSumWeekHourOfCharacteristic.getState().value?.let { listOperWeek ->
-                                                        MainDB.avatarFun.getMinSumWeekHourOfCharacteristic().toFloat().let { min ->
-                                                            MainDB.avatarFun.getMaxSumWeekHourOfCharacteristic().toFloat()
-                                                                .let { max ->
-                                                                    if (listOperWeek.isNotEmpty()) DrawGrafik().drawDiagram(
-                                                                        Modifier
-                                                                            .weight(1f, false)
-//                                                .fillMaxWidth(1f)
-                                                                        ,
-                                                                        listOperWeek,
-                                                                        min,
-                                                                        max,
-                                                                        true,
-                                                                        GrafikColorStyleState(MainDB.styleParam.avatarParam.characteristicsTab.characteristicsPanelView.grafColor)
-                                                                    ) else Box(
-                                                                        Modifier.weight(1f),
-                                                                        contentAlignment = Alignment.Center
-                                                                    ) {
-                                                                        Text(
-                                                                            "Здесь появится график роста харктеристики, как только будут учтены первые часы по ней.",
-                                                                            style = MyTextStyleParam.style1
-                                                                        )
+                                                        MainDB.avatarFun.getMinSumWeekHourOfCharacteristic().toFloat()
+                                                            .let { min ->
+                                                                MainDB.avatarFun.getMaxSumWeekHourOfCharacteristic()
+                                                                    .toFloat()
+                                                                    .let { max ->
+                                                                        if (listOperWeek.isNotEmpty()) DrawGrafik().drawDiagram(
+                                                                            Modifier
+                                                                                .weight(1f, false),
+                                                                            listOperWeek,
+                                                                            min,
+                                                                            max,
+                                                                            true,
+                                                                            GrafikColorStyleState(MainDB.styleParam.avatarParam.characteristicsTab.characteristicsPanelView.grafColor)
+                                                                        ) else Box(
+                                                                            Modifier.weight(1f),
+                                                                            contentAlignment = Alignment.Center
+                                                                        ) {
+                                                                            Text(
+                                                                                "Здесь появится график роста харктеристики, как только будут учтены первые часы по ней.",
+                                                                                style = MyTextStyleParam.style1
+                                                                            )
+                                                                        }
                                                                     }
-                                                                }
-                                                        }
+                                                            }
                                                     }
                                                 }
                                             }
@@ -283,19 +209,17 @@ class CharacteristicsPanel {
                         width = 50.dp,
                         height = 50.dp,
                         myStyleToggleButton = ToggleButtonStyleState(buttEdit)
-//                    , enabledColor = MyColorARGB.colorStatTint_03.toColor()
                     ) {
-
                     }
                     Text(
                         "Характеристик: ${MainDB.avatarSpis.spisCharacteristics.getState().value?.size ?: 0}",
                         Modifier.weight(1f).padding(horizontal = 10.dp),
                         style = textCount.getValue().copy(textAlign = TextAlign.Center)
                     )
-                    MyTextButtStyle1("+", modifier = Modifier.padding(end = 15.dp),
+                    MyTextButtStyle1(
+                        "+", modifier = Modifier.padding(end = 15.dp),
                         width = 50.dp,
                         height = 50.dp,
-//                        fontSize = 25.sp,
                         myStyleTextButton = TextButtonStyleState(buttAdd)
                     ) {
                         PanAddCharacteristic(dialLay)
@@ -303,6 +227,5 @@ class CharacteristicsPanel {
                 }
             }
         }
-
     }
 }

@@ -2,8 +2,8 @@ package ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems
 
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemValut
-import ru.ragefalcon.tutatores.R
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemSettSchetBinding
 
 class SettValutRVItem(
@@ -21,15 +21,10 @@ class SettValutRVItem(
                 tvSumSchet.text = item.kurs.roundToString(2)
                 tvCodSchet.text = item.countschet.toString()//""
 
-//                if(!item.open)
-//                    clSettItem.setBackgroundResource(R.drawable.ripple_bg_sett_item_close)
-//                else
-//                    clSettItem.setBackgroundResource(R.drawable.ripple_bg_idea_item)
-
                 if (vh.itemView.isSelected) {
                     selectListener?.invoke(item)
                 }
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     tapListener?.invoke(item)
                 }

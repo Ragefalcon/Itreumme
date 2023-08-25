@@ -14,7 +14,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import common.*
+import common.BackgroungPanelStyle1
+import common.MyOutlinedTextField
+import common.MyTextButtStyle1
+import common.MyTextStyleParam
 import extensions.RowVA
 import extensions.toColor
 import ru.ragefalcon.sharedcode.extensions.MyColorARGB
@@ -32,9 +35,9 @@ fun PanAddLevelTreeSkills(
     dialPan.dial = @Composable {
         val text_name = remember { mutableStateOf(TextFieldValue(item?.name ?: "")) }
         val text_opis = remember { mutableStateOf(TextFieldValue(item?.opis ?: "")) }
-//        val text_proc = remember { mutableStateOf(TextFieldValue(item?.proc_porog?.toString() ?: "0.0")) }
-        val progressGotov = remember { mutableStateOf(((item?.proc_porog ?: 0.0)/100f).toFloat()) }
-        BackgroungPanelStyle1 { //modif ->
+
+        val progressGotov = remember { mutableStateOf(((item?.proc_porog ?: 0.0) / 100f).toFloat()) }
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 MyOutlinedTextField("Название уровня", text_name)
                 MyOutlinedTextField(
@@ -47,12 +50,20 @@ fun PanAddLevelTreeSkills(
                     Text(
                         text = "Минимальный процент необязательных достижений:",
                         modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 5.dp, end = 5.dp),
-                        style = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start, fontSize = 18.sp, color = MyColorARGB.colorSchetTheme.toColor())
+                        style = MyTextStyleParam.style1.copy(
+                            textAlign = TextAlign.Start,
+                            fontSize = 18.sp,
+                            color = MyColorARGB.colorSchetTheme.toColor()
+                        )
                     )
                     Text(
-                        text = "${(progressGotov.value*100.0).toInt()}%",
+                        text = "${(progressGotov.value * 100.0).toInt()}%",
                         modifier = Modifier.padding(start = 5.dp, top = 10.dp, bottom = 5.dp, end = 15.dp),
-                        style = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start, fontSize = 18.sp, color = MyColorARGB.colorDoxodTheme.toColor())
+                        style = MyTextStyleParam.style1.copy(
+                            textAlign = TextAlign.Start,
+                            fontSize = 18.sp,
+                            color = MyColorARGB.colorDoxodTheme.toColor()
+                        )
                     )
                 }
                 val colorVyp = MyColorARGB.colorEffektShkal_Nedel.toColor()
@@ -63,14 +74,13 @@ fun PanAddLevelTreeSkills(
                         progressGotov.value = it
                     },
                     onValueChangeFinished = {
-//                        changeGotov?.invoke(item, progressGotov.value)
                     },
                     colors = SliderDefaults.colors(
-                        thumbColor = colorVyp, //MaterialTheme.colors.primary,
+                        thumbColor = colorVyp,
                         disabledThumbColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
                             .compositeOver(MaterialTheme.colors.surface),
-                        activeTrackColor = colorVyp, //MaterialTheme.colors.primary,
-                        inactiveTrackColor = Color(0x6FFF8888), //activeTrackColor.copy(alpha = InactiveTrackAlpha),
+                        activeTrackColor = colorVyp,
+                        inactiveTrackColor = Color(0x6FFF8888),
                         disabledActiveTrackColor = MaterialTheme.colors.onSurface.copy(alpha = SliderDefaults.DisabledActiveTrackAlpha),
                         disabledInactiveTrackColor = MaterialTheme.colors.onSurface.copy(
                             alpha = SliderDefaults.DisabledInactiveTrackAlpha
@@ -86,7 +96,6 @@ fun PanAddLevelTreeSkills(
                     )
                 )
 
-//                MyOutlinedTextFieldDouble("Минимальный процент необязательных достижений", text_proc)
                 Row {
                     MyTextButtStyle1("Отмена") {
                         dialPan.close()
@@ -98,7 +107,7 @@ fun PanAddLevelTreeSkills(
                                     item = it,
                                     name = text_name.value.text,
                                     opis = text_opis.value.text,
-                                    proc_porog = (progressGotov.value*100.0).toInt().toDouble()//text_proc.value.text.toDouble()
+                                    proc_porog = (progressGotov.value * 100.0).toInt().toDouble()
                                 )
                                 dialPan.close()
                             } ?: run {
@@ -106,7 +115,7 @@ fun PanAddLevelTreeSkills(
                                     id_tree = itemTreeSkill.id.toLong(),
                                     name = text_name.value.text,
                                     opis = text_opis.value.text,
-                                    proc_porog = (progressGotov.value*100.0).toInt().toDouble(), //text_proc.value.text.toDouble(),
+                                    proc_porog = (progressGotov.value * 100.0).toInt().toDouble(),
                                     level = level,
                                     quest_id = itemTreeSkill.quest_id
                                 )
@@ -118,6 +127,5 @@ fun PanAddLevelTreeSkills(
         }
         dialLayInner.getLay()
     }
-
     dialPan.show()
 }

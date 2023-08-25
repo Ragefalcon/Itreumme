@@ -24,7 +24,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import common.*
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.ragefalcon.sharedcode.models.data.itemQuest.ItemPlanQuest
 import ru.ragefalcon.sharedcode.models.data.itemQuest.ItemPlanStapQuest
@@ -42,12 +43,14 @@ class PlanQuestTab(val dialLay: MyDialogLayout) {
     val openStapPan = mutableStateOf(false)
     var openStapPan1 by mutableStateOf(false)
 
-
     @Composable
     private fun spisPlan(scope: ColumnScope) {
         QuestVM.openQuestDB?.let { questDB ->
             scope.apply {
-                MyList(questDB.spisQuest.spisPlan, modifier = Modifier.padding(10.dp).weight(1f)) { ind,itemPlanQuest ->
+                MyList(
+                    questDB.spisQuest.spisPlan,
+                    modifier = Modifier.padding(10.dp).weight(1f)
+                ) { _, itemPlanQuest ->
                     ComItemPlanQuest(
                         itemPlanQuest, selection,
                         selFun = {
@@ -69,7 +72,6 @@ class PlanQuestTab(val dialLay: MyDialogLayout) {
                                 questDB.addQuest.delPlan(item.id.toLong())
                             }
                         }
-
                     }.getComposable()
                 }
             }
@@ -81,11 +83,9 @@ class PlanQuestTab(val dialLay: MyDialogLayout) {
         QuestVM.withDBC { questDB ->
             LaunchedEffect(selection.selected) {
                 selection.selected?.let {
-//                QuestVM.withDB { questDB ->
                     questDB.questFun.setPlanForSpisStapPlan(it.id.toLong())
                     questDB.questFun.setPlanForCountStapPlan(it.id.toLong())
                     questDB.questFun.setOpenSpisStapPlan(vypPlanStap.value)
-//                }
                 }
             }
 
@@ -96,7 +96,7 @@ class PlanQuestTab(val dialLay: MyDialogLayout) {
                         ItemPlanQuestPlate(it, Modifier.padding(bottom = 5.dp)) {
                             openStapPan.value = false
                             openStapPan1 = false
-                            GlobalScope.launch {
+                            CoroutineScope(Dispatchers.Default).launch {
                                 scrollStateStap.scrollToItem(0, 0)
                             }
                         }
@@ -104,9 +104,7 @@ class PlanQuestTab(val dialLay: MyDialogLayout) {
                 } else {
                     Row(modifier = Modifier.padding(bottom = 5.dp), verticalAlignment = Alignment.CenterVertically) {
                         MyTextToggleButtStyle1("Вып", vypPlan, modifier = Modifier.padding(start = 15.dp)) {
-//                    MainDB.timeFun.setOpenSpisPlan(it)
                             selection.selected?.let {
-//                        if (it.stat == 10L) selection.selected = null
                             }
                         }
                         MyTextStyle1(
@@ -134,14 +132,6 @@ class PlanQuestTab(val dialLay: MyDialogLayout) {
 
                             openStapPan.value = true
                         }, verticalAlignment = Alignment.CenterVertically) {
-/*
-                            MyTextToggleButtStyle1("Вып", vypPlanStap, modifier = Modifier.padding(start = 15.dp)) {
-                                MainDB.timeFun.setOpenSpisStapPlan(it)
-                                selectionStap.selected?.let {
-//                                if (it.stat == 10L) selectionStap.selected = null
-                                }
-                            }
-*/
                             MyTextStyle1(
                                 "Количесто этапов: ${questDB.spisQuest.countStapPlan.getState().value ?: 0L}",
                                 Modifier.weight(1f)
@@ -159,7 +149,7 @@ class PlanQuestTab(val dialLay: MyDialogLayout) {
                                 questDB.spisQuest.spisOpenStapPlan,
                                 Modifier.padding(10.dp).weight(1f).padding(bottom = 10.dp),
                                 scrollStateStap
-                            ) { ind, itemPlanStap ->
+                            ) { _, itemPlanStap ->
                                 ComItemPlanStapQuest(itemPlanStap, selectionStap, sverFun = {
                                     questDB.questFun.setExpandStapPlan(it.id.toLong(), it.svernut.not())
                                 }) { item, expanded ->
@@ -181,7 +171,6 @@ class PlanQuestTab(val dialLay: MyDialogLayout) {
 
                                 }.getComposable()
                             }
-
                     }
                 }
             }

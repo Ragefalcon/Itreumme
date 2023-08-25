@@ -1,15 +1,13 @@
 package ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems;
 
 import android.view.View
-import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
-import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemBloknot
-import ru.ragefalcon.tutatores.R
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemBloknotBinding
 import ru.ragefalcon.tutatores.extensions.dpToPx
 import ru.ragefalcon.tutatores.extensions.rotateElemItem
@@ -45,9 +43,6 @@ class BloknotRVItem(
                 tvBloknotName.text = item.name
                 textOpis.text = "${item.opis}"
                 sverItemOpis(item.sver, false)
-                if (vh.itemView.isSelected) {
-//            stateViewModel.selectItemBloknot.value = item
-                }
                 ivExpandOpis.setOnClickListener {
                     item.sver = item.sver.not()
                     sverItemOpis(item.sver, true)
@@ -59,7 +54,7 @@ class BloknotRVItem(
                 if (vh.itemView.isSelected) {
                     selectListener?.invoke(item)
                 }
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     tapListener?.invoke(item)
                     funForTransition?.invoke(

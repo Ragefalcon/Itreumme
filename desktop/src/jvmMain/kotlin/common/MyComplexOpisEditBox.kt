@@ -16,21 +16,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.focus.*
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.clipRect
-import androidx.compose.ui.input.key.*
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -49,7 +49,8 @@ import androidx.compose.ui.unit.sp
 import com.soywiz.korim.awt.toBufferedImage
 import com.soywiz.korio.async.async
 import extensions.*
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
 import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 import ru.ragefalcon.sharedcode.models.data.*
@@ -77,7 +78,7 @@ class MyComplexOpisEditBox(
             TypeOpisBlock.simpleText,
             1L,
             text = "",
-            color = 1, //MyColorARGB.colorMyBorderStroke,
+            color = 1,
             fontSize = 3,
             cursiv = false,
             bold = 4
@@ -94,7 +95,7 @@ class MyComplexOpisEditBox(
             outImage.saveIconFile(
                 File(
                     StateVM.dirTemp,
-                    "complexOpisImage_tmp_$tempIdImage.jpg"//${fileForCrop.extension()}"
+                    "complexOpisImage_tmp_$tempIdImage.jpg"
                 ).path
             )
             rezFun(tempIdImage)
@@ -240,13 +241,10 @@ class MyComplexOpisEditBox(
         val selSort = selectionItemOpis.selected?.sort
         selSort?.let {
             if (item.sort - selSort > 1) {
-                println("selSort = ${selSort}")
-                println("item.sort = ${item.sort}")
                 selectionItemOpis.selected = item
                 listOpis.filter {
                     it.sort > selSort && it.sort != item.sort
                 }.map { it.myCommonCopy() }.forEach { findItem ->
-                    println("findItem.sort = ${findItem.sort}")
                     changeNotSelectedItem(
                         findItem,
                         findItem.myCommonCopy(sort = findItem.sort + 1)
@@ -266,7 +264,7 @@ class MyComplexOpisEditBox(
 
     fun loadImageFromBuffer(): Boolean {
         getImageFromClipboard()?.let {
-            GlobalScope.async {
+            CoroutineScope(Dispatchers.Default).async {
                 val tempIdImage = Date().format("yyyyMMddHHssSSS").toLong()
                 val jpegFiletoSave = File(StateVM.dirTemp, "complexOpisImage_tmp_$tempIdImage.jpg")
 
@@ -282,9 +280,7 @@ class MyComplexOpisEditBox(
 
                 if (it.toBufferedImage().width <= maxSizeImagePx && it.toBufferedImage().height <= maxSizeImagePx) {
                     bufferFile.renameTo(jpegFiletoSave)
-                    println("bufferFile.renameTo(jpegFiletoSave)")
                 } else {
-                    println("imageSliceForIcon")
                     val outImage: IconImageBuffer = IconImageBuffer()
                     val aa = imageSliceForIcon(
                         bufferFile.path,
@@ -330,7 +326,7 @@ class MyComplexOpisEditBox(
                             bold = 4,
                             sizePreview = 2,
                             widthLimit = true,
-//                                enableText = true,
+
                             enableText = false,
                             textBefore = false,
                             spisImages = listOf(ItemComplexOpisImage(tempIdImage, -1L, 1L, true))
@@ -358,7 +354,7 @@ class MyComplexOpisEditBox(
         with(styleState) {
             with(LocalDensity.current) {
                 when (itemOpis) {
-                    is ItemComplexOpisTextCommon -> { //Common
+                    is ItemComplexOpisTextCommon -> {
                         val textField = saveTextField[itemOpis] ?: mutableStateOf(TextFieldValue(itemOpis.text))
                         val interactionSource = remember { MutableInteractionSource() }
                         val focus by interactionSource.collectIsFocusedAsState()
@@ -374,10 +370,10 @@ class MyComplexOpisEditBox(
                         val cursorPosition = remember { mutableStateOf(0f) }
                         LaunchedEffect(cursorPosition.value) {
                             if (selectionItemOpis.selected == itemOpis) {
-//                                            println("cursorPosition: " + cursorPosition.value)
+
                                 if (scroll.maxValue != Int.MAX_VALUE && scroll.maxValue > 0) {
-//                                                println("scroll.maxValue = ${scroll.maxValue}")
-//                                                println("scroll.value = ${scroll.value}")
+
+
                                     if (cursorPosition.value > heightScrollbar() + scroll.value - 10.dp.toPx()
                                             .toInt()
                                     ) {
@@ -484,7 +480,7 @@ class MyComplexOpisEditBox(
                                                 if (fill) this.fillMaxWidth() else this.weight(
                                                     1f,
                                                     false
-                                                )//.weight(1f)//
+                                                )
                                             }
                                             .focusRequester(focusRequester),
                                         onValueChange = {
@@ -500,9 +496,8 @@ class MyComplexOpisEditBox(
                                             )
                                         },
                                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-//                                        keyboardActions = KeyboardActions(
-//                                            onNext = { focusManager.moveFocus(FocusDirection.Down) }
-//                                        ),
+
+
                                         textColor = colorSet.getColor(itemOpis.color),
                                         fontSize = fontSet.getFontSize(itemOpis.fontSize),
                                         cursive = itemOpis.cursiv,
@@ -525,7 +520,7 @@ class MyComplexOpisEditBox(
                                             4L -> "ic_baseline_priority_high_24.xml"
                                             else -> "ic_round_check_box_outline_blank_24.xml"
                                         }
-                                    ),//useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                                    ),
                                     "MyCheckBox",
                                     Modifier.padding(start = MainDB.styleParam.timeParam.planTab.complexOpisForPlan.textFieldOpis.inner_padding.run { if (PADDING_INDIVIDUALLY.getValue()) START else PADDING_HORIZONTAL }
                                         .getValue().dp)
@@ -565,7 +560,7 @@ class MyComplexOpisEditBox(
                                                             maxWidth * 2f / 3f - 10.dp
                                                         ) else this
                                                     },
-//                                    koefMaxWidth = if (itemOpis.enableText) 2f / 3f else 1f,
+
                                                 fillWidth = false,
                                                 spaceBetween = 10.dp.toPx().toInt()
                                             ) {
@@ -597,11 +592,11 @@ class MyComplexOpisEditBox(
                                                         ) {
                                                             imageIB.value?.let { imgBtm ->
                                                                 Image(
-                                                                    bitmap = imgBtm, //BitmapPainter(
+                                                                    bitmap = imgBtm,
                                                                     "defaultAvatar",
                                                                     Modifier
-//                                                    .padding(vertical = 5.dp)
-//                                                    .padding(end = 10.dp)
+
+
                                                                         .wrapContentSize()
                                                                         .heightIn(
                                                                             0.dp, when (itemOpis.sizePreview) {
@@ -654,7 +649,7 @@ class MyComplexOpisEditBox(
                                                             if (imageIB.value == null) Image(
                                                                 painterResource("ic_round_delete_forever_24.xml"),
                                                                 "not_exist_img",
-                                                                Modifier//.padding(end = 10.dp)
+                                                                Modifier
                                                                     .height(
                                                                         when (itemOpis.sizePreview) {
                                                                             1L -> 50.dp
@@ -674,7 +669,12 @@ class MyComplexOpisEditBox(
                                                                 contentScale = ContentScale.Fit,
                                                                 colorFilter = ColorFilter.tint(Color.Red.copy(0.5f))
                                                             )
-                                                            Text(itImg.sort.toString(), modifier = Modifier.padding(start = 4.dp, top = 2.dp),color = Color.Yellow,fontSize = 12.sp)
+                                                            Text(
+                                                                itImg.sort.toString(),
+                                                                modifier = Modifier.padding(start = 4.dp, top = 2.dp),
+                                                                color = Color.Yellow,
+                                                                fontSize = 12.sp
+                                                            )
                                                         }
                                                     }
                                             }
@@ -727,7 +727,7 @@ class MyComplexOpisEditBox(
                             }
                         }
                         LaunchedEffect(selectMarker, updateSelMarker) {
-//                            if (selectionItemOpis.selected == itemOpis) {
+
                             if (selectMarker == itemOpis.sort) {
                                 if (itemOpis !is ItemComplexOpisImageGroup || itemOpis.enableText) focusRequester.requestFocus()
                             }
@@ -738,36 +738,36 @@ class MyComplexOpisEditBox(
                                     layoutCoordinatesInScrollBox.value?.localBoundingBoxOf(it)?.let { rectItem ->
                                         scrollBoxLC.value?.let { scrollBox ->
                                             if (scroll.maxValue != Int.MAX_VALUE && scroll.maxValue > 0) {
-//                                                println("rectItem = $rectItem")
+
                                                 if (rectItem.size.height < scrollBox.size.height - 10.dp.toPx()) {
-//                                                    println("rectItem.size.height < scrollBox.size.height")
+
 
                                                     if (rectItem.bottom > heightScrollbar() + scroll.value - 10.dp.toPx()
                                                             .toInt()
                                                     ) {
-//                                                        println("rectItem.bottom > heightScrollbar() + scroll.value - 10.dp.toPx()")
+
                                                         scroll.scrollTo(
                                                             rectItem.bottom.toInt() - heightScrollbar() + 10.dp.toPx()
                                                                 .toInt()
                                                         )
                                                     }
                                                     if (rectItem.top < scroll.value + 10.dp.toPx().toInt()) {
-//                                                        println("rectItem.top < scroll.value + 10.dp.toPx().toInt()")
+
                                                         scroll.scrollTo((rectItem.top - 10.dp.toPx()).toInt())
                                                     }
                                                 } else {
-//                                                    println("rectItem.size.height > scrollBox.size.height")
+
                                                     if (rectItem.top > heightScrollbar() + scroll.value - 10.dp.toPx()
                                                             .toInt()
                                                     ) {
-//                                                        println("rectItem.bottom > heightScrollbar() + scroll.value - 10.dp.toPx()")
+
                                                         scroll.scrollTo(
                                                             rectItem.top.toInt() - heightScrollbar() + 10.dp.toPx()
                                                                 .toInt()
                                                         )
                                                     }
                                                     if (rectItem.bottom < scroll.value + 10.dp.toPx().toInt()) {
-//                                                        println("rectItem.bottom < scroll.value + 10.dp.toPx().toInt()")
+
                                                         scroll.scrollTo((rectItem.bottom - 10.dp.toPx()).toInt())
                                                     }
                                                 }
@@ -777,12 +777,10 @@ class MyComplexOpisEditBox(
                                 }
                             }
                         }
-                        /**
-                         * Возможно код ниже стоит запихнуть в LaunchedEffect, хотя с учетом того, что в нем выполняется
-                         * разовая привязка именно объекта Composable, то вроде бы не должно сбоить...
-                         * */
-                        if (listOpis.filter { it.sort > 0 }.lastOrNull() == itemOpis) {
-                            focusRequesterLast.value = focusRequester
+                        LaunchedEffect(Unit) {
+                            if (listOpis.filter { it.sort > 0 }.lastOrNull() == itemOpis) {
+                                focusRequesterLast.value = focusRequester
+                            }
                         }
                     }
                 }
@@ -847,9 +845,9 @@ class MyComplexOpisEditBox(
                 }
             }
 
-//            MyTextButtWithoutBorder(
-//                "❌", Modifier.padding(start = 10.dp), // ✖ ❌
-//                fontSize = 24.sp,
+
+
+
             MyIconButtWithoutBorder(
                 "ic_baseline_close_24.xml",
                 sizeIcon = 30.dp,
@@ -998,10 +996,10 @@ class MyComplexOpisEditBox(
                         }
                     }
                 }
-//                MyTextButtWithoutBorder(
-//                    "✖", Modifier.padding(start = 10.dp), // ✖ ❌
-//                    fontSize = 24.sp,
-//                    textColor = colorDelete,
+
+
+
+
                 MyIconButtWithoutBorder(
                     "ic_baseline_close_24.xml",
                     sizeIcon = 30.dp,
@@ -1039,7 +1037,7 @@ class MyComplexOpisEditBox(
                 ) {}
             }
             MyTextButtWithoutBorder(
-                "\uD83D\uDC40", Modifier.padding(start = 10.dp), // ✖ ❌
+                "\uD83D\uDC40", Modifier.padding(start = 10.dp),
                 fontSize = 24.sp,
                 textColor = colorArrow
             ) {
@@ -1170,10 +1168,6 @@ class MyComplexOpisEditBox(
                                     )
                                 )
                             }
-//                            MyTextButtWithoutBorder(
-//                                "❌", Modifier.padding(start = 10.dp), // ✖ ❌
-//                                fontSize = 20.sp,
-//                                textColor = colorDelete,
                             MyIconButtWithoutBorder(
                                 "ic_baseline_close_24.xml",
                                 sizeIcon = 30.dp,
@@ -1209,6 +1203,7 @@ class MyComplexOpisEditBox(
                                         )
                                     }
                                 }
+
                                 else -> addNewItem(it)
                             }
                         }
@@ -1307,7 +1302,7 @@ class MyComplexOpisEditBox(
                             bold = 4,
                             sizePreview = 2,
                             widthLimit = true,
-//                                enableText = true,
+
                             enableText = false,
                             textBefore = false,
                             spisImages = listOf(ItemComplexOpisImage(tempIdImage, -1L, 1L, true))
@@ -1380,20 +1375,20 @@ class MyComplexOpisEditBox(
                         LaunchedEffect(newItemMarker) {
                             if (newItemMarker != -1) {
                                 awaitAll(async { scroll.scrollTo(scroll.maxValue) })
-//                                delay(200)
+
                                 updSelectMarker(listOpis.maxOf { it.sort })
                             }
                         }
                         Column(
                             Modifier
-//                                                    .defaultMinSize(minHeight = scrollBoxLC.value?.size?.height?.toDp() ?: 10.dp)
+
                                 .verticalScroll(scroll, enabled = true)
-//                                                    .border(1.dp,Color.White)
+
                                 .onGloballyPositioned {
                                     layoutCoordinatesInScrollBox.value = it
                                     scrollBoxLC.value?.let { visObl ->
-//                                                            println("scrollBoxLC.value: $visObl")
-//                                                                println("layoutCoordinatesInScrollBox: $itemsHeight")
+
+
                                         if (it.size.height < visObl.size.height) {
                                             heightBox.value =
                                                 (visObl.size.height - it.size.height).toDp()
@@ -1405,10 +1400,10 @@ class MyComplexOpisEditBox(
                             listOpis.filter { it.sort > 0 }.forEach { itemOpis ->
                                 risItem(
                                     itemOpis, scroll, styleState,
-//                                    focusManager,
+
                                     layoutCoordinatesInScrollBox,
                                     scrollBoxLC,
-//                                    heightBox,
+
                                     ::heightScrollbar,
                                     dialLay = dialLay,
                                     focusRequesterLast = focusRequesterLast
@@ -1419,7 +1414,7 @@ class MyComplexOpisEditBox(
                     Box(Modifier
                         .fillMaxWidth()
                         .height(heightBox.value)
-//                                            .background(Color.Red)
+
                         .clickable(remember { MutableInteractionSource() }, null) {
                             listOpis.filter { it !is ItemComplexOpisImageGroup || it.enableText }.lastOrNull()
                                 ?.let { lastItem ->
@@ -1427,7 +1422,7 @@ class MyComplexOpisEditBox(
                                         it.second.requestFocus()
                                     }
                                 }
-//                            if (listOpis.filter { it.sort>0 && (it !is ItemComplexOpisImageGroup || it.enableText)}.isNotEmpty()) focusRequesterLast.value?.requestFocus()
+
                         }
                     )
                 }
@@ -1485,6 +1480,7 @@ class MyComplexOpisEditBox(
                                                     }
                                                     true
                                                 }
+
                                                 Key.V.keyCode -> {
                                                     if (it.isCtrlPressed) {
                                                         loadImageFromBuffer()

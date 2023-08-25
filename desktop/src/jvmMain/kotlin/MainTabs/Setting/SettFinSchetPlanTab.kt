@@ -49,12 +49,12 @@ class SettFinSchetPlanTab(val dialLay: MyDialogLayout) {
                     MyList(
                         MainDB.finSpis.spisSchetPlanForSett,
                         Modifier.weight(1f).padding(bottom = 10.dp)
-                    ) { ind, itemSettSchet ->
+                    ) { _, itemSettSchet ->
                         ComItemSchetPlanSett(
                             itemSettSchet,
                             typeList.filter { it.schpl_id == itemSettSchet.id.toLong() }.map { it.typer },
                             selection,
-                            listBind.filter{it.schet_plan_id == itemSettSchet.id.toLong()}
+                            listBind.filter { it.schet_plan_id == itemSettSchet.id.toLong() }
                         ) { item, expanded ->
                             if (item.id.toLong() != 1L) {
                                 DropdownMenuItem(onClick = {
@@ -63,7 +63,6 @@ class SettFinSchetPlanTab(val dialLay: MyDialogLayout) {
                                 }) {
                                     Text(text = "Изменить", color = Color.White)
                                 }
-//                            if (item.summa == 0.0) {
                                 DropdownMenuItem(onClick = {
                                     if (item.open_ == 1L) MainDB.addFinFun.closeSchetPlan(item.id.toLong())
                                     else MainDB.addFinFun.updSchetPlanOpen(item.id.toLong(), 1L)
@@ -71,7 +70,6 @@ class SettFinSchetPlanTab(val dialLay: MyDialogLayout) {
                                 }) {
                                     Text(text = if (item.open_ == 1L) "Закрыть" else "Открыть", color = Color.White)
                                 }
-//                            }
                                 if (item.countoper == 0L) {
                                     MyDeleteDropdownMenuButton(expanded) {
                                         MainDB.addFinFun.delSchetPlan(item.id.toLong())

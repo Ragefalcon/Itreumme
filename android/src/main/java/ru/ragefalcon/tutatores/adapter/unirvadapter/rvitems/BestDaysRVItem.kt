@@ -1,8 +1,8 @@
 package ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems;
 
-import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemBestDays
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemBestdaysBinding
 import ru.ragefalcon.tutatores.extensions.format
 import java.util.*
@@ -20,7 +20,7 @@ class BestDaysRVItem(
                 tvNameBestdays.text = item.name
                 tvDateBestdays.text = Date(item.data).format("dd MMM yyyy ")
 
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     listener?.invoke(item)
                 }

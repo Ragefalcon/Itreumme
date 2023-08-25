@@ -30,8 +30,6 @@ fun PanSelectShablonStyle(
 ) {
     val dialLayInner = MyDialogLayout()
     val selection = SingleSelectionType<ItemSaveSetStyle>()
-//    val loadPovtor = mutableStateOf(true)
-//    val loadTime = mutableStateOf(true)
 
     dialPan.dial = @Composable {
         BackgroungPanelStyle1 {
@@ -98,11 +96,7 @@ fun PanSelectShablonStyle(
                         }
                     }
                 }
-//                MyTextStyle1("Перенести из шаблона")
-//                Row {
-//                    MyCheckbox(loadPovtor,"Повторы")
-//                    MyCheckbox(loadTime,"Время")
-//                }
+
                 Row {
                     Spacer(Modifier.weight(1F))
                     MyTextButtStyle1("Отмена") {
@@ -121,7 +115,6 @@ fun PanSelectShablonStyle(
         }
         dialLayInner.getLay()
     }
-
     dialPan.show()
 }
 

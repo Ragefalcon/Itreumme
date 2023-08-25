@@ -11,6 +11,5 @@ class ItemVxod(
     val data: Long,
     val stat: Long,
     var sver: Boolean = true
-): Id_class (id_main = id), Parcelable
-{
+) : Id_class(id_main = id), Parcelable {
 }

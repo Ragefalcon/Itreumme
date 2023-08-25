@@ -6,19 +6,19 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -28,11 +28,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import extensions.TextButtonStyleState
-import extensions.getValue
 import extensions.toColor
-import org.jetbrains.skia.ImageFilter
 import ru.ragefalcon.sharedcode.extensions.MyColorARGB
-import ru.ragefalcon.sharedcode.source.disk.getValue
 import viewmodel.StateVM
 
 val myButtColorBorder = MyColorARGB.colorMyBorderStrokeCommon.toColor()
@@ -76,7 +73,6 @@ fun MyTextButtSimpleStyle(
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun MyTextButtStyle1(
     text: String,
@@ -88,7 +84,7 @@ fun MyTextButtStyle1(
     myStyleTextButton: TextButtonStyleState? = null,
     width: Dp? = null,
     height: Dp? = null,
-//    myStyleTextButton: CommonInterfaceSetting.MySettings.TextButtonStyleItemSetting? = null,
+
     onClick: () -> Unit = {}
 ) {
     with(myStyleTextButton ?: StateVM.commonButtonStyleState.value) {
@@ -107,7 +103,7 @@ fun MyTextButtStyle1(
                         .background(background, shapeCard)
                         .clickable(
                             interactionSource = interactionSource,
-                            indication = null//rememberRipple(),
+                            indication = null
                         ) {
                             onClick()
                         }
@@ -120,8 +116,7 @@ fun MyTextButtStyle1(
                             height?.let {
                                 this.height(it)
                             } ?: this.padding(vertical = 8.dp)
-                        }
-                    ,
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -144,7 +139,6 @@ fun MyTextButtStyle1(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun MyTextButtStyle2(
     text: String,
@@ -152,7 +146,7 @@ fun MyTextButtStyle2(
     modifierText: Modifier = Modifier,
     fontSize: TextUnit = 20.sp,
     myStyleTextButton: TextButtonStyleState? = null,
-//    myStyleTextButton: CommonInterfaceSetting.MySettings.TextButtonStyleItemSetting? = null,
+
     onClick: () -> Unit = {}
 ) {
     with(myStyleTextButton ?: StateVM.commonItemStyleState.value.buttMenu) {
@@ -177,7 +171,7 @@ fun MyTextButtStyle2(
                         .border(BorderStroke(borderWidth, border), shapeCard)
                         .clickable(
                             interactionSource = interactionSource,
-                            indication = null//rememberRipple(),
+                            indication = null
                         ) {
                             onClick()
                         }
@@ -210,19 +204,10 @@ fun MyTextButtStyle3(
     onClick: () -> Unit = {}
 ) {
     Button(
-        modifier = modifier.padding(2.dp)
-//            .border(
-//            width = 1.dp,
-//            brush = Brush.horizontalGradient(listOf(Color(0xFFFFF7D9), Color(0xFFFFF7D9))),
-//            shape = RoundedCornerShape(radius)
-//        )
-        ,
-//        border = BorderStroke(1.dp,Color(0xFFFFF7D9)),
-//border = BorderStroke(1.dp,Color(0xFFFFF7D9)),
+        modifier = modifier.padding(2.dp),
         border = myButtBorder,
         shape = RoundedCornerShape(corner = CornerSize(radius)),
         colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor ?: Color(0xFF464D45)),
-//        elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),
         onClick = {
             onClick()
         }
@@ -246,7 +231,6 @@ fun MyTextStyle1(
             color = color,
             fontSize = fontSize,
             fontFamily = FontFamily.SansSerif,
-//                letterSpacing = 4.sp,
             textAlign = textAlign,
             shadow = Shadow(
                 color = Color.Black,
@@ -254,9 +238,7 @@ fun MyTextStyle1(
                 blurRadius = 4f
             ),
         ),
-
-        )
-
+    )
 }
 
 @Composable
@@ -274,8 +256,7 @@ fun MyTextStyle2(
             color = color,
             fontSize = fontSize,
             fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Default,// .Monospace,
-//                letterSpacing = 4.sp,
+            fontFamily = FontFamily.Default,
             textAlign = textAlign,
             shadow = Shadow(
                 color = Color.Black.copy(alpha = 0.7f),
@@ -283,8 +264,6 @@ fun MyTextStyle2(
                 blurRadius = 4f
             ),
         ),
-
-        )
-
+    )
 }
 

@@ -4,7 +4,7 @@ import ru.ragefalcon.sharedcode.extensions.Parcelize
 import ru.ragefalcon.sharedcode.models.data.Id_class
 
 @Parcelize
-class ItemPlanQuest (
+class ItemPlanQuest(
     val id: String,
     val vajn: Long,
     val name: String,
@@ -13,11 +13,7 @@ class ItemPlanQuest (
     val srok: Long,
     val statsrok: Long,
     val commstat: Long,
-
     val countstap: Long,
-
     var sver: Boolean = true
-
-): Id_class(id_main = id)
-{
+) : Id_class(id_main = id) {
 }

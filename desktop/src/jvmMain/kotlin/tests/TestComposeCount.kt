@@ -1,16 +1,13 @@
 package tests
 
-import androidx.compose.runtime.Composable
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -51,55 +48,20 @@ class TestComposeCount {
     var isOn4 by mutableStateOf(0)
 
     @Composable
-    fun getComposable(modifier:Modifier = Modifier){
-                Column(modifier = modifier) {
-                    Text(text = "Control Buttons")
-                    Control()
-                    Text(text = "Hierarchical breakdown composables")
-                    DashboardHierarchicalBreakdown()
-                    Text(text = "Flatten breakdown composables")
-                    DashboardFlattenBreakdown()
-                    Text(text = "Hierarchical combine composables")
-                    DashboardHierarchicalCombine()
-                    Text(text = "Flatten combine composables")
-                    DashboardFlattenCombine()
-                    Text(text = "Hierarchical combine composables2")
-/*
-                    Column(modifier = Modifier.fillMaxWidth().padding(8.dp).background(Color.Gray)) {
-                        levelDashboardHierarchicalCombine1++
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "Recompose: $levelDashboardHierarchicalCombine1; Update: $isOn1",
-                            textAlign = TextAlign.Center
-                        )
-                        Column(modifier = Modifier.fillMaxWidth().padding(8.dp).background(color = Color.Red)) {
-                            levelDashboardHierarchicalCombine2++
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = "Recompose: $levelDashboardHierarchicalCombine2; Update: $isOn2",
-                                textAlign = TextAlign.Center
-                            )
-                            Column(modifier = Modifier.fillMaxWidth().padding(8.dp).background(color = Color.Green)) {
-                                levelDashboardHierarchicalCombine3++
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = "Recompose: $levelDashboardHierarchicalCombine3; Update: $isOn3",
-                                    textAlign = TextAlign.Center
-                                )
-                                Column(modifier = Modifier.fillMaxWidth().padding(8.dp).background(color = Color.Yellow)) {
-                                    levelDashboardHierarchicalCombine4++
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth().padding(8.dp)
-                                            .background(color = Color.Yellow),
-                                        text = "Recompose: $levelDashboardHierarchicalCombine4; Update: $isOn4",
-                                        textAlign = TextAlign.Center
-                                    )
-                                }
-                            }
-                        }
-                    }
-*/
-                }
+    fun getComposable(modifier: Modifier = Modifier) {
+        Column(modifier = modifier) {
+            Text(text = "Control Buttons")
+            Control()
+            Text(text = "Hierarchical breakdown composables")
+            DashboardHierarchicalBreakdown()
+            Text(text = "Flatten breakdown composables")
+            DashboardFlattenBreakdown()
+            Text(text = "Hierarchical combine composables")
+            DashboardHierarchicalCombine()
+            Text(text = "Flatten combine composables")
+            DashboardFlattenCombine()
+            Text(text = "Hierarchical combine composables2")
+        }
     }
 
     @Composable
@@ -140,7 +102,7 @@ class TestComposeCount {
     }
 
     @Composable
-    fun DashboardFlattenCombine(){
+    fun DashboardFlattenCombine() {
         Column(modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.background(Color.Gray)) {
                 levelDashboardFlattenCombine1++

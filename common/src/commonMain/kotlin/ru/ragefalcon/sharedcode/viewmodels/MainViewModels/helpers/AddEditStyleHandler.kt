@@ -1,8 +1,6 @@
 package ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers
 
-import com.soywiz.klock.DateTimeTz
 import ru.ragefalcon.sharedcode.Database
-import ru.ragefalcon.sharedcode.extensions.localUnix
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.Interface.ItemInterfaceSetting
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.Interface.StyleVMspis
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.Interface.TypeSaveStyleSet
@@ -98,76 +96,26 @@ class AddEditStyleHandler(private val mdb: Database, private val styleSpis: Styl
         )
     }
 
-    // Как выяснилось запрос ниже(loadFull) очень ресурсоемкий, а в моему случае когда количество настроек сильно разрослось это стало вообще катастрофическим.
-/*
-    fun loadSaveSetStyleFull(
-        id: Long
-    ) {
-        if (mdb.spisSaveSetStyleQueries.transactionWithResult {
-                mdb.spisSaveSetStyleQueries.loadFull(id = id)
-                true
-            }) styleSpis.styleSett.startInit()
-    }
-*/
-
     fun loadSaveSetStyleCommon(
         set_id: Long,
         code_name_razdel: String
     ) {
-        val timeNow3 = DateTimeTz.nowLocal().localUnix()
-//        println("timeNow3 = ${timeNow3}, id = $set_id, code = $code_name_razdel")
-//        mdb.spisSaveSetStyleQueries.selectShablonForApply(code_name_razdel = code_name_razdel, set_id = set_id).executeAsList().let {
-        mdb.spisSaveSetStyleQueries.selectShablonForApply(set_id = set_id, code_name_razdel = code_name_razdel).executeAsList().let { listShab ->
-//            println("timeNow3 1 = ${DateTimeTz.nowLocal().localUnix() - timeNow3}")
+        mdb.spisSaveSetStyleQueries.selectShablonForApply(set_id = set_id, code_name_razdel = code_name_razdel)
+            .executeAsList().let { listShab ->
             if (mdb.spisSaveSetStyleQueries.transactionWithResult {
-                                mdb.spisSaveSetStyleQueries.loadShablon(set_id = set_id, code_name_razdel = code_name_razdel, delarray = listShab)
-                            true
-                    }) {
+                    mdb.spisSaveSetStyleQueries.loadShablon(
+                        set_id = set_id,
+                        code_name_razdel = code_name_razdel,
+                        delarray = listShab
+                    )
+                    true
+                }) {
                 mdb.spisSaveSetStyleQueries.selectLoadCommon(set_id = set_id, code_name_razdel = code_name_razdel)
-                .executeAsList().let {
-//                        println("timeNow3 2 = ${DateTimeTz.nowLocal().localUnix() - timeNow3}")
+                    .executeAsList().let {
                         styleSpis.styleSett.refreshValueFromBase(it)
-//                        println("timeNow3 3 = ${DateTimeTz.nowLocal().localUnix() - timeNow3}")
                     }
-                    }
+            }
         }
-
-/*
-        val timeNow3 = DateTimeTz.nowLocal().localUnix()
-        println("timeNow3 = ${timeNow3}, id = $set_id, code = $code_name_razdel")
-//        mdb.spisSaveSetStyleQueries.selectShablonForApply(code_name_razdel = code_name_razdel, set_id = set_id).executeAsList().let {
-        mdb.spisSaveSetStyleQueries.selectLoadCommon(set_id = set_id, code_name_razdel = code_name_razdel).executeAsList().let { listShab ->
-            println("timeNow3 1 = ${DateTimeTz.nowLocal().localUnix() - timeNow3}")
-            if (mdb.spisSaveSetStyleQueries.transactionWithResult {
-                            listShab.forEach {
-                                mdb.styleSettingsQueries.update(intparam = it.intparam, doubleparam = it.doubleparam, stringparam = it.stringparam, codename = it.codename)
-                            }
-                            true
-                    }) {
-                        println("timeNow3 2 = ${DateTimeTz.nowLocal().localUnix() - timeNow3}")
-                        styleSpis.styleSett.refreshValueFromBase(listShab)
-                        println("timeNow3 3 = ${DateTimeTz.nowLocal().localUnix() - timeNow3}")
-                    }
-        }
-
-*/
-
-//        val timeNow3 = DateTimeTz.nowLocal().localUnix()
-//        println("timeNow3 = ${timeNow3}, id = $set_id, code = $code_name_razdel")
-//        if (mdb.spisSaveSetStyleQueries.transactionWithResult {
-//                mdb.spisSaveSetStyleQueries.loadCommon(set_id = set_id, code_name_razdel)
-//                true
-//            }) {
-//            println("timeNow3 1 = ${DateTimeTz.nowLocal().localUnix() - timeNow3}")
-//            mdb.spisSaveSetStyleQueries.selectLoadCommon(set_id = set_id, code_name_razdel = code_name_razdel)
-//                .executeAsList().map {
-//                ItemInterfaceSetting(it.codename, it.intparam, it.doubleparam, it.stringparam)
-//            }.let {
-//            println("timeNow3 2 = ${DateTimeTz.nowLocal().localUnix() - timeNow3}")
-//                    styleSpis.styleSett.refreshValueFromBase(it)
-//            println("timeNow3 3 = ${DateTimeTz.nowLocal().localUnix() - timeNow3}")
-//            }
-//        }
     }
 
     fun delSaveSetStyle(
@@ -179,5 +127,4 @@ class AddEditStyleHandler(private val mdb: Database, private val styleSpis: Styl
     fun clearAllToDefault() {
         styleSpis.styleSett.toDefault()
     }
-
 }

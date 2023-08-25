@@ -100,22 +100,12 @@ class MyTimeSelect @JvmOverloads constructor(
             observer(it.format(pattern))
         }
     }
-/**
- * здесь есть обсуждения возможных решений сохранения состояния, в том числе и это, и их последствий...)
- * https://stackoverflow.com/questions/3542333/how-to-prevent-custom-views-from-losing-state-across-screen-orientation-changes
- *
- * а вот здесь:
- * https://medium.com/super-declarative/android-how-to-save-state-in-a-custom-view-30e5792c584b
- * подробно объясняется другое решение, которое более сложное, но возможно более правильное.
- *
- * а тут кажется еще сложнее, еще разжеваннее и еще правильнее...
- * https://medium.com/google-developer-experts/handle-android-state-changes-in-inherited-custom-view-60c77a121abf
- * */
+
     override fun onSaveInstanceState(): Parcelable? {
         val bundle = Bundle()
         bundle.putParcelable("superState", super.onSaveInstanceState())
-        bundle.putLong("dateLong", dateLong) // ... save stuff
-        bundle.putString("pattern", pattern) // ... save stuff
+        bundle.putLong("dateLong", dateLong)
+        bundle.putString("pattern", pattern)
         return bundle
     }
 
@@ -125,7 +115,7 @@ class MyTimeSelect @JvmOverloads constructor(
         {
             val bundle = state
             pattern = bundle.getString("pattern") ?: "dd.MM.yyyy"
-            setDate(bundle.getLong("dateLong")) // ... load stuff
+            setDate(bundle.getLong("dateLong"))
             state = bundle.getParcelable("superState")
         }
         super.onRestoreInstanceState(state)

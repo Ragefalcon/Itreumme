@@ -19,29 +19,30 @@ fun PanAddEffekt(
     dialPan: MyDialogLayout,
     itemPlan: ItemPlan
 ) {
-
-
-    val itemEffekt: ItemEffekt? = MainDB.timeSpis.spisEffekt.getState().value?.find { it.idplan == itemPlan.id.toLong() }
+    val itemEffekt: ItemEffekt? =
+        MainDB.timeSpis.spisEffekt.getState().value?.find { it.idplan == itemPlan.id.toLong() }
 
     val typeSeekBar =
         DiskretSeekBar(
             listOf("Эффективность" to "Effekt", "Злоупотребление" to "Zlo"),
-            itemEffekt?.let { if (it.norma > 0) "Effekt" else "Zlo"} ?: "Effekt",
+            itemEffekt?.let { if (it.norma > 0) "Effekt" else "Zlo" } ?: "Effekt",
         )
 
     val dialLayInner = MyDialogLayout()
     dialPan.dial = @Composable {
-//        val textNorma = remember { mutableStateOf(itemEffekt?.let { if (it.norma > 0) it.norma else -it.norma } ?: 10.0) }
-        val textNorma = remember { mutableStateOf(TextFieldValue(itemEffekt?.let { if (it.norma > 0) it.norma else -it.norma }?.roundToString(2) ?: "10.00")) }
-        BackgroungPanelStyle1 { //modif ->
+        val textNorma = remember {
+            mutableStateOf(TextFieldValue(itemEffekt?.let { if (it.norma > 0) it.norma else -it.norma }
+                ?.roundToString(2) ?: "10.00"))
+        }
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp).fillMaxWidth(0.6F), horizontalAlignment = Alignment.CenterHorizontally) {
-//                Row(verticalAlignment = Alignment.CenterVertically){
-                typeSeekBar.show(Modifier.padding(bottom = 10.dp))//weight(1f))
+                typeSeekBar.show(Modifier.padding(bottom = 10.dp))
                 typeSeekBar.active?.let {
                     when (it.cod) {
                         "Effekt" -> {
                             MyTextStyle1("${itemEffekt?.let { "Изменить" } ?: "Добавить"} отслеживание эффективности по проекту \"${itemPlan.name}\" и установить норму:")
                         }
+
                         "Zlo" -> {
                             MyTextStyle1("${itemEffekt?.let { "Изменить" } ?: "Добавить"} отслеживание злоупотребления по проекту \"${itemPlan.name}\" и установить норму:")
                         }
@@ -59,6 +60,7 @@ fun PanAddEffekt(
                                 "Effekt" -> {
                                     norm = textNorma.value.text.toDoubleOrNull() ?: 1.0
                                 }
+
                                 "Zlo" -> {
                                     norm = -(textNorma.value.text.toDoubleOrNull() ?: 1.0)
                                 }
@@ -85,6 +87,5 @@ fun PanAddEffekt(
         }
         dialLayInner.getLay()
     }
-
     dialPan.show()
 }

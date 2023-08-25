@@ -1,10 +1,14 @@
 package MainTabs.Quest.Items
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.mouseClickable
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +38,6 @@ class ComItemPlanQuest(
     val editable: Boolean = true,
     val dropMenu: @Composable ColumnScope.(ItemPlanQuest, MutableState<Boolean>) -> Unit = { _, _ -> }
 ) {
-
     val expandedDropMenu = mutableStateOf(false)
 
     val expandedOpis = mutableStateOf(!item.sver)
@@ -57,26 +60,25 @@ class ComItemPlanQuest(
             }
         ) {
             Column {
-
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box {
                         Image(
-                            bitmap = useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                            bitmap = useResource("ic_stat_00.png", ::loadImageBitmap),
                             "statDenPlan",
                             Modifier
                                 .height(58.dp)
                                 .width(60.dp)
                                 .padding(start = 10.dp)
                                 .padding(vertical = 4.dp)
-//                            .rotate(rotateStat)
+
                                 .mouseClickable {
                                     if (editable) {
                                         selFun(item)
                                         selection.selected = item
-//                                    GlobalScope.launch {
-//                                        delay(1000L)
+
+
                                         openStaps()
-//                                    }
+
                                     }
                                 },
                             colorFilter = ColorFilter.tint(
@@ -89,28 +91,17 @@ class ComItemPlanQuest(
                                 },
                                 BlendMode.Modulate
                             ),
-//                    alpha = 0.5F,
                             contentScale = ContentScale.FillBounds,
                             filterQuality = FilterQuality.High
                         )
                         if (item.commstat == -2L || item.commstat == -3L) Image(
-                            painterResource(if (item.commstat == -2L) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"), //BitmapPainter(
+                            painterResource(if (item.commstat == -2L) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"),
                             "statDenPlan",
                             Modifier
                                 .height(58.dp)
                                 .width(60.dp)
                                 .padding(vertical = 4.dp)
                                 .padding(start = 10.dp),
-//                        colorFilter = ColorFilter.tint(
-//                            when (item.vajn.toInt()) {
-//                                0 -> Color(0xFFFFF42B)
-//                                1 -> Color(0xFFFFFFFF)
-//                                2 -> Color(0xFF7FFAF6)
-//                                3 -> Color(0xFFFF5858)
-//                                else -> Color(0xFFFFF42B)
-//                            },
-//                            BlendMode.Modulate
-//                        ),
                             alpha = 0.7F,
                             contentScale = ContentScale.FillBounds,
                         )
@@ -131,7 +122,11 @@ class ComItemPlanQuest(
                                     textAlign = TextAlign.Start
                                 )
                                 PlateOrderLayout() {
-                                    QuestVM.getComItemTriggers(TypeParentOfTrig.PLAN.code, item.id.toLong(), editable = editable)
+                                    QuestVM.getComItemTriggers(
+                                        TypeParentOfTrig.PLAN.code,
+                                        item.id.toLong(),
+                                        editable = editable
+                                    )
                                     QuestVM.getTriggerMarkersForTriggerChilds(
                                         TypeStartObjOfTrigger.STARTPLAN.id,
                                         item.id.toLong(),
@@ -159,12 +154,12 @@ class ComItemPlanQuest(
                         }
                     }
                 }
-                if ((item.opis != "")) { //(isActive()) &&
+                if ((item.opis != "")) {
                     BoxExpand(
                         expandedOpis,
                         Modifier.myModWithBound1(),
                         Modifier.fillMaxWidth()
-                    ) {  //, endModif = Modifier::withMyBound1
+                    ) {
                         Text(
                             modifier = Modifier
                                 .padding(5.dp)
@@ -200,11 +195,10 @@ fun ItemPlanQuestPlate(item: ItemPlanQuest, modifier: Modifier = Modifier, onCli
         shape = RoundedCornerShape(corner = CornerSize(15.dp))
     ) {
         Column {
-
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box {
                     Image(
-                        bitmap = useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                        bitmap = useResource("ic_stat_00.png", ::loadImageBitmap),
                         "statDenPlan",
                         Modifier
                             .height(50.dp)
@@ -220,27 +214,16 @@ fun ItemPlanQuestPlate(item: ItemPlanQuest, modifier: Modifier = Modifier, onCli
                             },
                             BlendMode.Modulate
                         ),
-//                    alpha = 0.5F,
                         contentScale = ContentScale.FillBounds,
                         filterQuality = FilterQuality.High
                     )
                     if (item.commstat == -2L || item.commstat == -3L) Image(
-                        painterResource(if (item.commstat == -2L) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"), //BitmapPainter(
+                        painterResource(if (item.commstat == -2L) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"),
                         "statDenPlan",
                         Modifier
                             .height(50.dp)
                             .width(60.dp)
                             .padding(start = 10.dp),
-//                        colorFilter = ColorFilter.tint(
-//                            when (item.vajn.toInt()) {
-//                                0 -> Color(0xFFFFF42B)
-//                                1 -> Color(0xFFFFFFFF)
-//                                2 -> Color(0xFF7FFAF6)
-//                                3 -> Color(0xFFFF5858)
-//                                else -> Color(0xFFFFF42B)
-//                            },
-//                            BlendMode.Modulate
-//                        ),
                         alpha = 0.7F,
                         contentScale = ContentScale.FillBounds,
                     )
@@ -255,7 +238,6 @@ fun ItemPlanQuestPlate(item: ItemPlanQuest, modifier: Modifier = Modifier, onCli
                             )
                         }
                         Column {
-
                             Text(
                                 text = "${item.hour.roundToStringProb(1)} ч.",
                                 modifier = Modifier.padding(start = 10.dp).align(Alignment.End),

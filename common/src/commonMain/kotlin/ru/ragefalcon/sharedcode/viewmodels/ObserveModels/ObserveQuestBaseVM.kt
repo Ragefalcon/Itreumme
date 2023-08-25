@@ -8,14 +8,13 @@ import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.QuestVMspis
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers.AddQuestHandler
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers.QuestVMfun
 
-class ObserveQuestBaseVM (
-        dbArgs: DbArgs
-    ) {
+class ObserveQuestBaseVM(
+    dbArgs: DbArgs
+) {
+    private var qDatabase: DatabaseQuest? = DatabaseQuestCreator.getDataBase(dbArgs)
 
-        private var qDatabase: DatabaseQuest? = DatabaseQuestCreator.getDataBase(dbArgs)
-
-        private val questObjForSpis = QuestVMobjForSpis(qDatabase!!)
-        val questSpis = QuestVMspis(questObjForSpis)
-        val questFun = QuestVMfun(qDatabase!!,questObjForSpis)
-        val addQuest = AddQuestHandler(qDatabase!!)
+    private val questObjForSpis = QuestVMobjForSpis(qDatabase!!)
+    val questSpis = QuestVMspis(questObjForSpis)
+    val questFun = QuestVMfun(qDatabase!!, questObjForSpis)
+    val addQuest = AddQuestHandler(qDatabase!!)
 }

@@ -4,27 +4,32 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.*
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import extensions.*
-import org.jetbrains.skia.*
+import org.jetbrains.skia.Font
+import org.jetbrains.skia.TextLine
 import ru.ragefalcon.sharedcode.extensions.roundToStringProb
 import ru.ragefalcon.sharedcode.models.data.ItemOperWeek
 import viewmodel.MainDB
@@ -44,8 +49,6 @@ class DrawGrafik {
         strokeWidth = 1f
         color = Color.Red.toMyColorARGB().plusWhite().plusWhite().toColor()
     }
-
-//    fun calcWidth(countYear: Int): Float = countYear * ((shir + 2 * otstup) * 12 + otstupYear)
 
 
     var shagBase = 2.dp
@@ -72,7 +75,12 @@ class DrawGrafik {
     }
 
     fun drawGraf(
-        canvas: DrawScope, list: List<ItemOperWeek>, minSumOperWeek: Float, maxSumOperWeek: Float, isPressed: Boolean, density: Density
+        canvas: DrawScope,
+        list: List<ItemOperWeek>,
+        minSumOperWeek: Float,
+        maxSumOperWeek: Float,
+        isPressed: Boolean,
+        density: Density
     ) {
         with(density) {
             val shag = shagBase.toPx()
@@ -106,14 +114,14 @@ class DrawGrafik {
                 /**
                  * Отрисовка полосок между годами
                  * */
-                var date = list.firstOrNull()?.data?.let{ Date(it).format("yyyy").toLong() } ?: 0L // "0000"
+                var date = list.firstOrNull()?.data?.let { Date(it).format("yyyy").toLong() } ?: 0L
                 var numYear = 0
                 val shagYear = 52.1786F * shag
                 var key = false
                 val calendar: Calendar = Calendar.getInstance().apply {
                     timeInMillis = list.firstOrNull()?.data ?: 0L
                 }
-//                println(calendar.time)
+
                 val weekOfYear = calendar[Calendar.WEEK_OF_YEAR]
                 drawLine(
                     styleRD.color_razdelit,
@@ -140,7 +148,7 @@ class DrawGrafik {
                         pY.asFrameworkPaint()
                     )
                 }
-//                numYear += weekOfYear
+
                 for (item in list) {
                     val delta = Date(item.data).format("yyyy").toLong() - date
                     if (delta > 0) {
@@ -187,7 +195,7 @@ class DrawGrafik {
                             }
                         }
                     }
-//                    date = Date(item.data).format("yyyy")
+
                 }
 
                 /**
@@ -200,7 +208,7 @@ class DrawGrafik {
                         hh - otstupNiz + minusMin / diap * hhGraph
                     ),
                     Offset(
-                        yearCount * 52.1786F * shag + 10.dp.toPx(),//(weekOfYear + list.count())* shag,
+                        yearCount * 52.1786F * shag + 10.dp.toPx(),
                         hh - otstupNiz + minusMin / diap * hhGraph
                     ),
                     1f
@@ -212,7 +220,7 @@ class DrawGrafik {
                 var hcur: Float? = null
                 var curSum = 0.0
                 graf.moveTo(i * shag, hh - otstupNiz + minusMin / diap * hhGraph)
-                var lastDate: Long =  list.firstOrNull()?.data ?: 0L
+                var lastDate: Long = list.firstOrNull()?.data ?: 0L
                 for (item in list) {
                     i += ((item.data - lastDate) / timeOneWeek).toInt()
                     graf.lineTo(i * shag, hh - otstupNiz - (item.sumCap.toFloat() - minusMin) / diap * hhGraph)
@@ -230,7 +238,7 @@ class DrawGrafik {
                             it
                         ),
                         Offset(
-                            yearCount * 52.1786F * shag + 10.dp.toPx(),//(weekOfYear + list.count())* shag,
+                            yearCount * 52.1786F * shag + 10.dp.toPx(),
                             it
                         ),
                         1f
@@ -284,25 +292,7 @@ class DrawGrafik {
         styleDiag?.let { styleRD = it }
 
         val interactionSource = remember { MutableInteractionSource() }
-        val isPressedBy by interactionSource.collectIsPressedAsState() // = remember { mutableStateOf(false) } //
-
-/*
-        LaunchedEffect(interactionSource) {
-            interactionSource.interactions.collect { interaction ->
-                when (interaction) {
-                    is PressInteraction.Press -> {
-                        isPressedBy.value = true
-                    }
-                    is PressInteraction.Release -> {
-                        isPressedBy.value = false
-                    }
-                    is PressInteraction.Cancel -> {
-                        isPressedBy.value = false
-                    }
-                }
-            }
-        }
-*/
+        val isPressedBy by interactionSource.collectIsPressedAsState()
 
         with(LocalDensity.current) {
             BoxWithHScrollBar(
@@ -315,7 +305,7 @@ class DrawGrafik {
                         interactionSource = interactionSource,
                         indication = null,
                         color = Color.Transparent,
-                        modifier = Modifier//.matchParentSize()
+                        modifier = Modifier
                             .padding(horizontal = 13.dp)
                             .padding(bottom = 10.dp)
                             .pointerMoveFilter(onMove = {
@@ -330,7 +320,7 @@ class DrawGrafik {
                                 .width(getWidthGraf(list, this@with).toDp() + 26.dp)
                                 .scrollVerticalToHorizontal(scrollSt)
                         ) {
-                            drawGraf(this, list, minSumOperWeek, maxSumOperWeek, isPressedBy,this@with)
+                            drawGraf(this, list, minSumOperWeek, maxSumOperWeek, isPressedBy, this@with)
                         }
                     }
                 }

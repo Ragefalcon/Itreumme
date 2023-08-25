@@ -69,7 +69,6 @@ class LoadQuestFromFileAttach(
         driver.execute(
             null,
             "INSERT INTO spis_node_tree_skills(id_tree,name,opis,id_type_node,complete,level,icon,icon_complete,quest_id,quest_key_id) " +
-//                    "SELECT (SELECT _id FROM spis_tree_skill WHERE quest_id = '$questId' AND quest_key_id = qNode.id_tree) AS id_tree," +
                     "SELECT treeNode._id AS id_tree," +
                     "qNode.name, qNode.opis, qNode.id_type_node, qNode.visible_stat AS complete, qNode.level," +
                     "IFNULL(icon_node._id,-1) AS icon," +
@@ -84,7 +83,6 @@ class LoadQuestFromFileAttach(
         driver.execute(
             null,
             "INSERT INTO spis_binding_node_tree_skill(id_tree,id_parent,id_child,quest_id,quest_key_id) SELECT " +
-//                        "(SELECT _id FROM spis_tree_skill WHERE quest_id = '$questId' AND quest_key_id = QDB.spis_binding_node_tree_skill_quest.id_tree) AS id_tree," +
                     "(SELECT _id FROM spis_tree_skill WHERE quest_id = '$questId' AND quest_key_id = cc.id_tree) AS id_tree," +
                     "(SELECT _id FROM spis_node_tree_skills WHERE quest_id = '$questId' AND quest_key_id = cc.id_parent) AS id_parent," +
                     "(SELECT _id FROM spis_node_tree_skills WHERE quest_id = '$questId' AND quest_key_id = cc.id_child) AS id_child," +
@@ -111,7 +109,6 @@ class LoadQuestFromFileAttach(
                     ";",
             0
         )
-        /** А со счетчиками сложнее, потому что нет пока никаких счетчиков...) Думаю пока отложу перенос, до появления самих счетчиков. */
     }
 
     private fun TransactionWithoutReturn.loadPlanAndStap(
@@ -181,62 +178,6 @@ class LoadQuestFromFileAttach(
     private fun TransactionWithoutReturn.loadCommonTrigger(
         questId: Long
     ) {
-/*
-        var caseParent = "\n"
-        var joinParent = "\n"
-        fun calcJoinStr(nameTable: String, psevdoName: String, child: Boolean, dial: Boolean = false): String =
-            " LEFT JOIN $nameTable AS $psevdoName ON comtr.${if (child) "child_id" else "parent_element_id"} = $psevdoName.${if (dial) "key_id" else "quest_key_id"} AND $psevdoName.quest_id = '$questId' \n"
-        TypeParentOfTrig.values().forEach {
-            caseParent += " WHEN '${it.code}' THEN ${
-                when (it) {
-                    TypeParentOfTrig.STARTQUESTDIALOG -> "comtr.parent_element_id"
-                    TypeParentOfTrig.OTVDIALOG -> "${it.code}._id"
-                    TypeParentOfTrig.PLAN -> "${it.code}._id"
-                    TypeParentOfTrig.PLANSTAP -> "${it.code}._id"
-                    TypeParentOfTrig.INNERSTART -> "comtr.parent_element_id"
-                    TypeParentOfTrig.NODETREESKILLS -> "${it.code}._id"
-                }
-            } \n"
-            joinParent += when (it) {
-                TypeParentOfTrig.STARTQUESTDIALOG -> ""
-                TypeParentOfTrig.OTVDIALOG -> calcJoinStr("spis_otvet_dialog_quest", it.code, false, true)
-                TypeParentOfTrig.PLAN -> calcJoinStr("spis_plan", it.code, false)
-                TypeParentOfTrig.PLANSTAP -> calcJoinStr("spis_stap_plan", it.code, false)
-                TypeParentOfTrig.INNERSTART -> ""
-                TypeParentOfTrig.NODETREESKILLS -> calcJoinStr("spis_node_tree_skills", it.code, false)
-            }
-
-        }
-        var caseChild = "\n"
-        var joinChild = ""
-        TypeStartObjOfTrigger.values().forEach {
-            caseChild += " WHEN '${it.id}' THEN ${
-                when (it) {
-                    TypeStartObjOfTrigger.STARTPLAN -> "child${it.id}._id"
-                    TypeStartObjOfTrigger.STARTDIALOG -> "child${it.id}._id"
-                    TypeStartObjOfTrigger.SUMTRIGGER -> "comtr.child_id"
-                    TypeStartObjOfTrigger.STARTSTAP -> "child${it.id}._id"
-                    TypeStartObjOfTrigger.STARTTREE -> "child${it.id}._id"
-                    TypeStartObjOfTrigger.STARTNODETREE -> "child${it.id}._id"
-                    TypeStartObjOfTrigger.STARTLEVELTREE -> "child${it.id}._id"
-                    TypeStartObjOfTrigger.INNERFINISH -> "comtr.child_id"
-                }
-            } \n"
-            joinChild += when (it) {
-                TypeStartObjOfTrigger.STARTPLAN -> calcJoinStr("spis_plan", "child${it.id}", true)
-                TypeStartObjOfTrigger.STARTDIALOG -> calcJoinStr("spis_dialog_quest", "child${it.id}", true, true)
-                TypeStartObjOfTrigger.SUMTRIGGER -> ""
-                TypeStartObjOfTrigger.STARTSTAP -> calcJoinStr("spis_stap_plan", "child${it.id}", true)
-                TypeStartObjOfTrigger.STARTTREE -> calcJoinStr("spis_tree_skill", "child${it.id}", true)
-                TypeStartObjOfTrigger.STARTNODETREE -> calcJoinStr("spis_node_tree_skills", "child${it.id}", true)
-                TypeStartObjOfTrigger.STARTLEVELTREE -> calcJoinStr("spis_level_tree_skill", "child${it.id}", true)
-                TypeStartObjOfTrigger.INNERFINISH -> ""
-            }
-        }
-*/
-//        (CASE comtr.type_trig_id $caseChild ELSE 0 END) AS child_id,
-//        (CASE comtr.parent_type_element $caseParent ELSE 0 END) AS parent_element_id,
-//          $joinParent $joinChild
         val strQuerySelect = """
                   SELECT '$questId' AS quest_id, comtr.parent_type_element, 
                       comtr.parent_element_id,
@@ -385,11 +326,6 @@ class LoadQuestFromFileAttach(
                 loadDialogAndOtvet(qId)
                 loadCommonTrigger(qId)
                 loadSkillTree(qId)
-                /**
-                 * todo
-                 * Теперь нужно добавить:
-                 *  - иконки узлов деревьев с файлами
-                 * */
             }
 
         }

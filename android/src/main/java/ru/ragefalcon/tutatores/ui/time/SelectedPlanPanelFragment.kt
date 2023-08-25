@@ -74,7 +74,6 @@ class SelectedPlanPanelFragment(selItem: ItemPlan? = null, callbackKey: String? 
                     })
                     if (firstLoad) {
                         selItem?.let {
-                            Log.d("MyTut", "selItem: $selItem");
                             rvmAdapter.setSelectItem(
                                 it,
                                 PlanRVItem::class

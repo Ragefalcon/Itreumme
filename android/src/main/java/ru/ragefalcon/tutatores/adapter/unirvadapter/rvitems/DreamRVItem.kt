@@ -1,12 +1,12 @@
 package ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems;
 
-import android.view.View
 import androidx.core.view.ViewCompat
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemDream
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemDreamBinding
 
 class DreamRVItem(
@@ -14,7 +14,7 @@ class DreamRVItem(
     selectListener: ((ItemDream) -> Unit)? = null,
     listener: ((ItemDream) -> Unit)? = null,
     longTapListener: ((ItemDream) -> Unit)? = null,
-    funForTransition: ((FragmentNavigator.Extras)-> Unit)? = null
+    funForTransition: ((FragmentNavigator.Extras) -> Unit)? = null
 ) : BaseUniRVItem<ItemDream>(
     data,
     getUniRVViewHolder(ItemDreamBinding::inflate) { vh, item, rvset ->
@@ -30,7 +30,7 @@ class DreamRVItem(
                     selectListener?.invoke(item)
                 }
 
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     listener?.invoke(item)
                     funForTransition?.invoke(

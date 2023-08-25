@@ -25,14 +25,14 @@ class DevelopQuestTab(val dialLay: MyDialogLayout) {
         QuestVM.openQuestDB?.let { questDB ->
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-                MyTextButtStyle1("Обновить внутренние диалоги", Modifier.padding(20.dp)){
+                MyTextButtStyle1("Обновить внутренние диалоги", Modifier.padding(20.dp)) {
                     MainDB.updateInnerDialog(true)
                 }
 
-                MyList(list = InnerStartTriggerEnum.values().toList()){ _, item->
-                    ComInnerStartTrigger(item,selection){ item, exp ->
-                        MyDropdownMenuItem(exp,"+ Триггер"){
-                            PanAddTrigger(dialLay,item.parentTrig())
+                MyList(list = InnerStartTriggerEnum.values().toList()) { _, item ->
+                    ComInnerStartTrigger(item, selection) { item, exp ->
+                        MyDropdownMenuItem(exp, "+ Триггер") {
+                            PanAddTrigger(dialLay, item.parentTrig())
                         }
                     }.getComposable()
                 }

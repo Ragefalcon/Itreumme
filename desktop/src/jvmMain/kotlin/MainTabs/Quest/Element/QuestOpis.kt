@@ -23,29 +23,28 @@ fun QuestOpis(dialLay: MyDialogLayout, questDB: QuestDB, modifier: Modifier = Mo
                     questDB.addQuest.updMainparam(newNameQuest, "name")
                 }
             }
-            MyList(questDB.spisQuest.spisMainParam, Modifier.weight(1f,false)){ ind, item ->
-                if (item.name != "name"){
-//                    DropMenuRightClickArea() {
-                        MyTextToggleEdit2(if (item.name == "opis") "Описание" else item.name, item.stringparam,dropMenu = { exp ->
+            MyList(questDB.spisQuest.spisMainParam, Modifier.weight(1f, false)) { _, item ->
+                if (item.name != "name") {
+                    MyTextToggleEdit2(
+                        if (item.name == "opis") "Описание" else item.name,
+                        item.stringparam,
+                        dropMenu = { exp ->
                             MyDropdownMenuItem(exp, "Изменить") {
                                 PanAddOpisQuest(dialLay, questDB, item)
                             }
-                            MyDeleteDropdownMenuButton(exp){
+                            MyDeleteDropdownMenuButton(exp) {
                                 questDB.addQuest.deleteMainparam(item.id.toLong())
                             }
                         }) { newNameQuest ->
-                            questDB.addQuest.updMainparam(newNameQuest, item.id.toLong())
-                        }
-//                    }
+                        questDB.addQuest.updMainparam(newNameQuest, item.id.toLong())
+                    }
                 }
             }
-            RowVA{
-                MyTextButtStyle1("+"){
-                    PanAddOpisQuest(dialLay,questDB)
+            RowVA {
+                MyTextButtStyle1("+") {
+                    PanAddOpisQuest(dialLay, questDB)
                 }
             }
-//            list.find { it.name == "opis" }?.let {
-//            }
         }
     }
 }

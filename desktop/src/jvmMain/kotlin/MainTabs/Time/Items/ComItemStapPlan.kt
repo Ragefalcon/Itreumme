@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.*
 import extensions.*
-import kotlinx.coroutines.async
 import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 import ru.ragefalcon.sharedcode.extensions.TimeUnits
 import ru.ragefalcon.sharedcode.extensions.roundToStringProb
@@ -35,7 +34,7 @@ class ComItemStapPlan(
     val dialLay: MyDialogLayout? = null,
     val onDoubleClick: ((ItemPlanStap) -> Unit)? = null,
     val sortEnable: Boolean = false,
-    val dropMenu: (@Composable ColumnScope.(ItemPlanStap, MutableState<Boolean>) -> Unit)?  = null
+    val dropMenu: (@Composable ColumnScope.(ItemPlanStap, MutableState<Boolean>) -> Unit)? = null
 ) {
     val progressGotov = mutableStateOf((item.gotov / 100f).toFloat())
 
@@ -43,9 +42,8 @@ class ComItemStapPlan(
     @Composable
     fun getComposable() {
         val expandedDropMenu = remember { mutableStateOf(false) }
-//        val progressGotov = remember { mutableStateOf((item.gotov / 100f).toFloat()) }
+
         val expandedOpis = mutableStateOf(!item.sver)
-        val remScope = rememberCoroutineScope()
         with(itemPlanStapStyleState) {
             MyCardStyle1(
                 selection.isActive(item), item.level, {
@@ -54,11 +52,8 @@ class ComItemStapPlan(
                     selFun(item)
                 },
                 {
-//                item.sver = item.sver.not()
                     onDoubleClick?.invoke(item) ?: run {
                         MainDB.timeSpis.spisPlanStap.sverOpisElem(item)
-//                            .updateElem(item, item.copy(sver = item.sver.not()))
-//                        MainDB.timeFun.sverStapPlan(item.copy(sver = item.sver.not()))
                         expandedOpis.value = !expandedOpis.value
                     }
                 },
@@ -77,16 +72,15 @@ class ComItemStapPlan(
                     else -> null
                 },
                 modifier = if (item.stat == TypeStatPlanStap.FREEZE) Modifier.alpha(0.25f) else Modifier,
-                dropMenu = dropMenu?.let{ { exp -> it(item, exp) } },
+                dropMenu = dropMenu?.let { { exp -> it(item, exp) } },
                 styleSettings = itemPlanStapStyleState,
                 levelValue = levelValue
             ) {
                 Column {
                     MainDB.complexOpisSpis.spisComplexOpisForStapPlan.getState().value?.let { mapOpis ->
-
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             if (item.podstapcount > 0) Image(
-                                painterResource(if (item.svernut) "ic_plus.xml" else "ic_minus.xml"),//useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                                painterResource(if (item.svernut) "ic_plus.xml" else "ic_minus.xml"),
                                 "statDenPlan",
                                 Modifier
                                     .height(25.dp)
@@ -111,7 +105,6 @@ class ComItemStapPlan(
                                     .weight(1f)
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-
                                     Column(Modifier.padding(end = 5.dp).weight(1f)) {
                                         RowVA {
                                             if (sortEnable) {
@@ -119,12 +112,11 @@ class ComItemStapPlan(
                                                     "\uD83E\uDC45",
                                                     Modifier.padding(start = 5.dp),
                                                     fontSize = 18.sp,
-//                                    textColor = arrow_color
                                                 ) {
                                                     MainDB.timeSpis.spisPlanStap.getState().let {
                                                         it.findLast { it.sort < item.sort && it.parent_id == item.parent_id }
                                                             ?.let { itFind ->
-                                                                    MainDB.addTime.setSortPlanStap(item, itFind.sort)
+                                                                MainDB.addTime.setSortPlanStap(item, itFind.sort)
                                                             }
                                                     }
                                                 }
@@ -132,12 +124,12 @@ class ComItemStapPlan(
                                                     "\uD83E\uDC47",
                                                     Modifier.padding(horizontal = 10.dp),
                                                     fontSize = 18.sp,
-//                                    textColor = arrow_color
-                                                ) {
+
+                                                    ) {
                                                     MainDB.timeSpis.spisPlanStap.getState().let {
                                                         it.find { it.sort > item.sort && it.parent_id == item.parent_id }
                                                             ?.let { itFind ->
-                                                                    MainDB.addTime.setSortPlanStap(item, itFind.sort)
+                                                                MainDB.addTime.setSortPlanStap(item, itFind.sort)
                                                             }
                                                     }
                                                 }
@@ -156,13 +148,6 @@ class ComItemStapPlan(
                                                 style = countStapText
                                             )
                                         }
-/*
-                                        Text(
-                                            modifier = Modifier.padding(start = if (item.podstapcount > 0 || sortEnable) 3.dp else 10.dp),
-                                            text = item.sortCTE,
-                                            style = dataText.copy(color = Color.Yellow)
-                                        )
-*/
                                         if (item.data1 > 1L && item.data2 > 1L) RowVA {
                                             Text(
                                                 modifier = Modifier.padding(start = if (item.podstapcount > 0 || sortEnable) 3.dp else 10.dp),
@@ -172,9 +157,9 @@ class ComItemStapPlan(
                                             Spacer(Modifier.weight(1f))
                                             Text(
                                                 modifier = Modifier.padding(start = 0.dp),
-                                                text = Date(item.data2).format("dd.MM.yyyy"), // HH:mm
-                                                style = dataText //TextStyle(color = Color(0xAFFFF7D9)),
-//                                                fontSize = 10.sp
+                                                text = Date(item.data2).format("dd.MM.yyyy"),
+                                                style = dataText
+
                                             )
                                         }
                                         privSchetPlanInfo(
@@ -190,45 +175,44 @@ class ComItemStapPlan(
                                         )
                                     }
                                     if (item.marker > 0L) Image(
-                                            painterResource("bookmark_01.svg"),
-                                            "statDenPlan",
-                                            Modifier
-                                                .padding(horizontal = 9.dp, vertical = 0.dp)
-                                                .height(30.dp)
-                                                .width(30.dp),
-                                            colorFilter = ColorFilter.tint(
-                                                when (item.marker.toInt()) {
-                                                    1 -> MyColorARGB.colorStatTimeSquareTint_00.toColor()
-                                                    2 -> MyColorARGB.colorStatTimeSquareTint_01.toColor()
-                                                    3 -> MyColorARGB.colorStatTimeSquareTint_02.toColor()
-                                                    4 -> MyColorARGB.colorStatTimeSquareTint_03.toColor()
-                                                    else -> MyColorARGB.colorStatTimeSquareTint_00.toColor()
-                                                },
-                                                BlendMode.Modulate
-                                            ),
-                                            contentScale = ContentScale.FillBounds,
-                                        )
+                                        painterResource("bookmark_01.svg"),
+                                        "statDenPlan",
+                                        Modifier
+                                            .padding(horizontal = 9.dp, vertical = 0.dp)
+                                            .height(30.dp)
+                                            .width(30.dp),
+                                        colorFilter = ColorFilter.tint(
+                                            when (item.marker.toInt()) {
+                                                1 -> MyColorARGB.colorStatTimeSquareTint_00.toColor()
+                                                2 -> MyColorARGB.colorStatTimeSquareTint_01.toColor()
+                                                3 -> MyColorARGB.colorStatTimeSquareTint_02.toColor()
+                                                4 -> MyColorARGB.colorStatTimeSquareTint_03.toColor()
+                                                else -> MyColorARGB.colorStatTimeSquareTint_00.toColor()
+                                            },
+                                            BlendMode.Modulate
+                                        ),
+                                        contentScale = ContentScale.FillBounds,
+                                    )
                                     if (item.stat == TypeStatPlanStap.NEXTACTION) Image(
-                                            painterResource("ic_round_keyboard_double_arrow_up_24.xml"),
-                                            "statDenPlan",
-                                            Modifier
-                                                .padding(horizontal = 9.dp, vertical = 0.dp)
-                                                .height(30.dp)
-                                                .width(30.dp),
-                                            colorFilter = ColorFilter.tint(
-                                                when (item.marker.toInt()) {
-                                                    1 -> MyColorARGB.colorStatTimeSquareTint_00.toColor()
-                                                    2 -> MyColorARGB.colorStatTimeSquareTint_01.toColor()
-                                                    3 -> MyColorARGB.colorStatTimeSquareTint_02.toColor()
-                                                    4 -> MyColorARGB.colorStatTimeSquareTint_03.toColor()
-                                                    else -> MyColorARGB.colorStatTimeSquareTint_00.toColor()
-                                                },
-                                                BlendMode.Modulate
-                                            ),
-                                            contentScale = ContentScale.FillBounds,
-                                        )
+                                        painterResource("ic_round_keyboard_double_arrow_up_24.xml"),
+                                        "statDenPlan",
+                                        Modifier
+                                            .padding(horizontal = 9.dp, vertical = 0.dp)
+                                            .height(30.dp)
+                                            .width(30.dp),
+                                        colorFilter = ColorFilter.tint(
+                                            when (item.marker.toInt()) {
+                                                1 -> MyColorARGB.colorStatTimeSquareTint_00.toColor()
+                                                2 -> MyColorARGB.colorStatTimeSquareTint_01.toColor()
+                                                3 -> MyColorARGB.colorStatTimeSquareTint_02.toColor()
+                                                4 -> MyColorARGB.colorStatTimeSquareTint_03.toColor()
+                                                else -> MyColorARGB.colorStatTimeSquareTint_00.toColor()
+                                            },
+                                            BlendMode.Modulate
+                                        ),
+                                        contentScale = ContentScale.FillBounds,
+                                    )
                                     Column(modifier = Modifier.width(170.dp)) {
-
                                         Row(
                                             modifier = Modifier.fillMaxWidth().height(25.dp),
                                             verticalAlignment = Alignment.CenterVertically,
@@ -238,7 +222,7 @@ class ComItemStapPlan(
                                                 modifier = Modifier.padding(top = 0.dp),
                                                 text = "${item.hour.roundToStringProb(1)} ч.",
                                                 style = hourTextStyle
-                                            )   else Spacer(Modifier.width(1.dp))
+                                            ) else Spacer(Modifier.width(1.dp))
                                             Row(
                                                 verticalAlignment = Alignment.CenterVertically,
                                             ) {
@@ -248,25 +232,16 @@ class ComItemStapPlan(
                                                     buttMenu,
                                                     dropdown
                                                 ) {
-                                                    println("DropButtonMenu stap plan")
-                                                    dropMenu?.let{ it(item, expandedDropMenu) }
+                                                    dropMenu?.let { it(item, expandedDropMenu) }
                                                 }
-                                                mapOpis[item.id.toLong()]?.let {  //if (item.opis != "")
+                                                mapOpis[item.id.toLong()]?.let {
                                                     RotationButtStyle1(
                                                         expandedOpis,
                                                         Modifier.padding(start = 10.dp, end = 10.dp),
                                                         17.sp,
                                                         color = boxOpisStyleState.colorButt
                                                     ) {
-//                                            item.sver = item.sver.not()
                                                         MainDB.timeSpis.spisPlanStap.sverOpisElem(item)
-/*
-                                                            .updateElem(
-                                                            item,
-                                                            item.copy(sver = item.sver.not())
-                                                        )
-                                                        MainDB.timeFun.sverStapPlan(item.copy(sver = item.sver.not()))
-*/
                                                     }
                                                 }
                                                 if (item.quest_id != 0L && item.quest_key_id == 0L) Text(
@@ -293,7 +268,7 @@ class ComItemStapPlan(
                                                 } else {
                                                     LinearProgressIndicator(
                                                         progress = (item.gotov / 100f).toFloat(),
-                                                        modifier = Modifier.padding(8.dp),//.padding(vertical = 8.dp),
+                                                        modifier = Modifier.padding(8.dp),
                                                         sliderThumb,
                                                         sliderInactive
                                                     )
@@ -321,7 +296,6 @@ class ComItemStapPlan(
                                         }
                                     }
                                 }
-
                             }
                         }
                         mapOpis[item.id.toLong()]?.let { listOpis ->
@@ -332,9 +306,6 @@ class ComItemStapPlan(
                                 MainDB.styleParam.timeParam.planTab.complexOpisForPlanStap
                             )
                         }
-//                    if ((item.opis != "")) {
-//                        MyBoxOpisStyle(expandedOpis,item.opis,boxOpisStyleState)
-//                    }
                     }
                 }
             }

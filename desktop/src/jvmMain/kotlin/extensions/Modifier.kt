@@ -25,8 +25,6 @@ import java.awt.event.MouseEvent
 
 /**
  * https://stackoverflow.com/questions/71054138/jetpack-compose-inner-shadow
- *
- * что то не особо гладко работает, потому что изначально немного под другие библиотеки заточено, но вообще думаю при желании можно и доработать.
  * */
 fun Modifier.innerShadow(
     color: Color = Color.Black,
@@ -57,11 +55,9 @@ fun Modifier.innerShadow(
             paint
         )
 
-        val frameworkPaint = paint //.asFrameworkPaint()
-        frameworkPaint.blendMode = BlendMode.DstOut // .xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
-        if (blur.toPx() > 0) {
-//            frameworkPaint.shader = Shader.b .maskFilter = MaskFilter.makeBlur(FilterBlurMode.NORMAL, blur.toPx()) // BlurMaskFilter(blur.toPx(), BlurMaskFilter.Blur.NORMAL)
-        }
+        val frameworkPaint = paint
+        frameworkPaint.blendMode = BlendMode.DstOut
+        if (blur.toPx() > 0) Unit
         val left = if (offsetX > 0.dp) {
             rect.left + offsetX.toPx()
         } else {
@@ -93,7 +89,6 @@ fun Modifier.innerShadow(
             paint
         )
         frameworkPaint.blendMode = BlendMode.Clear
-//        frameworkPaint.maskFilter = null
     }
 }
 
@@ -104,14 +99,12 @@ fun Modifier.scrollVerticalToHorizontal(scrollSt: ScrollState, deltaMultiplic: I
         while (true) {
             val event = awaitPointerEventScope { awaitPointerEvent() }
             when (event.type) {
-//                                    PointerEventType.Enter -> println("Enter")
+
                 PointerEventType.Scroll -> {
                     event.changes.forEach {
                         if (it.scrollDelta.y != 0f) scrollSt.scrollTo(scrollSt.value + deltaMultiplic * it.scrollDelta.y.toInt())
-//                                            println("Scroll: ${it.scrollDelta}")
                     }
                 }
-//                                    PointerEventType.Exit -> println("Left")
             }
         }
     }
@@ -123,14 +116,14 @@ fun Modifier.scrollVerticalToHorizontal(scrollSt: LazyListState, deltaMultiplic:
         while (true) {
             val event = awaitPointerEventScope { awaitPointerEvent() }
             when (event.type) {
-//                                    PointerEventType.Enter -> println("Enter")
+
                 PointerEventType.Scroll -> {
                     event.changes.forEach {
-                        if (it.scrollDelta.y != 0f) scrollSt.scrollBy(deltaMultiplic * it.scrollDelta.y)// .scrollTo(scrollSt.value + deltaMultiplic*it.scrollDelta.y.toInt())
-//                                            println("Scroll: ${it.scrollDelta}")
+                        if (it.scrollDelta.y != 0f) scrollSt.scrollBy(deltaMultiplic * it.scrollDelta.y)
+
                     }
                 }
-//                                    PointerEventType.Exit -> println("Left")
+
             }
         }
     }
@@ -144,6 +137,7 @@ fun modLigthBack() = Modifier.border(
     shape = RoundedCornerShape(corner = CornerSize(10.dp)),
     color = Color(0xFFE4E0C7),
 )
+
 fun Modifier.withSimplePlate(styleState: SimplePlateWithShadowStyleState): Modifier = this
     .clip(styleState.shape)
     .background(styleState.BACKGROUND, styleState.shape)
@@ -162,15 +156,14 @@ fun Modifier.withSimplePlate(styleState: SimplePlateStyleState): Modifier = this
         shape = styleState.shape
     )
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Modifier.mouseDoubleClick(
     onClick: () -> Unit,
     onDoubleClick: () -> Unit,
     rightClick: () -> Unit = {}
 ): Modifier {
-//    var timePause = remember { Date().time }
-//    var timePause = Date().time
+
 
     return this
         .onPointerEvent(PointerEventType.Press) {
@@ -179,39 +172,19 @@ fun Modifier.mouseDoubleClick(
                     1 -> {
                         onClick()
                     }
+
                     2 -> {
                         onDoubleClick()
                     }
                 }
-                MouseEvent.BUTTON2 -> {
-                }
+
+                MouseEvent.BUTTON2 -> Unit
+
                 MouseEvent.BUTTON3 -> {
                     onClick()
                     rightClick()
                 }
             }
         }
-/*
-        .mouseClickable(
-        onClick = {
-            if (this.buttons.isSecondaryPressed) rightClick() else {
-                val tmpTime = Date().time
-                val tmpTime2 = timePause
-                timePause = tmpTime
-                    println("tmpTime = ${tmpTime}")
-                    println("tmpTime2 = ${tmpTime2}")
-                    println("timePause = ${timePause}")
-                    println("tmpTime1-2 = ${tmpTime - tmpTime2}")
-                if (tmpTime - tmpTime2 in 0..249) {
-                    onDoubleClick()
-                } else {
-                    onClick()
-                }
-            }
-        }
-    )
-*/
-
-
 }
 

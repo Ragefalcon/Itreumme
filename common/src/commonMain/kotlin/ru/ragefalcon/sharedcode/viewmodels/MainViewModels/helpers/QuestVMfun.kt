@@ -12,8 +12,6 @@ class QuestVMfun(private val mDB: DatabaseQuest, private val spisVM: QuestVMobjF
     private var openStatStapPlanQuest = 10L
     private var idPlanForSpisStapPlanQuest = -1L
 
-
-
     private fun updateSpisStapPlan() {
         spisVM.spisOpenStapPlan.updateQuery(
             mDB.spisStapPlanQuestQueries.openStapPlan(
@@ -49,7 +47,7 @@ class QuestVMfun(private val mDB: DatabaseQuest, private val spisVM: QuestVMobjF
         updateSpisStapPlan()
     }
 
-    fun setPlanForSpisStapPlanForSelect(idPlan: Long, array_iskl: Collection<Long> = listOf()) { //,iskstat: Long
+    fun setPlanForSpisStapPlanForSelect(idPlan: Long, array_iskl: Collection<Long> = listOf()) {
         spisVM.spisStapPlanForSelect.updateQuery(
             mDB.spisStapPlanQuestQueries.openStapPlanForSelect(
                 idpl = idPlan,
@@ -81,8 +79,13 @@ class QuestVMfun(private val mDB: DatabaseQuest, private val spisVM: QuestVMobjF
                 idTree
             )
         )
-        spisVM.spisLevelTreeSkillsForSelect.updateQuery(mDB.spisLevelTreeSkillsQuestQueries.selectLevelTreeSkillForSelect(idTree))
+        spisVM.spisLevelTreeSkillsForSelect.updateQuery(
+            mDB.spisLevelTreeSkillsQuestQueries.selectLevelTreeSkillForSelect(
+                idTree
+            )
+        )
     }
+
     fun setSelectTreeSkills(idTree: Long, typeTree: TypeTreeSkills) {
         spisVM.spisHandNodeTreeSkills.updateQuery(
             mDB.spisNodeTreeSkillsQuestQueries.selectHandNodes(
@@ -99,7 +102,7 @@ class QuestVMfun(private val mDB: DatabaseQuest, private val spisVM: QuestVMobjF
             )
         )
         spisVM.spisLevelTreeSkills.updateQuery(mDB.spisLevelTreeSkillsQuestQueries.selectLevelTreeSkill(idTree))
-//        spisVM.spisBindingNodeTreeSkills.updateQuery(mDB.spisBindingNodeTreeSkillsQueries.selectForTree(idTree))
+
         spisVM.spisWholeBranchParentNodeTreeSkills.updateQuery(
             mDB.spisBindingNodeTreeSkillsQuestQueries.selectWholeBranchParent(
                 idTree
@@ -130,7 +133,7 @@ class QuestVMfun(private val mDB: DatabaseQuest, private val spisVM: QuestVMobjF
                 }
             }
         }
-        spisVM.spisNodeTreeSkillsSelection.setValue(listNode) // spisVM.getListSelectNodeTreeSkills(rez.toTypedArray()))
+        spisVM.spisNodeTreeSkillsSelection.setValue(listNode)
         return Pair(level, rez.toTypedArray())
     }
 
@@ -236,7 +239,10 @@ class QuestVMfun(private val mDB: DatabaseQuest, private val spisVM: QuestVMobjF
         }
     }
 
-    private fun setMarkerNodeTreeSkillsForSelection(selected: Array<Long>, marker: MarkerNodeTreeSkills = MarkerNodeTreeSkills.NONE) {
+    private fun setMarkerNodeTreeSkillsForSelection(
+        selected: Array<Long>,
+        marker: MarkerNodeTreeSkills = MarkerNodeTreeSkills.NONE
+    ) {
         spisVM.spisNodeTreeSkillsForSelection.getValue()?.toList()?.forEach {
             it.second.forEach {
                 if (selected.contains(it.id)) it.marker = marker

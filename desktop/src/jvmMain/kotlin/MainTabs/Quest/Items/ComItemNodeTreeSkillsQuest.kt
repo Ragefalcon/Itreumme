@@ -1,7 +1,6 @@
 package MainTabs.Quest.Items
 
 
-import androidx.compose.material.Text
 import MainTabs.Quest.Element.PanAddNodeTreeSkillsQuest
 import MainTabs.Quest.Element.PanAddTrigger
 import MainTabs.Quest.Element.ShowOpisNodeTreeSkillsQuest
@@ -11,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Checkbox
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +34,7 @@ import ru.ragefalcon.sharedcode.models.data.itemQuest.ItemHandNodeTreeSkillsQues
 import ru.ragefalcon.sharedcode.models.data.itemQuest.ItemNodeTreeSkillsQuest
 import ru.ragefalcon.sharedcode.models.data.itemQuest.ItemPlanNodeTreeSkillsQuest
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.*
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers.*
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers.parentOfTrig
 import viewmodel.QuestDB
 import viewmodel.QuestVM
 
@@ -51,19 +51,20 @@ fun ShowIconNodeQuest(item: ItemNodeTreeSkillsQuest, dirQuest: String, size: Dp 
             )
             Text(
                 text = "❯",
-                modifier = Modifier.align(Alignment.CenterVertically), //.padding(start = 10.dp)
+                modifier = Modifier.align(Alignment.CenterVertically),
                 style = MyTextStyleParam.style1.copy(fontSize = 20.sp)
             )
             IconNode(
                 item.icon_complete ?: item.icon,
                 "icon_skill_color_lamp.png",
                 dirQuest,
-                complete = item.icon_complete?.let { TypeIconBorder.getType(it.type_ramk) != TypeIconBorder.NONE } ?: true,
+                complete = item.icon_complete?.let { TypeIconBorder.getType(it.type_ramk) != TypeIconBorder.NONE }
+                    ?: true,
                 modifier = Modifier.padding(end = 8.dp)
             )
         }
         if (item.visible_stat == -2L || item.visible_stat == -3L) Image(
-            painterResource(if (item.visible_stat == -2L) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"), //BitmapPainter(
+            painterResource(if (item.visible_stat == -2L) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"),
             "statDenPlan",
             Modifier
                 .height(50.dp)
@@ -85,7 +86,7 @@ class ComItemNodeTreeSkillsQuest(
     val typeTree: TypeTreeSkills,
     val selection: SingleSelectionType<ItemNodeTreeSkillsQuest>,
     val dialLay: MyDialogLayout,
-    val doubleClick: (ItemNodeTreeSkillsQuest)->Unit = {
+    val doubleClick: (ItemNodeTreeSkillsQuest) -> Unit = {
         ShowOpisNodeTreeSkillsQuest(
             dialLay,
             typeTree = typeTree,
@@ -110,7 +111,7 @@ class ComItemNodeTreeSkillsQuest(
             dropMenu = { exp ->
                 dropMenu(item, exp)
                 MyDropdownMenuItem(exp, "+ Триггер") {
-                    PanAddTrigger(dialLay,item.parentOfTrig(), listOf(item.id_tree))
+                    PanAddTrigger(dialLay, item.parentOfTrig(), listOf(item.id_tree))
                 }
                 MyDropdownMenuItem(exp, "Показать описание") {
                     ShowOpisNodeTreeSkillsQuest(
@@ -133,41 +134,32 @@ class ComItemNodeTreeSkillsQuest(
             }
         ) {
             Row(
-//                if (item.check)
                 Modifier.padding(horizontal = 2.dp).padding(vertical = 2.dp).background(
                     when (item.marker) {
                         MarkerNodeTreeSkills.DIRECTPARENT -> Color.Red
                         MarkerNodeTreeSkills.INDIRECTPARENT -> Color.Black
                         MarkerNodeTreeSkills.DIRECTCHILD -> Color.Blue
                         MarkerNodeTreeSkills.INDIRECTCHILD -> Color.Yellow
-//                        MarkerNodeTreeSkills.NONE ->
-//                        MarkerNodeTreeSkills.UNENABLE ->
-//                        MarkerNodeTreeSkills.UNENABLELVL2 ->
                         else -> Color(0xFF464D45)
                     },
                     RoundedCornerShape(15.dp)
-                )
-//                    else
-//                        Modifier.padding(horizontal = 2.dp).padding(vertical = 2.dp)//.height(130.dp)
-                ,
+                ),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val widthItem = remember { mutableStateOf(40.dp) }
                 Column(Modifier.onGloballyPositioned {
-//                    heightOpis.value = it.size.height.dp
+
                 }, horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(Modifier.onGloballyPositioned {
                         widthItem.value = it.size.width.dp - 10.dp
                     }) {
-                        ShowIconNodeQuest(item,questDB.dirQuest)
-
+                        ShowIconNodeQuest(item, questDB.dirQuest)
                         if (selection.isActive(item)) MyButtDropdownMenuStyle2(
                             Modifier.padding(top = 0.dp).padding(vertical = 0.dp).align(Alignment.TopStart),
                             expandedDropMenu
                         ) {
                             dropMenu(item, expandedDropMenu)
                         }
-
                         Text(
                             text = "(${
                                 when (item) {
@@ -180,11 +172,14 @@ class ComItemNodeTreeSkillsQuest(
                             modifier = Modifier.padding(5.dp).align(Alignment.TopEnd),
                             style = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start, fontSize = 8.sp)
                         )
-
                     }
-                    PlateOrderLayout(Modifier.width(widthItem.value)){
+                    PlateOrderLayout(Modifier.width(widthItem.value)) {
                         QuestVM.getComItemTriggers(TypeParentOfTrig.NODETREESKILLS.code, item.id.toLong())
-                        QuestVM.getTriggerMarkersForTriggerChilds(TypeStartObjOfTrigger.STARTNODETREE.id, item.id.toLong(), emptyMarker = (item.visible_stat == -2L || item.visible_stat == -3L))
+                        QuestVM.getTriggerMarkersForTriggerChilds(
+                            TypeStartObjOfTrigger.STARTNODETREE.id,
+                            item.id.toLong(),
+                            emptyMarker = (item.visible_stat == -2L || item.visible_stat == -3L)
+                        )
                     }
                     Text(
                         text = "(${item.id_type_node})${item.name}",
@@ -206,7 +201,6 @@ class ComItemNodeTreeSkillsCheckableQuest(
     val questDB: QuestDB,
     val selection: SingleSelectionType<ItemNodeTreeSkillsQuest>,
 ) {
-
     @Composable
     fun getComposable() {
         val markerCheck = remember { mutableStateOf(item.check) }
@@ -222,21 +216,20 @@ class ComItemNodeTreeSkillsCheckableQuest(
                 if (selection.selected == null) selection.selected = item else selection.selected = null
             }
         }
-        MyCardStyle1(if (selection.selected == null) false else false,
+        MyCardStyle1(
+            false,
             0,
             {
-//            selection.selected = item
             },
             {
                 checkedItem()
             },
             fillWidth = false,
-            modifierThen = if (item.marker == MarkerNodeTreeSkills.UNENABLE) Modifier.alpha(0.5f) else if (item.marker == MarkerNodeTreeSkills.UNENABLELVL2) Modifier.alpha(0.05f) else Modifier
+            modifierThen = if (item.marker == MarkerNodeTreeSkills.UNENABLE) Modifier.alpha(0.5f) else if (item.marker == MarkerNodeTreeSkills.UNENABLELVL2) Modifier.alpha(
+                0.05f
+            ) else Modifier
         ) {
             RowVA(Modifier.padding(horizontal = 2.dp).padding(vertical = 2.dp)) {
-//                        MyCheckbox(markerCheck,""){
-//                            item.marker = it
-//                        }
                 Checkbox(
                     markerCheck.value,
                     modifier = Modifier.padding(start = 0.dp),
@@ -244,19 +237,7 @@ class ComItemNodeTreeSkillsCheckableQuest(
                         checkedItem()
                     })
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    ShowIconNodeQuest(item,questDB.dirQuest)
-//                    MyTextStyle(
-//                        text = "(${
-//                            when (item) {
-//                                is ItemCountNodeTreeSkills -> "Счетчик ${item.count_value}"
-//                                is ItemHandNodeTreeSkills -> "Ручной"
-//                                is ItemPlanNodeTreeSkills -> "Проект ${item.privplan}"
-//                                else -> ""
-//                            }
-//                        })",
-//                        modifier = Modifier.padding(5.dp),
-//                        param = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start, fontSize = 8.sp)
-//                    )
+                    ShowIconNodeQuest(item, questDB.dirQuest)
                     Text(
                         text = "(${item.id_type_node})${item.name}",
                         modifier = Modifier.padding(5.dp),
@@ -278,40 +259,19 @@ class ComItemNodeTreeSkillsSelParentsQuest(
     val questDB: QuestDB,
     val selection: SingleSelectionType<ItemNodeTreeSkillsQuest>? = null,
 ) {
-/*
-    val avatarFile = File(
-        File(System.getProperty("user.dir"), "Quests").path,
-        "${item.icon}.jpg"
-//        "${File(QuestVM.openQuestDB?.arg?.path ?: "").nameWithoutExtension}_${item.id}.jpg"
-    )
-    val avatarF =
-        if (avatarFile.exists()) imageFromFile(avatarFile) else useResource(
-            "icon_skill_color_lamp.png",
-            ::loadImageBitmap
-        )
-
-    val shape = RoundedCornerShape(35.dp) //CircleShape
-*/
-
-
     @Composable
     fun getComposable() {
         val markerCheck = remember { mutableStateOf(item.check) }
         MyCardStyle1(selection?.isActive(item) ?: false, 0, {
             selection?.selected = item
         }, {
-//            item.marker = item.marker.not()
-//            markerCheck.value = !markerCheck.value
         },
-                fillWidth = false
+            fillWidth = false
         ) {
             RowVA(
                 Modifier.padding(horizontal = 2.dp).padding(vertical = 2.dp).background(
                     when (item.marker) {
-//                    1 -> Color.Red
                         MarkerNodeTreeSkills.INDIRECTPARENT -> Color.Black
-//                    3 -> Color.Blue
-//                    4 -> Color.Yellow
                         else -> Color(0xFF464D45)
                     },
                     RoundedCornerShape(15.dp)
@@ -322,30 +282,19 @@ class ComItemNodeTreeSkillsSelParentsQuest(
                     Box(Modifier.onGloballyPositioned {
                         widthItem.value = it.size.width.dp - 10.dp
                     }) {
-                        ShowIconNodeQuest(item,questDB.dirQuest)
-/*
-                        Image(
-                            bitmap = avatarF,
-                            "defaultAvatar",
-                            Modifier.wrapContentSize().padding(horizontal = 5.dp, vertical = 5.dp)
-                                .height(70.dp)
-                                .width(70.dp)
-                                .clip(shape)
-                                .border(2.dp, Color.White, shape)
-                                .padding(4.dp),
-//                                .border(3.dp, Color(0x7FFFF7D9), RoundedCornerShape(74.dp))
-//                                .shadow(2.dp, shape)
-                            contentScale = ContentScale.Crop,// Fit,
-                        )
-*/
+                        ShowIconNodeQuest(item, questDB.dirQuest)
                         Text(
                             text = "(${item.level})",
                             modifier = Modifier.padding(5.dp).align(Alignment.TopStart),
                             style = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start, fontSize = 8.sp)
                         )
                     }
-                    PlateOrderLayout(Modifier.width(widthItem.value)){
-                        QuestVM.getComItemTriggers(TypeParentOfTrig.NODETREESKILLS.code, item.id.toLong(), editable = false)
+                    PlateOrderLayout(Modifier.width(widthItem.value)) {
+                        QuestVM.getComItemTriggers(
+                            TypeParentOfTrig.NODETREESKILLS.code,
+                            item.id.toLong(),
+                            editable = false
+                        )
                         QuestVM.getTriggerMarkersForTriggerChilds(
                             TypeStartObjOfTrigger.STARTNODETREE.id,
                             item.id.toLong(),

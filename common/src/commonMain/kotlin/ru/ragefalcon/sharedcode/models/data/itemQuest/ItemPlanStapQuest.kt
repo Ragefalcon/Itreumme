@@ -18,9 +18,6 @@ class ItemPlanStapQuest(
     val podstapcount: Long,
     val commstat: Long,
     val idplan: Long,
-
     var sver: Boolean = true
-
-): Id_class(id_main = id), Parcelable
-{
+) : Id_class(id_main = id), Parcelable {
 }

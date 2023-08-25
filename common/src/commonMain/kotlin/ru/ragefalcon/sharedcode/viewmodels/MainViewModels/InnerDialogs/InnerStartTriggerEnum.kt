@@ -1,12 +1,13 @@
 package ru.ragefalcon.sharedcode.viewmodels.MainViewModels.InnerDialogs
 
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers.ParentOfTrigger
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers.StartObjOfTrigger
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeParentOfTrig
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStartObjOfTrigger
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers.ParentOfTrigger
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers.StartObjOfTrigger
 
 
 val QUEST_ID_INNER_DIALOG = -87L
+
 /**
  * Триггеры к которым будет создана таблица в квесте внутренних диалогов. И к каждому из которых можно будет привязать свой диалог.
  * И ссылаясь на этот триггер будет запускаться привязанный к нему диалог.
@@ -53,6 +54,7 @@ enum class InnerStartTriggerEnum(
     ;
 
     fun parentTrig() = ParentOfTrigger(TypeParentOfTrig.INNERSTART, this.id)
+
     companion object {
         fun getType(id: Long): InnerStartTriggerEnum? = values().toList().find { it.id == id }
     }
@@ -121,24 +123,13 @@ enum class InnerFinishTriggerEnum(
     )
     ;
 
-    fun startObjTrig() = StartObjOfTrigger(TypeStartObjOfTrigger.INNERFINISH, this.id.toLong(),this.nameTrig)
+    fun startObjTrig() = StartObjOfTrigger(TypeStartObjOfTrigger.INNERFINISH, this.id.toLong(), this.nameTrig)
 
     companion object {
         fun getType(id: Long): InnerFinishTriggerEnum? = values().toList().find { it.id == id }
-//        when (id) {
-//            AddBirthday.id -> AddBirthday
-//            DeleteVxod.id -> DeleteVxod
-//            VxodToPlan.id -> VxodToPlan
-//            VxodToIdea.id -> VxodToIdea
-//            VxodToDenPlan.id -> VxodToDenPlan
-//            else -> null
-//        }
     }
 }
 
-/**
- * На всякий случай сразу создам enum для группировки триггеров по их тематике. На случай если их станет слишком много, чтобы в них не путаться.
- * */
 enum class InnerTriggerAreaEnum(val id: Long, val code: String, val opisArea: String) {
     HelloDialog(
         1L,

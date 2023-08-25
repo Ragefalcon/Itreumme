@@ -47,7 +47,6 @@ class SettingsMainScreen : BaseFragmentVM<FragmentSettingsBinding>(FragmentSetti
             TabLayoutMediator(tabLaySett, vpSettings) { tab, position ->
                 tab.text = SettingsTabType.values()[position].nameTab
             }.attach()
-//            vpSettings.currentItem = 1
         }
     }
 

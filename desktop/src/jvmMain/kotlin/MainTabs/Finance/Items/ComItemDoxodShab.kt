@@ -2,14 +2,12 @@ package MainTabs.Finance.Items
 
 import MainTabs.Finance.Element.PanChangeShabDoxod
 import MyDialog.MyDialogLayout
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -27,7 +25,6 @@ import ru.ragefalcon.sharedcode.source.disk.getValue
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.Interface.StyleVMspis
 import viewmodel.MainDB
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ComItemDoxodShab(
     item: ItemShabDoxod,
@@ -36,19 +33,29 @@ fun ComItemDoxodShab(
     itemRasxDoxStyleState: StyleVMspis.InterfaceState.ItemRasxDoxOperStyle,
     dialL: MyDialogLayout,
     dropMenu: @Composable ColumnScope.(ItemShabDoxod, MutableState<Boolean>) -> Unit = { itemID, expanded ->
-        MyDropdownMenuItem(expanded, style = DropDownMenuStyleState(MainDB.styleParam.finParam.doxodParam.panAddDoxod.itemDoxodShablon.dropdown),"Изменить"){
-            PanChangeShabDoxod(dialL,itemID)
+        MyDropdownMenuItem(
+            expanded,
+            style = DropDownMenuStyleState(MainDB.styleParam.finParam.doxodParam.panAddDoxod.itemDoxodShablon.dropdown),
+            "Изменить"
+        ) {
+            PanChangeShabDoxod(dialL, itemID)
         }
-        MyDropdownMenuItem(expanded,
-            style = DropDownMenuStyleState(MainDB.styleParam.finParam.doxodParam.panAddDoxod.itemDoxodShablon.dropdown),"\uD83E\uDC45 В начало \uD83E\uDC45"){
+        MyDropdownMenuItem(
+            expanded,
+            style = DropDownMenuStyleState(MainDB.styleParam.finParam.doxodParam.panAddDoxod.itemDoxodShablon.dropdown),
+            "\uD83E\uDC45 В начало \uD83E\uDC45"
+        ) {
             MainDB.finSpis.spisShabDoxod.getState().value?.let {
                 it.find { it.sort > itemID.sort }?.let {
                     MainDB.addFinFun.setSortShabDoxod(itemID, it.sort)
                 }
             }
         }
-        MyDropdownMenuItem(expanded,
-            style = DropDownMenuStyleState(MainDB.styleParam.finParam.doxodParam.panAddDoxod.itemDoxodShablon.dropdown),"\uD83E\uDC47 В конец \uD83E\uDC47"){
+        MyDropdownMenuItem(
+            expanded,
+            style = DropDownMenuStyleState(MainDB.styleParam.finParam.doxodParam.panAddDoxod.itemDoxodShablon.dropdown),
+            "\uD83E\uDC47 В конец \uD83E\uDC47"
+        ) {
             MainDB.finSpis.spisShabDoxod.getState().value?.let {
                 it.findLast { it.sort < itemID.sort }?.let {
                     MainDB.addFinFun.setSortShabDoxod(itemID, it.sort)
@@ -107,7 +114,7 @@ fun ComItemDoxodShab(
                             )
                         ),
                         style = textSumm
-                    )  else  Text(
+                    ) else Text(
                         modifier = Modifier.padding(start = 10.dp),
                         text = "---",
                         style = textSumm

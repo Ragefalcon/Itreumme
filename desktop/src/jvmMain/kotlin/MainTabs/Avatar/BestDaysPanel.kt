@@ -2,18 +2,18 @@ package MainTabs.Avatar
 
 import MainTabs.Avatar.Element.PanAddImageCommon
 import MainTabs.Avatar.Element.PanViewBestDay
-import MyList
-import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import MainTabs.Avatar.Items.ComItemBestDay
 import MyDialog.MyDialogLayout
 import MyDialog.myDatePicker
+import MyList
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 import common.*

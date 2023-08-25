@@ -55,13 +55,6 @@ class SelectDenPlanShablonPanelDial(callbackKey: String? = null) : MyFragmentFor
                             menuPopup.showMenu(it,name = it.name)
                         })
                     })
-//                    if (firstLoad) {
-//                        selItem?.let {
-//                            Log.d("MyTut", "selItem: $selItem");
-//                            rvmAdapter.setSelectItem(it, PlanViewHolder::class)// UniRVItem(PlanRVItem(this)))
-//                        }
-//                        firstLoad = false
-//                    }
                 }
             }
             /**
@@ -78,7 +71,6 @@ class SelectDenPlanShablonPanelDial(callbackKey: String? = null) : MyFragmentFor
                         getSFM().setFragmentResult(key, bundleOf("povtor" to cbPovtors.isChecked,"hours" to cbHours.isChecked, "item" to item.getData()))
                     }
                 }
-//                (rvmAdapter.selectedItem.value?.let { it.getData() as ItemPlan })?.run(funRez)
                 dismissDial()
             }
         }

@@ -4,9 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 
 
 @Composable
@@ -49,7 +46,6 @@ fun PlateOrderLayout(
                     curX,
                     (if (alignmentVertRowCenter) colHeight + (heightRow - pl.height) / 2 else colHeight) + (if (colHeight != 0) spaceBetween else 0)
                 )
-//                if (alignmentEnd) curX -= pl.width else
                 curX += pl.width + spaceBetween
             }
             colHeight += rowHeight + (if (colHeight != 0) spaceBetween else 0)

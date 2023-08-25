@@ -14,4 +14,4 @@ data class ItemTwoRectDiag(
     val sumyearrasx: Double,
     val procentdox: Double,
     val procentrasx: Double
-): Parcelable
+) : Parcelable

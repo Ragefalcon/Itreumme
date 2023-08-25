@@ -25,14 +25,14 @@ fun PanAddOpisQuest(
     item: ItemMainParam? = null
 ) {
     val dialLayInner = MyDialogLayout()
-//    val stat = MySelectStat(item?.stat ?: 0L)
+
     dialPan.dial = @Composable {
         val text_name = remember { mutableStateOf(TextFieldValue(item?.let { it.name } ?: "")) }
         val text_opis = remember { mutableStateOf(TextFieldValue(item?.let { it.stringparam } ?: "")) }
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 MyOutlinedTextField("Название раздела описания", text_name)
-//                stat.show()
+
                 MyOutlinedTextField(
                     "Содержание",
                     text_opis,

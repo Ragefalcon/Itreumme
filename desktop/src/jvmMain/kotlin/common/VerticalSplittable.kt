@@ -105,9 +105,9 @@ fun
                         startDragImmediately = false,
                         onDragStarted = { splitterState.isResizing = true },
                         onDragStopped = { splitterState.isResizing = false },
-//                        reverseDirection = true
-                    )
-//                        .cursorForHorizontalResize()
+
+                        )
+
                     /**
                      * Почему-то если располагать изменение курсора(cursorForHorizontalResize()) здесь,
                      * то когда курсор покидает область этого объекта перетаскивание заканчивается, как будто пользователь
@@ -125,20 +125,12 @@ fun
     ) {
         splitStyle()
     }
-//    Box(
-//        Modifier
-//            .width(1.dp)
-//            .fillMaxHeight()
-//            .background(color)
-//    )
 }
 
 @Composable
 fun MyVerticalSplitter(
     color: Color = Color.Green,
     offsetX: Animatable<Float, AnimationVector1D>
-//    offsetX: MutableState<Dp>,
-//    onResize: (delta: Dp) -> Unit
 ) =
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
         val density = LocalDensity.current
@@ -155,31 +147,14 @@ fun MyVerticalSplitter(
                     }
                     .draggable(
                         state = rememberDraggableState {
-//                    with(density) {
                             coroutineScope.launch {
                                 offsetY.snapTo(offsetY.value + it)
                             }
-//                        onResize(it.toDp())
-//                    }
                         },
                         orientation = Orientation.Horizontal,
-//                startDragImmediately = true,
-//                        onDragStarted = { splitterState.isResizing = true },
-//                        onDragStopped = { splitterState.isResizing = false },
                     )
-//                    .cursorForHorizontalResize()
-//                    .background(color),
             ) {}
         }
-//    Box(
-//        Modifier
-//            .width(1.dp)
-//            .fillMaxHeight()
-//            .offset {
-//                IntOffset(offsetX.value.roundToInt(), 0)
-//            }
-//            .background(color)
-//    )
     }
 
 
@@ -214,7 +189,6 @@ fun ResizablePanel(
         Box(Modifier.fillMaxSize().graphicsLayer(alpha = alpha)) {
             content()
         }
-
         if (expandable) {
             Icon(
                 if (state.isExpanded) Icons.Default.ArrowBack else Icons.Default.ArrowForward,

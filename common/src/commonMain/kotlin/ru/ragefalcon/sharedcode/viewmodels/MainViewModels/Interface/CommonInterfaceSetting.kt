@@ -1,9 +1,7 @@
 package ru.ragefalcon.sharedcode.viewmodels.MainViewModels.Interface
 
-import com.soywiz.klock.DateTimeTz
 import ru.ragefalcon.sharedcode.common.SelectLoadCommon
 import ru.ragefalcon.sharedcode.extensions.MyColorARGB
-import ru.ragefalcon.sharedcode.extensions.localUnix
 import ru.ragefalcon.sharedcode.source.disk.ItrCommObserveMutableObj
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.BooleanItrComm
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.EnumObject2List
@@ -67,23 +65,6 @@ open class CommonInterfaceSetting(private val table: CommonInterfaceSettingTable
 
     }
 
-    /*
-        inner class DelegateName2() {
-            operator fun getValue(thisRef: InterfaceSettingsBoolean, property: KProperty<*>): InterfaceSettingsBoolean {
-                aa.code_name = property.name
-                return aa
-            }
-
-    //            operator fun getValue(brushStyleSetting: CommonInterfaceSetting.MySettings.BrushStyleSetting, property: KProperty<*>): Any {
-    //
-    //            }
-
-            operator fun setValue(thisRef: InterfaceSettingsBoolean, property: KProperty<*>, value: String) {
-                thisRef.code_name = property.name
-                aa = thisRef
-            }
-        }
-    */
     inner class InterfaceSettingsBoolean(
         override val codeParent: String,
         override var codeName: String,
@@ -176,13 +157,13 @@ open class CommonInterfaceSetting(private val table: CommonInterfaceSettingTable
         override fun getCurrentItemInterSett() = ItemInterfaceSetting(code, currentValue, defDouble, defString)
 
         override val itrObj = ItrCommObserveMutableObj<MyTypeCorner>(valueStart) {
-//            println("update table ItrComm Obser Corner")
+
             currentValue = it.id
             table.update(this.code, currentValue)
         }
 
         override fun updateValue(long: Long, double: Double, string: String) {
-//            println("updateValue ItrComm Obser Corner")
+
             currentValue = long
             MyTypeCorner.getType(long)?.let {
                 itrObj.innerUpdateValue(it)
@@ -844,12 +825,12 @@ open class CommonInterfaceSetting(private val table: CommonInterfaceSettingTable
             fontSize: Double = 20.0,
             fontWeight: Long = 4L,
             fontStyleItalic: Boolean = false,
-//            letterSpacing: Double = TextUnit.Unspecified,
+
             shadowColor: MyColorARGB = MyColorARGB("AF000000"),
             shadowOffsetX: Double = 2.0,
             shadowOffsetY: Double = 2.0,
             shadowBlurRadius: Double = 4.0,
-//            textAlign: TextAlign? = null,
+
 
             sver: Boolean = true,
         ) : RazdelSettingInner(nameItem, color, "${code_name_parent_razdel}_${name_podrazdel}", type_razdel, sver) {
@@ -1188,7 +1169,7 @@ open class CommonInterfaceSetting(private val table: CommonInterfaceSettingTable
             ),
             sver: Boolean = true,
         ) : RazdelSettingInner(nameItem, color, "${code_name_parent_razdel}_${name_podrazdel}", type_razdel, sver) {
-            //            val testDeleg by DelegateName(addBoolean("GRADIENT_ENAB1232LE", "Градиент true", true)) // =
+
             val BORDER_WIDTH by settName(addDoublePoz("Ширина границы", border_width))
             val shadow by nameRazd { name -> r_addShadowStyle(name, "Стиль тени") }
             val BACKGROUND = r_addBrush(
@@ -1229,7 +1210,7 @@ open class CommonInterfaceSetting(private val table: CommonInterfaceSettingTable
             ),
             sver: Boolean = true,
         ) : RazdelSettingInner(nameItem, color, "${code_name_parent_razdel}_${name_podrazdel}", type_razdel, sver) {
-            //            val testDeleg by DelegateName(addBoolean("GRADIENT_ENAB1232LE", "Градиент true", true)) // =
+
             val BORDER_WIDTH by settName(addDoublePoz("Ширина границы", border_width))
             val BACKGROUND = r_addBrush(
                 "BACKGROUND", "Фон",
@@ -1271,7 +1252,7 @@ open class CommonInterfaceSetting(private val table: CommonInterfaceSettingTable
             val textStyle by nameRazd { name -> r_addTextStyle(name, "Стиль текста") }
             val inner_padding by nameRazd { name -> r_addPadding(name) }
 
-            //            val testDeleg by DelegateName(addBoolean("GRADIENT_ENAB1232LE", "Градиент true", true)) // =
+
             val BORDER_WIDTH by settName(addDoublePoz("Ширина границы", border_width))
             val verticalPadding by settName(addDoublePoz("Вертикальные отступы", 5.0))
             val BACKGROUND by nameRazd { name ->
@@ -1866,38 +1847,31 @@ open class CommonInterfaceSetting(private val table: CommonInterfaceSettingTable
                     type_razdel = TypeSaveStyleSet.COMMONITEM
                 )
             )
-
         }
-//        !!!!!!!!!!!!! Не использовать поиск из стоки ниже, т.к. список настроек очень большой это очень ресурсо затратно,
-//        при этом тот же поиск по ключу в Map происходит почти моментально. Скорее всего уже основной класс нужно было
-//        наследовать не от List, а от Map
-//        fun getSetting(code: String): InterfaceSettingsType? = this.find { it.code == code }
 
         fun startInit() {
-            val timeNow = DateTimeTz.nowLocal().localUnix()
-//            println("timeNow = ${timeNow}")
+
             table.getListFromBase().let {
-//                println("timeNow 1 = ${DateTimeTz.nowLocal().localUnix() - timeNow}")
+
                 it.let {
                     val checkList = this.map { it.code }.toMutableList()
-//                    println("timeNow 1.5 = ${DateTimeTz.nowLocal().localUnix() - timeNow}")
+
                     table.clearFromDeprecated(checkList)
-//                    println("timeNow 1.6 = ${DateTimeTz.nowLocal().localUnix() - timeNow}")
+
                     val tmpMap: Map<String, InterfaceSettingsType> =
                         mutableMapOf<String, InterfaceSettingsType>().apply {
                             this@MySettings.forEach {
                                 this.put(it.code, it)
                             }
                         }
-//                    println("timeNow 1.7 = ${DateTimeTz.nowLocal().localUnix() - timeNow}")
+
                     it.forEach { conv ->
-//                        this.getSetting
                         tmpMap.get(conv.code_name)?.let {
                             it.updateValue(conv.long, conv.double, conv.string)
                             checkList.remove(it.code)
                         }
                     }
-//                    println("timeNow 2 = ${DateTimeTz.nowLocal().localUnix() - timeNow}")
+
                     table.transaction {
                         checkList.forEach {
                             tmpMap.get(it)?.let {
@@ -1906,53 +1880,19 @@ open class CommonInterfaceSetting(private val table: CommonInterfaceSettingTable
                         }
                     }
                 }
-//                println("timeNow 3 = ${DateTimeTz.nowLocal().localUnix() - timeNow}")
-//                this.clearList()
             }
-/*
-            table.getListFromBase().map {
-                ConvertInterfaceSetting(this.getSetting(it.code_name), it)
-            }.let {
-                println("timeNow 1 = ${DateTimeTz.nowLocal().localUnix() - timeNow}")
-                it.let {
-                    val checkList = this.map { it.code }.toMutableList()
-                    table.clearFromDeprecated(checkList)
-                    it.forEach { conv ->
-                        conv.obj?.let {
-                            it.updateValue(conv.value.long, conv.value.double, conv.value.string)
-                            checkList.remove(it.code)
-                        }
-                    }
-                    println("timeNow 2 = ${DateTimeTz.nowLocal().localUnix() - timeNow}")
-                    table.transaction {
-                        checkList.forEach {
-                            this.getSetting(it)?.let {
-                                table.insert(it.code, it.defLong, it.defDouble, it.defString)
-                            }
-                        }
-                    }
-                }
-                println("timeNow 3 = ${DateTimeTz.nowLocal().localUnix() - timeNow}")
-//                this.clearList()
-            }
-*/
         }
 
         fun refreshValueFromBase(list: List<SelectLoadCommon>) {
-            val timeNow2 = DateTimeTz.nowLocal().localUnix()
-//            println("timeNow2 = ${timeNow2}")
             val tmpMap: Map<String, InterfaceSettingsType> =
                 mutableMapOf<String, InterfaceSettingsType>().apply {
                     this@MySettings.forEach {
                         this.put(it.code, it)
                     }
                 }
-//            println("timeNow2 1 = ${DateTimeTz.nowLocal().localUnix() - timeNow2}")
             list.forEach { conv ->
                 tmpMap.get(conv.codename)?.updateValue(conv.intparam, conv.doubleparam, conv.stringparam)
-//                tmpMap.get(conv.code_name)?.updateValue(conv.long, conv.double, conv.string)
             }
-//            println("timeNow2 1 = ${DateTimeTz.nowLocal().localUnix() - timeNow2}")
         }
 
         fun toDefault() {
@@ -1982,6 +1922,5 @@ open class CommonInterfaceSetting(private val table: CommonInterfaceSettingTable
     }
 
     private data class ConvertInterfaceSetting(val obj: InterfaceSettingsType?, val value: ItemInterfaceSetting)
-
 }
 

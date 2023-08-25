@@ -1,13 +1,17 @@
 package viewmodel
 
-import MainTabs.Setting.TimeSettings
 import MyDialog.InnerFinishAction
 import MyDialog.MyDialogLayout
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.layout.LayoutCoordinates
 import common.SingleSelectionType
 import extensions.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.ragefalcon.sharedcode.models.data.ItemBloknot
 import ru.ragefalcon.sharedcode.models.data.ItemIdea
 import ru.ragefalcon.sharedcode.models.data.ItemIdeaStap
@@ -23,16 +27,11 @@ import java.util.*
 
 object StateVM {
 
-//    var lastOpenDir: String = System.getProperty("user.dir")
-
     val dialLayForViewPicture = MyDialogLayout()
 
 
-    val timeSettings = TimeSettings()
-
     val dirMain: String =
         File(System.getProperty("user.home"), "ItreummeData").path.also {
-//            println("Mydir?: ${System.getProperty ("user.home")}")
             if (!File(it).exists()) {
                 File(it).mkdirs()
             }
@@ -134,7 +133,7 @@ object StateVM {
     val refresh_tokenGet = mutableStateOf(false)
 
     val ktorGOA by lazy {
-        KtorGoogleOAuth(DbArgs(dirMain), params.value ?: ItemKtorGoogleParams(), DbArgs(dirGoogle)){
+        KtorGoogleOAuth(DbArgs(dirMain), params.value ?: ItemKtorGoogleParams(), DbArgs(dirGoogle)) {
             params.value = it
         }.apply {
             params.clientID = clientID
@@ -161,10 +160,10 @@ object StateVM {
         }
     }
 
-    fun saveToken(){
-            authCodeGet.value = ktorGOA.params.authCode != ""
-            access_tokenGet.value = ktorGOA.params.access_token != ""
-            refresh_tokenGet.value = ktorGOA.params.refresh_token != ""
+    fun saveToken() {
+        authCodeGet.value = ktorGOA.params.authCode != ""
+        access_tokenGet.value = ktorGOA.params.access_token != ""
+        refresh_tokenGet.value = ktorGOA.params.refresh_token != ""
         if (access_tokenGet.value && refresh_tokenGet.value && authCodeGet.value) {
             val strSave = "" +
                     ktorGOA.params.authCode + "\n" +
@@ -176,8 +175,8 @@ object StateVM {
         }
     }
 
-    fun revokeToken(rez: (String)->Unit = {}){
-        ktorGOA.revokeRefreshToken{
+    fun revokeToken(rez: (String) -> Unit = {}) {
+        ktorGOA.revokeRefreshToken {
             rez("refresh")
             authCodeGet.value = ktorGOA.params.authCode != ""
             access_tokenGet.value = ktorGOA.params.access_token != ""
@@ -207,7 +206,7 @@ object StateVM {
         }
     }
 
-    val openEditStyle =  mutableStateOf(false)
+    val openEditStyle = mutableStateOf(false)
 
     val selectionIdea = SingleSelectionType<ItemIdea>()
     val filterIdea: MutableState<String> = mutableStateOf("name")
@@ -226,39 +225,35 @@ object StateVM {
 
     val commonItemStyleState = mutableStateOf(CommonItemStyleState(MainDB.styleParam.commonParam.commonItemStyle))
     val commonButtonStyleState = mutableStateOf(TextButtonStyleState(MainDB.styleParam.commonParam.commonTextButt))
-    val commonButtonSeekBarStyleState = mutableStateOf(ButtonSeekBarStyleState(MainDB.styleParam.commonParam.mainSeekBarStyle))
-    val commonPrivSchetPlanInfo = mutableStateOf(PrivSchetPlanInfoStyleState(MainDB.styleParam.commonParam.privSchetPlanInfo))
+    val commonButtonSeekBarStyleState =
+        mutableStateOf(ButtonSeekBarStyleState(MainDB.styleParam.commonParam.mainSeekBarStyle))
+    val commonPrivSchetPlanInfo =
+        mutableStateOf(PrivSchetPlanInfoStyleState(MainDB.styleParam.commonParam.privSchetPlanInfo))
 
     @Composable
-    fun startLaunchCommonStyle(){
-        MainDB.styleParam.commonParam.commonItemStyle.getComposable(::CommonItemStyleState){
-            println("startLaunchCommonStyle1")
+    fun startLaunchCommonStyle() {
+        MainDB.styleParam.commonParam.commonItemStyle.getComposable(::CommonItemStyleState) {
             if (commonItemStyleState.value != it) commonItemStyleState.value = it
         }
         MainDB.styleParam.commonParam.mainSeekBarStyle.getComposable(::ButtonSeekBarStyleState) {
-            println("startLaunchCommonStyle2")
             if (commonButtonSeekBarStyleState.value != it) commonButtonSeekBarStyleState.value = it
         }
         MainDB.styleParam.commonParam.commonTextButt.getComposable(::TextButtonStyleState) {
-            println("startLaunchCommonStyle3")
             if (commonButtonStyleState.value != it) commonButtonStyleState.value = it
         }
         MainDB.styleParam.commonParam.privSchetPlanInfo.getComposable(::PrivSchetPlanInfoStyleState) {
-            println("startLaunchCommonStyle4")
             if (commonPrivSchetPlanInfo.value != it) commonPrivSchetPlanInfo.value = it
         }
     }
 
     var time = Date().time
 
-    fun timerStart(metka: String = ""){
+    fun timerStart(metka: String = "") {
         time = Date().time
-        println("timerStart($metka): $time")
     }
-    fun timerStop(metka: String = ""){
+
+    fun timerStop(metka: String = "") {
         val time2 = Date().time
-        println("timerDelta($metka): ${time2 - time}")
-        println("timerStop($metka): ${time2}")
     }
 
 }

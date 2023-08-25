@@ -1,6 +1,5 @@
 package MainTabs.Quest.Items
 
-import androidx.compose.material.Text
 import MainTabs.imageFromFile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -35,12 +35,11 @@ class ComItemGovorun(
     val dropMenu: @Composable ColumnScope.(ItemGovorun, MutableState<Boolean>) -> Unit = { _, _ -> }
 ) {
     var expandedDropMenu = mutableStateOf(false)
-    val avatarFile = File(dirIcon,"${item.image_file}.jpg")
+    val avatarFile = File(dirIcon, "${item.image_file}.jpg")
     val avatarF =
         if (avatarFile.exists()) imageFromFile(avatarFile) else useResource("iv_avatar.png", ::loadImageBitmap)
 
-    val shape = RoundedCornerShape(75.dp) //CircleShape
-
+    val shape = RoundedCornerShape(75.dp)
 
     @Composable
     fun getComposable() {
@@ -53,8 +52,7 @@ class ComItemGovorun(
         }, dropMenu = { exp -> dropMenu(item, exp) }
         ) {
             Row(
-                Modifier.padding(horizontal = 10.dp).padding(vertical = 5.dp)//.height(130.dp)
-                ,
+                Modifier.padding(horizontal = 10.dp).padding(vertical = 5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -70,10 +68,8 @@ class ComItemGovorun(
                                 .padding(1.dp)
                                 .border(3.dp, Color(0x7FFFF7D9), RoundedCornerShape(74.dp))
                                 .shadow(2.dp, shape),
-                            contentScale = ContentScale.Crop,// Fit,
-//                        filterQuality = FilterQuality.Low
+                            contentScale = ContentScale.Crop,
                         )
-//                    Spacer(Modifier.weight(1f))
                         if (selection.isActive(item)) MyButtDropdownMenuStyle2(
                             Modifier.padding(top = 3.dp).padding(vertical = 0.dp).align(Alignment.TopStart),
                             expandedDropMenu
@@ -93,36 +89,21 @@ class ComItemGovorun(
                         style = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start)
                     )
                 }
-                if ((item.opis != "")) { //(selection.selected == item) &&&&(expandedOpis.value)
+                if ((item.opis != "")) {
                     val scroll = rememberScrollState(0)
                     BoxExpand(
                         expandedOpis,
                         Modifier.widthIn(0.dp, 200.dp).myModWithBound1(),
                         Modifier.fillMaxHeight()
-                    ) {  //, endModif = Modifier::withMyBound1
+                    ) {
                         BoxWithVScrollBar(Modifier.padding(10.dp), scroll) { scrollStateBox ->
-//                            SelectionContainer {
                             MyTextStyle2(
                                 item.opis,
                                 Modifier.verticalScroll(scrollStateBox, enabled = true),
                                 textAlign = TextAlign.Start,
                                 fontSize = 15.sp
                             )
-//                            }
                         }
-//                            MyTextStyle(
-//                                modifier = Modifier
-//                                    .padding(5.dp)
-//                                    .padding(start = 10.dp)
-////                                    .fillMaxHeight()
-//                                ,
-//                                text = item.opis,
-//                                param = MyTextStyleParam.style4.copy(
-//                                    fontSize = 17.sp,
-//                                    fontWeight = FontWeight.Normal
-//                                ) //TextStyle(color = Color(0xFFFFF7D9)),
-////                                fontSize = 15.sp
-//                            )
                     }
                 }
             }
@@ -136,14 +117,13 @@ fun ComItemGovorunPlate(
     item: ItemGovorun,
     dirIcon: String
 ) {
-    val avatarFile = File(dirIcon,"${item.image_file}.jpg")
+    val avatarFile = File(dirIcon, "${item.image_file}.jpg")
     val avatarF =
         if (avatarFile.exists()) imageFromFile(avatarFile) else useResource("iv_avatar.png", ::loadImageBitmap)
 
-    val shape = RoundedCornerShape(75.dp) //CircleShape
+    val shape = RoundedCornerShape(75.dp)
     Row(
-        Modifier.padding(vertical = 5.dp)//.height(130.dp)
-        ,
+        Modifier.padding(vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -157,7 +137,7 @@ fun ComItemGovorunPlate(
                 .padding(1.dp)
                 .border(3.dp, Color(0x7FFFF7D9), RoundedCornerShape(74.dp))
                 .shadow(2.dp, shape),
-            contentScale = ContentScale.Crop,// Fit,
+            contentScale = ContentScale.Crop,
         )
         Text(
             text = item.name,

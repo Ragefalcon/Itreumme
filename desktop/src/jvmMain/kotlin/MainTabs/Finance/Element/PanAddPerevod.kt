@@ -20,7 +20,6 @@ import common.*
 import extensions.*
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemCommonFinOper
-import ru.ragefalcon.sharedcode.models.data.ItemDoxod
 import ru.ragefalcon.sharedcode.models.data.ItemSchet
 import ru.ragefalcon.sharedcode.source.disk.getValue
 import viewmodel.MainDB
@@ -37,7 +36,7 @@ fun PanAddPerevod(
     val val1 = mutableStateOf(-1L)
     val val2 = mutableStateOf(-1L)
     val listKrome: MutableState<List<ItemSchet>?> = mutableStateOf(listOf<ItemSchet>())
-//    val CB_spisSchetPoluch = MyComboBox(MainDB.finSpis.spisSchetKrome, nameItem = { it.second }) { schetPoluch ->
+
     val CB_spisSchetOtprav = MyComboBox(MainDB.finSpis.spisSchet, nameItem = { it.name }) { schetOtprav ->
         listKrome.value =
             MainDB.finSpis.spisSchet.getState().value?.filter { it.id != schetOtprav.id } ?: listOf<ItemSchet>()

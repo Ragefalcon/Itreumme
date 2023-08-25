@@ -7,10 +7,10 @@ import ru.ragefalcon.sharedcode.models.data.*
 
 fun setMapStatikToItemYearGraf(statik: List<ItemRectDiagWithDate>, updF: (List<ItemYearGraf>) -> Unit) {
     if (statik.isNotEmpty()) {
-        var dateStart: Int = DateTimeTz.fromUnixLocal(statik.firstOrNull()?.date ?: 0L).year.year //.unOffset()
-        var dateEnd = DateTimeTz.fromUnixLocal(statik.lastOrNull()?.date ?: 0L).year.year //.unOffset()
+        var dateStart: Int = DateTimeTz.fromUnixLocal(statik.firstOrNull()?.date ?: 0L).year.year
+        var dateEnd = DateTimeTz.fromUnixLocal(statik.lastOrNull()?.date ?: 0L).year.year
 
-        if (dateEnd<dateStart) {
+        if (dateEnd < dateStart) {
             val tmp = dateStart
             dateStart = dateEnd
             dateEnd = tmp
@@ -20,21 +20,21 @@ fun setMapStatikToItemYearGraf(statik: List<ItemRectDiagWithDate>, updF: (List<I
         var aa = 10.0
         for (year in dateStart..dateEnd) {
             aa = statik.filter {
-                DateTimeTz.fromUnixLocal(it.date).year.year == year //.unOffset()
+                DateTimeTz.fromUnixLocal(it.date).year.year == year
             }.firstOrNull()?.sumyear ?: 0.0
             listRez.add(
                 ItemYearGraf(
                     year,
                     statik.filter {
-                        DateTimeTz.fromUnixLocal(it.date).year.year == year //.unOffset()
+                        DateTimeTz.fromUnixLocal(it.date).year.year == year
                     }.toMutableList().apply {
                         for (i in 1..12) {
                             if (this.find { DateTimeTz.fromUnixLocal(it.date).month1 == i } == null) {
                                 this.add(
                                     ItemRectDiagWithDate(
                                         year.toString(),
-                                        if (i<10) "0$i" else i.toString(),
-                                        DateTimeTz.utc(DateTime(year,i,1),DateTimeTz.nowLocal().offset).localUnix(),
+                                        if (i < 10) "0$i" else i.toString(),
+                                        DateTimeTz.utc(DateTime(year, i, 1), DateTimeTz.nowLocal().offset).localUnix(),
                                         0.0,
                                         aa,
                                         0.0
@@ -80,12 +80,15 @@ fun setMapStatikToItemYearGraf(statik: List<ItemRectDiagWithDate>, updF: (List<I
     }
 }
 
-fun setMapStatikToItemYearGrafTwoRect(statik: List<ItemTwoRectDiagWithDate>, updF: (List<ItemYearGrafTwoRect>) -> Unit) {
+fun setMapStatikToItemYearGrafTwoRect(
+    statik: List<ItemTwoRectDiagWithDate>,
+    updF: (List<ItemYearGrafTwoRect>) -> Unit
+) {
     if (statik.isNotEmpty()) {
-        var dateStart: Int = DateTimeTz.fromUnixLocal(statik.firstOrNull()?.date ?: 0L).year.year //.unOffset()
-        var dateEnd = DateTimeTz.fromUnixLocal(statik.lastOrNull()?.date ?: 0L).year.year //.unOffset()
+        var dateStart: Int = DateTimeTz.fromUnixLocal(statik.firstOrNull()?.date ?: 0L).year.year
+        var dateEnd = DateTimeTz.fromUnixLocal(statik.lastOrNull()?.date ?: 0L).year.year
 
-        if (dateEnd<dateStart) {
+        if (dateEnd < dateStart) {
             val tmp = dateStart
             dateStart = dateEnd
             dateEnd = tmp
@@ -96,16 +99,16 @@ fun setMapStatikToItemYearGrafTwoRect(statik: List<ItemTwoRectDiagWithDate>, upd
         var sumyearDox = 10.0
         for (year in dateStart..dateEnd) {
             sumyearRasx = statik.filter {
-                DateTimeTz.fromUnixLocal(it.date).year.year == year //.unOffset()
+                DateTimeTz.fromUnixLocal(it.date).year.year == year
             }.firstOrNull()?.sumyearrasx ?: 0.0
             sumyearDox = statik.filter {
-                DateTimeTz.fromUnixLocal(it.date).year.year == year //.unOffset()
+                DateTimeTz.fromUnixLocal(it.date).year.year == year
             }.firstOrNull()?.sumyeardox ?: 0.0
             listRez.add(
                 ItemYearGrafTwoRect(
                     year,
                     statik.filter {
-                        DateTimeTz.fromUnixLocal(it.date).year.year == year //.unOffset()
+                        DateTimeTz.fromUnixLocal(it.date).year.year == year
                     }.toMutableList().apply {
                         for (i in 1..12) {
                             if (this.find { DateTimeTz.fromUnixLocal(it.date).month1 == i } == null) {
@@ -114,7 +117,7 @@ fun setMapStatikToItemYearGrafTwoRect(statik: List<ItemTwoRectDiagWithDate>, upd
                                         year.toString(),
                                         i.toString(),
                                         "$year-$i",
-                                        DateTimeTz.utc(DateTime(year,i,1),DateTimeTz.nowLocal().offset).localUnix(),
+                                        DateTimeTz.utc(DateTime(year, i, 1), DateTimeTz.nowLocal().offset).localUnix(),
                                         0.0,
                                         0.0,
                                         sumyearDox,
@@ -148,18 +151,18 @@ fun setMapStatikToItemYearGrafTwoRect(statik: List<ItemTwoRectDiagWithDate>, upd
             mutableListOf(
                 ItemYearGrafTwoRect(
                     year.toInt(), listOf(
-                        ItemTwoRectDiag(year, "1","$year-1", 0.0, 0.0, 0.0, 0.0, 0.0,0.0),
-                        ItemTwoRectDiag(year, "2","$year-2", 0.0, 0.0, 0.0, 0.0, 0.0,0.0),
-                        ItemTwoRectDiag(year, "3","$year-3", 0.0, 0.0, 0.0, 0.0, 0.0,0.0),
-                        ItemTwoRectDiag(year, "4","$year-4", 0.0, 0.0, 0.0, 0.0, 0.0,0.0),
-                        ItemTwoRectDiag(year, "5","$year-5", 0.0, 0.0, 0.0, 0.0, 0.0,0.0),
-                        ItemTwoRectDiag(year, "6","$year-6", 0.0, 0.0, 0.0, 0.0, 0.0,0.0),
-                        ItemTwoRectDiag(year, "7","$year-7", 0.0, 0.0, 0.0, 0.0, 0.0,0.0),
-                        ItemTwoRectDiag(year, "8","$year-8", 0.0, 0.0, 0.0, 0.0, 0.0,0.0),
-                        ItemTwoRectDiag(year, "9","$year-9", 0.0, 0.0, 0.0, 0.0, 0.0,0.0),
-                        ItemTwoRectDiag(year, "10","$year-10", 0.0, 0.0, 0.0, 0.0, 0.0,0.0),
-                        ItemTwoRectDiag(year, "11","$year-11", 0.0, 0.0, 0.0, 0.0, 0.0,0.0),
-                        ItemTwoRectDiag(year, "12","$year-12", 0.0, 0.0, 0.0, 0.0, 0.0,0.0)
+                        ItemTwoRectDiag(year, "1", "$year-1", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                        ItemTwoRectDiag(year, "2", "$year-2", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                        ItemTwoRectDiag(year, "3", "$year-3", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                        ItemTwoRectDiag(year, "4", "$year-4", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                        ItemTwoRectDiag(year, "5", "$year-5", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                        ItemTwoRectDiag(year, "6", "$year-6", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                        ItemTwoRectDiag(year, "7", "$year-7", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                        ItemTwoRectDiag(year, "8", "$year-8", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                        ItemTwoRectDiag(year, "9", "$year-9", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                        ItemTwoRectDiag(year, "10", "$year-10", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                        ItemTwoRectDiag(year, "11", "$year-11", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                        ItemTwoRectDiag(year, "12", "$year-12", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
                     )
                 )
             )

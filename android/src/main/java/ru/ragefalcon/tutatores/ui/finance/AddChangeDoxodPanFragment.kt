@@ -25,9 +25,9 @@ class AddChangeDoxodPanFragment(item: ItemDoxod? = null) :
                     val ssch = srSchetAdd.selectedItem as Pair<String, String>
                     viewmodel.addFin.addDoxod(
                         name = editNameText.text.toString(),
-                        summa = it,//editSumma.editText?.text.toString().toDouble() ?: 0.0,
+                        summa = it,
                         typeid = sd.first.toLong(),
-                        data = etDate.dateLong,//.toLongPlusOffset(),
+                        data = etDate.dateLong,
                         schet = ssch.first.toLong()
                     )
                 }
@@ -46,9 +46,9 @@ class AddChangeDoxodPanFragment(item: ItemDoxod? = null) :
                         viewmodel.addFin.updDoxod(
                             item = it,
                             name = editNameText.text.toString(),
-                            summa = sum,//editSumma.editText?.text.toString().toDouble() ?: 0.0,
+                            summa = sum,
                             typeid = sd.first.toLong(),
-                            data = etDate.dateLong,//.toLongPlusOffset(),
+                            data = etDate.dateLong,
                             schet = ssch.first.toLong()
                         )
                     }
@@ -140,7 +140,7 @@ class AddChangeDoxodPanFragment(item: ItemDoxod? = null) :
                     schet_id = ssch.first.toLong()
                 )
             }, listener_cancel = {
-//                buttToggleBestday.isChecked = false
+
             })
             buttSaveShablon.setOnClickListener {
                 if ((editNameText.text.toString() != "") && (editSummaText.text.toString() != "")) {
@@ -176,7 +176,7 @@ class AddChangeDoxodPanFragment(item: ItemDoxod? = null) :
                     srSchetAdd.refreshDrawableState()
                 }
             }
-//                showMyFragDial(SelectDenPlanShablonPanelDial(callbackKey), getSFM(), bound = MyFragDial.BoundSlide.top)
+
             buttLoadShablon.setOnClickListener {
                 selShabPan.showMenu()
             }
@@ -194,20 +194,6 @@ class AddChangeDoxodPanFragment(item: ItemDoxod? = null) :
                 editSummaText.setText(itRasx.summa.roundToString(2))
                 etDate.setDate(itRasx.data)
             }
-//            spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//                override fun onNothingSelected(parent: AdapterView<*>?) {
-//                }
-//
-//                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//                        if (viewmodel.financeFun.sravnVal((spinner.selectedItem as Pair<String, String>).first.toLong()) != null) {
-//                            editSummaZach.visibility = View.VISIBLE
-//                            editSummaZach.hint =
-//                                "Сумма зачисления(${viewmodel.financeFun.sravnVal((spinner.selectedItem as Pair<String, String>).first.toLong())})"
-//                        } else {
-//                            editSummaZach.visibility = View.INVISIBLE
-//                        }
-//                }
-//            }
 
             buttDateLeft.setOnClickListener {
                 etDate.addDays(-1)

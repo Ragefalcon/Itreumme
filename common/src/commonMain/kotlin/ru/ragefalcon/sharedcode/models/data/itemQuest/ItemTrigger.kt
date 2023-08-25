@@ -5,7 +5,7 @@ import ru.ragefalcon.sharedcode.models.data.Id_class
 
 
 @Parcelize
-class ItemTrigger (
+class ItemTrigger(
     val id: String,
     val parent_type: String,
     val parent_id: Long,
@@ -13,7 +13,5 @@ class ItemTrigger (
     val child_id: Long,
     var child_name: String,
     val act_code: Long,
-
-): Id_class(id_main = id)
-{
+) : Id_class(id_main = id) {
 }

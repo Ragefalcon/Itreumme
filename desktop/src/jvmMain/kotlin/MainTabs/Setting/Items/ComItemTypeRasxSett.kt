@@ -15,7 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import common.*
+import common.MyButtDropdownMenuStyle1
+import common.MyCardStyle1
+import common.MyTextStyleParam
+import common.SingleSelectionType
 import extensions.toColor
 import extensions.toMyColorARGB
 import ru.ragefalcon.sharedcode.models.data.ItemSettTyperasxod
@@ -34,10 +37,9 @@ class ComItemTypeRasxSett(
         MyCardStyle1(
             selection.isActive(item), 0, {
                 selection.selected = item
-//                expandedDropMenu.value = this.buttons.isSecondaryPressed
             },
             dropMenu = { exp -> dropMenu(item, exp) }, backColor = if (!item.open)
-                Color.Red.toMyColorARGB().plusWhite().plusWhite().toColor().copy(alpha = 0.7f)// Color(0xFF468F45)
+                Color.Red.toMyColorARGB().plusWhite().plusWhite().toColor().copy(alpha = 0.7f)
             else
                 Color(0xFF464D45)
         ) {

@@ -18,7 +18,6 @@ class SettingsFinFragment  : BaseFragmentVM<FragmentFinSettBinding>(FragmentFinS
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//            if (context is Postman) activity = context //as Activity
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

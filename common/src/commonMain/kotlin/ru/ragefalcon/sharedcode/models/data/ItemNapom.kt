@@ -1,12 +1,11 @@
 package ru.ragefalcon.sharedcode.models.data
 
-import kotlinx.serialization.Serializable
 import ru.ragefalcon.sharedcode.extensions.Parcelable
 import ru.ragefalcon.sharedcode.extensions.Parcelize
 
 
 @Parcelize
-data class ItemNapom (
+data class ItemNapom(
     val id: String,
     val idplan: String,
     val idstap: String,
@@ -17,7 +16,7 @@ data class ItemNapom (
     var gotov: Boolean,
     override val sver: Boolean = true
 ) : SverOpis<ItemNapom>, Id_class(id_main = id.toString()), Parcelable {
-    override fun sver(newSver: Boolean): ItemNapom = this.copy( sver = newSver)
+    override fun sver(newSver: Boolean): ItemNapom = this.copy(sver = newSver)
 }
 
 

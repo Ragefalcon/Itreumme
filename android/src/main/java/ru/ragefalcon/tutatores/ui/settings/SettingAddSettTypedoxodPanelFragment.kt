@@ -15,9 +15,10 @@ class SettingAddSettTypedoxodPanelFragment(item: ItemSettTypedoxod? = null) :
 
     override fun addNote() {
         with(binding) {
-            viewmodel.finSpis.spisTypedoxodForSett.getLiveData().value?.find { it.typed == editNameText.text.toString() }?.let {
-                showMyMessage("Тип дохода с таким именем уже есть.")
-            } ?: run {
+            viewmodel.finSpis.spisTypedoxodForSett.getLiveData().value?.find { it.typed == editNameText.text.toString() }
+                ?.let {
+                    showMyMessage("Тип дохода с таким именем уже есть.")
+                } ?: run {
                 viewmodel.addFin.addTypedoxod(
                     name = editNameText.text.toString()
                 )

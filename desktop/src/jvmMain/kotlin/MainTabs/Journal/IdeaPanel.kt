@@ -25,47 +25,6 @@ import ru.ragefalcon.sharedcode.source.disk.getValue
 import viewmodel.MainDB
 import viewmodel.StateVM
 
-
-//private class PanelState {
-//    val collapsedSize = 24.dp
-//    var expandedSize by mutableStateOf(300.dp)
-//    val expandedSizeMin = 90.dp
-//    var isExpanded by mutableStateOf(true)
-//    val splitter = SplitterState()
-//}
-//
-//@Composable
-//private fun ResizablePanel(
-//    modifier: Modifier,
-//    state: PanelState,
-//    expandable: Boolean = false,
-//    content: @Composable () -> Unit,
-//) {
-//    val alpha by animateFloatAsState(if (state.isExpanded) 1f else 0f, SpringSpec(stiffness = Spring.StiffnessLow))
-//
-//    Box(modifier) {
-//        Box(Modifier.fillMaxSize().graphicsLayer(alpha = alpha)) {
-//            content()
-//        }
-//
-//        if (expandable) {
-//            Icon(
-//                if (state.isExpanded) Icons.Default.ArrowBack else Icons.Default.ArrowForward,
-//                contentDescription = if (state.isExpanded) "Collapse" else "Expand",
-//                tint = LocalContentColor.current,
-//                modifier = Modifier
-//                    .padding(top = 4.dp)
-//                    .width(24.dp)
-//                    .clickable {
-//                        state.isExpanded = !state.isExpanded
-//                    }
-//                    .padding(4.dp)
-//                    .align(Alignment.TopEnd)
-//            )
-//        }
-//    }
-//}
-
 class IdeaPanel(val listStateIdea: MyLazyListState) {
 
 
@@ -79,15 +38,7 @@ class IdeaPanel(val listStateIdea: MyLazyListState) {
 
     @Composable
     fun show(dialLay: MyDialogLayout) {
-/*
-        LaunchedEffect(StateVM.selectionIdea.selected) {
-            println("LaunchedEffect(StateVM.selectionIdea.selected)")
-            StateVM.openIdeaOpis.value = false
-            StateVM.selectionIdeaStap.selected = null
-        }
-*/
         listStateIdea.launchEffect()
-//        val scrollState = rememberLazyListState(0)
 
         val panelState = remember { PanelState().apply { expandedSize = 350.dp } }
         val animatedSize =
@@ -108,7 +59,7 @@ class IdeaPanel(val listStateIdea: MyLazyListState) {
                     panelState.expandedSize =
                         (panelState.expandedSize + it).coerceAtLeast(panelState.expandedSizeMin)
                 },
-                color = Color.Transparent,// MyColorARGB.colorMyMainTheme.toColor(),
+                color = Color.Transparent,
                 splitStyle = {
                     Box(
                         Modifier.padding(vertical = 50.dp).fillMaxHeight().width(2.dp).background(
@@ -124,10 +75,8 @@ class IdeaPanel(val listStateIdea: MyLazyListState) {
                 }
             ) {
                 ResizablePanel(Modifier.width(animatedSize).fillMaxHeight(), panelState) {
-
-
                     Column(
-                        Modifier.weight(1f),//.fillMaxWidth(),//0.03F + 0.97F*progressGotov.value), //.width(animatedSize) 0.3f),// 0.38f),//
+                        Modifier.weight(1f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         if ((MainDB.journalSpis.spisIdea.getState().value?.size ?: 0) > 0) {
@@ -155,7 +104,7 @@ class IdeaPanel(val listStateIdea: MyLazyListState) {
                                         }
                                         DropdownMenuItem(onClick = {
                                             if (item.podstapcount == 0L) {
-                                                MainDB.addJournal.delIdea(item.id.toLong()){
+                                                MainDB.addJournal.delIdea(item.id.toLong()) {
                                                     MainDB.complexOpisSpis.spisComplexOpisForIdea.delAllImageForItem(it)
                                                 }
                                             } else {
@@ -200,7 +149,7 @@ class IdeaPanel(val listStateIdea: MyLazyListState) {
                                 width = 70.dp,
                                 height = 35.dp,
                                 myStyleToggleButton = ToggleButtonStyleState(MainDB.styleParam.journalParam.findIdeaStapButt)
-                            ){
+                            ) {
                                 StateVM.selectionIdea.selected?.id?.toLong()?.let { id ->
                                     MainDB.journalFun.setIdeaForSpisStapIdea(
                                         id,
@@ -209,20 +158,13 @@ class IdeaPanel(val listStateIdea: MyLazyListState) {
                                     )
                                 }
                             }
-/*
-                            MyTextToggleButtStyle1(
-                                "\uD83D\uDD0E",
+                            MyTextButtStyle1(
+                                "+",
                                 modifier = Modifier.padding(start = 15.dp),
-                                value = searchOpen
-                            ) {
-                            }
-*/
-                            MyTextButtStyle1("+",
-                                modifier = Modifier.padding(start = 15.dp),
-//                                modifierText = Modifier.padding(0.dp),
                                 width = 70.dp,
                                 height = 35.dp,
-                                myStyleTextButton = TextButtonStyleState(MainDB.styleParam.journalParam.addIdeaButt)) {
+                                myStyleTextButton = TextButtonStyleState(MainDB.styleParam.journalParam.addIdeaButt)
+                            ) {
                                 PanAddIdea(dialLay)
                             }
                             MyTextButtStyle1(
@@ -244,13 +186,11 @@ class IdeaPanel(val listStateIdea: MyLazyListState) {
                         }
                     }
                 }
-                MyShadowBox(MainDB.styleParam.journalParam.idea_stap_plate.shadow.getValue()){
+                MyShadowBox(MainDB.styleParam.journalParam.idea_stap_plate.shadow.getValue()) {
                     Column(
-                        modifier = Modifier//.padding(bottom = 0.dp, top = 0.dp)
-                            .padding(start = 10.dp)//.animateContentSize()
-                            .withSimplePlate(SimplePlateWithShadowStyleState(MainDB.styleParam.journalParam.idea_stap_plate))
-//                            .padding(bottom = 10.dp)
-                        ,
+                        modifier = Modifier
+                            .padding(start = 10.dp)
+                            .withSimplePlate(SimplePlateWithShadowStyleState(MainDB.styleParam.journalParam.idea_stap_plate)),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         StateVM.selectionIdea.selected?.let {

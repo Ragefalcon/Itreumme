@@ -1,29 +1,20 @@
 package extensions
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import common.MyDropdownMenuStyle1
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun BoxWithMyRightClick (
+fun BoxWithMyRightClick(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}, //MouseClickScope.
-    onDoubleClick: () -> Unit = {}, //MouseClickScope.
+    onClick: () -> Unit = {},
+    onDoubleClick: () -> Unit = {},
     dropMenu: @Composable ColumnScope.(MutableState<Boolean>) -> Unit = { },
     content: @Composable () -> Unit
 ) {
@@ -42,36 +33,12 @@ fun BoxWithMyRightClick (
                         false
                     }
                 )
-//                .then(modifier)
-
-//            .mouseClickable {
-//                expandedDropMenuRightButton.value = this.buttons.isSecondaryPressed
-//            }
-//            .combinedClickable(object : MutableInteractionSource {
-//                // TODO: consider replay for new indication instances during events?
-//                override val interactions = MutableSharedFlow<Interaction>(
-//                    extraBufferCapacity = 16,
-//                    onBufferOverflow = BufferOverflow.DROP_LATEST,
-//                )
-//
-//                override suspend fun emit(interaction: Interaction) {
-//                    interactions.emit(interaction)
-//                }
-//
-//                override fun tryEmit(interaction: Interaction): Boolean {
-//                    return interactions.tryEmit(interaction)
-//                }
-//            }, null, onDoubleClick = { onDoubleClick() }) {
-//                onClick()
-//            }
-//                .animateContentSize()
                 .mouseDoubleClick(onClick = {
-//                    expandedDropMenuRightButton.value = this.buttons.isSecondaryPressed
                     onClick()
                 }, onDoubleClick = { onDoubleClick() },
-                rightClick = {
-                    expandedDropMenuRightButton.value = true
-                }),
+                    rightClick = {
+                        expandedDropMenuRightButton.value = true
+                    }),
         )
         {
             content()
@@ -80,7 +47,7 @@ fun BoxWithMyRightClick (
                     .padding(start = if (xBox >= 0.dp) xBox else 0.dp, top = if (yBox >= 0.dp) yBox else 0.dp)
             ) {
                 Box(Modifier.height(0.dp).width(0.dp)) {
-                    MyDropdownMenuStyle1(expandedDropMenuRightButton) { setDissFun ->
+                    MyDropdownMenuStyle1(expandedDropMenuRightButton) { _ ->
                         dropMenu(expandedDropMenuRightButton)
                     }
 

@@ -1,7 +1,6 @@
 package MainTabs.Setting.Element
 
 import MyDialog.MyDialogLayout
-import adapters.MyComboBox
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -28,7 +27,7 @@ fun PanAddValut(
         val text_name = remember { mutableStateOf(TextFieldValue(item?.name ?: "")) }
         val text_cod = remember { mutableStateOf(TextFieldValue(item?.cod ?: "")) }
         val kurs = remember { mutableStateOf(TextFieldValue(item?.kurs?.roundToString(2) ?: "0.00")) }
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 MyOutlinedTextField("Название валюты", text_name)
                 MyOutlinedTextField("Код валюты", text_cod)
@@ -37,7 +36,9 @@ fun PanAddValut(
                     MyTextButtStyle1("Отмена") {
                         dialPan.close()
                     }
-                    if ((text_name.value.text != "") && (text_cod.value.text != "") && ((kurs.value.text.toDoubleOrNull() ?: 0.0) != 0.0)){
+                    if ((text_name.value.text != "") && (text_cod.value.text != "") && ((kurs.value.text.toDoubleOrNull()
+                            ?: 0.0) != 0.0)
+                    ) {
                         if (item != null && item.id != "-1") {
                             MyTextButtStyle1("Изменить", Modifier.padding(start = 5.dp)) {
                                 MainDB.addFinFun.updValut(

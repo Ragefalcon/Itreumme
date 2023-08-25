@@ -36,12 +36,9 @@ import ru.ragefalcon.sharedcode.models.data.ItemEffekt
 import ru.ragefalcon.sharedcode.source.disk.getValue
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.tabElement
 import viewmodel.MainDB
-import viewmodel.StateVM
 import java.util.*
 
 class MainTimeTabs(val dialLay: MyDialogLayout) {
-
-//    val dialLay = MyDialogLayout()
 
     enum class TimeTabsEnum(override val nameTab: String) : tabElement {
         Plans("Проекты"),
@@ -54,7 +51,6 @@ class MainTimeTabs(val dialLay: MyDialogLayout) {
     val denPlans = DenPlanTab(dialLay)
     val vxodTab = VxodTab(dialLay)
 
-    //    val planTab = PlanTab(dialLay)
     val planTab = PlanTabAnim()
 
     private val selection = SingleSelectionType<ItemEffekt>()
@@ -73,7 +69,7 @@ class MainTimeTabs(val dialLay: MyDialogLayout) {
                     timeSeekBar.show(
                         Modifier.fillMaxWidth().padding(bottom = 0.dp),
                         MainDB.styleParam.timeParam.seekBarStyle
-                    )//weight(1f))
+                    )
                     when (timeSeekBar.active) {
                         TimeTabsEnum.Plans -> planTab.show(dialLay)
                         TimeTabsEnum.DenPlans -> denPlans.show()
@@ -110,7 +106,7 @@ class MainTimeTabs(val dialLay: MyDialogLayout) {
                             }
                         }
                     }
-                    LaunchedEffect(MainDB.timeFun.currentDate.getState().value){
+                    LaunchedEffect(MainDB.timeFun.currentDate.getState().value) {
                         MainDB.timeSpis.spisSrokForPlanAndStap.getState().value?.let { listSrok ->
                             Date().time.longMinusTimeUTC().let { nowTime ->
                                 with(MainDB.interfaceSpis.timeServiceParam) {
@@ -125,78 +121,88 @@ class MainTimeTabs(val dialLay: MyDialogLayout) {
                     MainDB.timeSpis.spisSrokForPlanAndStap.getState().value?.let { listSrok ->
                         Date().time.longMinusTimeUTC().let { nowTime ->
                             with(TextButtonStyleState(MainDB.styleParam.timeParam.timelineCommonParam.buttTimeline)) {
-                            val interactionSource = remember { MutableInteractionSource() }
-                            val isHovered by interactionSource.collectIsHoveredAsState()
+                                val interactionSource = remember { MutableInteractionSource() }
+                                val isHovered by interactionSource.collectIsHoveredAsState()
 
-                            with(LocalDensity.current) {
-                                MyShadowBox(
-                                    shadow.copy(
-                                        blurRadius = getElevation().elevation(
-                                            true,
-                                            interactionSource
-                                        ).value.toPx()
-                                    ),
-                                    Modifier
-                                ) {
-                                    Box(
+                                with(LocalDensity.current) {
+                                    MyShadowBox(
+                                        shadow.copy(
+                                            blurRadius = getElevation().elevation(
+                                                true,
+                                                interactionSource
+                                            ).value.toPx()
+                                        ),
                                         Modifier
-                                            .clip(shapeCard)
-                                            .width(300.dp)
-                                            .run{
-                                                if (MainDB.interfaceSpis.timeServiceParam.alarmSrokStart.getValue()) this
-                                                    .border(BorderStroke(borderWidth, MainDB.styleParam.timeParam.timelineCommonParam.borderButtTimeline.getValue()), shapeCard)
-                                                    .background( MainDB.styleParam.timeParam.timelineCommonParam.backgroundButtTimeline.getValue(), shapeCard)
-                                                else this
-                                                    .border(BorderStroke(borderWidth, border), shapeCard)
-                                                    .background(background, shapeCard)
-                                            }
-                                            .padding(vertical = 8.dp)
-                                            .clickable(
-                                                interactionSource = interactionSource,
-                                                indication = null//rememberRipple(),
-                                            ) {
-                                                if (MainDB.interfaceSpis.timeServiceParam.alarmSrokStart.getValue()){
-                                                    MainDB.interfaceSpis.timeServiceParam.alarmSrokStart.itrObj.value = false
-                                                }
-                                                panTimeline(dialLay)
-                                            },
-                                        contentAlignment = Alignment.Center
                                     ) {
-                                        Column(
-//                                            Modifier.fillMaxWidth(),
-                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        Box(
+                                            Modifier
+                                                .clip(shapeCard)
+                                                .width(300.dp)
+                                                .run {
+                                                    if (MainDB.interfaceSpis.timeServiceParam.alarmSrokStart.getValue()) this
+                                                        .border(
+                                                            BorderStroke(
+                                                                borderWidth,
+                                                                MainDB.styleParam.timeParam.timelineCommonParam.borderButtTimeline.getValue()
+                                                            ), shapeCard
+                                                        )
+                                                        .background(
+                                                            MainDB.styleParam.timeParam.timelineCommonParam.backgroundButtTimeline.getValue(),
+                                                            shapeCard
+                                                        )
+                                                    else this
+                                                        .border(BorderStroke(borderWidth, border), shapeCard)
+                                                        .background(background, shapeCard)
+                                                }
+                                                .padding(vertical = 8.dp)
+                                                .clickable(
+                                                    interactionSource = interactionSource,
+                                                    indication = null
+                                                ) {
+                                                    if (MainDB.interfaceSpis.timeServiceParam.alarmSrokStart.getValue()) {
+                                                        MainDB.interfaceSpis.timeServiceParam.alarmSrokStart.itrObj.value =
+                                                            false
+                                                    }
+                                                    panTimeline(dialLay)
+                                                },
+                                            contentAlignment = Alignment.Center
                                         ) {
-                                            Text(
-                                                "Таймлайн",
-                                                modifier = Modifier
-                                                    .offset(
-                                                        if (isHovered) offsetTextHover.x.dp else 0.dp,
-                                                        if (isHovered) offsetTextHover.y.dp else 0.dp
+                                            Column(
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
+                                                Text(
+                                                    "Таймлайн",
+                                                    modifier = Modifier
+                                                        .offset(
+                                                            if (isHovered) offsetTextHover.x.dp else 0.dp,
+                                                            if (isHovered) offsetTextHover.y.dp else 0.dp
+                                                        )
+                                                        .padding(0.dp),
+                                                    style = textStyle.copy(
+                                                        fontSize = textStyle.fontSize,
+                                                        textAlign = TextAlign.Center,
+                                                        shadow = if (isHovered) textStyleShadowHover.shadow else textStyle.shadow
                                                     )
-                                                    .padding(0.dp),
-                                                style = textStyle.copy(
-                                                    fontSize = textStyle.fontSize,
-                                                    textAlign = TextAlign.Center,
-                                                    shadow = if (isHovered) textStyleShadowHover.shadow else textStyle.shadow
                                                 )
-                                            )
-                                            RowVA {
+                                                RowVA {
                                                     with(MainDB.styleParam.timeParam.timelineCommonParam) {
                                                         textTimelineInfo.getValue().let { textInfo ->
                                                             Text(
-                                                                listSrok.count { it.data1.unOffset() > nowTime }.toString(),
+                                                                listSrok.count { it.data1.unOffset() > nowTime }
+                                                                    .toString(),
                                                                 style = textInfo.copy(
                                                                     color = color_info_future.getValue().toColor()
                                                                 )
                                                             )
                                                             Text(
-                                                                listSrok.count { it.data2.unOffset() >= nowTime && it.data1.unOffset() <= nowTime }.toString(),
+                                                                listSrok.count { it.data2.unOffset() >= nowTime && it.data1.unOffset() <= nowTime }
+                                                                    .toString(),
                                                                 modifier = Modifier.padding(start = 10.dp),
                                                                 style = textInfo.copy(
                                                                     color = color_info_present.getValue().toColor()
                                                                 )
                                                             )
-                                                            listSrok.count { it.data2.unOffset() < nowTime }.let{
+                                                            listSrok.count { it.data2.unOffset() < nowTime }.let {
                                                                 if (it > 0) Text(
                                                                     it.toString(),
                                                                     modifier = Modifier.padding(start = 10.dp),

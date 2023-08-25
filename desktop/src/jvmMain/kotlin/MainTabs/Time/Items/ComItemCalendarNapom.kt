@@ -15,8 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import common.MyDropdownMenu
@@ -88,7 +86,7 @@ fun ComItemCalendarNapom(
                 MyDropdownMenu(
                     expandedDropMenu,
                     ItemNapomStyleState(MainDB.styleParam.timeParam.denPlanTab.itemNapom).dropdown
-                ) {  //setDissFun ->
+                ) {
                     DropdownMenuNapom(item, expandedDropMenu, dialLay(), calendar = true)
                 }
             }

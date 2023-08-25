@@ -1,27 +1,24 @@
 package common
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.MouseClickScope
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.unit.dp
 import extensions.mouseDoubleClick
 
-@OptIn(ExperimentalFoundationApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
+@OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Composable
 fun BoxWithRightClickContextMenu(
-    onClick: () -> Unit = {}, //
-    onDoubleClick: () -> Unit = {}, //MouseClickScope.
+    onClick: () -> Unit = {},
+    onDoubleClick: () -> Unit = {},
     modifier: Modifier = Modifier,
-    dropMenu: @Composable ColumnScope.( MutableState<Boolean>) -> Unit = { },
+    dropMenu: @Composable ColumnScope.(MutableState<Boolean>) -> Unit = { },
     content: @Composable () -> Unit
 ) {
     var xBox by remember { mutableStateOf(0.dp) }
     var yBox by remember { mutableStateOf(0.dp) }
-    val expandedDropMenuRightButton = remember {mutableStateOf(false) }
+    val expandedDropMenuRightButton = remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .pointerMoveFilter(
@@ -34,11 +31,9 @@ fun BoxWithRightClickContextMenu(
                 }
             )
             .then(modifier)
-//                .animateContentSize()
-            .mouseDoubleClick( onClick = {
-//                expandedDropMenuRightButton.value = this.buttons.isSecondaryPressed
+            .mouseDoubleClick(onClick = {
                 onClick()
-            }, onDoubleClick = {onDoubleClick()},
+            }, onDoubleClick = { onDoubleClick() },
                 rightClick = {
                     expandedDropMenuRightButton.value = true
                 })
@@ -50,7 +45,7 @@ fun BoxWithRightClickContextMenu(
                 .padding(start = if (xBox >= 0.dp) xBox else 0.dp, top = if (yBox >= 0.dp) yBox else 0.dp)
         ) {
             Box(Modifier.height(0.dp).width(0.dp)) {
-                MyDropdownMenuStyle1(expandedDropMenuRightButton) { setDissFun ->
+                MyDropdownMenuStyle1(expandedDropMenuRightButton) { _ ->
                     dropMenu(expandedDropMenuRightButton)
                 }
 

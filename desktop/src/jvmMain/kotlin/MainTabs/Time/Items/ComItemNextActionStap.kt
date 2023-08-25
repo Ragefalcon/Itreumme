@@ -1,27 +1,20 @@
 package MainTabs.Time.Items
 
 import MyDialog.MyDialogLayout
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.*
 import extensions.*
-import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 import ru.ragefalcon.sharedcode.models.data.ItemNextAction
 import ru.ragefalcon.sharedcode.models.data.ItemNextActionStap
 import ru.ragefalcon.sharedcode.source.disk.getValue
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TableNameForComplexOpis
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlanStap
 import viewmodel.MainDB
 
@@ -31,7 +24,7 @@ fun ComItemNextActionStap(
     selection: SingleSelectionType<ItemNextAction>,
     sort: MutableState<Boolean>,
     onClick: (ItemNextActionStap) -> Unit,
-    doubleClick: (ItemNextActionStap,()->Unit) -> Unit,
+    doubleClick: (ItemNextActionStap, () -> Unit) -> Unit,
     dialL: MyDialogLayout
 ) {
 
@@ -58,7 +51,7 @@ fun ComItemNextActionStap(
             style = itemCommonStyle.dropdown,
             "Запланировать и убрать из сл. д."
         ) {
-            doubleClick(item){
+            doubleClick(item) {
                 MainDB.timeSpis.spisAllPlanStap.getState().value?.find { it.id == itemNA.stap_prpl.toString() }?.let {
                     MainDB.addTime.updStatPlanStap(
                         it,
@@ -111,9 +104,9 @@ fun ComItemNextActionStap(
                 onClick(item)
             },
             onDoubleClick = {
-                doubleClick(item){}
+                doubleClick(item) {}
             },
-//            modifier = modifier,
+
             dropMenu = { dropMenu(item, it) },
             styleSettings = itemCommonStyle ?: this
         ) {
@@ -131,7 +124,7 @@ fun ComItemNextActionStap(
                                 30.dp,
                                 Modifier.padding(horizontal = 5.dp)
                             )
-                            if (sort.value){
+                            if (sort.value) {
                                 MyTextButtWithoutBorder(
                                     "\uD83E\uDC45",
                                     fontSize = 18.sp,
@@ -162,13 +155,13 @@ fun ComItemNextActionStap(
                                 text = AnnotatedString(
                                     text = "[${item.namePlan}] ",
                                     spanStyle = viewmodel.MainDB.styleParam.timeParam.boxSelectParentPlanParam.textParentPlan.getValue()
-                                        .toSpanStyle() //SpanStyle(fontSize = textSumm.fontSize)
+                                        .toSpanStyle()
                                 ).plus(
                                     AnnotatedString(
                                         text = item.nameStap,
                                     )
                                 ),
-                                Modifier.padding( end = 5.dp).weight(1f),
+                                Modifier.padding(end = 5.dp).weight(1f),
                                 style = mainTextStyle
                             )
                             if (selection.isActive(item)) MyButtDropdownMenuStyle2(
@@ -176,10 +169,10 @@ fun ComItemNextActionStap(
                                 expandedDropMenu,
                                 buttMenu,
                                 dropdown
-                            ) { //setDissFun ->
+                            ) {
                                 dropMenu(item, expandedDropMenu)
-                            }  else Spacer(Modifier.width(30.dp))
-                            listOpis?.also {  //if (item.opis != "")
+                            } else Spacer(Modifier.width(30.dp))
+                            listOpis?.also {
                                 RotationButtStyle1(
                                     expandedOpis,
                                     Modifier.padding(start = 0.dp, end = 0.dp),
@@ -207,7 +200,6 @@ fun ComItemNextActionStap(
                                         MainDB.styleParam.timeParam.denPlanTab.complexOpisForDenPlan.plateView,
                                         shape = MainDB.styleParam.timeParam.denPlanTab.panSelectShablon.cornerOpisStap.getValue()
                                     )
-
                                 )
                             )
                         }

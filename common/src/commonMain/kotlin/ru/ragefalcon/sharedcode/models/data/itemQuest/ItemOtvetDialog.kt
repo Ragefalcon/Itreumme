@@ -10,16 +10,5 @@ class ItemOtvetDialog(
     val dialog_id: Long,
     val text: String,
     val order_number: Long,
-    ) : Id_class(id_main = id) {
-}
-
-@Parcelize
-class ItemOtvetDialogQuest(
-    val id: String,
-    val quest_id: Long,
-    val key_id: Long,
-    val dialog_id: Long,
-    val text: String,
-    val order_number: Long,
-    ) : Id_class(id_main = id) {
+) : Id_class(id_main = id) {
 }

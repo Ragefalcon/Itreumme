@@ -18,15 +18,15 @@ fun MyFullScreenPanel(
     labelButton: String = "Скрыть",
     showHideButton: Boolean = true,
     listener: () -> Unit = {},
-    body: @Composable ColumnScope.(MyDialogLayout,() -> Unit) -> Unit
+    body: @Composable ColumnScope.(MyDialogLayout, () -> Unit) -> Unit
 ) {
     val dialLayInner = MyDialogLayout()
 
     dialPan.dial = @Composable {
-        BackgroungPanelStyle1(shapePanel = MainDB.styleParam.appBarStyle.shape_window.getValue()) { //modif ->
+        BackgroungPanelStyle1(shapePanel = MainDB.styleParam.appBarStyle.shape_window.getValue()) {
 
             Column(Modifier.fillMaxSize().padding(30.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                body(dialLayInner){
+                body(dialLayInner) {
                     listener()
                     dialPan.close()
                 }

@@ -23,7 +23,7 @@ fun PanAddSchetPlan(
     dialPan: MyDialogLayout,
     item: ItemSettSchetPlan? = null,
     nameElement: String? = null,
-    bind_element: Pair<TypeBindElementForSchetPlan,Long>? = null
+    bind_element: Pair<TypeBindElementForSchetPlan, Long>? = null
 ) {
     dialPan.dial = @Composable {
         val text_name = remember { mutableStateOf(TextFieldValue(item?.name ?: nameElement ?: "")) }
@@ -54,7 +54,7 @@ fun PanAddSchetPlan(
             }
             return -1.0
         }
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp).animateContentSize(), horizontalAlignment = Alignment.CenterHorizontally) {
                 MyOutlinedTextField("Название счета", text_name)
                 MyCheckbox(checkMin, "Минимальная цель", Modifier.padding(end = 15.dp))

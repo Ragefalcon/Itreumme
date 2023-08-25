@@ -9,7 +9,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import common.BackgroungPanelStyle1
 import common.MyTextButtStyle1
-import common.MyTextStyle1
 import extensions.MyRectF
 import extensions.SimplePlateStyleState
 import extensions.TextButtonStyleState
@@ -27,10 +26,14 @@ fun MyShowMessage(
         BackgroungPanelStyle1(
             vignette = stylePanel.VIGNETTE.getValue(),
             style = SimplePlateStyleState(stylePanel.platePanel)
-        ) { //modif ->
+        ) {
             Column(Modifier.padding(15.dp).fillMaxWidth(0.6F), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(message, style = stylePanel.textName.getValue().copy(textAlign = TextAlign.Center))
-                MyTextButtStyle1(answer, Modifier.padding(top = 5.dp), myStyleTextButton = TextButtonStyleState(stylePanel.butt)) {
+                MyTextButtStyle1(
+                    answer,
+                    Modifier.padding(top = 5.dp),
+                    myStyleTextButton = TextButtonStyleState(stylePanel.butt)
+                ) {
                     rezFun()
                     dialPan.close()
                 }

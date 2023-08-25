@@ -8,7 +8,7 @@ CREATE TABLE spis_stap_plan (
     data2     INTEGER NOT NULL,
     opis      TEXT NOT NULL,
     stat      INTEGER NOT NULL,
-    svernut   TEXT NOT NULL, --INTEGER AS Boolean NOT NULL, -- DEFAULT 0 NOT NULL
+    svernut   TEXT NOT NULL,
     idplan    INTEGER NOT NULL,
     quest_id  INTEGER NOT NULL DEFAULT 0,
     quest_key_id  INTEGER NOT NULL DEFAULT 0,

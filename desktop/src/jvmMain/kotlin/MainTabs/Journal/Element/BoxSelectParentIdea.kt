@@ -43,7 +43,7 @@ class BoxSelectParentIdea(
 
     fun isExpanded() = expandedSelBloknot.value || expandedSelIdea.value
 
-    fun expandSpisIdea(){
+    fun expandSpisIdea() {
         selectionBloknotParent.selected?.let {
             expandedSelIdea.value = true
         }
@@ -74,7 +74,6 @@ class BoxSelectParentIdea(
                 selectionBloknotParent.selected?.let {
                     if (!onlyIdea) ItemBloknotPlate(
                         it,
-//                        modifier = Modifier.padding(bottom = 5.dp)
                     ) {
                         expandedSelBloknot.value = true
                     }.getComposable()
@@ -85,7 +84,7 @@ class BoxSelectParentIdea(
                             selectionIdeaParent.selected?.let {
                                 ItemIdeaPlate(
                                     it, itemIdeaStyleState = ItemIdeaStyleState(MainDB.styleParam.journalParam.itemIdea)
-//                                    Modifier.padding(horizontal = 20.dp)
+
                                 ) {
                                     expandedSelIdea.value = true
                                 }
@@ -101,9 +100,6 @@ class BoxSelectParentIdea(
                             ) { ind, itemIdea ->
                                 ComItemIdea(
                                     itemIdea, selectionIdeaParent,
-//                                    sverFun = {
-//                                    MainDB.journalFun..setExpandStapPlan(it.id.toLong(), it.svernut.not())
-//                                },
                                     selFun = {
                                         expandedSelIdea.value = false
                                     }, editable = false,
@@ -129,12 +125,8 @@ class BoxSelectParentIdea(
                     ) { ind, itemBloknot ->
                         ComItemBloknot(itemBloknot, selectionBloknotParent, openBloknot = {
                             selectionIdeaParent.selected = null
-//                            MainDB.journalFun.setBloknotForSpisIdeaForSelect(
-//                                it.id.toLong(),
-//                                arrayIskl
-//                            ) //item?.id?.toLong()?.let { listOf(it) } ?: listOf())
                             expandedSelBloknot.value = false
-                        }, edit = false, itemBloknotStyleState =  itemBloknotStyle)
+                        }, edit = false, itemBloknotStyleState = itemBloknotStyle)
                     }
                 }
                 MyTextButtStyle1("Отменить выбор") {

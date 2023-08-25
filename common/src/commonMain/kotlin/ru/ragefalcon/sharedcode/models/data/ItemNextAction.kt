@@ -4,7 +4,6 @@ import ru.ragefalcon.sharedcode.extensions.Parcelable
 import ru.ragefalcon.sharedcode.extensions.Parcelize
 
 
-//@Parcelize
 sealed class ItemNextAction(id_main: String) : SverOpis<ItemNextAction>, Id_class(id_main), Parcelable {
     abstract val id: Long
     abstract val sort: Long
@@ -32,6 +31,7 @@ sealed class ItemNextAction(id_main: String) : SverOpis<ItemNextAction>, Id_clas
     override val sver: Boolean = true
     override fun sver(newSver: Boolean): ItemNextAction = this.myCopy(sver = newSver)
 }
+
 @Parcelize
 data class ItemNextActionStap(
     override val id: Long,
@@ -69,6 +69,7 @@ data class ItemNextActionStap(
         sver = sver
     )
 }
+
 @Parcelize
 data class ItemNextActionCommon(
     override val id: Long,
@@ -106,6 +107,7 @@ data class ItemNextActionCommon(
         sver = sver
     )
 }
+
 fun getItemNextAction(
     id: Long,
     sort: Long,
@@ -118,14 +120,14 @@ fun getItemNextAction(
     stap_prpl: Long,
     sver: Boolean = true
 ) = (if (common == 0L) ::ItemNextActionStap else ::ItemNextActionCommon).invoke(
-        id,
-        sort,
-        common,
-        name,
-        namePlan,
-        nameStap,
-        vajn,
-        privplan,
-        stap_prpl,
-        sver
+    id,
+    sort,
+    common,
+    name,
+    namePlan,
+    nameStap,
+    vajn,
+    privplan,
+    stap_prpl,
+    sver
 )

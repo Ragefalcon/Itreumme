@@ -12,7 +12,9 @@ import ru.ragefalcon.sharedcode.models.data.ItemDream
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.DreamRVItem
-import ru.ragefalcon.tutatores.commonfragments.*
+import ru.ragefalcon.tutatores.commonfragments.BaseFragmentVM
+import ru.ragefalcon.tutatores.commonfragments.MenuPopupButton
+import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentDreamBinding
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
 

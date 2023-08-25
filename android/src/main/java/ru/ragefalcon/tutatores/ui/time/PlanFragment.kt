@@ -40,13 +40,11 @@ class PlanFragment : BaseFragmentVM<FragmentPlanBinding>(FragmentPlanBinding::in
     var selProgressBar: ProgressBar? = null
     var changeItemGotov: ((Double) -> Unit)? = null
 
-
     var scipUpd = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val imageFadeTransition = Slide().addTarget(R.id.cl_stap_plan)
-//        val textSlideTransition = Slide().addTarget(R.id.tv_test_plan)
         val textSlideTransition = ChangeBounds().addTarget(R.id.tv_plan_name)
         val rvBoundsTransition = Slide().addTarget(R.id.rv_plan_list)
         val customAnimTransition = TransitionSet().apply {
@@ -61,7 +59,6 @@ class PlanFragment : BaseFragmentVM<FragmentPlanBinding>(FragmentPlanBinding::in
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("MyTut", "PlanFrag: onViewCreated")
         val menuPopupPlan = MyPopupMenuItem<ItemPlan>(this, "PlanDelChange").apply {
             addButton(MenuPopupButton.UNEXECUTE) {
                 viewmodel.addTime.updStatPlan(item = it, stat = 0)
@@ -191,10 +188,6 @@ class PlanFragment : BaseFragmentVM<FragmentPlanBinding>(FragmentPlanBinding::in
             stateViewModel.selectItemPlan.observe(viewLifecycleOwner) { plan ->
                 plan?.let {
                     viewmodel.timeFun.setPlanForCountStapPlan(it.id.toLong())
-//                    lifecycleScope.launch(Dispatchers.Main) {
-//                        tvPlanName.text = "${it.name}. Этапов: ${it.countstap}"
-////                  tvPlanName.requestLayout()
-//                    }
                 }
             }
             viewmodel.timeFun.setListenerCountStapPlan { count ->
@@ -241,7 +234,6 @@ class PlanFragment : BaseFragmentVM<FragmentPlanBinding>(FragmentPlanBinding::in
             }
             buttAddPlan.setOnClickListener {
                 stateViewModel.tmpTimeStampLong = Calendar.getInstance().time.time
-                Log.d("MyTut", "timeStamp: ${Calendar.getInstance().time.time}");
                 showAddChangeFragDial(TimeAddPlanFragDialog(), requireActivity().supportFragmentManager)
             }
         }

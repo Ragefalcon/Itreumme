@@ -65,8 +65,6 @@ class TimeAddPlanFragDialog(item: ItemPlan? = null) : FragAddChangeDialHelper<It
             dateEndPlan.setPattern("до dd MMM yyyy (EEE)")
             cbSrokPlan.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
-//                dateStartPlan.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-//                expand(clSrokPlan,height = heightCl,duration = 300)
                     expand(clSrokPlan, duration = 300)
                 } else {
                     collapse(clSrokPlan, duration = 300)

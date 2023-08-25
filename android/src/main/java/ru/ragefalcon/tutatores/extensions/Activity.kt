@@ -20,15 +20,14 @@ typealias OnSystemBarsSizeChangedListener =
 private fun View.isKeyboardAppeared(bottomInset: Int) =
     bottomInset / context.getResources().getDisplayMetrics().heightPixels.toDouble() > .25
 
-fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int){
-    if(view.layoutParams is ViewGroup.MarginLayoutParams){
-        val screenDesity: Float = view.context.resources.displayMetrics.density
+fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
+    if (view.layoutParams is ViewGroup.MarginLayoutParams) {
         val params: ViewGroup.MarginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
         params.setMargins(left, top, right, bottom)
-//        params.setMargins(left*screenDesity.toInt(), top*screenDesity.toInt(), right*screenDesity.toInt(), bottom*screenDesity.toInt())
         view.requestLayout()
     }
 }
+
 fun calculateDesiredBottomInset(
     view: View,
     topInset: Int,

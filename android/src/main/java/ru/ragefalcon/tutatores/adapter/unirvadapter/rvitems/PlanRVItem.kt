@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemPlan
 import ru.ragefalcon.tutatores.R
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
-import ru.ragefalcon.tutatores.databinding.ItemBloknotBinding
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemPlanBinding
 import ru.ragefalcon.tutatores.extensions.dpToPx
 import ru.ragefalcon.tutatores.extensions.rotateElemItem
@@ -61,7 +61,6 @@ class PlanRVItem(
             ivSelectIndic.requestLayout()
             textName.text = item.name
             textSumhour.text = item.hour.roundToString(1)
-//            text_data.text = Date(item.data).format("dd MMM yyyy")
             progbarGotov.progress = (progbarGotov.max * item.gotov / 100).toInt()
             textOpis.text = item.opis
             if (vh.itemView.isSelected) {
@@ -99,29 +98,6 @@ class PlanRVItem(
                         R.color.colorStatTimeSquareTint_03
                     ), PorterDuff.Mode.MULTIPLY
                 )
-//            0 -> iv_stat_dp.setColorFilter(Color.YELLOW, android.graphics.PorterDuff.Mode.MULTIPLY)
-//            3 -> iv_stat_dp.setColorFilter(
-//                MyColorARGB.DOXODDARKGREEN.toIntColor(),
-//                android.graphics.PorterDuff.Mode.MULTIPLY
-//            )
-                /**
-                 * https://stackoverflow.com/questions/20121938/how-to-set-tint-for-an-image-view-programmatically-in-android/45571812#45571812
-                 *
-                 * У пользователя @Tad есть свой ответ в правильном направлении, но он работает только с API 21+.
-                 * Чтобы установить оттенок на всех версиях Android, используйте ImageViewCompat:
-                 * ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(yourTint));
-                 * Обратите внимание, что yourTintв этом случае должен быть "цвет int". Если у вас есть ресурс цвета, например R.color.blue, вам нужно сначала загрузить цвет int:
-                 * ContextCompat.getColor(context, R.color.blue);
-                 * */
-                /**
-                 * https://stackoverflow.com/questions/20121938/how-to-set-tint-for-an-image-view-programmatically-in-android/45571812#45571812
-                 *
-                 * У пользователя @Tad есть свой ответ в правильном направлении, но он работает только с API 21+.
-                 * Чтобы установить оттенок на всех версиях Android, используйте ImageViewCompat:
-                 * ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(yourTint));
-                 * Обратите внимание, что yourTintв этом случае должен быть "цвет int". Если у вас есть ресурс цвета, например R.color.blue, вам нужно сначала загрузить цвет int:
-                 * ContextCompat.getColor(context, R.color.blue);
-                 * */
             }
             sverItemOpis(item.sver, false)
             ivStatDp.setOnClickListener {
@@ -131,13 +107,12 @@ class PlanRVItem(
                     vh.bindItem?.let { rvset.selFunc(it) }
                 }
             }
-            vh.itemView.setOnClickListener { // } .setOnClickListener {
+            vh.itemView.setOnClickListener {
                 vh.bindItem?.let { rvset.selFunc(it) }
             }
             vh.itemView.setOnLongClickListener {
                 vh.bindItem?.let { rvset.selFunc(it) }
                 listener?.invoke(item, vh.itemView)
-                Log.d("item", "До ${vh.itemView.javaClass}")
                 true
             }
         }

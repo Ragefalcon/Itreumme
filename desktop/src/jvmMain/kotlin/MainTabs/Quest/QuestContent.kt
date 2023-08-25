@@ -17,30 +17,29 @@ import common.DiskretSeekBarManyRows
 import common.SingleSelectionType
 import ru.ragefalcon.sharedcode.models.data.ItemEffekt
 import viewmodel.MainDB
-import viewmodel.QuestVM
 
 class QuestContent(val dialLay: MyDialogLayout) {
 
     val timeSeekBar =
         DiskretSeekBarManyRows(
-            listOf(listOf(
-                "Цели" to "Goal",
-                "Навыки" to "Skills",
-                "Проекты" to "Plans",
-            ),
             listOf(
-                "Диалоги" to "Dialogs",
-                "Ежедневник" to "DenPlans",
-                "для разработчика" to "Develop"
+                listOf(
+                    "Цели" to "Goal",
+                    "Навыки" to "Skills",
+                    "Проекты" to "Plans",
+                ),
+                listOf(
+                    "Диалоги" to "Dialogs",
+                    "Ежедневник" to "DenPlans",
+                    "для разработчика" to "Develop"
+                ),
             ),
-            ),
-//            "Plans",
+
             "Skills",
         )
-//    val denPlans = DenPlanTab(dialLay)
-//    val vxodTab = VxodTab(dialLay)
+
     val developQuestTab = DevelopQuestTab(dialLay)
-    val skillQuestTab = SkillsPanel(true) //QuestVM.openQuestDB) // SkillQuestTab(dialLay)
+    val skillQuestTab = SkillsPanel(true)
     val planQuestTab = PlanQuestTab(dialLay)
     val dialogQuestTab = DialogQuestTab(dialLay)
 
@@ -57,27 +56,31 @@ class QuestContent(val dialLay: MyDialogLayout) {
                     Modifier.background(color = Color(0xFF576350)).weight(1f).padding(10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    timeSeekBar.show(Modifier.fillMaxWidth().padding(bottom = 10.dp))//weight(1f))
+                    timeSeekBar.show(Modifier.fillMaxWidth().padding(bottom = 10.dp))
                     timeSeekBar.active?.let {
                         when (it.cod) {
                             "Plans" -> {
-//                                DreamsPanel().show(dialLay, Modifier.fillMaxWidth())
                                 planQuestTab.show()
                             }
+
                             "Skills" -> {
                                 skillQuestTab.show(dialLay)
                             }
+
                             "Dialogs" -> {
                                 dialogQuestTab.show()
                             }
+
                             "Develop" -> {
                                 developQuestTab.show()
                             }
+
                             "DenPlans" -> {
-//                                denPlans.show()
+
                             }
+
                             "Goal" -> {
-//                                vxodTab.show()
+
                             }
                         }
                     }

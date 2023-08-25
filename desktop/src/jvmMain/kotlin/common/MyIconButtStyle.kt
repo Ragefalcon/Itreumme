@@ -4,12 +4,10 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -25,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import extensions.IconButtonStyleState
 
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun MyIconButtStyle(
     nameRes: String,
@@ -58,14 +55,14 @@ fun MyIconButtStyle(
                             Color.Black,
                             Offset(if (isHovered) 4f else 2f, if (isHovered) 4f else 2f),
                             if (isHovered) 4f else 2f
-                        ),Modifier//.padding(4.dp)
+                        ), Modifier
                     ) {
                         Box(
                             Modifier.padding(2.dp)
                                 .offset(
-                                2.dp - (if (isHovered) 4f else 2f).dp,
-                                2.dp - (if (isHovered) 4f else 2f).dp
-                            )
+                                    2.dp - (if (isHovered) 4f else 2f).dp,
+                                    2.dp - (if (isHovered) 4f else 2f).dp
+                                )
                         ) {
                             Image(
                                 painterResource(nameRes),

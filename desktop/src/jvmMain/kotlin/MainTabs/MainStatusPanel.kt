@@ -13,9 +13,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
@@ -24,12 +24,11 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.useResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.AwtWindow
-import androidx.compose.material.Text
-import androidx.compose.ui.text.style.TextAlign
 import common.MyShadowBox
 import common.MyTextStyleParam
 import extensions.*
@@ -86,7 +85,6 @@ class MainStatusPanel(val dialogLayout: MyDialogLayout) {
      *
      * fileFilter в этой реализации совсем не работает причем это прописано уже описании класса FileDialog
      * */
-    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     private fun FileDialog(
         parent: Frame? = null, onCloseRequest: (result: String?) -> Unit
@@ -116,47 +114,22 @@ class MainStatusPanel(val dialogLayout: MyDialogLayout) {
 
                 onCloseRequest = {
                     isFileChooserOpen.value = false
-                    println("Result $it")
                 })
         }
         MyShadowBox(
             MainDB.styleParam.statusParam.shadow_panel.getValue(),
-        ){
+        ) {
             Row(
-                Modifier.fillMaxWidth().padding(bottom = 0.dp) //.height(avatarWidth - topPadding)
+                Modifier.fillMaxWidth().padding(bottom = 0.dp)
                     .paddingStyle(MainDB.styleParam.statusParam.outerPadding)
                     .withSimplePlate(SimplePlateWithShadowStyleState(MainDB.styleParam.statusParam.plateStatus))
-                    .paddingStyle(MainDB.styleParam.statusParam.inner_padding)
-/*
-                .border(
-                width = 1.dp, brush = Brush.horizontalGradient(listOf(Color.Black, Color.Black)),
-//            brush = Brush.horizontalGradient(listOf(Color(0xFFFFF7D9), Color(0xFFFFF7D9))),
-                shape = RoundedCornerShape(0.dp)
-            )
-                .background(
-                shape = RoundedCornerShape(corner = CornerSize(0.dp)),
-                color = MyColorARGB.colorBackGr3.toColor(),// Color(0xFF848077),
-            )
-*/
-                , verticalAlignment = Alignment.CenterVertically
+                    .paddingStyle(MainDB.styleParam.statusParam.inner_padding),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-//            avatar()
                 MainDB.timeSpis.spisVajnHour.getState().value?.let {
                     VajnHourDiagram(it,
-                        Modifier.width(200.dp).height(80.dp).onGloballyPositioned { //.padding(start = avatarWidth)
+                        Modifier.width(200.dp).height(80.dp).onGloballyPositioned {
                             StateVM.tmpVajnLayCoor = it
-//                            var layCoor = it.parentLayoutCoordinates
-//                            while (layCoor?.parentLayoutCoordinates!=null){
-//                                layCoor = layCoor.parentLayoutCoordinates
-//                            }
-//                            layCoor?.let { lCoor ->
-//                               val aa =  MyRectF(lCoor.localBoundingBoxOf(it))
-//                                println("LayCoor: ${aa.getRect()}")
-//                            }
-
-//                            println("LayCoor: ${it.localBoundingBoxOf(it.parentCoordinates!!)}")
-//                            println("LayCoor: ${it.localBoundingBoxOf(it.parentLayoutCoordinates!!)}")
-//                            println("LayCoor: ${it.localBoundingBoxOf(it.parentLayoutCoordinates!!.parentLayoutCoordinates!!)}")
                         }.clickable {
                             MyInfoShow(dialogLayout) {
                                 MainDB.timeSpis.spisVajnHour.getState().value?.let {
@@ -170,7 +143,7 @@ class MainStatusPanel(val dialogLayout: MyDialogLayout) {
                                         ) {
                                             if (itemHV.vajn == -1L) {
                                                 Image(
-                                                    painterResource("ic_baseline_nights_stay_24.xml"), //BitmapPainter(
+                                                    painterResource("ic_baseline_nights_stay_24.xml"),
                                                     "statDenPlan",
                                                     Modifier.height(40.dp).width(40.dp),
                                                     colorFilter = ColorFilter.tint(
@@ -182,7 +155,7 @@ class MainStatusPanel(val dialogLayout: MyDialogLayout) {
                                                 Image(
                                                     bitmap = useResource(
                                                         "ic_stat_00.png", ::loadImageBitmap
-                                                    ), //BitmapPainter(
+                                                    ),
                                                     "statDenPlan",
                                                     Modifier.height(40.dp).width(40.dp),
                                                     colorFilter = ColorFilter.tint(
@@ -198,7 +171,6 @@ class MainStatusPanel(val dialogLayout: MyDialogLayout) {
                                                     filterQuality = FilterQuality.High
                                                 )
                                             }
-
                                             Column(
                                                 Modifier.padding(start = 10.dp), horizontalAlignment = Alignment.End
                                             ) {
@@ -293,22 +265,22 @@ class MainStatusPanel(val dialogLayout: MyDialogLayout) {
                                     }
                                 }
                             }
-//                    MyShowMessage(dialPan = dialogLayout, message)
+
                         })
                 }
-                MainDB.styleParam.statusParam.itemStatus.getComposable(::ItemStatusStyleState){ itemS ->
+                MainDB.styleParam.statusParam.itemStatus.getComposable(::ItemStatusStyleState) { itemS ->
                     MainDB.styleParam.statusParam.itemTimeLife.getComposable(::ItemStatusStyleState) { itemTL ->
                         MainDB.avatarSpis.spisAvatarStat.getState().value?.let { listStat ->
                             Column(Modifier.padding(start = 3.dp).weight(1f)) {
                                 MyShadowBox(itemTL.shadow) {
                                     Box(
-                                        modifier = itemTL.outer_padding // Modifier
+                                        modifier = itemTL.outer_padding
                                             .fillMaxWidth()
                                             .background(itemTL.BACKGROUND, itemTL.shape)
                                             .border(
-                                                width = itemTL.BORDER_WIDTH, // 0.5.dp
+                                                width = itemTL.BORDER_WIDTH,
                                                 brush = itemTL.BORDER,
-                                                shape = itemTL.shape//  RoundedCornerShape(15.dp)
+                                                shape = itemTL.shape
                                             )
                                             .clickable {
                                                 StateVM.innerFinishAction.value = InnerFinishBirthdayAction()
@@ -323,7 +295,6 @@ class MainStatusPanel(val dialogLayout: MyDialogLayout) {
                                     ComItemStat(listStat[1], itemS).getComposable()
                                     ComItemStat(listStat[2], itemS).getComposable()
                                 }
-
                             }
                             Column(Modifier.weight(1f)) {
                                 if (listStat.size > 5) {
@@ -347,7 +318,7 @@ fun avatar(dialPan: MyDialogLayout, modifier: Modifier = Modifier, size: Dp = 18
     val avatarFile = File(StateVM.dirAvatar, CommonName.nameAvatarFile)
 
     MainDB.styleParam.statusParam.let { style ->
-    val shape = style.shape_avatar.getValue()// RoundedCornerShape(0.dp, 0.dp, 15.dp, 15.dp)
+        val shape = style.shape_avatar.getValue()
 
         val avatarF = remember {
             mutableStateOf(
@@ -355,32 +326,29 @@ fun avatar(dialPan: MyDialogLayout, modifier: Modifier = Modifier, size: Dp = 18
                     CommonName.nameDefaultAvatarResource,
                     ::loadImageBitmap
                 )
-//            if (avatarFile.exists()) imageFromFile(avatarFile) else useResource("iv_avatar.png", ::loadImageBitmap)
             )
         }
         MyShadowBox(
             style.shadow_avatar.getValue(),
             style.outerPaddingAvatar.getValue(modifier)
-                .height(size) //if (MainDB.styleParam.commonParam.HARD_BORDER.getValue()) size - 25.dp else size - 40.dp)
+                .height(size)
                 .width(size), contentAlignment = Alignment.BottomCenter
         ) {
             Image(
-                bitmap = avatarF.value, //useResource("iv_avatar.png", ::loadImageBitmap), //BitmapPainter(
+                bitmap = avatarF.value,
                 "defaultAvatar",
                 Modifier
                     .wrapContentSize()
-//                    .shadow(style.ELEVATION_AVATAR.getValue().dp, shape)
-                    .height(size)// - 25.dp)
-                    .width(size) // - 25.dp
+
+                    .height(size)
+                    .width(size)
                     .clickable {
                         PanViewAvatar(dialLay = dialPan, avatarF)
                     }
                     .clip(shape)
                     .border(style.BORDER_WIDTH_AVATAR.getValue().dp, style.BORDER_BRUSH_AVATAR.getValue(), shape)
-                    .padding(1.dp)
-//                .border(3.dp, Color(0x7FFFF7D9), shape2)
-                ,
-                contentScale = ContentScale.Crop,// Fit,
+                    .padding(1.dp),
+                contentScale = ContentScale.Crop,
             )
         }
     }
@@ -390,38 +358,31 @@ fun avatar(dialPan: MyDialogLayout, modifier: Modifier = Modifier, size: Dp = 18
 @Composable
 fun timeLife(
     style: ItemStatusStyleState
-//    mainParam: MyStateObj<List<ItemMainParam>>
+
 ) {
-//    val birthday = mutableStateOf(mainParam.getState().value?.find { it.name == "Birthday" }
     val birthday = mutableStateOf(MainDB.avatarSpis.spisMainParam.getState().value?.find { it.name == "Birthday" }
         ?.let { unOffsetCorrFromBase(it.stringparam.toLong()) })
 
-//    val textLifetime2 = timeString(birthday.value ?: 0L)
     val textLifetime = remember { mutableStateOf("") }
-//    val isTimerRunning = remember { mutableStateOf(true) }
-    LaunchedEffect(key1 = textLifetime.value, key2 = birthday) { //, key2 = isTimerRunning.value
+
+    LaunchedEffect(key1 = textLifetime.value, key2 = birthday) {
         birthday.value?.let {
             delay(1000L)
             MainDB.timeFun.checkChangeCurrentDate()
             textLifetime.value = vozrast(it)
         } ?: run { delay(1000L) }
-//        isTimerRunning.value = !isTimerRunning.value
     }
-    Column(style.inner_padding
-//            Modifier.padding(horizontal = 7.dp, vertical = 2.dp)
-    , horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        style.inner_padding, horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
-//            modifier = Modifier.padding(start = 20.dp).weight(1f),
-            text = "Время жизни:", style = style.mainText.copy(textAlign = TextAlign.Center) // MyTextStyleParam.style1.copy(fontSize = 14.sp)
+            text = "Время жизни:", style = style.mainText.copy(textAlign = TextAlign.Center)
         )
         Text(
             modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp),
             text = textLifetime.value,
-            style = style.valueText.copy(textAlign = TextAlign.Center) // MyTextStyleParam.style1.copy(fontSize = 14.sp)
+            style = style.valueText.copy(textAlign = TextAlign.Center)
         )
-//        MyTextStyle1("Время жизни:")
-//        MyTextStyle1(textLifetime.value, Modifier.padding(5.dp))
-//        MyTextStyle1(textLifetime2.value, Modifier.padding(5.dp))
     }
 
 }

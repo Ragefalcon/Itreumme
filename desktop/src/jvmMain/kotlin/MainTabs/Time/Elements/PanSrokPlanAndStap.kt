@@ -29,12 +29,10 @@ enum class TimelinePanEnum(override val nameTab: String) : tabElement {
 }
 
 fun panTimeline(
-    dialPan: MyDialogLayout,
-//    item: ItemBestDays
+    dialPan: MyDialogLayout
 ) {
-
     val dialLayInner = MyDialogLayout()
-//    val dateInner = mutableStateOf(item.data.let { Date(it) })
+
     val selection = SingleSelectionType<ItemSrokPlanAndStap>()
     val dateCurr = mutableStateOf(Date())
     val year = mutableStateOf(false)
@@ -55,17 +53,14 @@ fun panTimeline(
                     MainDB.timeFun.setPlanForTimeline(it.id.toLong())
                 }
             }
-            BackgroungPanelStyle1(style = SimplePlateStyleState(plateSrokPanel)) { //modif ->
+            BackgroungPanelStyle1(style = SimplePlateStyleState(plateSrokPanel)) {
                 Column(
                     Modifier.padding(15.dp)
-//                    .heightIn(0.dp, dialPan.layHeight.value * 0.9F)
                         .fillMaxHeight(0.85f)
-                        .fillMaxWidth(0.85f)
-//                .widthIn(0.dp,dialPan.layWidth.value*0.7F)
-                    , horizontalAlignment = Alignment.CenterHorizontally,
+                        .fillMaxWidth(0.85f), horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    timelineSeekBar.show(style = timelineSeekBarStyle)// ButtonSeekBarStyleState())
+                    timelineSeekBar.show(style = timelineSeekBarStyle)
                     when (timelineSeekBar.active) {
                         TimelinePanEnum.Nears -> {}
                         TimelinePanEnum.ForPlans -> boxSelectPlan.getComposable()
@@ -96,7 +91,7 @@ fun panTimeline(
                                                 listOf(
                                                     Color.Transparent,
                                                     timelineColors.COLOR_RAMK.getValue().toColor()
-                                                ) //, Color.Transparent
+                                                )
                                             )
                                         )
                                 )
@@ -111,6 +106,7 @@ fun panTimeline(
                                     ComItemTimeline(item, selection, dateCurr.value.time, year.value)
                                 }
                             }
+
                             TimelinePanEnum.ForPlans -> {
                                 MainDB.timeSpis.spisTimelineForPlan.getState().value?.let { listT ->
                                     Column(Modifier.padding(end = 8.dp)) {
@@ -148,7 +144,7 @@ fun panTimeline(
                                                 listOf(
                                                     Color.Transparent,
                                                     timelineColors.COLOR_RAMK.getValue().toColor()
-                                                ) //, Color.Transparent
+                                                )
                                             )
                                         )
                                 )
@@ -173,7 +169,6 @@ fun panTimeline(
                             }
                             MyTextButtStyle1("<<", myStyleTextButton = TextButtonStyleState(buttArrow2)) {
                                 dateCurr.value = Date(dateCurr.value.time).add(-5, TimeUnits.DAY)
-//                            dateCurr.value = Date(dateCurr.value.time).add(if (year.value) -30 else -5, TimeUnits.DAY)
                             }
                             buttDatePickerWithButton(
                                 dialLayInner,
@@ -188,12 +183,10 @@ fun panTimeline(
                                 dateCurr.value = Date(dateCurr.value.time).add(30, TimeUnits.DAY)
                             }
                         }
-//                    Spacer(Modifier.weight(1f))
                         MyTextButtStyle1("Скрыть", myStyleTextButton = TextButtonStyleState(buttHide)) {
                             dialPan.close()
                         }
                     }
-
                 }
             }
         }

@@ -3,7 +3,8 @@ package MainTabs.Setting
 import Button
 import CommonWindow.BorderWindow
 import GooglePack.sess
-import MainTabs.Setting.Items.*
+import MainTabs.Setting.Items.ComItemRazdelSettings
+import MainTabs.Setting.Items.ComItemShablonStyle
 import MyDialog.MyDialogLayout
 import MyDialog.MyOneVopros
 import MyDialog.MyOneVoprosTransit
@@ -50,7 +51,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.*
 import common.*
 import common.color.ColorPicker
-import extensions.*
+import extensions.BoxWithVScrollBar
+import extensions.RowVA
+import extensions.getAngle
+import extensions.toColor
 import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemSaveSetStyle
@@ -122,7 +126,6 @@ fun WindowEditStyle() {
         }
     }
 
-//    val editColor: MutableState<ItrCommObserveMutableObj<MyColorARGB>?> = remember { mutableStateOf(null) }
     val dialogLayout = remember { MyDialogLayout() }
     val selectionInterSett = remember { SingleSelectionType<CommonInterfaceSetting.InterfaceSettingsType>() }
     val selectionRazdelSetting = remember { SingleSelectionType<CommonInterfaceSetting.RazdelSetting>() }
@@ -132,9 +135,7 @@ fun WindowEditStyle() {
     val labelDouble = remember { mutableStateOf("Значение") }
 
     val CB_spisSaveSetStyle = MyComboBox(MainDB.editStyleSpis.spisSaveSetStyleFull, nameItem = { it.name }) {
-//        MainDB.editStyleFun.setSelectSetColorLibrary(it.id)
     }
-
 
     fun loadStyleShablon(item: ItemSaveSetStyle, razdel: CommonInterfaceSetting.RazdelSetting) {
         if (razdel.type_razdel != TypeSaveStyleSet.NOTSAVE) {
@@ -148,9 +149,6 @@ fun WindowEditStyle() {
                     set_id = item.id,
                     ""
                 )
-//                MainDB.addEditStyle.loadSaveSetStyleFull(
-//                    id = item.id
-//                )
             }
         }
     }
@@ -165,15 +163,11 @@ fun WindowEditStyle() {
                 }
                 val p2 = Path().apply {
                     addOval(Rect(size.width / 2, size.width / 2, size.width / 2 + 0.00001f, size.width / 2 + 0.00001f))
-//                    addOval(Rect(thickness,
-//                        thickness,
-//                        size.width - 1 - thickness,
-//                        size.height - 1 - thickness))
                 }
                 val p3 = Path()
                 p3.op(p1, p2, PathOperation.difference)
                 p1.close()
-//                return Outline.Generic(p1)
+
                 return Outline.Generic(p3)
             }
 
@@ -182,37 +176,19 @@ fun WindowEditStyle() {
             Surface(
                 modifier = Modifier.width(200.dp).height(200.dp)
                     .clip(shape),
-//                .innerShadow(
-//                    blur = 20.dp,
-//                    color = Color(0xffff0000),
-//                    cornersRadius = 20.dp,
-//                    offsetX = 0.5.dp,
-//                    offsetY = 0.5.dp
-//                )
-//                .innerShadow(
-//                blur = 1.dp,
-//                color = Color(0xff00FFFF),
-//                cornersRadius = 20.dp,
-//                offsetX = (-40.5).dp,
-//                offsetY = (-10.5).dp
-//            )
-                //.shadow(8.dp,shape),
                 color = Color.White.copy(0.5f),
-//                shape = shape
-            ) {
+
+                ) {
             }
             Surface(
                 modifier = Modifier.width(200.dp).height(200.dp).shadow(8.dp, shape, true)
                     .border(1.dp, Color.Red.copy(0.2f), shape),
                 color = Color.White.copy(0.3f),
-//                shape = shape,
-//                elevation = 8.dp
             ) {
             }
             Surface(
                 modifier = Modifier.width(200.dp).height(200.dp).shadow(8.dp, shape, false),
                 color = Color.White.copy(0.5f),
-//                shape = shape
             ) {
             }
             Surface(
@@ -230,7 +206,7 @@ fun WindowEditStyle() {
     fun selectAngle(
         modifier: Modifier = Modifier,
         refresh: Boolean = true
-    ) { //intSett: CommonInterfaceSetting.InterfaceSettingsAngle,
+    ) {
         val cursorPositionH = remember { mutableStateOf(Offset(0f, 0f)) }
         fun setAngle(x: Double) {
             selectionInterSett.selected?.let { intSett ->
@@ -254,8 +230,6 @@ fun WindowEditStyle() {
                             cursorPositionH.value.y - 127.dp.toPx()
                         ) / 2 / Math.PI * 360f + 90f)
                         setAngle(angleLong.value)
-//                                intSett.itrObj.value = angleLong.value.toLong()
-//                                angle.value = TextFieldValue(angleLong.value.toLong().toString())
                     }
                     .pointerMoveFilter(onMove = {
                         cursorPositionH.value = it
@@ -268,8 +242,6 @@ fun WindowEditStyle() {
                                 cursorPositionH.value.y - 127.dp.toPx()
                             ) / 2 / Math.PI * 360f + 90f)
                             setAngle(angleLong.value)
-//                                    intSett.itrObj.value = angleLong.value.toLong()
-//                                    angle.value = TextFieldValue(angleLong.value.toLong().toString())
                         }
                     }
                 ) {
@@ -291,10 +263,10 @@ fun WindowEditStyle() {
                     p3.op(p1, p2, PathOperation.Difference)
 
                     drawPath(p3, color = Color.DarkGray)
-//                val shir = 60.dp.toPx()
+
                     rotate(360f - angleLong.value.toFloat(), Offset(128.dp.toPx(), 128.dp.toPx())) {
                         drawRect(
-                            Color.White, //.copy(0.5f),
+                            Color.White,
                             Offset(128.dp.toPx(), -5.dp.toPx()), Size(3.dp.toPx(), thickness + 10.dp.toPx()),
                             style = Stroke(1.5.dp.toPx())
                         )
@@ -311,8 +283,6 @@ fun WindowEditStyle() {
                     for (i in 0..23) {
                         MyTextButtStyle1((i * 15).toString(), Modifier.padding(5.dp)) {
                             setAngle((i * 15L).toDouble())
-//                            intSett.itrObj.value = i * 15L
-//                            angle.value = TextFieldValue((i * 15L).toString())
                         }
                     }
                 }
@@ -334,8 +304,6 @@ fun WindowEditStyle() {
                 MyTextButtStyle1("Применить", Modifier.padding(5.dp)) {
                     angle.value.text.toLongOrNull()?.let {
                         setAngle(it.toDouble())
-//                        intSett.itrObj.value = it
-//                        angleLong.value = it.toDouble()
                     }
                 }
 
@@ -397,7 +365,6 @@ fun WindowEditStyle() {
                                 MyDeleteDropdownMenuButton(expanded) {
                                     MainDB.addEditStyle.delSaveSetStyle(item.id)
                                 }
-
                             }.getComposable()
                         }
                     } else {
@@ -426,10 +393,7 @@ fun WindowEditStyle() {
                 ) { nameNewStyle ->
                     val dirS = File(StateVM.dirStyle, "$nameNewStyle.db")
                     if (!dirS.exists()) {
-//                        File(dirS).mkdirs()
-                        StyleDB(dirS).ObserFM.saveStyle(path = File(StateVM.dirMain,"mainDB.db").path)
-//                        openQuest(File(dirQ, "$nameNewQuest.db"))
-//                        updateFileList()
+                        StyleDB(dirS).ObserFM.saveStyle(path = File(StateVM.dirMain, "mainDB.db").path)
                         return@MyOneVoprosTransit false
                     } else {
                         MyShowMessage(dialogLayout, "Стиль с таким именем уже существует")
@@ -447,11 +411,9 @@ fun WindowEditStyle() {
     fun editBoxSett() = selectionInterSett.selected?.let { intSett ->
         when (intSett) {
             is CommonInterfaceSetting.InterfaceSettingsBoolean -> {
-
             }
 
             is CommonInterfaceSetting.InterfaceSettingsTypeCorner -> {
-
             }
 
             is CommonInterfaceSetting.InterfaceSettingsDoublePozitive -> {
@@ -472,7 +434,6 @@ fun WindowEditStyle() {
                         val tmp = if (x >= 0.0) x else 0.0
                         intSett.itrObj.value = tmp
                         summa.value = TextFieldValue(tmp.roundToString(1))
-
                     }
                     RowVA(Modifier.padding(top = 20.dp)) {
                         MyTextButtStyle1("<<", Modifier.padding(5.dp)) {
@@ -492,10 +453,8 @@ fun WindowEditStyle() {
                     MyTextButtStyle1("Применить", Modifier.padding(5.dp)) {
                         summa.value.text.toDoubleOrNull()?.let {
                             setSumm(it)
-//                            intSett.itrObj.value = it
                         }
                     }
-
                 }
             }
 
@@ -536,10 +495,8 @@ fun WindowEditStyle() {
                     MyTextButtStyle1("Применить", Modifier.padding(5.dp)) {
                         summa.value.text.toDoubleOrNull()?.let {
                             setSumm(it)
-//                            intSett.itrObj.value = it
                         }
                     }
-
                 }
             }
 
@@ -552,30 +509,11 @@ fun WindowEditStyle() {
                             }
                         }
                     }
-
                 }
             }
 
             is CommonInterfaceSetting.InterfaceSettingsAngle -> {
                 selectAngle()
-                /*
-                                Column {
-                                    PlateOrderLayout {
-                                        for (i in 0..71) {
-                                            MyTextButtStyle1((i * 5).toString(), Modifier.padding(5.dp)) {
-                                                intSett.itrObj.value = i * 5L
-                                            }
-                                        }
-                                    }
-                                    MyOutlinedTextFieldInt(intSett.nameSett, angle)
-                                    MyTextButtStyle1("Применить", Modifier.padding(5.dp)) {
-                                        angle.value.text.toLongOrNull()?.let {
-                                            intSett.itrObj.value = it
-                                        }
-                                    }
-
-                                }
-                */
             }
 
             is CommonInterfaceSetting.InterfaceSettingsLong -> {
@@ -609,7 +547,6 @@ fun WindowEditStyle() {
              * Код отсюда выполняется при нажатии комбинации клавиш Alt + F4
              * */
             sess?.stop(10, 10)
-            println("закрыт редактор стилей!!!!")
         },
 
         onKeyEvent = { saf ->
@@ -624,31 +561,18 @@ fun WindowEditStyle() {
              * */
             saf.key == Key.AltLeft || saf.key == Key.AltRight
         },
-//        title = "Tutatores",
-        state = state
-        /*WindowState(
-    WindowPlacement.Floating,
-    position = WindowPosition(Alignment.Center),
-    width = 800.dp,
-    height = 800.dp
-)*/,
+
+        state = state,
         transparent = true,
         undecorated = true
     ) {
-//        LaunchedEffect(selectionInterSett.selected) {
-//            refreshSelAngle.value = !refreshSelAngle.value
-//        }
         Box(
             Modifier.clip(RoundedCornerShape(14.dp))
                 .border(BorderStroke(0.25.dp, Color(0x2FFFF7D9)), RoundedCornerShape(15.dp))
         ) {
-//            editColor.value?.getComposeble {
-//                colorPicker.setColorEditObj(it)
-//            }
             Column(
                 Modifier
-
-                    .background(color = MyColorARGB.colorBackGr2.toColor()) //Color(0xFF576350))
+                    .background(color = MyColorARGB.colorBackGr2.toColor())
                     .padding(15.dp)
                     .fillMaxSize()
             ) {
@@ -658,7 +582,7 @@ fun WindowEditStyle() {
                         Modifier.weight(1f).padding(vertical = 10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-//                        spisSaveSetStyle(dialLay = dialogLayout)
+
                         BoxWithVScrollBar(Modifier.weight(1f)) { scrollState ->
                             Box(Modifier.verticalScroll(scrollState)) {
                                 ComItemRazdelSettings(
@@ -669,7 +593,6 @@ fun WindowEditStyle() {
                                 ) {
                                     when (it) {
                                         is CommonInterfaceSetting.InterfaceSettingsBoolean -> {
-
                                         }
 
                                         is CommonInterfaceSetting.InterfaceSettingsDoublePozitive -> {
@@ -686,16 +609,13 @@ fun WindowEditStyle() {
 
                                         is CommonInterfaceSetting.InterfaceSettingsMyColor -> {
                                             colorPicker.setColorEditObj(it.itrObj)
-//                                    editColor.value = it.itrObj
                                         }
 
                                         is CommonInterfaceSetting.InterfaceSettingsMyColorGradient -> {
                                             selIndGradColor.value = -1
-//                                    editColor.value = it.itrObj
                                         }
 
                                         is CommonInterfaceSetting.InterfaceSettingsString -> {
-
                                         }
 
                                         is CommonInterfaceSetting.InterfaceSettingsAngle -> {
@@ -713,7 +633,6 @@ fun WindowEditStyle() {
                             modifier = Modifier.padding(horizontal = 20.dp).padding(vertical = 10.dp),
                             reverse = true
                         ) {
-//                        MyTextButtStyle1("Сбросить все по умолчанию") {
                             MainDB.addEditStyle.clearAllToDefault()
                         }
                     }
@@ -727,7 +646,7 @@ fun WindowEditStyle() {
                 "paperback",
                 Modifier.fillMaxSize(),
                 alpha = 0.6F,
-                contentScale = ContentScale.FillBounds// .Fit
+                contentScale = ContentScale.FillBounds
             )
             dialogLayout.getLay()
             BorderWindow((20 * 1.5).dp)
@@ -739,7 +658,7 @@ fun WindowEditStyle() {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun WindowScope.AppWindowTitleBar(open: MutableState<Boolean>, state: WindowState) =
-    WindowDraggableArea(Modifier) { //.cursorForMove()
+    WindowDraggableArea(Modifier) {
         Row(
             modifier = Modifier.background(color = MyColorARGB.colorMyAppBarDesktop.toColor())
                 .border(0.5.dp, Color.Black)
@@ -748,7 +667,6 @@ private fun WindowScope.AppWindowTitleBar(open: MutableState<Boolean>, state: Wi
                 .padding(start = 20.dp, end = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Box(
                 Modifier.weight(1f).height(48.dp).background(MyColorARGB.colorMyAppBarDesktop.toColor()),
                 contentAlignment = Alignment.Center
@@ -764,11 +682,6 @@ private fun WindowScope.AppWindowTitleBar(open: MutableState<Boolean>, state: Wi
                 Button(
                     onClick = {
                         state.isMinimized = !state.isMinimized
-//                    isDialogOpen = true
-//                    val current = AppManager.focusedWindow
-//                    if (current != null) {
-//                        current.window.setExtendedState(JFrame.ICONIFIED)
-//                    }
                     }
                 )
                 Spacer(modifier = Modifier.width(5.dp))
@@ -779,28 +692,14 @@ private fun WindowScope.AppWindowTitleBar(open: MutableState<Boolean>, state: Wi
                         } else {
                             WindowPlacement.Floating
                         }
-//                    val current = AppManager.focusedWindow
-//                    if (current != null) {
-//                        if (current.window.extendedState == JFrame.MAXIMIZED_BOTH) {
-//                            current.window.setExtendedState(JFrame.NORMAL)
-//                        } else {
-//                            current.window.setExtendedState(JFrame.MAXIMIZED_BOTH)
-//                        }
-//                    }
                     }
                 )
                 Spacer(modifier = Modifier.width(5.dp))
                 Button(
                     onClick = {
-//                        sess?.stop(10, 10)
-//                        val tempFiles = File(StateVM.dirTemp)
-//                        if (tempFiles.exists()) tempFiles.deleteRecursively()
                         open.value = false
-//                        appScope.exitApplication()
-//                    AppManager.focusedWindow?.close()
                     }
                 )
             }
         }
-
     }

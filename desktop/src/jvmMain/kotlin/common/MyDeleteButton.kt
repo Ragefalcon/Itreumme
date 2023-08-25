@@ -44,7 +44,6 @@ fun MyDeleteButton(
         Box {
             Slider(
                 value = progressGotov.value,
-//                                    value = if (animProg.value) vozvratProg.value else progressGotov.value,
                 modifier = Modifier.height(30.dp).width(width).padding(start = 10.dp),
                 onValueChange = {
                     animProg.value = false
@@ -65,23 +64,14 @@ fun MyDeleteButton(
                         }
                     } else {
                         animProg.value = true
-/*
-                         GlobalScope.launch {
-                             while (animProg.value && progressGotov.value + 0.03 <= 1) {
-                                 progressGotov.value = progressGotov.value + 0.03f
-                                 delay(2)
-                             }
-                             if (animProg.value) progressGotov.value = 1f
-                         }
-*/
-                    } //animProg.value = true
+                    }
                 },
                 colors = SliderDefaults.colors(
-                    thumbColor = Color(0x6FFF8888), //MaterialTheme.colors.primary,
+                    thumbColor = Color(0x6FFF8888),
                     disabledThumbColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
                         .compositeOver(MaterialTheme.colors.surface),
-                    activeTrackColor = Color.Green, //MaterialTheme.colors.primary,
-                    inactiveTrackColor = Color(0x6FFF8888), //activeTrackColor.copy(alpha = InactiveTrackAlpha),
+                    activeTrackColor = Color.Green,
+                    inactiveTrackColor = Color(0x6FFF8888),
                     disabledActiveTrackColor = MaterialTheme.colors.onSurface.copy(alpha = SliderDefaults.DisabledActiveTrackAlpha),
                     disabledInactiveTrackColor = MaterialTheme.colors.onSurface.copy(alpha = SliderDefaults.DisabledInactiveTrackAlpha),
                     activeTickColor = contentColorFor(Color.Blue).copy(alpha = SliderDefaults.TickAlpha),
@@ -92,7 +82,9 @@ fun MyDeleteButton(
                         .copy(alpha = SliderDefaults.DisabledTickAlpha)
                 )
             )
-            Box(Modifier.height(30.dp).width(width - 30.dp).padding(start = 10.dp).clickable { progressGotov.value = 1f })
+            Box(
+                Modifier.height(30.dp).width(width - 30.dp).padding(start = 10.dp)
+                    .clickable { progressGotov.value = 1f })
         }
     }
 

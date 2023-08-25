@@ -19,11 +19,11 @@ import androidx.compose.ui.unit.sp
 import extensions.DropDownMenuStyleState
 import extensions.TextButtonStyleState
 import extensions.toColor
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.ragefalcon.sharedcode.extensions.MyColorARGB
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.Interface.CommonInterfaceSetting
 import viewmodel.MainDB
 import java.util.*
 
@@ -76,9 +76,7 @@ fun DropMenuRightClickArea(
                 MyDropdownMenuStyle1(expandedDropMenuRightButton) { setDissFun ->
                     dropMenu(expandedDropMenuRightButton)
                 }
-
             }
-
         }
     }
 }
@@ -96,16 +94,12 @@ fun MyDropdownMenuStyle1(
     DropdownMenu(
         expanded = expanded.value,
         onDismissRequest = {
-//            println("onDismissRequest")
-//            dismissFun()
             expanded.value = false
         },
         modifier = Modifier.background(Color(0xFF4F534F)).heightIn(0.dp, 400.dp)
-            .wrapContentHeight()//.fillMaxHeight(0.5F)
+            .wrapContentHeight()
             .graphicsLayer {
-//            shadowElevation = 8.dp.toPx()
                 shape = RoundedCornerShape(1.dp)
-//                clip = true
             }
     ) {
         dropMenu(::setDismissFun)
@@ -145,14 +139,14 @@ fun MyButtDropdownMenuStyle2(
     Box {
         MyTextButtStyle2(
             "⋮",
-            modifier = modifier.width(25.dp).height(25.dp),//.then(modifier),
+            modifier = modifier.width(25.dp).height(25.dp),
             modifierText = Modifier.padding(bottom = 0.dp),
             fontSize = 18.sp,
             myStyleTextButton = myStyleTextButton
         ) {
             expandedDropMenu.value = true
         }
-        MyDropdownMenu(expandedDropMenu,styleDropdown) {  //setDissFun ->
+        MyDropdownMenu(expandedDropMenu, styleDropdown) {
             dropMenu()
         }
     }
@@ -187,21 +181,22 @@ fun MyDeleteDropdownMenuButton(
         onFinal()
     }
 }
+
 @Composable
 fun MyCompleteDropdownMenuButton(
     expanded: MutableState<Boolean>,
     complete: Boolean = false,
-    textToFalse: String =  "Развыполнить",
-    textToTrue: String =  "Выполнить",
+    textToFalse: String = "Развыполнить",
+    textToTrue: String = "Выполнить",
     onFinal: () -> Unit
 ) {
-        MyCommonSliderButt(
-            text = if (complete) textToFalse else textToTrue,
-            MySliderButtColor.run { if (complete) uncompleteCol else completeCol }
-        ) {
-            expanded.value = false
-            onFinal()
-        }
+    MyCommonSliderButt(
+        text = if (complete) textToFalse else textToTrue,
+        MySliderButtColor.run { if (complete) uncompleteCol else completeCol }
+    ) {
+        expanded.value = false
+        onFinal()
+    }
 }
 
 data class MySliderButtColor(
@@ -217,7 +212,8 @@ data class MySliderButtColor(
             thumbColor = MyColorARGB.colorEffektShkal_Nedel.toColor(),
             activeTrackColor = MyColorARGB.colorEffektShkal_Nedel.toColor(),
             inactiveTrackColor = Color(0xAFFF8888),
-            disabledActiveTickColor = MyColorARGB.colorEffektShkal_Nedel.toColor().copy(alpha = SliderDefaults.TickAlpha)
+            disabledActiveTickColor = MyColorARGB.colorEffektShkal_Nedel.toColor()
+                .copy(alpha = SliderDefaults.TickAlpha)
                 .copy(alpha = SliderDefaults.DisabledTickAlpha)
         )
         val uncompleteCol = MySliderButtColor(
@@ -238,7 +234,7 @@ data class MySliderButtColor(
             mainColor = Color.Red,
             thumbColor = Color(0x6FFF8888),
             activeTrackColor = MyColorARGB.colorEffektShkal_Nedel.toColor(),
-            inactiveTrackColor = Color(0xAFFF8888), //Color.Magenta.copy(alpha = SliderDefaults.TickAlpha),
+            inactiveTrackColor = Color(0xAFFF8888),
             disabledActiveTickColor = Color.Green.copy(alpha = SliderDefaults.TickAlpha)
                 .copy(alpha = SliderDefaults.DisabledTickAlpha)
         )
@@ -264,7 +260,7 @@ fun MyCommonSliderButt(
             .background(colors.mainColor.copy(alpha = 0.3f), RoundedCornerShape(5.dp))
             .border(1.dp, colors.mainColor, RoundedCornerShape(5.dp))
             .padding(3.dp),
-        horizontalAlignment = Alignment.run{ if (reverse) Start else End}
+        horizontalAlignment = Alignment.run { if (reverse) Start else End }
     ) {
         Text(
             text = text,
@@ -275,7 +271,6 @@ fun MyCommonSliderButt(
         Box() {
             Slider(
                 value = progressGotov.value,
-//                                    value = if (animProg.value) vozvratProg.value else progressGotov.value,
                 modifier = Modifier.height(25.dp).fillMaxWidth().padding(start = 0.dp),
                 onValueChange = {
                     animProg.value = false
@@ -284,11 +279,6 @@ fun MyCommonSliderButt(
                         if (!fin.value) {
                             fin.value = true
                             onFinal()
-//                            GlobalScope.launch {
-//                                delay(200)
-//                                progressGotov.value = startValue
-//                                fin.value = false
-//                            }
                         }
                     }
                 },
@@ -298,15 +288,12 @@ fun MyCommonSliderButt(
                         if (!fin.value) {
                             fin.value = true
                             onFinal()
-//                            GlobalScope.launch {
-//                                delay(200)
                             progressGotov.value = startValue
                             fin.value = false
-//                            }
                         }
                     } else {
                         animProg.value = true
-                        GlobalScope.launch {
+                        CoroutineScope(Dispatchers.Default).launch {
                             if (reverse) while (animProg.value && progressGotov.value + 0.03 <= startValue) {
                                 progressGotov.value = progressGotov.value + 0.03f
                                 delay(2)
@@ -315,12 +302,8 @@ fun MyCommonSliderButt(
                                 delay(2)
                             }
                             if (animProg.value) progressGotov.value = startValue
-/*
-
-                            if (animProg.value) progressGotov.value = 1f
-*/
                         }
-                    } //animProg.value = true
+                    }
                 },
                 colors = SliderDefaults.colors(
                     thumbColor = colors.thumbColor,
@@ -339,9 +322,9 @@ fun MyCommonSliderButt(
             )
             Box(Modifier.padding(start = if (reverse) 0.dp else 40.dp, end = if (reverse) 40.dp else 0.dp).height(25.dp)
                 .fillMaxWidth().clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
-            ) { progressGotov.value = startValue })
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { progressGotov.value = startValue })
         }
     }
 }

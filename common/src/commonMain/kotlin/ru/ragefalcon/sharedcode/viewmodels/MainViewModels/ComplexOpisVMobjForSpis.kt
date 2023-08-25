@@ -7,21 +7,21 @@ import ru.ragefalcon.sharedcode.models.data.*
 import ru.ragefalcon.sharedcode.viewmodels.UniAdapters.CommonComplexObserveObj
 import ru.ragefalcon.sharedcode.viewmodels.UniAdapters.UniConvertQueryAdapter
 
-class ComplexOpisVMobjForSpis(private val mDB: Database)  {
-    val spisComplexOpisShablon = UniConvertQueryAdapter<Complex_opis_shablon, ItemComplexOpisShablon>{
+class ComplexOpisVMobjForSpis(private val mDB: Database) {
+    val spisComplexOpisShablon = UniConvertQueryAdapter<Complex_opis_shablon, ItemComplexOpisShablon> {
         ItemComplexOpisShablon(
             id = it._id,
-                    name = it.name,
-                    color = it.colorNum,
-                    fontSize = it.font_size,
-                    cursiv = it.cursive == 1L,
-                    bold = it.bold.toInt(),
-                    many_type = it.many_type?.let { it == 1L },
-                    link = it.link,
-                    sizePreview = it.size_preview,
-                    widthLimit = it.width_limit?.let { it == 1L },
-                    enableText = it.enable_text?.let { it == 1L },
-                    textBefore = it.text_before?.let { it == 1L },
+            name = it.name,
+            color = it.colorNum,
+            fontSize = it.font_size,
+            cursiv = it.cursive == 1L,
+            bold = it.bold.toInt(),
+            many_type = it.many_type?.let { it == 1L },
+            link = it.link,
+            sizePreview = it.size_preview,
+            widthLimit = it.width_limit?.let { it == 1L },
+            enableText = it.enable_text?.let { it == 1L },
+            textBefore = it.text_before?.let { it == 1L },
         )
     }.apply {
         updateQuery(mDB.complexOpisShablonQueries.selectComplexOpisShablon())
@@ -213,34 +213,23 @@ class ComplexOpisVMobjForSpis(private val mDB: Database)  {
     )
 
 }
-class ComplexOpisCommonSpis<T: Any, K: Any, F: Any, Q: Any>(
+
+class ComplexOpisCommonSpis<T : Any, K : Any, F : Any, Q : Any>(
     private var queryText: Query<T>,
     private var queryCheckbox: Query<K>,
     private var queryImageGroup: Query<F>,
     private var queryLink: Query<Q>,
-    private val adaptText:(T)->ItemComplexOpisText,
-    private val adaptCheckbox: (K)->ItemComplexOpisCheckbox,
-    private val adaptImageGroup: (F)->ItemComplexOpisImageGroup,
-    private val adaptLink: (Q)->ItemComplexOpisLink
-)  {
+    private val adaptText: (T) -> ItemComplexOpisText,
+    private val adaptCheckbox: (K) -> ItemComplexOpisCheckbox,
+    private val adaptImageGroup: (F) -> ItemComplexOpisImageGroup,
+    private val adaptLink: (Q) -> ItemComplexOpisLink
+) {
 
     private var listComplexOpisText = listOf<ItemComplexOpisText>()
     private var listComplexOpisCheckbox = listOf<ItemComplexOpisCheckbox>()
     private var listComplexOpisImageGroup = listOf<ItemComplexOpisImageGroup>()
     private var listComplexOpisLink = listOf<ItemComplexOpisLink>()
 
-/*
-    private fun updateSpisComplexOpis() {
-        val commonListNode = mutableListOf<ItemComplexOpis>()
-            .apply {
-                addAll(listComplexOpisText)
-                addAll(listComplexOpisCheckbox)
-            }
-            .sortedBy { it.sort }
-        spisComplexOpis.setValue(commonListNode.copy().groupBy { it.item_id })
-        println("spisComplexOpis.setValue")
-    }
-*/
     var spisComplexOpis = CommonComplexObserveObj<Map<Long, List<ItemComplexOpis>>>().apply {
         setValueFun {
             mutableListOf<ItemComplexOpis>()
@@ -270,13 +259,14 @@ class ComplexOpisCommonSpis<T: Any, K: Any, F: Any, Q: Any>(
         updateQuery(queryCheckbox)
     }
 
-    val spisComplexOpisImageGroup = UniConvertQueryAdapter<F, ItemComplexOpisImageGroup>(adaptF = adaptImageGroup).apply {
-        updateFunc {
-            listComplexOpisImageGroup = it
-            spisComplexOpis.update()
+    val spisComplexOpisImageGroup =
+        UniConvertQueryAdapter<F, ItemComplexOpisImageGroup>(adaptF = adaptImageGroup).apply {
+            updateFunc {
+                listComplexOpisImageGroup = it
+                spisComplexOpis.update()
+            }
+            updateQuery(queryImageGroup)
         }
-        updateQuery(queryImageGroup)
-    }
 
     val spisComplexOpisLink = UniConvertQueryAdapter<Q, ItemComplexOpisLink>(adaptF = adaptLink).apply {
         updateFunc {
@@ -291,98 +281,10 @@ class ComplexOpisCommonSpis<T: Any, K: Any, F: Any, Q: Any>(
         newQueryCheckbox: Query<K>,
         newQueryImageGroup: Query<F>,
         newQueryLink: Query<Q>
-    ){
+    ) {
         spisComplexOpisText.updateQuery(newQueryText)
         spisComplexOpisCheckbox.updateQuery(newQueryCheckbox)
         spisComplexOpisImageGroup.updateQuery(newQueryImageGroup)
         spisComplexOpisLink.updateQuery(newQueryLink)
     }
-
 }
-/*
-
-class PairQueryConvertor<T: Any, K: Any> (val query: Query<T>, val convertor: (T)->K)
-
-class ComplexOpisCommonSpis2<F: Any>(
-    private var queryList: List<PairQueryConvertor<*,F>>
-)  {
-
-    private var listComplexOpis = mutableListOf<Pair<List<F>,UniConvertQueryAdapter<*,F>>>().apply {
-        queryList.forEach {
-            add(listOf<F>() to UniConvertQueryAdapter(adaptF = it.convertor).apply{
-                updateQuery(it.query)
-            })
-        }
-    }
-    private var listComplexOpisCheckbox = listOf<ItemComplexOpisCheckbox>()
-    private var listComplexOpisImageGroup = listOf<ItemComplexOpisImageGroup>()
-    private var listComplexOpisLink = listOf<ItemComplexOpisLink>()
-
-    */
-/*
-        private fun updateSpisComplexOpis() {
-            val commonListNode = mutableListOf<ItemComplexOpis>()
-                .apply {
-                    addAll(listComplexOpisText)
-                    addAll(listComplexOpisCheckbox)
-                }
-                .sortedBy { it.sort }
-            spisComplexOpis.setValue(commonListNode.copy().groupBy { it.item_id })
-            println("spisComplexOpis.setValue")
-        }
-    *//*
-
-    var spisComplexOpis = CommonComplexObserveObj<Map<Long, List<ItemComplexOpis>>>().apply {
-        setValueFun {
-            println("spisComplexOpis.setValueFun")
-
-            mutableListOf<ItemComplexOpis>()
-                .apply {
-                    addAll(listComplexOpisText)
-                    addAll(listComplexOpisCheckbox)
-                    addAll(listComplexOpisImageGroup)
-                    addAll(listComplexOpisLink)
-                }
-                .sortedBy { it.sort }.copy().groupBy { it.item_id }
-        }
-    }
-
-    val spisComplexOpisText = UniConvertQueryAdapter<T, ItemComplexOpisText>(adaptF = adaptText).apply {
-        updateFunc {
-            listComplexOpisText = it
-            spisComplexOpis.update()
-//            updateSpisComplexOpis()
-            println("update spisComplexOpisText")
-        }
-        updateQuery(queryList)
-    }
-
-    val spisComplexOpisCheckbox = UniConvertQueryAdapter<K, ItemComplexOpisCheckbox>(adaptF = adaptCheckbox).apply {
-        updateFunc {
-            listComplexOpisCheckbox = it
-            spisComplexOpis.update()
-//            updateSpisComplexOpis()
-            println("update spisComplexOpisCheckbox")
-        }
-        updateQuery(queryCheckbox)
-    }
-
-    val spisComplexOpisImageGroup = UniConvertQueryAdapter<F, ItemComplexOpisImageGroup>(adaptF = adaptImageGroup).apply {
-        updateFunc {
-            listComplexOpisImageGroup = it
-            spisComplexOpis.update()
-            println("update spisComplexOpisImageGroup")
-        }
-        updateQuery(queryImageGroup)
-    }
-
-    val spisComplexOpisLink = UniConvertQueryAdapter<Q, ItemComplexOpisLink>(adaptF = adaptLink).apply {
-        updateFunc {
-            listComplexOpisLink = it
-            spisComplexOpis.update()
-            println("update spisComplexOpisLink")
-        }
-        updateQuery(queryLink)
-    }
-
-}*/

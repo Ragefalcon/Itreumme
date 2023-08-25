@@ -1,11 +1,11 @@
 package ru.ragefalcon.sharedcode.models.data.itemQuest
 
+import ru.ragefalcon.sharedcode.extensions.Parcelable
 import ru.ragefalcon.sharedcode.models.data.Id_class
 import ru.ragefalcon.sharedcode.models.data.ItemIconNodeTree
-import ru.ragefalcon.sharedcode.extensions.Parcelable
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.MarkerNodeTreeSkills
 
-//@Parcelize
+
 sealed class ItemNodeTreeSkillsQuest(
     val id: Long,
     val id_tree: Long,
@@ -24,7 +24,7 @@ sealed class ItemNodeTreeSkillsQuest(
     abstract fun copy(): ItemNodeTreeSkillsQuest
 }
 
-//@Parcelize
+
 class ItemHandNodeTreeSkillsQuest(
     id: Long,
     id_tree: Long,
@@ -36,7 +36,6 @@ class ItemHandNodeTreeSkillsQuest(
     icon: ItemIconNodeTree?,
     icon_complete: ItemIconNodeTree?,
     must_node: Boolean,
-//    var sver: Boolean = true
 ) : ItemNodeTreeSkillsQuest(
     id,
     id_tree,
@@ -63,7 +62,7 @@ class ItemHandNodeTreeSkillsQuest(
     )
 }
 
-//@Parcelize
+
 class ItemPlanNodeTreeSkillsQuest(
     id: Long,
     id_tree: Long,
@@ -78,7 +77,6 @@ class ItemPlanNodeTreeSkillsQuest(
     val privplan: Long,
     val stap_prpl: Long,
     val porog_hour: Double,
-//    var sver: Boolean = true
 ) : ItemNodeTreeSkillsQuest(
     id,
     id_tree,
@@ -108,7 +106,7 @@ class ItemPlanNodeTreeSkillsQuest(
     )
 }
 
-//@Parcelize
+
 class ItemCountNodeTreeSkillsQuest(
     id: Long,
     id_tree: Long,
@@ -124,7 +122,6 @@ class ItemCountNodeTreeSkillsQuest(
     val count_value: Long,
     val max_value: Long,
     val porog_value: Long,
-//    var sver: Boolean = true
 ) : ItemNodeTreeSkillsQuest(
     id,
     id_tree,
@@ -155,16 +152,17 @@ class ItemCountNodeTreeSkillsQuest(
     )
 }
 
-fun List<ItemNodeTreeSkillsQuest>.copy():List<ItemNodeTreeSkillsQuest> = mutableListOf<ItemNodeTreeSkillsQuest>()
+fun List<ItemNodeTreeSkillsQuest>.copy(): List<ItemNodeTreeSkillsQuest> = mutableListOf<ItemNodeTreeSkillsQuest>()
     .apply {
         this@copy.forEach {
             add(it.copy())
         }
     }
 
-fun List<ItemNodeTreeSkillsQuest>.filterCopy(filter: (ItemNodeTreeSkillsQuest)->Boolean):List<ItemNodeTreeSkillsQuest> = mutableListOf<ItemNodeTreeSkillsQuest>()
-    .apply {
-        this@filterCopy.filter(filter).forEach {
-            add(it.copy())
+fun List<ItemNodeTreeSkillsQuest>.filterCopy(filter: (ItemNodeTreeSkillsQuest) -> Boolean): List<ItemNodeTreeSkillsQuest> =
+    mutableListOf<ItemNodeTreeSkillsQuest>()
+        .apply {
+            this@filterCopy.filter(filter).forEach {
+                add(it.copy())
+            }
         }
-    }

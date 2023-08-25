@@ -18,9 +18,10 @@ class SettingAddSettSchetPanelFragment(item: ItemSettSchet? = null) :
         with(binding) {
             val valut = srValSchet.selectedItem as Pair<String, String>
             viewmodel.finSpis.spisValut.getLiveData().value?.find { it.id == valut.first }?.let { valItem ->
-                viewmodel.finSpis.spisSchet.getLiveData().value?.find { it.name == "${editNameText.text.toString()}, ${valItem.cod}" }?.let {
-                    showMyMessage("Счет с таким именем уже есть.")
-                } ?: run {
+                viewmodel.finSpis.spisSchet.getLiveData().value?.find { it.name == "${editNameText.text.toString()}, ${valItem.cod}" }
+                    ?.let {
+                        showMyMessage("Счет с таким именем уже есть.")
+                    } ?: run {
                     viewmodel.addFin.addSchet(
                         name = editNameText.text.toString(),
                         val_id = valut.first.toLong()

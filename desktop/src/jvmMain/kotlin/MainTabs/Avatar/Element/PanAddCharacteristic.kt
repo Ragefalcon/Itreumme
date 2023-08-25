@@ -3,28 +3,23 @@ package MainTabs.Avatar.Element
 
 import MyDialog.MyDialogLayout
 import MyDialog.MyEmptyPanel
-import MyDialog.buttDatePicker
 import MyShowMessage
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Checkbox
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import common.*
-import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemCharacteristic
 import viewmodel.MainDB
-import java.util.*
 
 fun PanAddCharacteristic(
     dialPan: MyDialogLayout,
@@ -39,14 +34,16 @@ fun PanAddCharacteristic(
         val startValue = remember {
             mutableStateOf(TextFieldValue(item?.startStat?.toString() ?: "0"))
         }
-        LaunchedEffect(expandedStartValue.value){
-            if (expandedStartValue.value) MyShowMessage(dialLayInner,
+        LaunchedEffect(expandedStartValue.value) {
+            if (expandedStartValue.value) MyShowMessage(
+                dialLayInner,
                 "Т.к. один балл характеристики соответствует 10 часам, то введенное значение будет поделено на 10.\n" +
                         "Помните!!! Что если вы не вели точного учета потраченного времени, оценка потраченного времени " +
                         "на вскидку может иметь очень большую погрешность, что в свою очередь может создать ложное впечатление" +
-                        " об уровне навыка, так что будьте осторожны указывая это значение.")
+                        " об уровне навыка, так что будьте осторожны указывая это значение."
+            )
         }
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 MyOutlinedTextField("Название характеристики", text_name)
                 MyOutlinedTextField(
@@ -55,7 +52,11 @@ fun PanAddCharacteristic(
                     Modifier.heightIn(200.dp, 500.dp),
                     TextAlign.Start
                 )
-                MyCheckbox(expandedStartValue, "Указать количество часов уделенных характеристике до начала учета в Itreumme", Modifier.padding(end = 15.dp))
+                MyCheckbox(
+                    expandedStartValue,
+                    "Указать количество часов уделенных характеристике до начала учета в Itreumme",
+                    Modifier.padding(end = 15.dp)
+                )
                 if (expandedStartValue.value) {
                     MyOutlinedTextFieldInt("", startValue)
                 }
@@ -81,11 +82,11 @@ fun PanAddCharacteristic(
                                     startStat = startValue.value.text.toLong(),
                                 )
                                 dialPan.close()
-                                if (idNew > 0L) MyEmptyPanel(dialPan, false) { dialInner, closeFun ->
+                                if (idNew > 0L) MyEmptyPanel(dialPan, false) { _, closeFun ->
                                     MyTextButtStyle1("Привязать проекты и этапы к характеристике \"${text_name.value.text}\"") {
                                         closeFun()
                                         MainDB.avatarFun.setSelectedIdForPrivsCharacteristic(idNew)
-                                        PanPrivsGoal(idNew,dialPan,true)
+                                        PanPrivsGoal(idNew, dialPan, true)
                                     }
                                     MyTextButtStyle1("Пока не привязывать") {
                                         closeFun()

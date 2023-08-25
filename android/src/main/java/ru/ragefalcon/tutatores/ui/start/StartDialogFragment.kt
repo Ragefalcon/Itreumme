@@ -39,32 +39,16 @@ class StartDialogFragment : BaseFragmentVM<FragmentStartDialogBinding>(FragmentS
             )
         }
         setSFMResultListener("StartFirstDialog") { _, _ ->
-            Log.d("MyTut", "startDial: testtt1");
             viewmodel.avatarSpis.spisMainParam.observe(viewLifecycleOwner) {
-                Log.d("MyTut", "startDial: testtt2");
                 if (!firstStart) {
-                    Log.d("MyTut", "startDial: testtt3");
                     firstStart = true
                     if (it.find { it.name == "Birthday" } == null) {
-                        Log.d("MyTut", "startDial: testtt4");
                         VoiceOver(this@StartDialogFragment).showDialog(VoiceOver.Companion.SpisVODialog.VO_FIRST)
                     } else {
-                        Log.d("MyTut", "startDial: testtt44");
                         VoiceOver(this@StartDialogFragment).showDialog(VoiceOver.Companion.SpisVODialog.VO_SELECT_RAZDEL)
                     }
                 }
             }
         }
-        Log.d("MyTut", "startDial: testtt");
-//        GlobalScope.launch(Dispatchers.IO) {
-//            while (!stateViewModel.endFirstAnimation) {
-//                sleep(100)
-//            }
-//        }
-////            GlobalScope.launch(Dispatchers.IO) {
-//                VoiceOver(this@StartDialogFragment).showDialog(VoiceOver.spisVODialog.VO_FIRST)
-//            }
-//        }
-//        showMyFragDial(FragmentTutDialog(),cancelable = false)
     }
 }

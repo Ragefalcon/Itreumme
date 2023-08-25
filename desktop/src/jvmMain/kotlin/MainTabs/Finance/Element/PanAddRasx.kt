@@ -75,7 +75,7 @@ fun PanAddRasx(
         }
     } ?: schetPlanId?.let { true } ?: false)
 
-    fun loadShablon(itemShab: ItemShabRasxod){
+    fun loadShablon(itemShab: ItemShabRasxod) {
         if (itemShab.nameoper != "") text_name.value = TextFieldValue(itemShab.nameoper)
         if (itemShab.summa > 0) summa.value = TextFieldValue(itemShab.summa.roundToString(2))
         var message = ""
@@ -162,7 +162,7 @@ fun PanAddRasx(
             BackgroungPanelStyle1(
                 vignette = VIGNETTE.getValue(),
                 style = SimplePlateStyleState(platePanel)
-            ) { //modif ->
+            ) {
                 Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     MyTextField(
                         text_name,

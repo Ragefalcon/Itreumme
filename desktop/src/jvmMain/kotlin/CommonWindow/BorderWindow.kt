@@ -23,49 +23,49 @@ fun BorderWindow(widthRamk: Dp) {
             painter = painterResource("nineRamk_left.png"),
             contentDescription = "Sample",
             modifier = Modifier.fillMaxHeight().width(widthRamk).align(Alignment.CenterStart),
-            contentScale = ContentScale.FillBounds// .Fit
+            contentScale = ContentScale.FillBounds
         )
         Image(
             painter = painterResource("nineRamk_right.png"),
             contentDescription = "Sample",
             modifier = Modifier.fillMaxHeight().width(widthRamk).align(Alignment.CenterEnd),
-            contentScale = ContentScale.FillBounds// .Fit
+            contentScale = ContentScale.FillBounds
         )
         Image(
             painter = painterResource("nineRamk_top.png"),
             contentDescription = "Sample",
             modifier = Modifier.fillMaxWidth().height(widthRamk).align(Alignment.TopCenter),
-            contentScale = ContentScale.FillBounds// .Fit
+            contentScale = ContentScale.FillBounds
         )
         Image(
             painter = painterResource("nineRamk_bottom.png"),
             contentDescription = "Sample",
             modifier = Modifier.fillMaxWidth().height(widthRamk).align(Alignment.BottomCenter),
-            contentScale = ContentScale.FillBounds// .Fit
+            contentScale = ContentScale.FillBounds
         )
         Image(
             painter = painterResource("nineRamk_bottomRight.png"),
             contentDescription = "Sample",
             modifier = androidx.compose.ui.Modifier.height(widthRamk).width(widthRamk).align(Alignment.BottomEnd),
-            contentScale = ContentScale.FillBounds// .Fit
+            contentScale = ContentScale.FillBounds
         )
         Image(
             painter = painterResource("nineRamk_bottomLeft.png"),
             contentDescription = "Sample",
             modifier = androidx.compose.ui.Modifier.height(widthRamk).width(widthRamk).align(Alignment.BottomStart),
-            contentScale = ContentScale.FillBounds// .Fit
+            contentScale = ContentScale.FillBounds
         )
         Image(
             painter = painterResource("nineRamk_topRight.png"),
             contentDescription = "Sample",
             modifier = androidx.compose.ui.Modifier.height(widthRamk).width(widthRamk).align(Alignment.TopEnd),
-            contentScale = ContentScale.FillBounds// .Fit
+            contentScale = ContentScale.FillBounds
         )
         Image(
             painter = painterResource("nineRamk_topLeft.png"),
             contentDescription = "Sample",
             modifier = androidx.compose.ui.Modifier.height(widthRamk).width(widthRamk).align(Alignment.TopStart),
-            contentScale = ContentScale.FillBounds// .Fit
+            contentScale = ContentScale.FillBounds
         )
     }
     Box(Modifier.fillMaxSize()) {

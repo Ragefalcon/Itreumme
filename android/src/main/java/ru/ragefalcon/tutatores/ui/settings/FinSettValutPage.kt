@@ -2,13 +2,14 @@ package ru.ragefalcon.tutatores.ui.settings
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.SimpleItemAnimator
 import ru.ragefalcon.sharedcode.models.data.ItemValut
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.SettValutRVItem
-import ru.ragefalcon.tutatores.commonfragments.*
+import ru.ragefalcon.tutatores.commonfragments.BaseFragmentVM
+import ru.ragefalcon.tutatores.commonfragments.MenuPopupButton
+import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentTabFinSettBinding
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
 
@@ -26,12 +27,6 @@ class FinSettValutPage() : BaseFragmentVM<FragmentTabFinSettBinding>(FragmentTab
             }
             with(viewmodel) {
                 val menuPopupValut = MyPopupMenuItem<ItemValut>(this@FinSettValutPage, "ValutDelChange").apply {
-//                    addButton(MenuPopupButton.UNOPEN) {
-//                        addFin.updTyperasxodOpen(id = it.id.toLong(), false)
-//                    }
-//                    addButton(MenuPopupButton.OPEN) {
-//                        addFin.updTyperasxodOpen(id = it.id.toLong(), true)
-//                    }
                     addButton(MenuPopupButton.DELETE) {
                         addFin.delValut(it.id.toLong())
                     }
@@ -46,8 +41,6 @@ class FinSettValutPage() : BaseFragmentVM<FragmentTabFinSettBinding>(FragmentTab
                         },longTapListener = {
                             menuPopupValut.showMenu(item,name = "${item.name}",{
                                 if (item.countschet == 0L) (it == MenuPopupButton.DELETE)||(it == MenuPopupButton.CHANGE)
-//                                else if (item.open) (it == MenuPopupButton.CHANGE)||(it == MenuPopupButton.UNOPEN)
-//                                else (it == MenuPopupButton.CHANGE)||(it == MenuPopupButton.OPEN) })
                                 else (it == MenuPopupButton.CHANGE) })
                         })
                     })
@@ -57,9 +50,6 @@ class FinSettValutPage() : BaseFragmentVM<FragmentTabFinSettBinding>(FragmentTab
                 }
                 tvCountPlanLabel.visibility = View.INVISIBLE
                 buttToggleOpen.visibility = View.INVISIBLE
-//                buttToggleOpen.setOnCheckedChangeListener { buttonView, isChecked ->
-//                    financeFun.setVisibleOpenValut(!isChecked)
-//                }
                 buttAdd.setOnClickListener {
                     showAddChangeFragDial(SettingAddValutPanelFragment())
                 }

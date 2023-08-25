@@ -18,7 +18,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
 import androidx.compose.ui.unit.dp
-import common.*
+import common.BackgroungPanelStyle1
+import common.CropBoxForImageFile
+import common.MyTextButtStyle1
 import extensions.RowVA
 
 fun PanAddAvaGovorun(
@@ -31,10 +33,9 @@ fun PanAddAvaGovorun(
 
     dialLay.dial = @Composable {
 
-
         val size = 250.dp
-        val shape = RoundedCornerShape(125.dp) //CircleShape
-        val shape2 = RoundedCornerShape(123.dp) //CircleShape
+        val shape = RoundedCornerShape(125.dp)
+        val shape2 = RoundedCornerShape(123.dp)
 
         BackgroungPanelStyle1() {
             Column(
@@ -45,17 +46,14 @@ fun PanAddAvaGovorun(
                 Box(Modifier.weight(1f, false)) {
                     RowVA {
                         Box(
-                            Modifier.padding(20.dp)
-//                        .height(size)
-//                        .width(size)
-                            ,
+                            Modifier.padding(20.dp),
                             contentAlignment = Alignment.TopCenter
                         ) {
                             Image(
                                 bitmap = fileForCrop.outImage.cropImageBitmap.value ?: useResource(
                                     fileForCrop.defaultResource,
                                     ::loadImageBitmap
-                                ), //BitmapPainter(
+                                ),
                                 "defaultAvatar",
                                 Modifier.wrapContentSize()
                                     .height(size)
@@ -65,7 +63,7 @@ fun PanAddAvaGovorun(
                                     .padding(2.dp)
                                     .border(3.dp, Color(0x7FFFF7D9), shape2)
                                     .shadow(2.dp, shape),
-                                contentScale = ContentScale.Crop,// Fit,
+                                contentScale = ContentScale.Crop,
                             )
                         }
                         Box(

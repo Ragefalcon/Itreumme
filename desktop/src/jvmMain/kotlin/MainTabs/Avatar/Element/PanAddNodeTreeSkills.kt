@@ -1,7 +1,6 @@
 package MainTabs.Avatar.Element
 
 
-import androidx.compose.material.Text
 import MainTabs.Quest.Items.ComItemNodeLevelTreeSkillsSelParents
 import MainTabs.Time.Elements.BoxSelectParentPlan
 import MyDialog.MyDialogLayout
@@ -9,6 +8,7 @@ import MyListRow
 import adapters.MyComboBox
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +27,6 @@ import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeIconBorde
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeNodeTreeSkills
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeTreeSkills
 import viewmodel.MainDB
-import viewmodel.StateVM
 
 fun PanAddNodeTreeSkills(
     dialPan: MyDialogLayout,
@@ -67,10 +66,11 @@ fun PanAddNodeTreeSkills(
             is ItemCountNodeTreeSkills -> {
                 cbSpisTypeNodeTreeSkills.select(TypeNodeTreeSkills.COUNTER_END)
             }
+
             is ItemPlanNodeTreeSkills -> {
                 cbSpisTypeNodeTreeSkills.select(TypeNodeTreeSkills.PLAN)
             }
-//            else -> {}
+
             is ItemHandNodeTreeSkills -> {
                 cbSpisTypeNodeTreeSkills.select(TypeNodeTreeSkills.HAND)
             }
@@ -124,11 +124,9 @@ fun PanAddNodeTreeSkills(
     }
 
     fun checkIdTreeAndTypeNode(funBD: (Long, Long) -> Unit) {
-//        StateVM.selectionTreeSkills.selected?.id?.let { id_tree ->
-            cbSpisTypeNodeTreeSkills.getSelected()?.id?.let { id_type_node ->
-                funBD(itemTree.id.toLong(), id_type_node)
-            }
-//        }
+        cbSpisTypeNodeTreeSkills.getSelected()?.id?.let { id_type_node ->
+            funBD(itemTree.id.toLong(), id_type_node)
+        }
     }
 
     @Composable
@@ -255,13 +253,8 @@ fun PanAddNodeTreeSkills(
 
         }, true)
     }
-
-
     dialPan.dial = @Composable {
-
-//        val iconImage: MutableState<ImageBitmap?> = remember { mutableStateOf(null) }
-
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 RowVA {
                     IconNode(iconItem.value, "icon_skill_color_lamp.png",
@@ -271,37 +264,34 @@ fun PanAddNodeTreeSkills(
                     )
                     Text(
                         text = "❯❯❯",
-                        modifier = Modifier.align(Alignment.CenterVertically), //.padding(start = 10.dp)
+                        modifier = Modifier.align(Alignment.CenterVertically),
                         style = MyTextStyleParam.style1.copy(fontSize = 25.sp)
                     )
                     IconNode(iconItemComplete.value ?: iconItem.value, "icon_skill_color_lamp.png",
-                        complete = iconItemComplete.value?.let { TypeIconBorder.getType(it.type_ramk) != TypeIconBorder.NONE } ?: true,
+                        complete = iconItemComplete.value?.let { TypeIconBorder.getType(it.type_ramk) != TypeIconBorder.NONE }
+                            ?: true,
                         modifier = Modifier.clickable {
                             PanCreateIconNode(dialLayInner, icon = iconItemComplete)
                         }
                     )
                 }
                 if (item == null) cbSpisTypeNodeTreeSkills.show()
-
                 when (typeTree) {
-                    TypeTreeSkills.KIT -> {
-                    }
+                    TypeTreeSkills.KIT -> Unit
                     TypeTreeSkills.LEVELS -> {
                         cbSpisLevelTreeSkills.show(Modifier.padding(top = 10.dp))
                         MyCheckbox(mustNodeForLevel, "Обязательно для выполнения")
                     }
+
                     TypeTreeSkills.TREE -> {
                         MyListRow(
                             MainDB.avatarSpis.spisNodeTreeSkillsSelection,
                             Modifier.padding(top = 8.dp).heightIn(0.dp, 150.dp)
-                        ) { ind, nodeTreeSkills -> //.heightIn(0.dp, 150.dp) .height(150.dp)
+                        ) { ind, nodeTreeSkills ->
                             ComItemNodeLevelTreeSkillsSelParents(nodeTreeSkills).getComposable()
                         }
                         MyTextButtStyle1("Выбрать родителей") {
-//                            StateVM.selectionTreeSkills.selected?.id?.let { id_tree ->
-//                                PanSelectNodeParents(dialLayInner, id_tree = id_tree.toLong(), parentsId, levelM, item)
-//                            }
-                                PanSelectNodeParents(dialLayInner, id_tree = itemTree.id.toLong(), parentsId, levelM, item)
+                            PanSelectNodeParents(dialLayInner, id_tree = itemTree.id.toLong(), parentsId, levelM, item)
                         }
                     }
                 }
@@ -310,27 +300,23 @@ fun PanAddNodeTreeSkills(
                     TypeNodeTreeSkills.HAND -> {
                         handType()
                     }
+
                     TypeNodeTreeSkills.PLAN -> {
                         planType()
                     }
+
                     TypeNodeTreeSkills.COUNTER_END -> {
                         counterType()
                     }
-                    TypeNodeTreeSkills.COUNTER_ENDLESS -> {
-                    }
-                    TypeNodeTreeSkills.HOUR_END -> {
-                    }
-                    TypeNodeTreeSkills.HOUR_ENDLESS -> {
-                    }
-                    null -> {
-                    }
+
+                    TypeNodeTreeSkills.COUNTER_ENDLESS -> Unit
+                    TypeNodeTreeSkills.HOUR_END -> Unit
+                    TypeNodeTreeSkills.HOUR_ENDLESS -> Unit
+                    null -> Unit
                 }
             }
         }
         dialLayInner.getLay()
     }
-
     dialPan.show()
-
-
 }

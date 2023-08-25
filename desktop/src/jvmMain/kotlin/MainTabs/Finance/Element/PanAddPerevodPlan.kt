@@ -21,7 +21,6 @@ import common.*
 import extensions.*
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemCommonFinOper
-import ru.ragefalcon.sharedcode.models.data.ItemSchet
 import ru.ragefalcon.sharedcode.models.data.ItemSchetPlan
 import ru.ragefalcon.sharedcode.source.disk.getValue
 import viewmodel.MainDB
@@ -33,11 +32,9 @@ fun PanAddPerevodPlan(
 ) {
     val dialLayInner = MyDialogLayout()
     val dateInner = mutableStateOf(MainDB.dateFin.value)
-//    val convert = mutableStateOf(false)
-//    val CB_spisSchetPlan = MyComboBox(MainDB.finSpis.spisSchetPlanKrome, nameItem = { it.name })
 
     val listKrome: MutableState<List<ItemSchetPlan>?> = mutableStateOf(listOf<ItemSchetPlan>())
-//    val CB_spisSchetPoluch = MyComboBox(MainDB.finSpis.spisSchetKrome, nameItem = { it.second }) { schetPoluch ->
+
     val CB_spisSchetOtprav = MyComboBox(MainDB.finSpis.spisSchetPlan, nameItem = { it.name }) { schetOtprav ->
         listKrome.value =
             MainDB.finSpis.spisSchetPlan.getState().value?.filter { it.id != schetOtprav.id } ?: listOf<ItemSchetPlan>()
@@ -78,7 +75,7 @@ fun PanAddPerevodPlan(
                 (if (it.summa < 0) (-it.summa) else it.summa).roundToString(2)
             } ?: ""))
         }
-//        val summa_zach = remember { mutableStateOf(TextFieldValue("0.00")) }
+
         with(MainDB.styleParam.finParam.schetParam.panAddPerevodPlan) {
             BackgroungPanelStyle1(
                 vignette = VIGNETTE.getValue(),

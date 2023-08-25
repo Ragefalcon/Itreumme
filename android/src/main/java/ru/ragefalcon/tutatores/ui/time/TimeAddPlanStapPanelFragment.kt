@@ -55,7 +55,7 @@ class TimeAddPlanStapPanelFragment(
                 svernut = "false",
                 idplan = parentPlan?.id?.toLong() ?: -1
             )
-//            callback?.invoke(null)
+
         }
     }
 
@@ -72,28 +72,20 @@ class TimeAddPlanStapPanelFragment(
                     idplan = parentPlan?.id?.toLong() ?: -1
                 )
             }
-            Log.d("MyTut", "FragList: PlanStapChange callbackKey = $callback_Key");
 
-            /**
-             * https://habr.com/ru/post/515080/
-             * */
             callback_Key?.let {
                 getSFM().setFragmentResult(it, bundleOf("bundleKey" to item))
-                Log.d("MyTut", "FragList: PlanStapChange send rezult");
             }
-//            callback?.invoke(item)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        Log.d("MyTut", "FragList: TimeAddPlanStapPanelFrag parentManager = $parentFragmentManager");
-//        Log.d("MyTut", "FragList: TimeAddPlanStapPanelFrag getCFM = ${getCFM()}");
-//        Log.d("MyTut", "FragList: TimeAddPlanStapPanelFrag getSFM = ${getSFM()}");
+
         with(binding) {
 
             item?.let {
-//            vybStatPlan.selectStat(it.vajn.toInt())
+
                 editNamePlanStapText.setText(it.name)
                 editOpisPlanStapText.setText(it.opis)
                 if (it.data1 != 0L) {
@@ -102,9 +94,7 @@ class TimeAddPlanStapPanelFragment(
                     dateEndPlanStap.setDate(it.data2)
                 }
             } ?: {}
-//        if (parPlan == null) {
-//            stateViewModel.stateSelPrivPlan = MyStateViewModel.privPlanState.addplanstap
-//        }
+
             nameParentPlan.text = parentPlan?.name
             parentPlanStap = parentPlanStap
 
@@ -127,13 +117,6 @@ class TimeAddPlanStapPanelFragment(
                     SelectedPlanPanelFragment(parentPlan, callbackSelPrivPlan),
                     bound = MyFragDial.BoundSlide.top
                 )
-//            val directions = TimeAddPlanStapPanelFragmentDirections.actionAddplanstappanelToSelectPlan()
-//            findNavController().navigate(
-//                directions, FragmentNavigatorExtras(
-//                    clSelectedParentPlan to "clSelectParentPlanTpanel"
-//                )
-//            )
-
             }
             val callbackSelPrivStapPlan = "callbackSelPrivStapPlanForDenPlan"
             SelectedPlanStapPanelFragment.setRezListener(
@@ -151,36 +134,11 @@ class TimeAddPlanStapPanelFragment(
                         callbackSelPrivStapPlan
                     ), bound = MyFragDial.BoundSlide.top
                 )
-//            val directions = TimeAddPlanStapPanelFragmentDirections.actionAddplanstappanelToSelectPlanStap()
-//            findNavController().navigate(
-//                directions, FragmentNavigatorExtras(
-//                    clSelectedParentPlanStap to "clSelectParentPlanStapTpanel"
-//                )
-//            )
-
             }
 
-//        stateViewModel.selPrivItemPlan_forPlanStap.observe(viewLifecycleOwner) {
-//            it?.let {
-//                nameParentPlan.text = it.name
-//                viewmodel.setPlanForSpisStapPlanForSelect(it.id.toLong())
-//            }
-//        }
-//        stateViewModel.selPrivItemPlanStap_forPlanStap.observe(viewLifecycleOwner) {
-//            if (parPlanStap != null) {
-//                nameParentPlanStap.text = parPlanStap?.name
-//                buttUnselStap.isVisible = true
-//            } else {
-//                nameParentPlanStap.text = "Сделать подъэтапом"
-//                buttUnselStap.isVisible = false
-//            }
-//        }
-//        parPlanStap = parPlanStap
             buttUnselStap.setOnClickListener {
-//            stateViewModel.selPrivItemPlanStap_forPlanStap.value = null
                 parentPlanStap = null
             }
-
         }
     }
 }

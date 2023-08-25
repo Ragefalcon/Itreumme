@@ -10,7 +10,9 @@ class SingleSelection {
     private var selectedMut: MutableState<Any?> = mutableStateOf(null)
     var selected: Any?
         get() = selectedMut.value
-        set(value) {selectedMut.value = value}
+        set(value) {
+            selectedMut.value = value
+        }
 
     fun <T : Id_class> isActive(item: T): Boolean {
         selected?.let {
@@ -22,10 +24,11 @@ class SingleSelection {
         }
         return false
     }
+
     fun <T : Any> isActive(item: T): Boolean {
         selected?.let {
             if (it::class == item::class) {
-                    if (it == item) return true
+                if (it == item) return true
             }
         }
         return false
@@ -35,15 +38,16 @@ class SingleSelection {
 class SingleSelectionType<T : Any>() {
     private var selectedMut: MutableState<T?> = mutableStateOf(null)
     var selected: T?
-    get() = selectedMut.value
-    set(value) {selectedMut.value = value}
+        get() = selectedMut.value
+        set(value) {
+            selectedMut.value = value
+        }
 
     @Composable
-    fun launchedEffect(listener: (T?) -> Unit){
-        LaunchedEffect(selectedMut.value){
+    fun launchedEffect(listener: (T?) -> Unit) {
+        LaunchedEffect(selectedMut.value) {
             listener(selectedMut.value)
         }
-//        selectedMut.observe(listener)
     }
 
     fun <T : Any> isActive(item: T): Boolean {

@@ -50,8 +50,8 @@ fun ComItemTreeSkillsOpened(
         MainDB.avatarSpis.spisTreeSkills.getState().value?.find { it.id == itemTS.id }?.let { itemFTS ->
             MyCardStyle1(
                 false, 0,
-                backBrush =// with (MainDB.avatarSpis.spisTreeSkills.getState().value?.find { it.id == itemTS.id }) {
-                    if (itemFTS.completeCountNode == itemFTS.countNode) background_brush_complete else when (itemTS.stat) {
+                backBrush =
+                if (itemFTS.completeCountNode == itemFTS.countNode) background_brush_complete else when (itemTS.stat) {
                     TypeStatTreeSkills.OPEN_EDIT -> null
                     TypeStatTreeSkills.VISIB -> background_brush_no_edit
                     TypeStatTreeSkills.COMPLETE -> null
@@ -59,7 +59,7 @@ fun ComItemTreeSkillsOpened(
                     TypeStatTreeSkills.BLOCK -> background_brush_block
                     TypeStatTreeSkills.INVIS -> null
                     else -> null
-                } ,
+                },
                 borderBrush = if (itemFTS.completeCountNode == itemFTS.countNode) border_brush_complete else when (itemTS.stat) {
                     TypeStatTreeSkills.OPEN_EDIT -> null
                     TypeStatTreeSkills.VISIB -> border_brush_no_edit
@@ -78,7 +78,7 @@ fun ComItemTreeSkillsOpened(
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     if (itemTS.namequest != "") {
-                        MyShadowBox(quest_plate.shadow){
+                        MyShadowBox(quest_plate.shadow) {
                             RowVA(
                                 Modifier.fillMaxWidth()
                                     .padding(horizontal = 10.dp)
@@ -96,8 +96,10 @@ fun ComItemTreeSkillsOpened(
                         }
                     }
 
-                    RowVA(Modifier.padding(top = topPadding).mouseDoubleClick({}, onDoubleClick = { openTree(itemTS) })) {
-                        MyShadowBox(icon_plate.shadow){
+                    RowVA(
+                        Modifier.padding(top = topPadding).mouseDoubleClick({}, onDoubleClick = { openTree(itemTS) })
+                    ) {
+                        MyShadowBox(icon_plate.shadow) {
                             Image(
                                 bitmap = useResource("free-icon-tree-shape-42090.png", ::loadImageBitmap),
                                 "defaultAvatar",
@@ -107,18 +109,10 @@ fun ComItemTreeSkillsOpened(
                                     .withSimplePlate(icon_plate)
                                     .clip(icon_plate.shape)
                                     .wrapContentSize(),
-                                contentScale = ContentScale.Crop,// Fit,
+                                contentScale = ContentScale.Crop,
                                 colorFilter = ColorFilter.tint(ICON_TREE_COLOR)
                             )
                         }
-/*
-                    IconNode(
-                        File(System.getProperty("user.dir"), "Quests").path,
-                        "${itemTS.icon}.jpg",
-                        "free-icon-tree-shape-42090.png",
-                        modifier = Modifier.padding(horizontal = 8.dp)
-                    )
-*/
                         Text(
                             text = itemTS.name,
                             modifier = Modifier.padding(start = 15.dp).weight(1f),
@@ -134,7 +128,7 @@ fun ComItemTreeSkillsOpened(
                             width = 40.dp,
                             height = 40.dp,
                             myStyleToggleButton = ToggleButtonStyleState(MainDB.styleParam.avatarParam.skillTab.buttVisibleBinding)
-//                    , enabledColor = MyColorARGB.colorStatTint_03.toColor()
+
                         )
                         Text(
                             text = "(${itemFTS.completeCountNode}/${itemFTS.countNode})",
@@ -157,10 +151,6 @@ fun ComItemTreeSkillsOpened(
                             when (TypeTreeSkills.getType(itemTS.id_type_tree)) {
                                 TypeTreeSkills.KIT -> {
                                     spisNodeTreeSkills[1L]?.let { listNode ->
-//                                        MyList(
-//                                            listNode,
-//                                            Modifier.weight(1f).padding(horizontal = 60.dp)
-//                                        ) { ind, itemNodeTreeSkills ->
                                         MainDB.styleParam.avatarParam.skillTab.itemSkillNode.getComposable(::ItemNodeTreeSkillsState) { itemNodeStyle ->
                                             MyListPlate(
                                                 listNode,
@@ -232,13 +222,14 @@ fun ComItemTreeSkillsOpened(
                                         )
                                     }
                                 }
+
                                 TypeTreeSkills.LEVELS -> {
                                     MainDB.styleParam.avatarParam.skillTab.itemSkillLevel.getComposable(::ItemSkillsTreeLevelState) { itemStyle ->
                                         MainDB.styleParam.avatarParam.skillTab.itemSkillNode.getComposable(::ItemNodeTreeSkillsState) { itemNodeStyle ->
                                             MyList(
                                                 MainDB.avatarSpis.spisLevelTreeSkills,
                                                 Modifier.weight(1f).padding(horizontal = 5.dp).padding(top = 5.dp)
-                                            ) { ind, itemLevelTreeSkills ->
+                                            ) { _, itemLevelTreeSkills ->
                                                 ComItemLevelTreeSkills(
                                                     dialLay, itemTS, itemLevelTreeSkills, selectionNodeTreeSkills,
                                                     spisNodeTreeSkills.get(itemLevelTreeSkills.num_level)
@@ -278,6 +269,7 @@ fun ComItemTreeSkillsOpened(
                                         PanAddLevelTreeSkills(dialLay, itemTS)
                                     }
                                 }
+
                                 TypeTreeSkills.TREE -> {
                                     spisNodeTreeSkills.toList()?.sortedBy { it.first }
                                         ?.let { listLevels ->
@@ -286,7 +278,7 @@ fun ComItemTreeSkillsOpened(
                                                     MyList(
                                                         listLevels,
                                                         Modifier.weight(1f).padding(5.dp)
-                                                    ) { ind, levelTreeSkills ->
+                                                    ) { _, levelTreeSkills ->
                                                         ComItemLevelCommonTreeSkills(
                                                             dialLay,
                                                             itemTS,
@@ -316,9 +308,8 @@ fun ComItemTreeSkillsOpened(
                                         )
                                     }
                                 }
-                                null -> {
 
-                                }
+                                null -> Unit
                             }
                         }
                     }

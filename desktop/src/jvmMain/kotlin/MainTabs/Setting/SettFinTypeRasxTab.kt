@@ -1,5 +1,6 @@
 package MainTabs.Setting
 
+import MainTabs.Setting.Items.ComItemTypeRasxSett
 import MyDialog.MyDialogLayout
 import MyDialog.MyOneVopros
 import MyList
@@ -16,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import common.*
 import ru.ragefalcon.sharedcode.models.data.ItemSettTyperasxod
-import MainTabs.Setting.Items.ComItemTypeRasxSett
 import viewmodel.MainDB
 
 class SettFinTypeRasxTab(val dialLay: MyDialogLayout) {
@@ -27,7 +27,7 @@ class SettFinTypeRasxTab(val dialLay: MyDialogLayout) {
 
     @Composable
     fun show(modifier: Modifier = Modifier) {
-        Column(modifier,horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             Row(modifier = Modifier.padding(bottom = 5.dp), verticalAlignment = Alignment.CenterVertically) {
                 MyTextToggleButtStyle1("Закрытые", visClose, modifier = Modifier.padding(start = 15.dp)) {
                     MainDB.finFun.setVisibleOpenSettTyperasxod(!it)
@@ -43,10 +43,12 @@ class SettFinTypeRasxTab(val dialLay: MyDialogLayout) {
                     MyOneVopros(dialLay, "Введите название типа расхода:", "Добавить", "Тип расхода") {
                         MainDB.addFinFun.addTyperasxod(it)
                     }
-//                    PanAddVxod(dialLay)
                 }
             }
-            MyList(MainDB.finSpis.spisTyperasxodForSett, Modifier.weight(1f).padding(bottom = 10.dp)) { ind, itemSettTyperasxod ->
+            MyList(
+                MainDB.finSpis.spisTyperasxodForSett,
+                Modifier.weight(1f).padding(bottom = 10.dp)
+            ) { ind, itemSettTyperasxod ->
                 ComItemTypeRasxSett(itemSettTyperasxod, selection) { item, expanded ->
                     DropdownMenuItem(onClick = {
                         MyOneVopros(
@@ -64,13 +66,12 @@ class SettFinTypeRasxTab(val dialLay: MyDialogLayout) {
                     }
                     DropdownMenuItem(onClick = {
                         MainDB.addFinFun.updTyperasxodOpen(item.id.toLong(), item.open.not())
-//                        PanAddVxod(dialLay, item)
                         expanded.value = false
                     }) {
                         Text(text = if (item.open) "Закрыть" else "Открыть", color = Color.White)
                     }
-                    if (item.countoper == 0L){
-                        MyDeleteDropdownMenuButton(expanded){
+                    if (item.countoper == 0L) {
+                        MyDeleteDropdownMenuButton(expanded) {
                             MainDB.addFinFun.delTyperasxod(item.id.toLong())
                         }
                     }

@@ -30,7 +30,7 @@ import java.util.*
 class TimeSelectSlider(dtStart: Date, dtEnd: Date) {
 
     private fun DateToFloat(date: Date): Float {
-//        return ((date.withOffset().time/60f/1000f).toInt()%(24*60+1))/5f
+
         return date.format("HH").toFloat() * 12f + date.format("mm").toFloat() / 5f
     }
 
@@ -65,13 +65,12 @@ class TimeSelectSlider(dtStart: Date, dtEnd: Date) {
 
     private val maxValSlider = 24f * 12f
 
-
     @Composable
     fun getComposable(modifier: Modifier = Modifier) {
         Card(
             modifier = modifier
                 .padding(horizontal = 8.dp, vertical = 2.dp)
-//                .fillMaxWidth()
+
                 .border(
                     width = 0.5.dp,
                     brush = Brush.horizontalGradient(
@@ -87,9 +86,8 @@ class TimeSelectSlider(dtStart: Date, dtEnd: Date) {
                 Modifier.padding(top = 10.dp).padding(horizontal = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 val razryv = progressStart.value <= progressEnd.value
-//                val razryv = progressGotov.value <= progressGotov2.value
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     MyTextButtStyle2(
                         "❮ ",
@@ -110,8 +108,6 @@ class TimeSelectSlider(dtStart: Date, dtEnd: Date) {
                         "ФП",
                         modifier = Modifier.width(40.dp).height(30.dp),
                         value = fixDiap
-//                        radius = 8.dp,
-//                        fontSize = 12.sp
                     ) {
                         widthDiap = (progressEnd.value.toInt() - progressStart.value.toInt()).toFloat()
                     }
@@ -139,15 +135,6 @@ class TimeSelectSlider(dtStart: Date, dtEnd: Date) {
                 }
 
                 Box(Modifier.height(60.dp).fillMaxWidth()) {
-//                    Row(Modifier.fillMaxWidth().padding(10.dp)) {
-//                        for (i in 0..23 step 3) {
-//                            MyTextStyle(
-//                                " ",
-//                                Modifier.border(1.dp, Color.White).weight(1f).height(30.dp),
-//                                MyTextStyleParam.style2.copy(textAlign = TextAlign.Start)
-//                            )
-//                        }
-//                    }
                     BoxWithConstraints(Modifier.fillMaxWidth().padding(10.dp)) {
                         val minV = minOf(progressStart.value, progressEnd.value)
                         val maxV = maxOf(progressStart.value, progressEnd.value)
@@ -183,7 +170,7 @@ class TimeSelectSlider(dtStart: Date, dtEnd: Date) {
                     }
                     Slider(
                         value = progressStart.value,
-                        modifier = Modifier.height(10.dp).fillMaxWidth().padding(top = 5.dp),//.alpha(0.0f),
+                        modifier = Modifier.height(10.dp).fillMaxWidth().padding(top = 5.dp),
                         onValueChange = {
                             progressStart.value = it
                             if (fixDiap.value) {
@@ -194,15 +181,14 @@ class TimeSelectSlider(dtStart: Date, dtEnd: Date) {
                             }
                         },
                         onValueChangeFinished = {
-//                    changeGotov?.invoke(item, progressGotov.value)
                         },
                         valueRange = 0f..maxValSlider,
                         steps = maxValSlider.toInt(),
                         colors = SliderDefaults.colors(
-                            thumbColor = MyColorARGB.colorStatTint_03.toColor(), //MaterialTheme.colors.primary,
+                            thumbColor = MyColorARGB.colorStatTint_03.toColor(),
                             disabledThumbColor = Color.Transparent,
-                            activeTrackColor = Color.Transparent, //MaterialTheme.colors.primary,
-                            inactiveTrackColor = Color.Transparent, //activeTrackColor.copy(alpha = InactiveTrackAlpha),
+                            activeTrackColor = Color.Transparent,
+                            inactiveTrackColor = Color.Transparent,
                             disabledActiveTrackColor = Color.Transparent,
                             disabledInactiveTrackColor = Color.Transparent,
                             activeTickColor = Color.Transparent,
@@ -213,7 +199,7 @@ class TimeSelectSlider(dtStart: Date, dtEnd: Date) {
                     )
                     Slider(
                         value = progressEnd.value,
-                        modifier = Modifier.height(10.dp).fillMaxWidth().padding(top = 40.dp),//.alpha(0.0f),
+                        modifier = Modifier.height(10.dp).fillMaxWidth().padding(top = 40.dp),
                         onValueChange = {
                             progressEnd.value = it
                             if (fixDiap.value) {
@@ -224,15 +210,14 @@ class TimeSelectSlider(dtStart: Date, dtEnd: Date) {
                             }
                         },
                         onValueChangeFinished = {
-//                    changeGotov?.invoke(item, progressGotov.value)
                         },
                         valueRange = 0f..maxValSlider,
                         steps = maxValSlider.toInt(),
                         colors = SliderDefaults.colors(
-                            thumbColor = MyColorARGB.colorStatTint_04.toColor(), //MaterialTheme.colors.primary,
+                            thumbColor = MyColorARGB.colorStatTint_04.toColor(),
                             disabledThumbColor = Color.Transparent,
-                            activeTrackColor = Color.Transparent, //MaterialTheme.colors.primary,
-                            inactiveTrackColor = Color.Transparent, //activeTrackColor.copy(alpha = InactiveTrackAlpha),
+                            activeTrackColor = Color.Transparent,
+                            inactiveTrackColor = Color.Transparent,
                             disabledActiveTrackColor = Color.Transparent,
                             disabledInactiveTrackColor = Color.Transparent,
                             activeTickColor = Color.Transparent,
@@ -242,9 +227,7 @@ class TimeSelectSlider(dtStart: Date, dtEnd: Date) {
                         )
                     )
                 }
-
             }
         }
     }
-
 }

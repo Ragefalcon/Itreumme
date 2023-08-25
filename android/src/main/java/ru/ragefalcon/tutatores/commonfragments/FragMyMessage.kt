@@ -2,20 +2,16 @@ package ru.ragefalcon.tutatores.commonfragments
 
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import ru.ragefalcon.tutatores.databinding.FragmentMyMessageBinding
 
 
-
-class FragMyMessage (var message: String = ""): MyFragmentForDialog<FragmentMyMessageBinding>(FragmentMyMessageBinding::inflate) {
+class FragMyMessage(var message: String = "") :
+    MyFragmentForDialog<FragmentMyMessageBinding>(FragmentMyMessageBinding::inflate) {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-//        fragDial?.javaClass?.newInstance()
-        outState.putString("message",message)
+        outState.putString("message", message)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

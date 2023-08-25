@@ -88,7 +88,6 @@ class FragmentOneVoprosStr(
                     showMyMessage("Введите вначале значение $namePole")
                 }
             }
-//                (rvmAdapter.selectedItem.value?.let { it.getData() as ItemPlan })?.run(funRez)
         }
     }
 
@@ -100,11 +99,11 @@ class FragmentOneVoprosStr(
             listener_cancel: (()->Unit)? = null,
             listener: ((answer: String) -> Unit)? = null
         ) {
-            fragment.setSFMResultListener(requestKey) { key, bundle ->
+            fragment.setSFMResultListener(requestKey) { _, bundle ->
                 val answer = bundle.getString("answer") ?: ""
                 listener?.invoke(answer)
             }
-            fragment.setSFMResultListener("${requestKey}_cancel") { key, bundle ->
+            fragment.setSFMResultListener("${requestKey}_cancel") { _, _ ->
                 listener_cancel?.invoke()
             }
         }

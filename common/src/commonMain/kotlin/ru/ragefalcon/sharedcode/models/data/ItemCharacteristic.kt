@@ -4,11 +4,11 @@ import ru.ragefalcon.sharedcode.extensions.Parcelable
 import ru.ragefalcon.sharedcode.extensions.Parcelize
 
 @Parcelize
-class ItemCharacteristic (
+class ItemCharacteristic(
     val id: Long,
-    val sort:   Long,
-    val name:  String,
-    val opis:  String,
+    val sort: Long,
+    val name: String,
+    val opis: String,
     val stat: Long,
     val startStat: Long,
     val progress: Double,

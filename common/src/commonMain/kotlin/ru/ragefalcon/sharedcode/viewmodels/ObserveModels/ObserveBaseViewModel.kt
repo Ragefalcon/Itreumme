@@ -14,26 +14,21 @@ import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers.*
 
 class ObserveBaseViewModel(
     dbArgs: DbArgs,
-//    dbArgs2: DbArgs? = null,
 ) {
 
-//    private var mDatabase2: Database? = dbArgs2?.let {
-//        println("Wait Callback")
-//        DatabaseCreator.getDataBase(it)
-//    }
     private var pairDBandDriver = DatabaseCreator.getDataBase(dbArgs)
     private var mDatabase: Database? = pairDBandDriver.first
     private var sqlDriver: SqlDriver? = pairDBandDriver.second
 
     private val spisQueryListener = SpisQueryForListener()
-    val loadQuestFromFileAttach = LoadQuestFromFileAttach(sqlDriver!!,mDatabase!!,spisQueryListener)
-    val loadStyleFromFileAttach = LoadStyleFromFileAttach(sqlDriver!!,mDatabase!!)
+    val loadQuestFromFileAttach = LoadQuestFromFileAttach(sqlDriver!!, mDatabase!!, spisQueryListener)
+    val loadStyleFromFileAttach = LoadStyleFromFileAttach(sqlDriver!!, mDatabase!!)
 
 
-    private val loadQuestObjForSpis = LoadQuestVMobjForSpis(mDatabase!!,spisQueryListener)
-    private val privateCommonFun = PrivateCommonFun(mDatabase!!,loadQuestObjForSpis)
+    private val loadQuestObjForSpis = LoadQuestVMobjForSpis(mDatabase!!, spisQueryListener)
+    private val privateCommonFun = PrivateCommonFun(mDatabase!!, loadQuestObjForSpis)
     val loadQuestSpis = LoadQuestVMspis(loadQuestObjForSpis)
-    val addQuest = AddLoadQuestHandler(mDatabase!!,loadQuestObjForSpis,privateCommonFun,dbArgs)
+    val addQuest = AddLoadQuestHandler(mDatabase!!, loadQuestObjForSpis, privateCommonFun, dbArgs)
 
     fun loadQuestFromFileAttach(
         path: String,
@@ -49,7 +44,7 @@ class ObserveBaseViewModel(
             dirLoadedFiles,
             dirIconFiles
         )?.let { questId_add ->
-            privateCommonFun.runTriggerReact(questId_add.toString(), TypeParentOfTrig.STARTQUESTDIALOG,-25)
+            privateCommonFun.runTriggerReact(questId_add.toString(), TypeParentOfTrig.STARTQUESTDIALOG, -25)
         }
     }
 
@@ -69,8 +64,8 @@ class ObserveBaseViewModel(
 
     private val editStyleObjForSpis = EditStyleVMobjForSpis(mDatabase!!)
     val editStyleSpis = EditStyleVMspis(editStyleObjForSpis)
-    val editStyleFun = EditStyleVMfun(mDatabase!!,editStyleObjForSpis)
-    val addEditStyle = AddEditStyleHandler(mDatabase!!,styleSpis)
+    val editStyleFun = EditStyleVMfun(mDatabase!!, editStyleObjForSpis)
+    val addEditStyle = AddEditStyleHandler(mDatabase!!, styleSpis)
 
     private val complexOpisObjForSpis = ComplexOpisVMobjForSpis(mDatabase!!)
     val complexOpisSpis = ComplexOpisVMspis(complexOpisObjForSpis)
@@ -78,25 +73,24 @@ class ObserveBaseViewModel(
 
     private val financeObjForSpis = FinanceVMobjForSpis(mDatabase!!)
     val financeSpis = FinanceVMspis(financeObjForSpis)
-    val financeFun = FinanceVMfun(mDatabase!!,financeObjForSpis)
+    val financeFun = FinanceVMfun(mDatabase!!, financeObjForSpis)
     val addFin = AddFinanceHandler(mDatabase!!)
 
-    private val timeObjForSpis = TimeVMobjForSpis(mDatabase!!,spisQueryListener)
+    private val timeObjForSpis = TimeVMobjForSpis(mDatabase!!, spisQueryListener)
     val timeSpis = TimeVMspis(timeObjForSpis)
-    val timeFun = TimeVMfun(mDatabase!!,timeObjForSpis,complexOpisObjForSpis,styleSpis)
-    val addTime = AddTimeHandler(mDatabase!!,privateCommonFun,addComplexOpis)
+    val timeFun = TimeVMfun(mDatabase!!, timeObjForSpis, complexOpisObjForSpis, styleSpis)
+    val addTime = AddTimeHandler(mDatabase!!, privateCommonFun, addComplexOpis)
 
     private val journalObjForSpis = JournalVMobjForSpis(mDatabase!!)
     val journalSpis = JournalVMspis(journalObjForSpis)
-    val journalFun = JournalVMfun(mDatabase!!,journalObjForSpis,complexOpisObjForSpis)
-    val addJournal = AddJournalHandler(mDatabase!!,addComplexOpis)
+    val journalFun = JournalVMfun(mDatabase!!, journalObjForSpis, complexOpisObjForSpis)
+    val addJournal = AddJournalHandler(mDatabase!!, addComplexOpis)
 
 
-    private val avatarObjForSpis = AvatarVMobjForSpis(mDatabase!!,spisQueryListener)
-    val addAvatar = AddAvatarHandler(mDatabase!!,privateCommonFun)
+    private val avatarObjForSpis = AvatarVMobjForSpis(mDatabase!!, spisQueryListener)
+    val addAvatar = AddAvatarHandler(mDatabase!!, privateCommonFun)
     val avatarSpis = AvatarVMspis(avatarObjForSpis)
-    val avatarFun = AvatarVMfun(mDatabase!!,avatarObjForSpis,complexOpisObjForSpis)
-
+    val avatarFun = AvatarVMfun(mDatabase!!, avatarObjForSpis, complexOpisObjForSpis)
 
 
     val sincFun = SincVMfun(mDatabase!!)
@@ -105,15 +99,12 @@ class ObserveBaseViewModel(
 
 
     init {
-        println("База start")
         mDatabase?.let { mDb ->
             val countStartDate = mDb.startDataQueries.chechData().executeAsOne()
-            println("countStartDate = ${countStartDate}")
-            if ( countStartDate<2){
+            if (countStartDate < 2) {
                 mDb.startDataQueries.startData()
             }
-        }   ?: run {
-            println("База еще пустая")
+        } ?: run {
         }
         financeObjForSpis.sumAllCap.getObserve {
             it?.let {

@@ -1,6 +1,5 @@
 package MyDialog
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -21,8 +20,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.layout.*
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -32,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.*
 import extensions.*
-import ru.ragefalcon.sharedcode.extensions.TimeUnits
 import kotlinx.coroutines.launch
+import ru.ragefalcon.sharedcode.extensions.TimeUnits
 import viewmodel.MainDB
 import java.time.YearMonth
 import java.util.*
@@ -64,7 +62,7 @@ fun buttDatePickerWithButton(
         ) {
             myDatePicker(dialPan, changeDate, {}, funRez)
         }
-//        buttDatePicker(dialPan, changeDate, funRez = funRez)
+
         MyTextButtStyle1(">", fontSize = fontSize, myStyleTextButton = myStyleTextArrow ?: myStyleTextDate) {
             changeDate.value = Date(changeDate.value.time).add(shagDate, TimeUnits.DAY)
             funRez(changeDate.value)
@@ -81,14 +79,11 @@ fun buttDatePicker(
 ) {
     Button(
         modifier = modifier.padding(3.dp),
-        border = myButtBorder,//BorderStroke(1.dp,Color(0xFFFFF7D9)),
+        border = myButtBorder,
         shape = RoundedCornerShape(corner = CornerSize(10.dp)),
         colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF464D45)),
-//        elevation = ButtonDefaults.elevation(0.dp, 0.dp, 0.dp),
         onClick = {
             myDatePicker(dialPan, changeDate, {}, funRez)
-//                        myShowMessage(dialLay, "Test Message",)
-//                        db.ObserFM.selPer.SetPeriodYear()
         }
     ) {
         Text(
@@ -97,20 +92,14 @@ fun buttDatePicker(
                 color = Color(0xFFFFF7D9),
                 fontSize = 20.sp,
                 fontFamily = FontFamily.SansSerif,
-//                letterSpacing = 4.sp,
+
                 textAlign = TextAlign.Center,
                 shadow = Shadow(
                     color = Color.Black,
                     offset = Offset(4f, 4f),
                     blurRadius = 4f
                 ),
-//                textGeometricTransform = TextGeometricTransform(
-//                    scaleX = 2.5f,
-//                    skewX = 1f
-//                )
             ),
-//        color = Color(0xFFFFF7D9),
-
         )
     }
 }
@@ -144,8 +133,8 @@ fun myDatePicker(
         val dayOfWeek: Int,
         val number: Int,
         val dateItem: Long,
-//        var selection: SingleSelection
-    ) {
+
+        ) {
         val isActive: Boolean
             get() = dateItem == selectionDate
 
@@ -153,7 +142,7 @@ fun myDatePicker(
             aa.time.time = dateItem
             date = Date(dateItem)
             selectionDate = dateItem
-//            selection.selected = this
+
         }
     }
 
@@ -187,7 +176,7 @@ fun myDatePicker(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = day.number.toString(), //Date(day.dateItem).format("dd.MM.yy"),//
+                        text = day.number.toString(),
                         color = Color(0xFFFFF7D9),
                         fontSize = 12.sp,
                         modifier = Modifier.fillMaxWidth().padding(3.dp),
@@ -203,7 +192,8 @@ fun myDatePicker(
         row.apply {
             MyShadowBox(if (weekend) styleDP.plateWeekend.shadow else styleDP.plateDayWeek.shadow) {
                 Box(
-                    Modifier.padding(2.dp).withSimplePlate(if (weekend) styleDP.plateWeekend else styleDP.plateDayWeek).width(40.dp).height(40.dp)
+                    Modifier.padding(2.dp).withSimplePlate(if (weekend) styleDP.plateWeekend else styleDP.plateDayWeek)
+                        .width(40.dp).height(40.dp)
                         .padding(3.dp),
                     contentAlignment = Alignment.Center
                 ) {
@@ -227,9 +217,9 @@ fun myDatePicker(
                     daysItem(
                         i,
                         if (first > last) -first else first,
-                        dateStart.add( 1, TimeUnits.DAY).time
+                        dateStart.add(1, TimeUnits.DAY).time
                     )
-                ) //,selectionDay
+                )
                 first++
             }
         }
@@ -239,19 +229,18 @@ fun myDatePicker(
     fun getLines(date: Date): MutableList<LineDay> {
         val calendar = Calendar.getInstance().apply { time = date }
         val daysMonth = mutableListOf<LineDay>()
-        val dayWeekFD = calendar.get(Calendar.DAY_OF_WEEK) - 1 // воскресенье = 1, пн = 2, .. сб = 7
         val firstDayOfMonth = (calendar.apply { set(Calendar.DAY_OF_MONTH, 1) }.get(Calendar.DAY_OF_WEEK) - 1).let {
             if (it == 0) 7 else it
         }
         val yearMonthObject: YearMonth = YearMonth.of(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
-        val daysInMonth: Int = yearMonthObject.lengthOfMonth() //28
-//        println("Дней в месяце: $daysInMonth")
+        val daysInMonth: Int = yearMonthObject.lengthOfMonth()
+
         var start = 2 - firstDayOfMonth
-        var startDate = calendar.time.add(start - 2, TimeUnits.DAY)
+        val startDate = calendar.time.add(start - 2, TimeUnits.DAY)
         while (start <= daysInMonth) {
             daysMonth.add(LineDay(start, startDate, daysInMonth))
             start += 7
-//            startDate.add(7,TimeUnits.DAY)
+
         }
         return daysMonth
     }
@@ -270,27 +259,13 @@ fun myDatePicker(
             if (dateYear != year) {
                 dateYear = year
                 coroutineScope.launch {
-                    // Animate scroll to the 10th item
                     val xT = dateYear - startYear - yearOffsetUp
-                    if ((xT > yearOffsetUp) && (xT < 200)) listState.animateScrollToItem(xT)//,- height.value.value.toInt()/3)
-//                                                    listState.animateScrollToItem(index = 10)
+                    if ((xT > yearOffsetUp) && (xT < 200)) listState.animateScrollToItem(xT)
                 }
             }
         }
 
         val daysMonth = getLines(date)
-//        val dayWeekFD = aa.get(Calendar.DAY_OF_WEEK) - 1 // воскресенье = 1, пн = 2, .. сб = 7
-//        val firstDayOfMonth = (aa.apply { set(Calendar.DAY_OF_MONTH, 1) }.get(Calendar.DAY_OF_WEEK) - 1).let {
-//            if (it == 0) 7 else it
-//        }
-//        val yearMonthObject: YearMonth = YearMonth.of(aa.get(Calendar.YEAR), aa.get(Calendar.MONTH))
-//        val daysInMonth: Int = yearMonthObject.lengthOfMonth() //28
-//        println("Дней в месяце: $daysInMonth")
-//        var start = 2 - firstDayOfMonth
-//        while (start < daysInMonth) {
-//            daysMonth.add(LineDay(start, daysInMonth))
-//            start += 7
-//        }
         BackgroungPanelStyle1(
             vignette = styleDP.VIGNETTE,
             style = styleDP.platePanel,
@@ -300,9 +275,8 @@ fun myDatePicker(
                 LazyColumn(
                     state = listState,
                     modifier = Modifier
-//                                .height(height.value)
                         .padding(end = 15.dp)
-                ) {//height.value
+                ) {
                     for (i in startYear..endYear) {
                         item {
                             MyTextButtStyle1(
@@ -314,53 +288,18 @@ fun myDatePicker(
                                 date = aa.time
                                 setYear(i)
                             }
-/*
-                            Surface(
-                                modifier = Modifier.padding(2.dp),
-                                shape = RoundedCornerShape(corner = CornerSize(15.dp)),
-                                color = if (i == dateYear) Color(0xFF2B2B2B) else Color.Transparent
-                            ) {
-                                Row(
-                                    Modifier
-                                        .clickable(remember(::MutableInteractionSource), indication = null) {
-                                            aa.set(Calendar.YEAR, i)
-                                            date = aa.time
-                                            setYear(i)
-                                        }.border(
-                                            width = 1.dp,
-                                            brush = Brush.horizontalGradient(
-                                                listOf(
-                                                    Color(0xFF888888),
-                                                    Color(0xFF888888)
-                                                )
-                                            ),
-                                            shape = RoundedCornerShape(10.dp)
-                                        )
-                                        .padding(4.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    Text(
-                                        text = i.toString(),//
-                                        color = if (i == aa.get(Calendar.YEAR)) Color(0xFFFFF7D9) else Color.Black,
-                                        fontSize = 22.sp,
-                                        modifier = Modifier.padding(6.dp),
-                                        textAlign = TextAlign.Center
-                                    )
-                                }
-                            }
-*/
                         }
                     }
                 }.apply {
                     if (keyFirstStart) {
                         coroutineScope.launch {
                             val xT = dateYear - startYear - yearOffsetUp
-                            if ((xT > yearOffsetUp) && (xT < 200)) listState.scrollToItem(xT)//,- height.value.value.toInt()/3)
+                            if ((xT > yearOffsetUp) && (xT < 200)) listState.scrollToItem(xT)
                         }
                         keyFirstStart = false
                     }
                 }
-//                        with(LocalDensity.current) {
+
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -373,10 +312,10 @@ fun myDatePicker(
                         modifier = Modifier.padding(bottom = 5.dp)
                     )
                     MeasureUnconstrainedViewWidth(viewToMeasure = {
-                        val dd = Calendar.getInstance()//.apply { set(Calendar.DAY_OF_MONTH,1) }
+                        val dd = Calendar.getInstance()
                         val startDate = dd.time.add(2 - dd.get(Calendar.DAY_OF_WEEK), TimeUnits.DAY)
                         Row(
-                            Modifier.padding(vertical = 5.dp) //.width(280.dp)
+                            Modifier.padding(vertical = 5.dp)
                         ) {
                             for (day in 1..7) {
                                 comDayName(startDate.time, this, day == 6 || day == 7)
@@ -384,7 +323,10 @@ fun myDatePicker(
                             }
                         }
                     }) {
-                        RowVA(Modifier.width(it).padding(vertical = 15.dp), horizontalArrangement = Arrangement.SpaceBetween) { //(Modifier.width(280.dp), verticalAlignment = Alignment.CenterVertically) {
+                        RowVA(
+                            Modifier.width(it).padding(vertical = 15.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
                             MyTextButtStyle1("<", myStyleTextButton = styleDP.buttArrow) {
                                 aa.add(Calendar.MONTH, -1)
                                 date = aa.time
@@ -392,7 +334,7 @@ fun myDatePicker(
                             }
                             Text(
                                 date.format("LLLL yyyy"),
-//                                modifier = Modifier.padding(horizontal = 20.dp),
+
                                 style = styleDP.textMonth
                             )
                             MyTextButtStyle1(">", myStyleTextButton = styleDP.buttArrow) {
@@ -403,10 +345,10 @@ fun myDatePicker(
                         }
                     }
                     Column {
-                        val dd = Calendar.getInstance()//.apply { set(Calendar.DAY_OF_MONTH,1) }
+                        val dd = Calendar.getInstance()
                         val startDate = dd.time.add(2 - dd.get(Calendar.DAY_OF_WEEK), TimeUnits.DAY)
                         Row(
-                            Modifier.padding(vertical = 5.dp) //.width(280.dp)
+                            Modifier.padding(vertical = 5.dp)
                         ) {
                             for (day in 1..7) {
                                 comDayName(startDate.time, this, day == 6 || day == 7)
@@ -423,13 +365,12 @@ fun myDatePicker(
                                         height = 40.dp,
                                         myStyleTextButton = if (day.dayOfWeek == 6 || day.dayOfWeek == 7) {
                                             if (day.isActive) styleDP.buttNumberWeekendActive else styleDP.buttNumberWeekend
-                                        }   else    {
+                                        } else {
                                             if (day.isActive) styleDP.buttNumberActive else styleDP.buttNumber
                                         }
                                     ) {
                                         day.activate()
                                     }
-//                                                    comDayItem(day, this)
                                 }
                             }
                         }
@@ -453,7 +394,7 @@ fun myDatePicker(
                         }
                     }
                 }
-//                        }
+
             }, Modifier.padding(15.dp), measurePolicy = { measurables, constraints ->
                 require(measurables.size == 2)
 
@@ -470,10 +411,7 @@ fun myDatePicker(
                     secondPlaceable.place(0, 0)
                 }
             })
-//                }
-//            }
         }
     }
-
     dialPan.show()
 }

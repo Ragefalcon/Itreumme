@@ -13,17 +13,12 @@ import viewmodel.MainDB
 
 class MainAvatarTabs(val dialLay: MyDialogLayout) {
 
-    init {
-        println("init MainAvatarTabs: $this")
-    }
-
-//    val dialLay = MyDialogLayout()
     val bestDays = BestDaysPanel()
     val goals = GoalsPanel()
     val characteristics = CharacteristicsPanel()
     val dream = DreamsPanel()
-    val skill = SkillsPanel() //JLJLKJLKJ()
-    val skillTree = TreeSkillsPanel() //JLJLKJLKJ()
+    val skill = SkillsPanel()
+    val skillTree = TreeSkillsPanel()
 
     enum class AvatarTabsEnum(override val nameTab: String) : tabElement {
         Characteristics("Характеристики"),
@@ -34,29 +29,22 @@ class MainAvatarTabs(val dialLay: MyDialogLayout) {
 
     val dreamsGoalsSeekBar =
         EnumDiskretSeekBar(AvatarTabsEnum::class, AvatarTabsEnum.Goals)
-//    val dreamsGoalsSeekBar =
-//        DiskretSeekBar(
-//            listOf(
-//                "Характеристики" to "Characteristics",
-//                "Цели" to "Goals",
-//                "Навыки" to "Skills",
-//                "Мечты" to "Dreams"),
-//            "Characteristics"
-//        ) {}
 
     @Composable
     fun show() {
-        LaunchedEffect(MainDB){
+        LaunchedEffect(MainDB) {
             MainDB.setAvatarDreamGoalListener()
         }
         Box {
             Row {
                 Column(Modifier.fillMaxWidth(0.65f).padding(start = 10.dp)) {
-                    dreamsGoalsSeekBar.show(Modifier.fillMaxWidth().padding(bottom = 0.dp),MainDB.styleParam.avatarParam.seekBarStyle)
+                    dreamsGoalsSeekBar.show(
+                        Modifier.fillMaxWidth().padding(bottom = 0.dp),
+                        MainDB.styleParam.avatarParam.seekBarStyle
+                    )
                     when (dreamsGoalsSeekBar.active) {
                         AvatarTabsEnum.Characteristics -> characteristics.show(dialLay, Modifier.fillMaxWidth())
-                        AvatarTabsEnum.Goals -> goals.show(dialLay, Modifier.fillMaxWidth()) //0.5f
-//                        AvatarTabsEnum.Skills -> skill.show(dialLay, Modifier.fillMaxWidth())
+                        AvatarTabsEnum.Goals -> goals.show(dialLay, Modifier.fillMaxWidth())
                         AvatarTabsEnum.Skills -> skillTree.show(dialLay, Modifier.fillMaxWidth())
                         AvatarTabsEnum.Dreams -> dream.show(dialLay, Modifier.fillMaxWidth())
                     }
@@ -64,7 +52,6 @@ class MainAvatarTabs(val dialLay: MyDialogLayout) {
                 Spacer(Modifier.width(10.dp))
                 bestDays.show(dialLay, Modifier.fillMaxWidth())
             }
-//            dialLay.getLay()
         }
     }
 }

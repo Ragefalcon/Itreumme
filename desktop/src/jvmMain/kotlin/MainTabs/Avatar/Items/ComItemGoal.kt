@@ -1,7 +1,6 @@
 package MainTabs.Avatar.Items
 
 import MainTabs.Time.Items.privSchetPlanInfo
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -10,12 +9,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.*
 import extensions.ItemGoalStyleState
-import extensions.ItemPlanStapStyleState
 import ru.ragefalcon.sharedcode.extensions.roundToStringProb
 import ru.ragefalcon.sharedcode.models.data.ItemGoal
 import viewmodel.MainDB
@@ -37,7 +34,6 @@ class ComItemGoal(
 
     val text_sum_hour = mutableStateOf("${item.hour.roundToStringProb(1)} ч.")
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         with(itemGoalStyleState) {
@@ -45,7 +41,6 @@ class ComItemGoal(
                 selection.isActive(item) && selectable, 0, {
                     selection.selected = item
                     selFun(item)
-//            expandedDropMenu.value = this.buttons.isSecondaryPressed
                 },
                 onDoubleClick = {
                     item.sver = item.sver.not()
@@ -69,9 +64,7 @@ class ComItemGoal(
                                 textColor = arrow_color
                             ) {
                                 MainDB.avatarSpis.spisGoals.getState().value?.let {
-                                    println(it.size)
                                     it.findLast { it.lvl < item.lvl }?.let {
-                                        println(it)
                                         MainDB.addAvatar.setLvlGoal(item, it.lvl)
                                     }
                                 }
@@ -84,7 +77,6 @@ class ComItemGoal(
                             ) {
                                 MainDB.avatarSpis.spisGoals.getState().value?.let {
                                     it.find { it.lvl > item.lvl }?.let {
-                                        println(it)
                                         MainDB.addAvatar.setLvlGoal(item, it.lvl)
                                     }
                                 }

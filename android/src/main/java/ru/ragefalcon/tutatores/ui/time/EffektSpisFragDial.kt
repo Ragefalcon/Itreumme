@@ -44,19 +44,11 @@ class EffektSpisFragDial() : MyFragmentForDialogVM<FragmentSpisEffektBinding>(Fr
             with(viewmodel) {
                 var firstLoad = true
                 timeSpis.spisEffekt.observe(viewLifecycleOwner) {
-                    println("Check current date and update spisEffekt count2: ${it.count()}")
                     rvmAdapter.updateData(formUniRVItemList(it) { item ->
                         EffektRVItem(item, longTapListener = {
                             showMyFragDial(FragDelChangeDial(it, callEffektDChKey))
                         })
                     })
-//                    if (firstLoad) {
-//                        selItem?.let {
-//                            Log.d("MyTut", "selItem: $selItem");
-//                            rvmAdapter.setSelectItem(it, PlanViewHolder::class)// UniRVItem(PlanRVItem(this)))
-//                        }
-//                        firstLoad = false
-//                    }
                 }
             }
             /**

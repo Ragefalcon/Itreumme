@@ -37,11 +37,66 @@ data class ItemComplexOpisShablon(
     )
 
 
-    fun getItemOpis(tableName: String, item_id: Long, sort: Long): ItemComplexOpis = when (typeOpisBlock){
-        TypeOpisBlock.link -> ItemComplexOpisLink(-1L, tableName, item_id, TypeOpisBlock.link, sort, "", this.color, this.fontSize, this.cursiv, this.bold, "")
-        TypeOpisBlock.checkbox ->  ItemComplexOpisCheckbox(-1L, tableName, item_id, TypeOpisBlock.checkbox, sort, "", this.color, this.fontSize, this.cursiv, this.bold, 0L , this.many_type ?: false)
-        TypeOpisBlock.image ->  ItemComplexOpisImageGroup(-1L, tableName, item_id, TypeOpisBlock.image, sort, "", this.color, this.fontSize, this.cursiv, this.bold, sizePreview ?: 1L, widthLimit ?: false,enableText ?: false,textBefore ?: false, listOf())
-        TypeOpisBlock.simpleText ->  ItemComplexOpisText(-1L, tableName, item_id, TypeOpisBlock.simpleText, sort, "", this.color, this.fontSize, this.cursiv, this.bold)
+    fun getItemOpis(tableName: String, item_id: Long, sort: Long): ItemComplexOpis = when (typeOpisBlock) {
+        TypeOpisBlock.link -> ItemComplexOpisLink(
+            -1L,
+            tableName,
+            item_id,
+            TypeOpisBlock.link,
+            sort,
+            "",
+            this.color,
+            this.fontSize,
+            this.cursiv,
+            this.bold,
+            ""
+        )
+
+        TypeOpisBlock.checkbox -> ItemComplexOpisCheckbox(
+            -1L,
+            tableName,
+            item_id,
+            TypeOpisBlock.checkbox,
+            sort,
+            "",
+            this.color,
+            this.fontSize,
+            this.cursiv,
+            this.bold,
+            0L,
+            this.many_type ?: false
+        )
+
+        TypeOpisBlock.image -> ItemComplexOpisImageGroup(
+            -1L,
+            tableName,
+            item_id,
+            TypeOpisBlock.image,
+            sort,
+            "",
+            this.color,
+            this.fontSize,
+            this.cursiv,
+            this.bold,
+            sizePreview ?: 1L,
+            widthLimit ?: false,
+            enableText ?: false,
+            textBefore ?: false,
+            listOf()
+        )
+
+        TypeOpisBlock.simpleText -> ItemComplexOpisText(
+            -1L,
+            tableName,
+            item_id,
+            TypeOpisBlock.simpleText,
+            sort,
+            "",
+            this.color,
+            this.fontSize,
+            this.cursiv,
+            this.bold
+        )
     }
 
 

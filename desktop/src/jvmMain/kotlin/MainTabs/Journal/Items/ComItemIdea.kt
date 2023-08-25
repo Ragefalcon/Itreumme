@@ -3,7 +3,6 @@ package MainTabs.Journal.Items
 import MyDialog.MyDialogLayout
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -14,20 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.*
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import common.*
 import extensions.ItemIdeaStyleState
-import extensions.ItemVxodStyleState
 import extensions.RowVA
 import extensions.toColor
 import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 import ru.ragefalcon.sharedcode.models.data.ItemIdea
 import viewmodel.MainDB
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ComItemIdea(
     item: ItemIdea,
@@ -55,7 +49,7 @@ fun ComItemIdea(
         MyCardStyle1(selection.isActive(item), item.level, {
             selection.selected = item
             selFun(item)
-//            expandedDropMenu.value = this.buttons.isSecondaryPressed
+
         }, onDoubleClick = {
             expandedOpis.value = expandedOpis.value.not()
             item.sver = item.sver.not()
@@ -68,25 +62,8 @@ fun ComItemIdea(
                 Column {
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
-
-/*
-                        if(item.podstapcount > 0)Image(
-                            painterResource(if (item.sverChild) "ic_plus.xml" else "ic_minus.xml"),//useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
-                            "statDenPlan",
-                            Modifier
-                                .height(40.dp)
-                                .width(50.dp)
-                                .padding(start = 10.dp)
-                                .mouseClickable {
-                                    item.sverChild = item.sverChild.not()
-//                                    sverFun(item)
-                                },
-                            contentScale = ContentScale.Fit,
-//                        filterQuality = FilterQuality.High
-                        )
-*/
                         Image(
-                            painterResource("bookmark_01.svg"), //BitmapPainter(
+                            painterResource("bookmark_01.svg"),
                             "statIdea",
                             Modifier
                                 .height(35.dp)
@@ -120,7 +97,12 @@ fun ComItemIdea(
                         }
                     }
                     mapOpis[item.id.toLong()]?.let { listOpis ->
-                        if (listOpis.isNotEmpty()) MyBoxOpisStyle(expandedOpis, listOpis, dialLay, MainDB.styleParam.journalParam.complexOpisForIdea)
+                        if (listOpis.isNotEmpty()) MyBoxOpisStyle(
+                            expandedOpis,
+                            listOpis,
+                            dialLay,
+                            MainDB.styleParam.journalParam.complexOpisForIdea
+                        )
                     }
                 }
             }
@@ -136,8 +118,6 @@ fun ItemIdeaPlate(
     itemIdeaStyleState: ItemIdeaStyleState,
     onClick: () -> Unit
 ) {
-
-    val expandedOpis = remember { mutableStateOf(!item.sver) }
 
     with(itemIdeaStyleState) {
         MyCardStyle1(
@@ -159,7 +139,7 @@ fun ItemIdeaPlate(
             RowVA {
 
                 if (item.podstapcount > 0) Image(
-                    painterResource(if (item.sverChild) "ic_plus.xml" else "ic_minus.xml"),//useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                    painterResource(if (item.sverChild) "ic_plus.xml" else "ic_minus.xml"),
                     "statDenPlan",
                     Modifier
                         .height(40.dp)
@@ -169,10 +149,10 @@ fun ItemIdeaPlate(
                             sverFun(item)
                         },
                     contentScale = ContentScale.Fit,
-//                        filterQuality = FilterQuality.High
-                )
+
+                    )
                 Image(
-                    painterResource("bookmark_01.svg"), //BitmapPainter(
+                    painterResource("bookmark_01.svg"),
                     "statIdea",
                     Modifier
                         .height(35.dp)

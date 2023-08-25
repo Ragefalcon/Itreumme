@@ -16,9 +16,10 @@ import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.recyclerview.widget.SimpleItemAnimator
 import ru.ragefalcon.sharedcode.models.data.ItemDenPlan
 import ru.ragefalcon.sharedcode.models.data.ItemNapom
-import ru.ragefalcon.sharedcode.models.data.ItemPlan
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
-import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
+import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVItemList
+import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.DenPlanRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.NapomRVItem
 import ru.ragefalcon.tutatores.commonfragments.*
 import ru.ragefalcon.tutatores.databinding.FragmentDenPlanBinding
 import ru.ragefalcon.tutatores.extensions.*
@@ -30,7 +31,6 @@ import java.util.*
 class DenPlanFragment : FragSaveInstanseDelegate() {
 
     private var rvmAdapter = UniRVAdapter()
-    //<ItemDenPlan, DenPlanItemViewHolder>
 
     var denPlans = UniRVItemList()
     var napoms = UniRVItemList()
@@ -54,24 +54,19 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
 
 
     override fun onSaveInstanceState(outState: Bundle) {
-        Log.d("MyTut", "DenPlan: onSaveInstanceState")
         super.onSaveInstanceState(outState)
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d("MyTut", "DenPlan: onResume")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("MyTut", "DenPlan: onCreate")
         super.onCreate(savedInstanceState)
     }
 
     private var _binding: FragmentDenPlanBinding? = null
 
-    // This property is only valid between onCreateView and
-// onDestroyView.
     private val binding get() = _binding!!
     override fun onDestroyView() {
         super.onDestroyView()
@@ -83,16 +78,13 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentDenPlanBinding.inflate(inflater, container, false)
         return binding.root
-//        return inflater.inflate(R.layout.fragment_den_plan, container, false)
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("MyTut", "DenPlan: onViewCreated")
         val menuPopupDP = MyPopupMenuItem<ItemDenPlan>(this, "DenPlanDelChange").apply {
             addButton(MenuPopupButton.DELETE) {
                 viewmodel.addTime.delDenPlan(it.id.toLong())
@@ -114,23 +106,26 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
             with(rvDenplanList) {
                 adapter = rvmAdapter
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
-//            addItemDecoration(divider)
+
             }
 
             with(viewmodel) {
 
-                val addBestDays = OneVoprosStrDial(this@DenPlanFragment,"voprosNameBestDay",listener = {
-                    addAvatar.addBestDay(it,dateOporDp.value?.time ?: 0)
+                val addBestDays = OneVoprosStrDial(this@DenPlanFragment, "voprosNameBestDay", listener = {
+                    addAvatar.addBestDay(it, dateOporDp.value?.time ?: 0)
                 }, listener_cancel = {
                     buttToggleBestday.isChecked = false
                 })
                 buttToggleBestday.setOnClickListener {
                     if (buttToggleBestday.isChecked) {
-                        addBestDays.showVopros("Хотите добавить день ${etDateDp.text} как памятный?", "Название памятного дня", "Да")
+                        addBestDays.showVopros(
+                            "Хотите добавить день ${etDateDp.text} как памятный?",
+                            "Название памятного дня", "Да"
+                        )
                     } else {
                         buttToggleBestday.isChecked = true
                     }
-//                viewmodel.setOpenSpisPlan(buttToggleOpenPlan.isChecked)
+
                 }
                 timeSpis.spisNapom.observe(viewLifecycleOwner) {
                     napoms.setItems(it) { item ->
@@ -153,17 +148,11 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
                     kurok.fire {
                         rvmAdapter.updateData(napoms.getList() + denPlans.getList())
                         selItemNapom?.let {
-                            rvmAdapter.setSelectItem(it, NapomRVItem::class)//NapomViewHolder
+                            rvmAdapter.setSelectItem(it, NapomRVItem::class)
                         }
-//                    selItemDenPlan?.let {
-//                        rvmAdapter.setSelectItem(it, DenPlanViewHolder::class)
-//                    }
-
                     }
                 }
                 timeSpis.spisDenPlan.observe(viewLifecycleOwner) {
-                    Log.d("DenPlan", "count: ${it.count()}")
-//                Log.d("MyTut", "DenPlan: ${viewmodel.getDateTimeOpor().localUnix()}")
 
                     denPlans.setItems(it) { item ->
                         DenPlanRVItem(item,
@@ -182,11 +171,8 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
                     }
                     kurok.fire {
                         rvmAdapter.updateData(napoms.getList() + denPlans.getList())
-//                    selItemNapom?.let {
-//                        rvmAdapter.setSelectItem(it, NapomViewHolder::class)
-//                    }
                         selItemDenPlan?.let {
-                            rvmAdapter.setSelectItem(it, DenPlanRVItem::class) //DenPlanViewHolder
+                            rvmAdapter.setSelectItem(it, DenPlanRVItem::class)
                         }
                         kurokFresh.fire()
                     }
@@ -224,7 +210,6 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
                             set(year, month, dayOfMonth, 0, 0, 0)
                             set(Calendar.MILLISECOND, 0)
                         }
-
                         viewmodel.dateOporDp.value = Date(aa.time.time)
                     },
                     aa.get(Calendar.YEAR),
@@ -255,7 +240,7 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
                     selItemDenPlan?.let {
                         val time1 = Date().timeFromHHmmss(it.time1).time
                         val time2 = Date().timeFromHHmmss(it.time2).time
-                        val delta = if (time1>time2) 24*60*60*1000 else 0
+                        val delta = if (time1 > time2) 24 * 60 * 60 * 1000 else 0
                         val hourMls =
                             (time2 + delta - time1) * progress / 100
                         val hour = hourMls.toDouble() / 1000F / 60F / 60F
@@ -272,13 +257,13 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
                     selItemDenPlan?.let {
                         val time1 = Date().timeFromHHmmss(it.time1).time
                         val time2 = Date().timeFromHHmmss(it.time2).time
-                        val delta = if (time1>time2) 24*60*60*1000 else 0
+                        val delta = if (time1 > time2) 24 * 60 * 60 * 1000 else 0
                         val hourMls =
                             (time2 + delta - time1) * prog / 100
                         val hour = hourMls.toDouble() / 1000F / 60F / 60F
                         val exp: Double = when (it.vajn) {
                             0L -> hour * 1.25
-                            1L -> hour //* 1.0
+                            1L -> hour
                             2L -> hour * 0.5
                             3L -> hour * 0.25
                             else -> 0.0
@@ -286,8 +271,8 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
                         it.gotov = prog.toDouble()
                         it.sum_hour = hour
                         selTextView?.text = Date().fromHourFloat(it.sum_hour.toFloat())
-                            .humanizeTime() // .toLong()).minusOffset().format("H ч. mm мин.") // item.sum_hour.roundToString(1)
-//                    selTextView?.text = Date(hourMls).minusOffset().humanizeTime()
+                            .humanizeTime()
+
                         kurok.skip()
                         viewmodel.addTime.updGotovDenPlan(
                             it.id.toLong(),
@@ -297,9 +282,7 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
                         )
                     }
                 }
-
             })
-            Log.d("MyTut", "DenPlan: onViewCreated2")
         }
     }
 

@@ -91,7 +91,7 @@ class BoxSelectParentPlanQuest(
                                 questDB.spisQuest.spisStapPlanForSelect,
                                 Modifier.weight(1f).padding(bottom = 10.dp).padding(horizontal = 20.dp),
                                 darkScroll = true
-                            ) { ind, itemPlanStap ->
+                            ) { _, itemPlanStap ->
 
                                 ComItemPlanStapQuest(itemPlanStap, selectionPlanStapParent, sverFun = {
                                     questDB.questFun.setExpandStapPlan(it.id.toLong(), it.svernut.not())
@@ -113,23 +113,14 @@ class BoxSelectParentPlanQuest(
                         questDB.spisQuest.spisPlan,
                         Modifier.weight(1f).padding(bottom = 10.dp),
                         darkScroll = true
-                    ) { ind, itemPlan ->
+                    ) { _, itemPlan ->
                         var check = itemPlan.id != idIsklPlan
-/*
-                        if (selectForGoalOrDream) {
-                            questDB.run { if (dream) spisDreamPlanStap else spisGoalPlanStap }.getState().value?.find {
-                                it.id_plan == itemPlan.id && it.stap == "0"
-                            }?.let {
-                                check = false
-                            }
-                        }
-*/
                         if (check) ComItemPlanQuest(itemPlan, selectionPlanParent, selFun = {
                             selectionPlanStapParent.selected = null
                             questDB.questFun.setPlanForSpisStapPlanForSelect(
                                 it.id.toLong(),
                                 arrayIskl
-                            ) //item?.id?.toLong()?.let { listOf(it) } ?: listOf())
+                            )
                             expandedSelPlan.value = false
                         }, editable = false).getComposable()
                     }
@@ -139,8 +130,6 @@ class BoxSelectParentPlanQuest(
                     }
                 }
             }
-
         }
     }
-
 }

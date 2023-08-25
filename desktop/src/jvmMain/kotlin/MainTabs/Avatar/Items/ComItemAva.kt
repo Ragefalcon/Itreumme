@@ -2,7 +2,6 @@ package MainTabs.Avatar.Items
 
 
 import MainTabs.imageFromFile
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -32,9 +31,8 @@ class ComItemAva(
     var expandedDropMenu = mutableStateOf(false)
 
     val size = 300.dp
-    val shape = RoundedCornerShape(15.dp) //CircleShape
+    val shape = RoundedCornerShape(15.dp)
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         MyCardStyle2(selection.isActive(item), 0, {
@@ -43,7 +41,7 @@ class ComItemAva(
             doubleClick(item)
         },
             widthBorder = 1.5.dp,
-//            backColor = MyColorARGB.colorMyMainTheme.toColor(),
+
             dropMenu = { exp -> dropMenu(item, exp) }
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -61,13 +59,13 @@ class ComItemAva(
                                 .padding(1.dp)
                                 .border(3.dp, Color(0x7FFFF7D9), RoundedCornerShape(14.dp))
                                 .shadow(2.dp, shape),
-                            contentScale = ContentScale.Crop,// Fit,
+                            contentScale = ContentScale.Crop,
                         )
                     }
                     if (selection.isActive(item)) MyButtDropdownMenuStyle2(
                         Modifier.padding(end = 10.dp),
                         expandedDropMenu
-                    ) { //setDissFun ->
+                    ) {
                         dropMenu(item, expandedDropMenu)
                     }
                 }

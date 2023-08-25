@@ -67,10 +67,6 @@ class FragmentBestDayOpenPanel(name: String? = null, date: Long? = null) :
                     }
                 }
 
-//                avatarFun.setFunPlanBestDayDateOporTimeUpd {
-//                    etDateDp.setDate(it)
-//                }
-
                 buttDateDpLeft.setOnClickListener {
                     delta--
                     etDateDp.setDate(Date(date).add(delta,TimeUnits.DAY))

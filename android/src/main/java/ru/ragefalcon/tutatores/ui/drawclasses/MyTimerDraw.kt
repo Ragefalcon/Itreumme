@@ -5,9 +5,10 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import android.util.Log
 import ru.ragefalcon.sharedcode.models.commonfun.vozrast
-import ru.ragefalcon.tutatores.extensions.*
+import ru.ragefalcon.tutatores.extensions.pxF
+import ru.ragefalcon.tutatores.extensions.toIntColor
+import ru.ragefalcon.tutatores.extensions.toMyColorARGB
 
 class MyTimerDraw  @JvmOverloads constructor(
     context: Context,
@@ -16,8 +17,6 @@ class MyTimerDraw  @JvmOverloads constructor(
 ) : DrawViewHelper(context, attrs, defStyleAttr) {
 
     private var birthday: Long = 5602600000
-//    private var birthday: Long = 560217600000
-
     private var updateNeed: Boolean = false
 
     fun setBirthday(date: Long) {
@@ -26,31 +25,18 @@ class MyTimerDraw  @JvmOverloads constructor(
         invalidate()
     }
 
-//    var i = 0
     init {
         periodUpdate = 1000
         onStart()
     }
 
     override fun calculateFun(): Boolean {
-//        i++
-//        Log.d("MyTut", "iii: $i");
-//        if ((updateNeed)||(i>30)) {
-//            updateNeed = false
-//            i=0
             return true
-//        } else {
-//            return false
-//        }
     }
 
     var pT = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         color = Color.WHITE
-//            ContextCompat.getColor(
-//            context,
-//            R.color.colorRasxodTheme0
-//        )
         textSize = 24.pxF
         textAlign = Paint.Align.CENTER
         isFakeBoldText = true

@@ -1,10 +1,12 @@
 package common
 
 import MyDialog.MyDialogLayout
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -22,14 +24,12 @@ import extensions.MyTextFieldStyleState
 import extensions.RowVA
 import extensions.getStartListComplexOpis
 import ru.ragefalcon.sharedcode.models.data.ItemComplexOpis
-import ru.ragefalcon.sharedcode.models.data.ItemComplexOpisText
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TableNameForComplexOpis
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeOpisBlock
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.Interface.CommonInterfaceSetting
 import viewmodel.MainDB
 import java.util.*
 
-class MyComplexOpisWithNameBox (
+class MyComplexOpisWithNameBox(
     private val labelName: String,
     private val text_name: MutableState<TextFieldValue>,
     private val label: String,
@@ -38,8 +38,8 @@ class MyComplexOpisWithNameBox (
     private val style: CommonInterfaceSetting.MySettings.ComplexOpisStyleSetting,
     listOpisIn: SnapshotStateList<ItemComplexOpis>?,
     private val styleName: CommonInterfaceSetting.MySettings.MyTextFieldStyle? = null,
-    private val leftNameComposable: @Composable ()->Unit = {},
-    private val rightNameComposable: @Composable ()->Unit = {},
+    private val leftNameComposable: @Composable () -> Unit = {},
+    private val rightNameComposable: @Composable () -> Unit = {},
 ) {
     val listOpis: SnapshotStateList<ItemComplexOpis> = listOpisIn ?: getStartListComplexOpis(tableName, item_id)
     private val reqFocus = FocusRequester()
@@ -54,7 +54,7 @@ class MyComplexOpisWithNameBox (
             timeKeyEvent
         )
 
-    fun loadNewListOpis(newList: List<ItemComplexOpis>){
+    fun loadNewListOpis(newList: List<ItemComplexOpis>) {
         complexOpis.loadNewListOpis(newList)
     }
 
@@ -62,9 +62,10 @@ class MyComplexOpisWithNameBox (
     @Composable
     fun show(scope: ColumnScope, dialLay: MyDialogLayout) {
         scope.apply {
-            RowVA(horizontalArrangement = Arrangement.Center){
+            RowVA(horizontalArrangement = Arrangement.Center) {
                 leftNameComposable()
-                MyTextField(value =  text_name,
+                MyTextField(
+                    value = text_name,
                     label = labelName,
                     modifier = Modifier
                         .focusRequester(reqFocus)
@@ -94,8 +95,8 @@ class MyComplexOpisWithNameBox (
 
                                 else -> false
                             }
-                        }, style = MyTextFieldStyleState(styleName ?: MainDB.styleParam.commonParam.commonTextField),
-//                    maxLines = 1
+                        },
+                    style = MyTextFieldStyleState(styleName ?: MainDB.styleParam.commonParam.commonTextField),
                 )
                 rightNameComposable()
             }

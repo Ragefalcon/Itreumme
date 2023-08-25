@@ -25,12 +25,7 @@ import viewmodel.StateVM
 
 class MainJournalTabs(val dialLay: MyDialogLayout) {
 
-    init {
-        println("init MainJournalTabs: $this")
-    }
-
-    //    val dialLay = MyDialogLayout()
-    val listStateIdea = MyLazyListState() //: LazyListState = LazyListState(0)
+    val listStateIdea = MyLazyListState()
     var lastSelectBloknot by mutableStateOf(-1L)
     val ideaPanel = IdeaPanel(listStateIdea)
 
@@ -58,7 +53,6 @@ class MainJournalTabs(val dialLay: MyDialogLayout) {
             } else {
                 ideaPage(dialLay, ideaPanel)
             }
-//            dialLay.getLay()
         }
     }
 }
@@ -70,7 +64,7 @@ fun ideaPage(dialLay: MyDialogLayout, ideaPanel: IdeaPanel) {
             Column {
                 ComItemBloknot(it, StateVM.selectionBloknot, edit = false, {
                     StateVM.selectBloknot.value = null
-                }, itemBloknotStyleState =  itemBloknotStyle)
+                }, itemBloknotStyleState = itemBloknotStyle)
                 ideaPanel.show(dialLay)
             }
         }
@@ -85,7 +79,7 @@ fun bloknotPage(dialLay: MyDialogLayout) {
                 ComItemBloknot(
                     itemBloknot, StateVM.selectionBloknot, openBloknot = { bloknot ->
                         StateVM.selectBloknot.value = bloknot
-                    }, itemBloknotStyleState =  itemBloknotStyle, dialLay = dialLay
+                    }, itemBloknotStyleState = itemBloknotStyle, dialLay = dialLay
                 ) { item, expanded ->
                     DropdownMenuItem(onClick = {
                         PanAddBloknot(dialLay, item)
@@ -93,38 +87,26 @@ fun bloknotPage(dialLay: MyDialogLayout) {
                     }) {
                         Text(text = "Изменить", color = Color.White)
                     }
-                    MyDeleteDropdownMenuButton(expanded){
+                    MyDeleteDropdownMenuButton(expanded) {
                         if (item.countidea == 0L) {
-                            MainDB.addJournal.delBloknot(item.id.toLong()){
+                            MainDB.addJournal.delBloknot(item.id.toLong()) {
                                 MainDB.complexOpisSpis.spisComplexOpisForBloknot.delAllImageForItem(it)
                             }
                         } else {
                             MyShowMessage(dialLay, "Удалите вначале все записи из блокнота")
                         }
                     }
-/*
-                DropdownMenuItem(onClick = {
-                    if (item.countidea == 0L) {
-                        MainDB.addJournal.delBloknot(item.id.toLong())
-                    } else {
-                        MyShowMessage(dialLay, "Удалите вначале все записи из блокнота")
-                    }
-                    expanded.value = false
-                }) {
-                    Text(text = "Удалить", color = Color.White)
-                }
-*/
-
                 }
             }
         }
         Row {
-            MyTextButtStyle1("+",
+            MyTextButtStyle1(
+                "+",
                 modifier = Modifier.padding(0.dp),
-//                modifierText = Modifier.padding(10.dp),
                 width = 70.dp,
                 height = 50.dp,
-                myStyleTextButton = TextButtonStyleState(MainDB.styleParam.journalParam.addBlokButt)) {
+                myStyleTextButton = TextButtonStyleState(MainDB.styleParam.journalParam.addBlokButt)
+            ) {
                 PanAddBloknot(dialLay)
             }
         }

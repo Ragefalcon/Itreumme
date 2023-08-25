@@ -6,26 +6,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.material.Text
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.unit.dp
 import com.soywiz.korio.lang.substr
 import common.MyShadowBox
-import common.MyTextStyleParam
 import common.PlateOrderLayout
-import extensions.*
+import extensions.ItemSchetPlanGrafState
+import extensions.PrivSchetPlanInfoStyleState
+import extensions.withSimplePlate
 import ru.ragefalcon.sharedcode.extensions.roundToStringProb
 import ru.ragefalcon.sharedcode.models.data.ItemBindForSchplWithName
 import ru.ragefalcon.sharedcode.models.data.ItemSchetPlanWithSum
@@ -73,12 +66,12 @@ fun ComItemSchetPlanWithSum(
                         style = textSumm
                     )
                     Text(
-                        modifier = Modifier.padding(start = 3.dp), //.align(Alignment.CenterVertically)
+                        modifier = Modifier.padding(start = 3.dp),
                         text = "RUB",
                         style = textValut
                     )
                 }
-//            MyTextStyle(item.summaStr,param = MyTextStyleParam.style3.copy( fontSize = 14.sp))
+
                 val minus = item.summa < 0
                 val width = if (minus) -item.procent else item.procent
                 MyShadowBox(if (minus) platePolosMinus.shadow else platePolos.shadow) {
@@ -90,8 +83,8 @@ fun ComItemSchetPlanWithSum(
                     )
                 }
                 if (item.min_aim >= 0 || bind.isNotEmpty()) {
-                    MyShadowBox(plateFinGoal.shadow){
-                        Column(outer_padding_goal.withSimplePlate(plateFinGoal).then(inner_padding_goal)){
+                    MyShadowBox(plateFinGoal.shadow) {
+                        Column(outer_padding_goal.withSimplePlate(plateFinGoal).then(inner_padding_goal)) {
                             PlateOrderLayout(Modifier.padding(vertical = 0.dp)) {
                                 bind.forEach {
                                     MyShadowBox(if (it.type == TypeBindElementForSchetPlan.GOAL) platePrivGoal.shadow else platePrivPlan.shadow) {
@@ -108,11 +101,13 @@ fun ComItemSchetPlanWithSum(
                                                                 this.background(privGoalGotBrush, platePrivGoal.shape)
                                                             else this.background(privPlGotBrush, platePrivPlan.shape)
                                                         }
+
                                                         100L -> {
                                                             if (it.type == TypeBindElementForSchetPlan.GOAL)
                                                                 this.background(privGoalGotBrush, platePrivGoal.shape)
                                                             else this.background(privPlGotBrush, platePrivPlan.shape)
                                                         }
+
                                                         else -> this
                                                     }
                                                 }
@@ -128,7 +123,7 @@ fun ComItemSchetPlanWithSum(
                                 item.min_aim,
                                 item.max_aim,
                                 item.summaRasxod,
-                                true, //item.schplOpen
+                                true,
                                 PrivSchetPlanInfoStyleState(MainDB.styleParam.finParam.schetParam.privSchetPlanInfoForSchetGraf)
                             )
                         }

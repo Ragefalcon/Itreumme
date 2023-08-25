@@ -24,13 +24,9 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
 
     val firstStart = item != null
     var privPlan: ItemPlan? by instanceState() { cache, value ->
-        Log.d("MyTut", "$cache : $value");
-        if (cache != value) { //= null
-//        set(value) {
-//            if (field != value) {
+        if (cache != value) {
             privPlanStap = null
         }
-//            field = value
         if (value != null) {
             binding.nameParentPlan.text = value.name
             binding.buttUnselPlan.isVisible = true
@@ -135,7 +131,7 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
         with(binding) {
             item?.let {
                 viewmodel.addTime.updDenPlan(
-                    item = it,//.id.toLong(),
+                    item = it,
                     vajn = vybStatDenPlan.selStat.toLong(),
                     name = editNameDenPlanText.text.toString(),
                     data = dateDenPlan.dateLong,
@@ -272,11 +268,6 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
                     timeStartPlan.setTimeHH_mm(it.time1)
                     timeEndPlan.setTimeHH_mm(it.time2)
                     dateDenPlan.setDate(it.data)
-//            if (it.data1 != 0L) {
-//                cb_srok_plan_stap.isChecked = true
-//                date_start_plan_stap.setDate(it.data1)
-//                date_end_plan_stap.setDate(it.data2)
-//            }
                 } ?: run {
                     privPlan = null
                 }
@@ -349,8 +340,6 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
                 } else {
                     privPlan = null
                 }
-                Log.d("MyTut", "privP: ${privPlan}");
-                Log.d("MyTut", "privP: ${privPlan?.id}");
                 vybStatDenPlan.selectStat(itemShab.vajn.toInt())
                 editNameDenPlanText.setText(itemShab.namepl)
                 editOpisDenPlanText.setText(itemShab.opis)
@@ -358,12 +347,9 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
                     timeStartPlan.setTimeHH_mm(itemShab.time1)
                     timeEndPlan.setTimeHH_mm(itemShab.time2)
                 }
-                Log.d("MyTut", "itemShab: ${itemShab.povtor}")
                 if (povtor) {
                     if (itemShab.povtor != "0") {
                         val povtorList: List<String> = itemShab.povtor.split(";")
-                        Log.d("MyTut", "itemShab: ${povtorList}");
-                        Log.d("MyTut", "itemShab: ${povtorList.count()}");
                         if (povtorList.count() == 10) {
                             cbPovtorDenPlan.isChecked = true
                             etCountPovtor.setText(povtorList[0])
@@ -428,8 +414,6 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
 
 
 
-                        Log.d("MyTut", "aDDprivP: ${privPlan}");
-                        Log.d("MyTut", "aDDprivP: ${privPlan?.id}");
                         viewmodel.addTime.addShablonDenPlan(
                             name = it,
                             namepl = editNameDenPlanText.text.toString(),

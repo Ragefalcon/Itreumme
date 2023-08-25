@@ -22,7 +22,10 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import common.*
+import common.BackgroungPanelStyle1
+import common.CropBoxForImageFile
+import common.MyOutlinedTextField
+import common.MyTextButtStyle1
 import extensions.RowVA
 import ru.ragefalcon.sharedcode.models.data.itemQuest.ItemGovorun
 import viewmodel.QuestVM
@@ -39,42 +42,42 @@ fun PanAddGovorun(
 
         val dialLayInner = MyDialogLayout()
         val fileForCrop = CropBoxForImageFile(null, defaultResource = "iv_avatar.png")
-        val avatarFile = mutableStateOf(File(questDB.dirQuest,"${item?.image_file}.jpg"))
-        val avatarF =  mutableStateOf(item?.let { if (avatarFile.value.exists()) imageFromFile(avatarFile.value) else null } ?: fileForCrop.sourceImage.value)
-        val changeAvatar =  mutableStateOf(false)
-        val checkAvaAvtor =  mutableStateOf(avatarFile.value.exists())
-        val shape = RoundedCornerShape( 75.dp) //CircleShape
+        val avatarFile = mutableStateOf(File(questDB.dirQuest, "${item?.image_file}.jpg"))
+        val avatarF =
+            mutableStateOf(item?.let { if (avatarFile.value.exists()) imageFromFile(avatarFile.value) else null }
+                ?: fileForCrop.sourceImage.value)
+        val changeAvatar = mutableStateOf(false)
+        val checkAvaAvtor = mutableStateOf(avatarFile.value.exists())
+        val shape = RoundedCornerShape(75.dp)
 
         dialPan.dial = @Composable {
             val text_name = remember { mutableStateOf(TextFieldValue(item?.name ?: "")) }
             val text_opis = remember { mutableStateOf(TextFieldValue(item?.opis ?: "")) }
-            BackgroungPanelStyle1 { //modif ->
+            BackgroungPanelStyle1 {
                 Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     RowVA {
                         Checkbox(checkAvaAvtor.value, onCheckedChange = {
-                            checkAvaAvtor.value = it //checkAvtor.value.not()
+                            checkAvaAvtor.value = it
                         })
                         Image(
-                            bitmap = avatarF.value, //useResource("iv_avatar.png", ::loadImageBitmap), //BitmapPainter(
+                            bitmap = avatarF.value,
                             "defaultAvatar",
                             Modifier.wrapContentSize()
                                 .padding(20.dp)
                                 .height(150.dp)
                                 .width(150.dp)
                                 .clickable {
-                                    PanAddAvaGovorun(dialLayInner,avatarF,fileForCrop,changeAvatar,checkAvaAvtor)
+                                    PanAddAvaGovorun(dialLayInner, avatarF, fileForCrop, changeAvatar, checkAvaAvtor)
                                 }.clip(shape)
                                 .border(1.dp, Color.White, shape)
                                 .padding(1.dp)
-                                .border(3.dp, Color(0x7FFFF7D9), RoundedCornerShape( 74.dp))
-                                .shadow(2.dp, shape)
-                            ,
-                            contentScale = ContentScale.Crop,// Fit,
+                                .border(3.dp, Color(0x7FFFF7D9), RoundedCornerShape(74.dp))
+                                .shadow(2.dp, shape),
+                            contentScale = ContentScale.Crop,
                         )
-//                        avatar(avatarF,avatarFile,changeAvatar)
                     }
-                    MyOutlinedTextField("Имя действующего лица", text_name,Modifier.padding(bottom = 10.dp))
-                    MyOutlinedTextField("Немного о действующем лице", text_opis,Modifier.padding(bottom = 10.dp))
+                    MyOutlinedTextField("Имя действующего лица", text_name, Modifier.padding(bottom = 10.dp))
+                    MyOutlinedTextField("Немного о действующем лице", text_opis, Modifier.padding(bottom = 10.dp))
                     Row {
                         MyTextButtStyle1("Отмена") {
                             dialPan.close()
@@ -86,11 +89,8 @@ fun PanAddGovorun(
                                     if (checkAvaAvtor.value) {
                                         if (changeAvatar.value) {
                                             fileForCrop.outImage.saveIconFile(ava.path)
-//                                            if (!ava.parentFile.exists()) Files.createDirectory(Paths.get(ava.parentFile.path)) else ava.delete()
-//                                            ava.createNewFile()
-//                                            ava.writeBytes(avatarFile.value.readBytes())
                                         }
-                                    }   else    {
+                                    } else {
                                         val tmp = File(questDB.dirQuest, "${item.image_file}.jpg")
                                         if (tmp.exists()) tmp.delete()
                                     }
@@ -98,21 +98,18 @@ fun PanAddGovorun(
                                         id = it.id.toLong(),
                                         name = text_name.value.text,
                                         opis = text_opis.value.text,
-                                        image_file = if (checkAvaAvtor.value) ava.nameWithoutExtension else "" // if (avatarFile.value.exists()) avatarFile.value.nameWithoutExtension else "",
+                                        image_file = if (checkAvaAvtor.value) ava.nameWithoutExtension else ""
                                     )
                                     dialPan.close()
                                 } ?: run {
                                     val idGov = questDB.addQuest.addGovorun(
                                         name = text_name.value.text,
                                         opis = text_opis.value.text,
-                                        image_file = "" //  if (avatarFile.value.exists()) avatarFile.value.nameWithoutExtension else "",
+                                        image_file = ""
                                     )
-                                    if (idGov>0 && checkAvaAvtor.value && changeAvatar.value) {
+                                    if (idGov > 0 && checkAvaAvtor.value && changeAvatar.value) {
                                         val ava = File(questDB.dirQuest, "${questDB.nameQuest}_${idGov}.jpg")
                                         fileForCrop.outImage.saveIconFile(ava.path)
-//                                        if (!ava.parentFile.exists()) Files.createDirectory(Paths.get(ava.parentFile.path)) else ava.delete()
-//                                            ava.createNewFile()
-//                                            ava.writeBytes(avatarFile.value.readBytes())
                                         questDB.addQuest.updGovorun(
                                             id = idGov,
                                             name = text_name.value.text,
@@ -128,24 +125,26 @@ fun PanAddGovorun(
             }
             dialLayInner.getLay()
         }
-
         dialPan.show()
     }
 }
 
 @Composable
-private fun avatar( avatarF: MutableState<ImageBitmap>, avatarFile: MutableState<File>, changeAvatar: MutableState<Boolean>){
+private fun avatar(
+    avatarF: MutableState<ImageBitmap>,
+    avatarFile: MutableState<File>,
+    changeAvatar: MutableState<Boolean>
+) {
 
-    val shape = RoundedCornerShape( 75.dp) //CircleShape
+    val shape = RoundedCornerShape(75.dp)
     Box(
         Modifier
             .height(170.dp)
-            .width(170.dp)
-        ,
+            .width(170.dp),
         contentAlignment = Alignment.Center
     ) {
         Image(
-            bitmap = avatarF.value, //useResource("iv_avatar.png", ::loadImageBitmap), //BitmapPainter(
+            bitmap = avatarF.value,
             "defaultAvatar",
             Modifier.wrapContentSize()
                 .height(150.dp)
@@ -161,20 +160,19 @@ private fun avatar( avatarF: MutableState<ImageBitmap>, avatarFile: MutableState
                         )
                     )
                     val returnVal: Int =
-                        chooser.showDialog(null, "Открыть")// .showSaveDialog(ComposeWindow())
+                        chooser.showDialog(null, "Открыть")
                     if (returnVal == JFileChooser.APPROVE_OPTION) {
                         if (!avatarFile.value.parentFile.exists()) Files.createDirectory(Paths.get(avatarFile.value.parentFile.path)) else avatarFile.value.delete()
                         avatarFile.value = chooser.selectedFile
-//                        avatarFile.writeBytes(chooser.selectedFile.readBytes())
-                        avatarF.value = imageFromFile(chooser.selectedFile)//avatarFile)
+
+                        avatarF.value = imageFromFile(chooser.selectedFile)
                     }
                 }.clip(shape)
                 .border(1.dp, Color.White, shape)
                 .padding(1.dp)
-                .border(3.dp, Color(0x7FFFF7D9), RoundedCornerShape( 74.dp))
-                .shadow(2.dp, shape)
-            ,
-            contentScale = ContentScale.Crop,// Fit,
+                .border(3.dp, Color(0x7FFFF7D9), RoundedCornerShape(74.dp))
+                .shadow(2.dp, shape),
+            contentScale = ContentScale.Crop,
         )
     }
 }

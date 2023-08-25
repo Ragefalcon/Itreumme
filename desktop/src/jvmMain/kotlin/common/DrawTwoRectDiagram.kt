@@ -11,7 +11,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -29,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import extensions.*
 import org.jetbrains.skia.*
-import org.jetbrains.skia.TextLine
 import ru.ragefalcon.sharedcode.extensions.roundToStringProb
 import ru.ragefalcon.sharedcode.models.data.ItemTwoRectDiag
 import ru.ragefalcon.sharedcode.models.data.ItemYearGrafTwoRect
@@ -50,7 +52,6 @@ class DrawTwoRectDiagram {
         color = Color.White
     }
     val textSizeSp = 13
-
 
     fun calcWidth(countYear: Int): Dp = ((shir * 2f + shirBetween + otstup * 2) * 12 + otstupYear) * countYear
 
@@ -157,14 +158,14 @@ class DrawTwoRectDiagram {
                                 Paint().apply {
                                     isAntiAlias = true
                                     style = PaintingStyle.Fill
-//                                    strokeWidth = 1f
+
                                     color = styleRD.color_summa
                                 }.asFrameworkPaint()
                             )
                             it.nativeCanvas.drawTextLine(
                                 textSumRasx,
                                 12.sp.toPx() + x - textSumRasx.width / 2 - shir.toPx() / 2 + tmp,
-                                hhh - shir.toPx(), // 24.dp.toPx() + otstupUp.toPx() + maxVal,
+                                hhh - shir.toPx(),
                                 Paint().apply {
                                     isAntiAlias = true
                                     style = PaintingStyle.Stroke
@@ -175,18 +176,17 @@ class DrawTwoRectDiagram {
                             it.nativeCanvas.drawTextLine(
                                 textSumRasx,
                                 12.sp.toPx() + x - textSumRasx.width / 2 - shir.toPx() / 2 + tmp,
-                                hhh - shir.toPx(), // 24.dp.toPx() + otstupUp.toPx() + maxVal,
+                                hhh - shir.toPx(),
                                 Paint().apply {
                                     isAntiAlias = true
                                     style = PaintingStyle.Fill
-//                                    strokeWidth = 1f
+
                                     color = styleRD.color_summa_2
                                 }.asFrameworkPaint()
                             )
                         }
                     }
                 }
-
 
                 val textMonth = getThisTextLine(") ${item.month}", textSize)
                 val textRasx = getThisTextLine(" ${item.summarasx.roundToStringProb(1)} ", textSize)
@@ -224,12 +224,10 @@ class DrawTwoRectDiagram {
         density: Density
     ): Float {
         with(density) {
-
-
             val p1 = Paint().apply {
                 isAntiAlias = true
                 style = PaintingStyle.Fill
-//            strokeWidth = 1f
+
                 color = Color.Black
             }
             val p2 = Paint().apply {
@@ -241,10 +239,7 @@ class DrawTwoRectDiagram {
 
             var x = otstupYear.toPx()
 
-
             val maxVal: Float = height - otstupUp.toPx() - otstupBottom.toPx()
-
-
 
             canvas.apply {
                 drawLine(
@@ -298,9 +293,6 @@ class DrawTwoRectDiagram {
                 for (type in year.month.asReversed()) {
                     x = drawTwoRect(this, maxVal, x, isPressed, type, density)
                 }
-//            for (i in year.month.count() + 1..12) {
-//                x = drawTwoRect(this, maxVal, x, ItemRectDiag("asdf", "sdfsd", 0.0, 0.0, 0.0))
-//            }
             }
             return x
         }
@@ -321,14 +313,14 @@ class DrawTwoRectDiagram {
         yearDiag: List<ItemYearGrafTwoRect>,
         darkBackground: Boolean = true,
         styleDiag: TwoRectDiagramColorStyleState? = null
-//        density: Density
+
     ) {
 
         darkBack = darkBackground
         styleDiag?.let { styleRD = it }
 
         val interactionSource = remember { MutableInteractionSource() }
-        val isPressedBy = remember { mutableStateOf(false) } // by interactionSource.collectIsPressedAsState()
+        val isPressedBy = remember { mutableStateOf(false) }
 
         LaunchedEffect(interactionSource) {
             interactionSource.interactions.collect { interaction ->
@@ -336,9 +328,11 @@ class DrawTwoRectDiagram {
                     is PressInteraction.Press -> {
                         isPressedBy.value = true
                     }
+
                     is PressInteraction.Release -> {
                         isPressedBy.value = false
                     }
+
                     is PressInteraction.Cancel -> {
                         isPressedBy.value = false
                     }
@@ -365,7 +359,7 @@ class DrawTwoRectDiagram {
                         interactionSource = interactionSource,
                         indication = null,
                         color = Color.Transparent,
-                        modifier = Modifier//.matchParentSize()
+                        modifier = Modifier
                             .padding(horizontal = 13.dp)
                             .padding(bottom = 10.dp)
                             .pointerMoveFilter(onMove = {
@@ -389,7 +383,7 @@ class DrawTwoRectDiagram {
                                         size.height,
                                         year,
                                         isPressedBy.value,
-                                        this@with//density
+                                        this@with
                                     )
                                 }
                             }

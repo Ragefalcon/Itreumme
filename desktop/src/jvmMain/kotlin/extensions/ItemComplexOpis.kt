@@ -10,7 +10,7 @@ import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers.PairId
 import viewmodel.StateVM
 import java.io.File
 
-//fun SnapshotStateList<ItemComplexOpis>.addUpdList(funAddUpd: (List<ItemComplexOpis>)->List<PairId>) {
+
 fun List<ItemComplexOpis>.clearSourceList(newTable: TableNameForComplexOpis) = this.map {
     if (it !is ItemComplexOpisImageGroup) it.myCommonCopy(id = -1L, item_id = -1L, table_name = newTable.nameTable)
     else it.copy(
@@ -20,20 +20,24 @@ fun List<ItemComplexOpis>.clearSourceList(newTable: TableNameForComplexOpis) = t
         spisImages = it.spisImages.map { it.copy(opis_id = -1L) })
 }
 
-fun ItrCommObserveObj<Map<Long, List<ItemComplexOpis>>>.delAllImageForItem(itemId: Long) = this.getState().value?.let { mapOpis ->
-    mapOpis[itemId]?.let { listOpis ->
-        listOpis.forEach {
-            if(it is ItemComplexOpisImageGroup) {
-                it.spisImages.forEach { img ->
-                    val tmp = File(StateVM.dirComplexOpisImages,"complexOpisImage_${img.id}.jpg")
-                    if (tmp.exists()) tmp.delete()
+fun ItrCommObserveObj<Map<Long, List<ItemComplexOpis>>>.delAllImageForItem(itemId: Long) =
+    this.getState().value?.let { mapOpis ->
+        mapOpis[itemId]?.let { listOpis ->
+            listOpis.forEach {
+                if (it is ItemComplexOpisImageGroup) {
+                    it.spisImages.forEach { img ->
+                        val tmp = File(StateVM.dirComplexOpisImages, "complexOpisImage_${img.id}.jpg")
+                        if (tmp.exists()) tmp.delete()
+                    }
                 }
             }
         }
     }
-}
 
-fun List<ItemComplexOpis>.addUpdList(leaveTmpImage: Boolean = false, funAddUpd: (List<ItemComplexOpis>) -> List<PairId>) {
+fun List<ItemComplexOpis>.addUpdList(
+    leaveTmpImage: Boolean = false,
+    funAddUpd: (List<ItemComplexOpis>) -> List<PairId>
+) {
     (if (this.size == 1) {
         this.first().let {
             if (it is ItemComplexOpisTextCommon && it.text == "" && (it !is ItemComplexOpisImageGroup || (it is ItemComplexOpisLink && it.link == ""))) {
@@ -57,7 +61,12 @@ fun List<ItemComplexOpis>.addUpdList(leaveTmpImage: Boolean = false, funAddUpd: 
                     StateVM.dirTemp,
                     "complexOpisImage_tmp_${oldNewId.item.id}.jpg"
                 ).run {
-                    if (leaveTmpImage) copyTo(File(StateVM.dirComplexOpisImages, "complexOpisImage_${oldNewId.newId}.jpg"))
+                    if (leaveTmpImage) copyTo(
+                        File(
+                            StateVM.dirComplexOpisImages,
+                            "complexOpisImage_${oldNewId.newId}.jpg"
+                        )
+                    )
                     else renameTo(File(StateVM.dirComplexOpisImages, "complexOpisImage_${oldNewId.newId}.jpg"))
                 }
                 else File(

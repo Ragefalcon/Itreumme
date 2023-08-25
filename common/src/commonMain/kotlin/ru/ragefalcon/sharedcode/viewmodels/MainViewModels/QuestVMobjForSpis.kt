@@ -1,6 +1,8 @@
 package ru.ragefalcon.sharedcode.viewmodels.MainViewModels
 
-import ru.ragefalcon.sharedcode.models.data.*
+import ru.ragefalcon.sharedcode.models.data.ItemIconNodeTree
+import ru.ragefalcon.sharedcode.models.data.ItemMainParam
+import ru.ragefalcon.sharedcode.models.data.ItemParentBranchNode
 import ru.ragefalcon.sharedcode.models.data.itemQuest.*
 import ru.ragefalcon.sharedcode.quest.*
 import ru.ragefalcon.sharedcode.quest.TreeSkills.*
@@ -88,7 +90,7 @@ class QuestVMobjForSpis(private val mDB: DatabaseQuest) {
             commstat = it.commstat,
             parent_id = it.parent_id.toString(),
             podstapcount = -1,
-            svernut = !((it.svernut == "false")||(it.svernut == "False")),
+            svernut = !((it.svernut == "false") || (it.svernut == "False")),
             idplan = it.idplan
         )
     }.apply {
@@ -107,11 +109,11 @@ class QuestVMobjForSpis(private val mDB: DatabaseQuest) {
             commstat = it.commstat,
             parent_id = it.parent_id.toString(),
             podstapcount = it.stapcount,
-            svernut = !((it.svernut == "false")||(it.svernut == "False")),
+            svernut = !((it.svernut == "false") || (it.svernut == "False")),
             idplan = it.idplan
         )
     }.apply {
-        this.updateQuery(mDB.spisStapPlanQuestQueries.openStapPlan(-1L,-1L))
+        this.updateQuery(mDB.spisStapPlanQuestQueries.openStapPlan(-1L, -1L))
     }
     val spisStapPlanForSelect = UniConvertQueryAdapter<OpenStapPlanForSelect, ItemPlanStapQuest>() {
         ItemPlanStapQuest(
@@ -125,11 +127,11 @@ class QuestVMobjForSpis(private val mDB: DatabaseQuest) {
             commstat = it.commstat,
             parent_id = it.parent_id.toString(),
             podstapcount = it.stapcount,
-            svernut = !((it.svernut == "false")||(it.svernut == "False")),
+            svernut = !((it.svernut == "false") || (it.svernut == "False")),
             idplan = it.idplan
         )
     }.apply {
-        this.updateQuery(mDB.spisStapPlanQuestQueries.openStapPlanForSelect(-1L, -1,listOf()))
+        this.updateQuery(mDB.spisStapPlanQuestQueries.openStapPlanForSelect(-1L, -1, listOf()))
     }
 
     val spisAllStapPlan = UniConvertQueryAdapter<AllStapPlan, ItemPlanStapQuest>() {
@@ -144,7 +146,7 @@ class QuestVMobjForSpis(private val mDB: DatabaseQuest) {
             commstat = it.commstat,
             parent_id = it.parent_id.toString(),
             podstapcount = it.stapcount,
-            svernut = !((it.svernut == "false")||(it.svernut == "False")),
+            svernut = !((it.svernut == "false") || (it.svernut == "False")),
             idplan = it.idplan
         )
     }.apply {
@@ -194,18 +196,6 @@ class QuestVMobjForSpis(private val mDB: DatabaseQuest) {
             addAll(listPlanNodeTreeSkills)
         }
         .sortedBy { it.id }.groupBy { it.level }
-/*
-   private fun updateSpisNode() {
-        val commonListNode = mutableListOf<ItemNodeTreeSkillsQuest>()
-            .apply {
-                addAll(listHandNodeTreeSkills)
-                addAll(listPlanNodeTreeSkills)
-            }
-            .sortedBy { it.id }
-        spisNodeTreeSkills.setValue(commonListNode.copy().groupBy { it.level })
-        spisNodeTreeSkillsForSelection.setValue(commonListNode.copy().groupBy { it.level })
-    }
-*/
 
     fun updateInfoSpisNode(branchParent: ItemParentBranchNode?) {
         branchParent?.let {
@@ -259,54 +249,58 @@ class QuestVMobjForSpis(private val mDB: DatabaseQuest) {
         updateQuery(mDB.spisLevelTreeSkillsQuestQueries.selectLevelTreeSkill(-1L))
     }
 
-    val spisLevelTreeSkillsForSelect = UniConvertQueryAdapter<SelectLevelTreeSkillForSelect, ItemLevelTreeSkillsQuest>() {
-        ItemLevelTreeSkillsQuest(
-            id = it._id,
-            id_tree = it.id_tree,
-            name = it.name,
-            opis = it.opis,
-            num_level = it.num_level,
-            proc_porog = it.proc_porog,
-            mustCountNode = it.count_node_must,
-            countNode = it.count_node,
-            visible_stat = it.visible_stat
-        )
-    }.apply {
-        updateQuery(mDB.spisLevelTreeSkillsQuestQueries.selectLevelTreeSkillForSelect(-1L))
-    }
-
-    val spisAllNodeTreeSkillsForSelectForTrigger = UniConvertQueryAdapter<SelectAllNodesForSelect, ItemHandNodeTreeSkillsQuest>() {
-//        println("open_node: ${it.open_node}")
-        ItemHandNodeTreeSkillsQuest(
-            id = it._id,
-            id_tree = it.id_tree,
-            name = it.name,
-            opis = it.opis,
-            id_type_node = it.id_type_node,
-            level = it.level,
-            icon = if (it.ext1 !=null && it.type1 != null) ItemIconNodeTree(it.icon,it.ext1,it.type1) else null,
-            icon_complete = if (it.ext2 !=null && it.type2 != null) ItemIconNodeTree(it.icon_complete,it.ext2,it.type2) else null,
-            must_node = it.must_node == 1L,
-            visible_stat = it.visible_stat
-        )
-    }.apply {
-        updateFunc {
-            /**
-             * похоже условие ниже не спасает вызова setValue с null параметром, не понятно в какой момент это происходит,
-             * приложение не падает и похоже при повторном опросе все разрешается, так что видно проблему только в логах,
-             * но надо бы последить и подумать над этим.
-             * Ошибка возникает когда в открытом в редакторе квесте первый раз развернуть дерево ачивок, возможно именно
-             * уровневое, а может и не только.
-             * */
-            (if (it.size>0) it.groupBy { it.level } else mapOf()).let { newValue ->
-                spisNodeTreeSkillsForSelectionForTrigger.setValue(newValue)
-            }
+    val spisLevelTreeSkillsForSelect =
+        UniConvertQueryAdapter<SelectLevelTreeSkillForSelect, ItemLevelTreeSkillsQuest>() {
+            ItemLevelTreeSkillsQuest(
+                id = it._id,
+                id_tree = it.id_tree,
+                name = it.name,
+                opis = it.opis,
+                num_level = it.num_level,
+                proc_porog = it.proc_porog,
+                mustCountNode = it.count_node_must,
+                countNode = it.count_node,
+                visible_stat = it.visible_stat
+            )
+        }.apply {
+            updateQuery(mDB.spisLevelTreeSkillsQuestQueries.selectLevelTreeSkillForSelect(-1L))
         }
-        updateQuery(mDB.spisNodeTreeSkillsQuestQueries.selectAllNodesForSelect(TypeTreeSkills.KIT.name, -1L))
-    }
+
+    val spisAllNodeTreeSkillsForSelectForTrigger =
+        UniConvertQueryAdapter<SelectAllNodesForSelect, ItemHandNodeTreeSkillsQuest>() {
+            ItemHandNodeTreeSkillsQuest(
+                id = it._id,
+                id_tree = it.id_tree,
+                name = it.name,
+                opis = it.opis,
+                id_type_node = it.id_type_node,
+                level = it.level,
+                icon = if (it.ext1 != null && it.type1 != null) ItemIconNodeTree(it.icon, it.ext1, it.type1) else null,
+                icon_complete = if (it.ext2 != null && it.type2 != null) ItemIconNodeTree(
+                    it.icon_complete,
+                    it.ext2,
+                    it.type2
+                ) else null,
+                must_node = it.must_node == 1L,
+                visible_stat = it.visible_stat
+            )
+        }.apply {
+            updateFunc {
+                /**
+                 * похоже условие ниже не спасает вызова setValue с null параметром, не понятно в какой момент это происходит,
+                 * приложение не падает и похоже при повторном опросе все разрешается, так что видно проблему только в логах,
+                 * но надо бы последить и подумать над этим.
+                 * Ошибка возникает когда в открытом в редакторе квесте первый раз развернуть дерево ачивок, возможно именно
+                 * уровневое, а может и не только.
+                 * */
+                (if (it.size > 0) it.groupBy { it.level } else mapOf()).let { newValue ->
+                    spisNodeTreeSkillsForSelectionForTrigger.setValue(newValue)
+                }
+            }
+            updateQuery(mDB.spisNodeTreeSkillsQuestQueries.selectAllNodesForSelect(TypeTreeSkills.KIT.name, -1L))
+        }
 
     val spisHandNodeTreeSkills = UniConvertQueryAdapter<SelectHandNodes, ItemHandNodeTreeSkillsQuest>() {
-//        println("open_node: ${it.open_node}")
         ItemHandNodeTreeSkillsQuest(
             id = it._id,
             id_tree = it.id_tree,
@@ -314,8 +308,12 @@ class QuestVMobjForSpis(private val mDB: DatabaseQuest) {
             opis = it.opis,
             id_type_node = it.id_type_node,
             level = it.level,
-            icon = if (it.ext1 !=null && it.type1 != null) ItemIconNodeTree(it.icon,it.ext1,it.type1) else null,
-            icon_complete = if (it.ext2 !=null && it.type2 != null) ItemIconNodeTree(it.icon_complete,it.ext2,it.type2) else null,
+            icon = if (it.ext1 != null && it.type1 != null) ItemIconNodeTree(it.icon, it.ext1, it.type1) else null,
+            icon_complete = if (it.ext2 != null && it.type2 != null) ItemIconNodeTree(
+                it.icon_complete,
+                it.ext2,
+                it.type2
+            ) else null,
             must_node = it.must_node == 1L,
             visible_stat = it.visible_stat
         )
@@ -324,9 +322,14 @@ class QuestVMobjForSpis(private val mDB: DatabaseQuest) {
             listHandNodeTreeSkills = it
             spisNodeTreeSkills.update()
             spisNodeTreeSkillsForSelection.update()
-//            updateSpisNode()
         }
-        updateQuery(mDB.spisNodeTreeSkillsQuestQueries.selectHandNodes(TypeTreeSkills.KIT.name, -1L, TypeNodeTreeSkills.HAND.id))
+        updateQuery(
+            mDB.spisNodeTreeSkillsQuestQueries.selectHandNodes(
+                TypeTreeSkills.KIT.name,
+                -1L,
+                TypeNodeTreeSkills.HAND.id
+            )
+        )
     }
 
     val spisPlanNodeTreeSkills = UniConvertQueryAdapter<SelectPlanNodeTreeSkills, ItemPlanNodeTreeSkillsQuest>() {
@@ -337,8 +340,12 @@ class QuestVMobjForSpis(private val mDB: DatabaseQuest) {
             opis = it.opis,
             id_type_node = it.id_type_node,
             level = it.level,
-            icon = if (it.ext1 !=null && it.type1 != null) ItemIconNodeTree(it.icon,it.ext1,it.type1) else null,
-            icon_complete = if (it.ext2 !=null && it.type2 != null) ItemIconNodeTree(it.icon_complete,it.ext2,it.type2) else null,
+            icon = if (it.ext1 != null && it.type1 != null) ItemIconNodeTree(it.icon, it.ext1, it.type1) else null,
+            icon_complete = if (it.ext2 != null && it.type2 != null) ItemIconNodeTree(
+                it.icon_complete,
+                it.ext2,
+                it.type2
+            ) else null,
             must_node = it.must_node == 1L,
             privplan = it.privplan,
             stap_prpl = it.stap_prpl,
@@ -350,19 +357,9 @@ class QuestVMobjForSpis(private val mDB: DatabaseQuest) {
             listPlanNodeTreeSkills = it
             spisNodeTreeSkills.update()
             spisNodeTreeSkillsForSelection.update()
-//            updateSpisNode()
         }
         updateQuery(mDB.propertyPlanNodeTSQuestQueries.selectPlanNodeTreeSkills("KIT", -1L, TypeNodeTreeSkills.PLAN.id))
     }
-
-
-//    val spisBindingNodeTreeSkills = UniQueryAdapter<Spis_binding_node_tree_skill>() .apply {
-//        updateFunc { spisBinding ->
-//            spisChildNodeTreeSkills.setValue(spisBinding.groupBy { it.id_parent }.map { ItemBindingNode(it.key,it.value.map { it.id_child }.toTypedArray()) })
-//            spisParentNodeTreeSkills.setValue(spisBinding.groupBy { it.id_child }.map { ItemBindingNode(it.key,it.value.map { it.id_parent }.toTypedArray()) })
-//        }
-//        updateQuery(mDB.spisBindingNodeTreeSkillsQueries.selectForTree(-1L))
-//    }
 
     val spisWholeBranchParentNodeTreeSkills = UniQueryAdapter<SelectWholeBranchParent>().apply {
         updateFunc { spisBinding ->
@@ -390,8 +387,6 @@ class QuestVMobjForSpis(private val mDB: DatabaseQuest) {
         updateQuery(mDB.spisBindingNodeTreeSkillsQuestQueries.selectWholeBranchChild(-1L))
     }
 
-//    var spisNodeTreeSkills = CommonObserveObj<Map<Long, List<ItemNodeTreeSkillsQuest>>>()
-//    var spisNodeTreeSkillsForSelection = CommonObserveObj<Map<Long, List<ItemNodeTreeSkillsQuest>>>()
     var spisNodeTreeSkills = CommonComplexObserveObj<Map<Long, List<ItemNodeTreeSkillsQuest>>>().apply {
         setValueFun { updateSpisNode() }
     }

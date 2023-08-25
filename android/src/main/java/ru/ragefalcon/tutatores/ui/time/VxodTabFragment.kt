@@ -24,7 +24,6 @@ class VxodTabFragment : BaseFragmentVM<FragmentVxodTabBinding>(FragmentVxodTabBi
 
     var selItem: ItemVxod? by instanceState()
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val menuPopup = MyPopupMenuItem<ItemVxod>(this, "VxodDelChange").apply {
@@ -38,26 +37,9 @@ class VxodTabFragment : BaseFragmentVM<FragmentVxodTabBinding>(FragmentVxodTabBi
         with(binding) {
             with(rvVxodList) {
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
-//            rvmAdapter = RVMainAdapter(R.layout.itemVxod, { VxodItemViewHolder(it, stateViewModel,viewmodel)}, null)
-//            { coordin, pos ->
-//                val originalPos = IntArray(2)
-//                rvVxodList.getLocationInWindow(originalPos)
-//                if (coordin-originalPos[1]<0) this.smoothScrollToPosition(pos)
-////                (rvVxodList.layoutManager as LinearLayoutManager).smoothScrollToPosition(this,RecyclerView.State(),pos)
-////                (rvVxodList.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(it,0)
-////                smoothScrollBy(rvVxodList.findViewHolderForItemId(it.toLong()).adapterPosition) smoothScrollToPosition(it)
-//            } }, null)
                 adapter = rvmAdapter
-//            addItemDecoration(divider)
-
             }
-//            rvmAdapter.selectedItem.observe(viewLifecycleOwner) {
-//                selItem = it?.getItem(ItemVxod::class) // ?.getData() as ItemVxod
-////                it?.let {
-////                    selItem = it.getData() as ItemVxod
-////                }
-//                Log.d("MyTut", "selVxod: $selItem and ${it?.getData()}");
-//            }
+
             with(viewmodel) {
                 timeSpis.spisVxod.observe(viewLifecycleOwner) {
                     rvmAdapter.updateData(formUniRVItemList(it) { item ->
@@ -71,7 +53,7 @@ class VxodTabFragment : BaseFragmentVM<FragmentVxodTabBinding>(FragmentVxodTabBi
                             recyclerView = rvVxodList)
                     })
                     selItem?.let {
-                        rvmAdapter.setSelectItem(it, VxodRVItem::class) //VxodViewHolder
+                        rvmAdapter.setSelectItem(it, VxodRVItem::class)
                     }
                 }
             }
@@ -83,10 +65,7 @@ class VxodTabFragment : BaseFragmentVM<FragmentVxodTabBinding>(FragmentVxodTabBi
 
             buttAddVxod.setOnClickListener {
                 stateViewModel.tmpTimeStampLong = Calendar.getInstance().time.time
-                Log.d("MyTut", "timeStamp: ${Calendar.getInstance().time.time}");
                 showAddChangeFragDial(TimeAddVxodPanelFragment(), getSFM())
-//            val directions = TimeMainScreenDirections.actionTimeMainScreenToAddvxodpanel()
-//            findNavController().navigate(directions)
             }
         }
     }

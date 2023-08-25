@@ -1,20 +1,20 @@
 package MainTabs.Quest
 
-import androidx.compose.material.Text
 import MainTabs.Avatar.Element.PanOpenQuest
+import MainTabs.Avatar.Items.ComItemLoadQuest
 import MyDialog.MyDialogLayout
+import MyDialog.MyInfoShow
 import MyList
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import common.*
-import MainTabs.Avatar.Items.ComItemLoadQuest
-import MyDialog.MyInfoShow
 import androidx.compose.ui.unit.sp
+import common.*
 import ru.ragefalcon.sharedcode.models.data.ItemLoadQuest
 import viewmodel.MainDB
 import viewmodel.StateVM
@@ -33,7 +33,6 @@ class QuestsPanel {
         Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MyTextToggleButtStyle1("Вып", vypQuest, modifier = Modifier.padding(start = 15.dp)) {
-//                    MainDB.avatarFun.setOpenspisDreams(it)
                     selection.selected = null
                 }
                 MyTextStyle1(
@@ -49,7 +48,7 @@ class QuestsPanel {
                     MainDB.addQuest.getQuestMainParam(item.id.toLong()).let { list ->
                         Column(Modifier.padding(20.dp).heightIn(0.dp, 500.dp)) {
                             Text(item.name, Modifier.padding(bottom = 20.dp), style = MyTextStyleParam.style1)
-                            MyList(list, Modifier.weight(1f, false)) { ind, item -> //stateList, ind,
+                            MyList(list, Modifier.weight(1f, false)) { ind, item ->
                                 if (item.name != "name") {
                                     Text(
                                         if (item.name == "opis") "Описание" else item.name,
@@ -74,7 +73,7 @@ class QuestsPanel {
                         showQuestInfo(item)
                     }
                     MyDeleteDropdownMenuButton(expanded) {
-                        MainDB.addQuest.deleteFullQuest(item.id, StateVM.dirLoadedQuestFiles,StateVM.dirIconNodeTree)
+                        MainDB.addQuest.deleteFullQuest(item.id, StateVM.dirLoadedQuestFiles, StateVM.dirIconNodeTree)
                         selection.selected = null
                     }
 

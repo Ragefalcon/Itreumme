@@ -17,7 +17,6 @@ import ru.ragefalcon.sharedcode.viewmodels.UniAdapters.CommonComplexObserveObj
 import kotlin.math.abs
 import kotlin.properties.Delegates
 
-//@OptIn(DelicateCoroutinesApi::class)
 class TimeVMfun(
     private val mDB: Database,
     private val spisVM: TimeVMobjForSpis,
@@ -60,10 +59,6 @@ class TimeVMfun(
                 else (if (delta < 0) COLOR_YESTERDAY.getCurrentColor() else COLOR_TOMORROW.getCurrentColor()).inColor(
                     if (delta < 0) COLOR_YESTERDAY_END.getCurrentColor()
                     else COLOR_TOMORROW_END.getCurrentColor(), percent
-//                MyColorARGB.colorEffektShkal_Month
-//            else (if (delta < 0) MyColorARGB(255, 255, 165, 0) else MyColorARGB(255, 0, 166, 214)).inColor(
-//                if (delta < 0) MyColorARGB(255, 255, 165, 0).plusDark(0.3f)
-//                else MyColorARGB(255, 0, 166, 214).plusDark(0.3f), percent
                 )
             )
         }
@@ -96,8 +91,7 @@ class TimeVMfun(
     ) { prop, old, new ->
         spisVM.spisDenPlan.updateQuery(
             mDB.denPlanQueries.selectDenPlan(
-                new.withOffset().localUnix(),
-                (new + 1.days).withOffset().localUnix()
+                new.withOffset().localUnix(), (new + 1.days).withOffset().localUnix()
             )
         )
         updateTextDateBetweenWithColor()
@@ -107,8 +101,7 @@ class TimeVMfun(
             mDB.complexOpisTextQueries.selectComplexOpisTextCommonWithId("napom", new.withOffset().localUnix()),
             mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxCommonWithId("napom", new.withOffset().localUnix()),
             mDB.complexOpisImageGroupQueries.selectComplexOpisImageGroupCommonWithId(
-                "napom",
-                new.withOffset().localUnix()
+                "napom", new.withOffset().localUnix()
             ),
             mDB.complexOpisLinkQueries.selectComplexOpisLinkCommonWithId("napom", new.withOffset().localUnix()),
         )
@@ -116,12 +109,10 @@ class TimeVMfun(
         spisCO.spisComplexOpisForDenPlan.updateQuery(
             mDB.complexOpisTextQueries.selectComplexOpisTextCommonWithId("den_plan", new.withOffset().localUnix()),
             mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxCommonWithId(
-                "den_plan",
-                new.withOffset().localUnix()
+                "den_plan", new.withOffset().localUnix()
             ),
             mDB.complexOpisImageGroupQueries.selectComplexOpisImageGroupCommonWithId(
-                "den_plan",
-                new.withOffset().localUnix()
+                "den_plan", new.withOffset().localUnix()
             ),
             mDB.complexOpisLinkQueries.selectComplexOpisLinkCommonWithId("den_plan", new.withOffset().localUnix()),
         )
@@ -157,23 +148,21 @@ class TimeVMfun(
         funDateForCalendarUpd = ff
     }
 
-    private val sizeCalendar = (7*spisCO.countCalendarWeek + 1).days
+    private val sizeCalendar = (7 * spisCO.countCalendarWeek + 1).days
     var dateOporForCalendar: DateTimeTz by Delegates.observable(
         DateTimeTz.nowLocal().minusTime().unOffset()
     ) { prop, old, new ->
-        val dayOfWeek = (new.withOffset().dayOfWeek.index0.let { if (it == 0) 7 else it } - 1 )
+        val dayOfWeek = (new.withOffset().dayOfWeek.index0.let { if (it == 0) 7 else it } - 1)
         val startDate = new.withOffset() - (7 + dayOfWeek).days
         val endDate = startDate + sizeCalendar
         spisVM.spisDenPlanForCalendar.updateQuery(
             mDB.denPlanQueries.selectDenPlanForCalendar(
-                startDate.localUnix(),
-                endDate.localUnix()
+                startDate.localUnix(), endDate.localUnix()
             )
         )
         spisVM.spisNapomForCalendar.updateQuery(
             mDB.napomQueries.selectNapomForCalendar(
-                startDate.localUnix(),
-                endDate.localUnix()
+                startDate.localUnix(), endDate.localUnix()
             )
         )
         spisCO.spisComplexOpisForCalendar.updateQuery(
@@ -184,14 +173,14 @@ class TimeVMfun(
         )
         spisCO.spisComplexOpisForCalendarNapom.updateQuery(
             mDB.complexOpisTextQueries.selectComplexOpisTextCommonWithId("calendar_napom", startDate.localUnix()),
-            mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxCommonWithId("calendar_napom", startDate.localUnix()),
-            mDB.complexOpisImageGroupQueries.selectComplexOpisImageGroupCommonWithId("calendar_napom", startDate.localUnix()),
+            mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxCommonWithId(
+                "calendar_napom", startDate.localUnix()
+            ),
+            mDB.complexOpisImageGroupQueries.selectComplexOpisImageGroupCommonWithId(
+                "calendar_napom", startDate.localUnix()
+            ),
             mDB.complexOpisLinkQueries.selectComplexOpisLinkCommonWithId("calendar_napom", startDate.localUnix()),
         )
-//        println("newDate withOffset = ${new.withOffset().format("dd MM yyyy HH:mm")}")
-//        println("newDate = ${new.format("dd MM yyyy HH:mm")}")
-//        println("dayOfWeek = ${dayOfWeek}")
-//        println("${startDate.format("dd MM yyyy HH:mm")} to ${endDate.format("dd MM yyyy HH:mm")}")
         funDateForCalendarUpd(new.localUnix())
     }
         private set
@@ -207,15 +196,8 @@ class TimeVMfun(
     fun setCalendarDate(time: Long) {
         dateOporForCalendar = DateTimeTz.Companion.fromUnixLocal(time)
     }
-    fun getCalendarDay() = dateOporForCalendar.localUnix()
 
-/*
-    fun sverDenPlan(item: ItemDenPlan, sver: Boolean? = null) {
-        spisVM.sverDenPlan.remove(item.id.toLong())
-//        item.sver = sver ?: !item.sver
-        spisVM.sverDenPlan.put(item.id.toLong(), sver ?: !item.sver)
-    }
-*/
+    fun getCalendarDay() = dateOporForCalendar.localUnix()
 
     fun getDay() = dateOporTime.localUnix()
 
@@ -234,8 +216,8 @@ class TimeVMfun(
             )
         } else {
             spisVM.spisPlan.updateQuery(
-                mDB.spisPlanQueries.selectOpenPlan(
-                    closeStap = TypeStatPlanStap.getCloseSelectList().map { it.codValue },
+                mDB.spisPlanQueries.selectOpenPlan(closeStap = TypeStatPlanStap.getCloseSelectList()
+                    .map { it.codValue },
                     typePlanId = TypeBindElementForSchetPlan.PLAN.id,
                     stat = TypeStatPlan.getCloseSelectList().map { it.codValue })
             )
@@ -253,8 +235,8 @@ class TimeVMfun(
             )
         } else {
             spisVM.spisPlanIn.updateQuery(
-                mDB.spisPlanQueries.selectOpenPlanIn(
-                    closeStap = TypeStatPlanStap.getCloseSelectList().map { it.codValue },
+                mDB.spisPlanQueries.selectOpenPlanIn(closeStap = TypeStatPlanStap.getCloseSelectList()
+                    .map { it.codValue },
                     stat = TypeStatPlan.getCloseSelectList().map { it.codValue },
                     array_iskl = array_iskl
                 )
@@ -274,32 +256,24 @@ class TimeVMfun(
         )
         spisVM.countStapPlan.updateQuery(
             mDB.spisStapPlanQueries.countOpenStapPlan(
-                iskstat = openStatStapPlan.map { it.codValue },
-                idpl = idPlanForSpisStapPlan
+                iskstat = openStatStapPlan.map { it.codValue }, idpl = idPlanForSpisStapPlan
             )
         )
         spisCO.spisComplexOpisForStapPlan.updateQuery(
             mDB.complexOpisTextQueries.selectComplexOpisTextCommonWithId("spis_stap_plan", idPlanForSpisStapPlan),
             mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxCommonWithId(
-                "spis_stap_plan",
-                idPlanForSpisStapPlan
+                "spis_stap_plan", idPlanForSpisStapPlan
             ),
             mDB.complexOpisImageGroupQueries.selectComplexOpisImageGroupCommonWithId(
-                "spis_stap_plan",
-                idPlanForSpisStapPlan
+                "spis_stap_plan", idPlanForSpisStapPlan
             ),
             mDB.complexOpisLinkQueries.selectComplexOpisLinkCommonWithId("spis_stap_plan", idPlanForSpisStapPlan),
-//            mDB.complexOpisTextQueries.selectComplexOpisTextStapPlan(idPlanForSpisStapPlan),
-//            mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxStapPlan(idPlanForSpisStapPlan),
-//            mDB.complexOpisImageGroupQueries.selectComplexOpisImageGroupStapPlan(idPlanForSpisStapPlan),
-//            mDB.complexOpisLinkQueries.selectComplexOpisLinkStapPlan(idPlanForSpisStapPlan),
         )
     }
 
     fun setOpenSpisStapPlan(open: Boolean) {
         if (open) {
             openStatStapPlan = listOf()
-
             updateSpisStapPlan()
         } else {
             openStatStapPlan = TypeStatPlanStap.getCloseSelectList()
@@ -309,19 +283,13 @@ class TimeVMfun(
 
     fun hideUnblockNowSignalPlanStap(item: ItemPlanStap) {
         mDB.spisStapPlanQueries.unlockQuestPlanStap(
-            TypeStatPlan.VISIB.codValue,
-            item.quest_id,
-            item.quest_key_id,
-            listOf(TypeStatPlan.UNBLOCKNOW.codValue)
+            TypeStatPlan.VISIB.codValue, item.quest_id, item.quest_key_id, listOf(TypeStatPlan.UNBLOCKNOW.codValue)
         )
     }
 
     fun hideUnblockNowSignalPlan(item: ItemPlan) {
         mDB.spisPlanQueries.unlockQuestPlan(
-            TypeStatPlan.VISIB.codValue,
-            item.quest_id,
-            item.quest_key_id,
-            listOf(TypeStatPlan.UNBLOCKNOW.codValue)
+            TypeStatPlan.VISIB.codValue, item.quest_id, item.quest_key_id, listOf(TypeStatPlan.UNBLOCKNOW.codValue)
         )
     }
 
@@ -333,19 +301,6 @@ class TimeVMfun(
         )
     }
 
-/*
-    fun sverPlan(item: ItemPlan, sver: Boolean? = null) {
-        spisVM.sverPlan.remove(item.id.toLong())
-//        item.sver = sver ?: !item.sver
-        spisVM.sverPlan[item.id.toLong()] = item.sver
-    }
-
-    fun sverStapPlan(item: ItemPlanStap, sver: Boolean? = null) {
-        spisVM.sverStapPlan.remove(item.id.toLong())
-//        item.sver = sver ?: !item.sver
-        spisVM.sverStapPlan.put(item.id.toLong(), item.sver)
-    }
-*/
     fun setPlanForTimeline(idPlan: Long) {
         spisVM.spisTimelineForPlan.updateQuery(
             mDB.spisPlanForSrokQueries.selectTimelineForPlan(idPlan)
@@ -360,15 +315,13 @@ class TimeVMfun(
         }
     }
 
-    fun setPlanForSpisStapPlanForSelect(idPlan: Long, array_iskl: Collection<Long> = listOf()) { //,iskstat: Long
+    fun setPlanForSpisStapPlanForSelect(idPlan: Long, array_iskl: Collection<Long> = listOf()) {
         spisVM.spisStapPlansForSelect.updateQuery(
-            mDB.spisStapPlanQueries.openStapPlanForSelect(
-                idpl = idPlan,
+            mDB.spisStapPlanQueries.openStapPlanForSelect(idpl = idPlan,
                 iskl = array_iskl,
                 codInvis = TypeStatPlan.INVIS.codValue,
                 codBlock = TypeStatPlan.BLOCK.codValue,
-                iskstat = TypeStatPlanStap.getCloseSelectList().map { it.codValue }
-            )
+                iskstat = TypeStatPlanStap.getCloseSelectList().map { it.codValue })
         )
     }
 
@@ -386,18 +339,21 @@ class TimeVMfun(
     fun checkChangeCurrentDate() {
         if (currentDatePriv < DateTimeTz.nowLocal().minusTime().unOffset() || firstCheckDate == false) {
             spisVM.currentDate.setValue(DateTimeTz.nowLocal().minusTime().unOffset().localUnix())
-//            println("Check current date and update: true")
             currentDatePriv = DateTimeTz.nowLocal().minusTime().unOffset()
             currDate.update()
             updateTextDateBetweenWithColor()
-//            println("Check current date and update: ${currentDate.format("dd.MM.yyyy")}")
-            spisVM.spisEffekt.updateQuery(mDB.effektQueries.selectEffektWithHour(currentDatePriv.withOffset().localUnix()))
-            spisVM.spisSrokPlanAndStap.updateQuery(mDB.spisPlanForSrokQueries.selectSrokForPlanAndStap(
-//                currentDate.withOffset().localUnix() - TimeUnits.DAY.milliseconds * 7,
-                currentDatePriv.withOffset().localUnix() + TimeUnits.DAY.milliseconds * 21,
-                closePlanStat = TypeStatPlan.getCloseSelectList().map { it.codValue },
-                closeStapStat = TypeStatPlanStap.getCloseSelectList().map { it.codValue }
-            ))
+
+            spisVM.spisEffekt.updateQuery(
+                mDB.effektQueries.selectEffektWithHour(
+                    currentDatePriv.withOffset().localUnix()
+                )
+            )
+            spisVM.spisSrokPlanAndStap.updateQuery(
+                mDB.spisPlanForSrokQueries.selectSrokForPlanAndStap(currentDatePriv.withOffset()
+                    .localUnix() + TimeUnits.DAY.milliseconds * 21,
+                    closePlanStat = TypeStatPlan.getCloseSelectList().map { it.codValue },
+                    closeStapStat = TypeStatPlanStap.getCloseSelectList().map { it.codValue })
+            )
             spisVM.spisVajnHourPriv.updateQuery(
                 mDB.denPlanQueries.selectHourFromVajn(
                     currentDatePriv.withOffset().localUnix()
@@ -409,7 +365,6 @@ class TimeVMfun(
 
     fun setPlanForHistory(idPlan: Long) {
         spisVM.spisDenPlanForHistoryPlan.updateQuery(mDB.denPlanQueries.selectDenPlanForHistoryPlan(idPlan))
-        println("idPlan = ${idPlan}")
         spisCO.spisComplexOpisForHistoryPlan.updateQuery(
             mDB.complexOpisTextQueries.selectComplexOpisTextCommonWithId("history_plan", idPlan),
             mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxCommonWithId("history_plan", idPlan),
@@ -434,16 +389,10 @@ class TimeVMfun(
         )
     }
 
-
     init {
-//        println("MyTut: DateOpor ${dateOporTime}")
-//        println("MyTut: DateOpor ${dateOporTime.withOffset()}")
-//        println("MyTut: DateOpor ${(dateOporTime - 7.days).withOffset().localUnix()}")
-//        println("MyTut: DateOpor ${dateOporTime.withOffset().localUnix()}")
         spisVM.spisDenPlan.updateQuery(
             mDB.denPlanQueries.selectDenPlan(
-                dateOporTime.withOffset().localUnix(),
-                (dateOporTime + 1.days).withOffset().localUnix()
+                dateOporTime.withOffset().localUnix(), (dateOporTime + 1.days).withOffset().localUnix()
             )
         )
         spisVM.spisNapom.updateQuery(mDB.napomQueries.selectWorkNapom(dateOporTime.withOffset().localUnix()))
@@ -452,14 +401,12 @@ class TimeVMfun(
         val startDate = dateOporForCalendar.withOffset() - (7 + dayOfWeek).days
         spisVM.spisDenPlanForCalendar.updateQuery(
             mDB.denPlanQueries.selectDenPlanForCalendar(
-                startDate.localUnix(),
-                (startDate + sizeCalendar).localUnix()
+                startDate.localUnix(), (startDate + sizeCalendar).localUnix()
             )
         )
         spisVM.spisNapomForCalendar.updateQuery(
             mDB.napomQueries.selectNapomForCalendar(
-                startDate.localUnix(),
-                (startDate + sizeCalendar).localUnix()
+                startDate.localUnix(), (startDate + sizeCalendar).localUnix()
             )
         )
         spisCO.spisComplexOpisForCalendar.updateQuery(
@@ -470,81 +417,57 @@ class TimeVMfun(
         )
         spisCO.spisComplexOpisForCalendarNapom.updateQuery(
             mDB.complexOpisTextQueries.selectComplexOpisTextCommonWithId("calendar_napom", startDate.localUnix()),
-            mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxCommonWithId("calendar_napom", startDate.localUnix()),
-            mDB.complexOpisImageGroupQueries.selectComplexOpisImageGroupCommonWithId("calendar_napom", startDate.localUnix()),
+            mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxCommonWithId(
+                "calendar_napom", startDate.localUnix()
+            ),
+            mDB.complexOpisImageGroupQueries.selectComplexOpisImageGroupCommonWithId(
+                "calendar_napom", startDate.localUnix()
+            ),
             mDB.complexOpisLinkQueries.selectComplexOpisLinkCommonWithId("calendar_napom", startDate.localUnix()),
         )
 
         spisCO.spisComplexOpisForNapom.updateQuery(
             mDB.complexOpisTextQueries.selectComplexOpisTextCommonWithId(
-                "napom",
-                dateOporTime.withOffset().localUnix()
+                "napom", dateOporTime.withOffset().localUnix()
             ),
             mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxCommonWithId(
-                "napom",
-                dateOporTime.withOffset().localUnix()
+                "napom", dateOporTime.withOffset().localUnix()
             ),
             mDB.complexOpisImageGroupQueries.selectComplexOpisImageGroupCommonWithId(
-                "napom",
-                dateOporTime.withOffset().localUnix()
+                "napom", dateOporTime.withOffset().localUnix()
             ),
             mDB.complexOpisLinkQueries.selectComplexOpisLinkCommonWithId(
-                "napom",
-                dateOporTime.withOffset().localUnix()
+                "napom", dateOporTime.withOffset().localUnix()
             ),
         )
 
         spisCO.spisComplexOpisForDenPlan.updateQuery(
             mDB.complexOpisTextQueries.selectComplexOpisTextCommonWithId(
-                "den_plan",
-                dateOporTime.withOffset().localUnix()
+                "den_plan", dateOporTime.withOffset().localUnix()
             ),
             mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxCommonWithId(
-                "den_plan",
-                dateOporTime.withOffset().localUnix()
+                "den_plan", dateOporTime.withOffset().localUnix()
             ),
             mDB.complexOpisImageGroupQueries.selectComplexOpisImageGroupCommonWithId(
-                "den_plan",
-                dateOporTime.withOffset().localUnix()
+                "den_plan", dateOporTime.withOffset().localUnix()
             ),
             mDB.complexOpisLinkQueries.selectComplexOpisLinkCommonWithId(
-                "den_plan",
-                dateOporTime.withOffset().localUnix()
+                "den_plan", dateOporTime.withOffset().localUnix()
             ),
         )
 
         spisVM.spisEffekt.updateQuery(mDB.effektQueries.selectEffektWithHour(currentDatePriv.withOffset().localUnix()))
-        spisVM.spisSrokPlanAndStap.updateQuery(mDB.spisPlanForSrokQueries.selectSrokForPlanAndStap(
-//                currentDate.withOffset().localUnix() - TimeUnits.DAY.milliseconds * 7,
-            currentDatePriv.withOffset().localUnix() + TimeUnits.DAY.milliseconds * 21,
-            closePlanStat = TypeStatPlan.getCloseSelectList().map { it.codValue },
-            closeStapStat = TypeStatPlanStap.getCloseSelectList().map { it.codValue }
-        ))
-        spisVM.spisVajnHourPriv.updateQuery(mDB.denPlanQueries.selectHourFromVajn(currentDatePriv.withOffset().localUnix()))
+        spisVM.spisSrokPlanAndStap.updateQuery(
+            mDB.spisPlanForSrokQueries.selectSrokForPlanAndStap(
 
-/*
-        GlobalScope.launch(getCorDisp()) {
-//            coroutineScope {
-//                launch {
-            println("Start cycle check current date and update")
-            var i = 0
-                    while (true) {
-//            println("Check current date and update: $i")
-                        if (currentDate < DateTimeTz.nowLocal().minusTime().unOffset() || i == 0) {
-                            println("Check current date and update: true")
-                            currentDate = DateTimeTz.nowLocal().minusTime().unOffset()
-                            println("Check current date and update: ${currentDate.format("dd.MM.yyyy")}")
-                            spisVM.spisEffekt.updateQuery(mDB.effektQueries.selectEffektWithHour(currentDate.withOffset().localUnix()))
-                            spisVM.spisVajnHourPriv.updateQuery(mDB.denPlanQueries.selectHourFromVajn(currentDate.withOffset().localUnix()))
-                            i++
-                        }
-//                        println("${DateTimeTz.nowLocal().unOffset()} - ${DateTimeTz.nowLocal().unOffset().withOffset()}")
-                        delay(1000)
-                    }
-//                }
-//            }
-        }
-*/
-
+                currentDatePriv.withOffset().localUnix() + TimeUnits.DAY.milliseconds * 21,
+                closePlanStat = TypeStatPlan.getCloseSelectList().map { it.codValue },
+                closeStapStat = TypeStatPlanStap.getCloseSelectList().map { it.codValue })
+        )
+        spisVM.spisVajnHourPriv.updateQuery(
+            mDB.denPlanQueries.selectHourFromVajn(
+                currentDatePriv.withOffset().localUnix()
+            )
+        )
     }
 }

@@ -16,12 +16,12 @@ internal class DrawView @JvmOverloads constructor(
     private var viewWidth: Int = 0
     private var viewHeight: Int = 0
 
-    private var calculateFun: (()->Boolean)? = null
-    private var drawFun: ((Canvas)->Unit)? = null
+    private var calculateFun: (() -> Boolean)? = null
+    private var drawFun: ((Canvas) -> Unit)? = null
 
     var timer = Timer()
     var task = timerTask {
-        if(calculateFun?.invoke() ?: false){
+        if (calculateFun?.invoke() ?: false) {
             Thread(Runnable {
                 postInvalidate()
             }).start()
@@ -29,7 +29,6 @@ internal class DrawView @JvmOverloads constructor(
     }
 
     fun onStart() {
-        // set timer to run every 16 milliseconds (fps = 1000 / 60)
         timer.scheduleAtFixedRate(task, 0.toLong(), (1000 / 60).toLong())
     }
 
@@ -47,12 +46,12 @@ internal class DrawView @JvmOverloads constructor(
 
     }
 
-    fun setCalcFun(ff:()->Boolean){
-        calculateFun=ff
+    fun setCalcFun(ff: () -> Boolean) {
+        calculateFun = ff
     }
 
-    fun setDrawFun(ff:(Canvas)->Unit){
-        drawFun=ff
+    fun setDrawFun(ff: (Canvas) -> Unit) {
+        drawFun = ff
     }
 
     override fun onDraw(canvas: Canvas) {

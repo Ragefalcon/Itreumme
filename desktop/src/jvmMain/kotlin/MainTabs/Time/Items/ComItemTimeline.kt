@@ -37,7 +37,7 @@ fun ComItemTimeline(
         val planStyle = remember { ItemPlanStyleState(MainDB.styleParam.timeParam.planTab.itemPlan) }
         val stapStyle = remember { ItemPlanStapStyleState(MainDB.styleParam.timeParam.planTab.itemPlanStap) }
         val commonStyle = CommonItemStyleState(
-            MainDB.styleParam.timeParam.planTab.run {if (item.stap_id == 0L) itemPlan else itemPlanStap},
+            MainDB.styleParam.timeParam.planTab.run { if (item.stap_id == 0L) itemPlan else itemPlanStap },
             paddingInner = Modifier.paddingStyle(inner_padding),
             paddingOuter = Modifier.paddingStyle(outer_padding),
             shapeCard = (if (item.stap_id == 0L) cornerPlan else cornerStap).getValue()
@@ -91,8 +91,6 @@ fun ComItemTimeline(
                         ) this.alpha(0.25f) else this
                     }
                     .width(250.dp).padding(start = 5.dp),
-//                        .border(1.dp, Color.White),
-//                dropMenu = { exp -> dropMenu(item, exp) },
                 styleSettings = commonStyle,
             ) {
                 PlateOrderLayout(Modifier.fillMaxWidth()) {
@@ -105,12 +103,12 @@ fun ComItemTimeline(
                     )
                     Text(
                         text = item.name,
-//                        modifier = Modifier.padding(0.dp),
+
                         style = commonStyle.mainTextStyle
                     )
                     Text(
                         text = "(${item.listDate.size})",
-//                        modifier = Modifier.padding(0.dp),
+
                         style = commonStyle.mainTextStyle.copy(color = Color.Green)
                     )
                 }
@@ -141,8 +139,7 @@ fun ComItemTimeline(
                                     listOf(
                                         Color.Transparent,
                                         timelineColors.COLOR_RAMK.getValue().toColor()
-//                                        MyColorARGB.colorMyBorderStroke.toColor()
-                                    ) //, Color.Transparent
+                                    )
                                 )
                             )
                     )
@@ -176,15 +173,18 @@ fun ComItemTimeline(
                         )
                 ) {
                     Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                        Box(Modifier.fillMaxHeight().width(1.dp).background(timelineColors.COLOR_RAMK.getValue().toColor()))
+                        Box(
+                            Modifier.fillMaxHeight().width(1.dp)
+                                .background(timelineColors.COLOR_RAMK.getValue().toColor())
+                        )
                         Spacer(Modifier.weight(1f))
-                        Box(Modifier.fillMaxHeight().width(1.dp).background(timelineColors.COLOR_RAMK.getValue().toColor()))
+                        Box(
+                            Modifier.fillMaxHeight().width(1.dp)
+                                .background(timelineColors.COLOR_RAMK.getValue().toColor())
+                        )
                     }
                 }
             }
-//            (Modifier.height(11.dp).width(88.dp).border(1.dp, Color.Red)){
-//                Spacer(Modifier.fillMaxSize())
         }
     }
-
 }

@@ -2,7 +2,6 @@ package MainTabs.Finance.Tabs
 
 
 import MainTabs.Finance.Element.PanAddDoxod
-import MainTabs.Finance.Element.PanAddPerevod
 import MainTabs.Finance.Element.PanAddPerevodPlan
 import MainTabs.Finance.Element.PanAddRasx
 import MainTabs.Finance.Items.ComItemCommonFinOper
@@ -18,20 +17,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import common.*
 import extensions.*
 import ru.ragefalcon.sharedcode.extensions.roundToStringProb
 import ru.ragefalcon.sharedcode.models.data.ItemCommonFinOper
 import ru.ragefalcon.sharedcode.source.disk.getValue
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.FilterSchetOper
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.FilterSchetPlanOper
 import viewmodel.MainDB
 
@@ -83,6 +75,7 @@ class SchetPlanTab(val dialLay: MyDialogLayout) {
                                                                     )
                                                                 }
                                                         }
+
                                                         "Доход" -> {
                                                             MainDB.finFun.getItemDoxodById(itemSchet.id.toLong())?.let {
                                                                 PanAddDoxod(
@@ -91,6 +84,7 @@ class SchetPlanTab(val dialLay: MyDialogLayout) {
                                                                 )
                                                             }
                                                         }
+
                                                         "Перевод" -> {
                                                             PanAddPerevodPlan(
                                                                 dialLay,
@@ -110,6 +104,7 @@ class SchetPlanTab(val dialLay: MyDialogLayout) {
                                                                     } ?: PanAddRasx(dialLay, itemR)
                                                                 }
                                                         }
+
                                                         "Доход" -> {
                                                             MainDB.finFun.getItemDoxodById(itemSchet.id.toLong())
                                                                 ?.let { itemD ->
@@ -118,6 +113,7 @@ class SchetPlanTab(val dialLay: MyDialogLayout) {
                                                                     } ?: PanAddDoxod(dialLay, itemD)
                                                                 }
                                                         }
+
                                                         "Перевод" -> {
                                                             item.mayChange()?.let {
                                                                 MyShowMessage(dialLay, it)
@@ -139,6 +135,7 @@ class SchetPlanTab(val dialLay: MyDialogLayout) {
                                                                     } ?: MainDB.addFinFun.delRasxod(itemR)
                                                                 }
                                                         }
+
                                                         "Доход" -> {
                                                             MainDB.finFun.getItemDoxodById(itemSchet.id.toLong())
                                                                 ?.let { itemD ->
@@ -147,6 +144,7 @@ class SchetPlanTab(val dialLay: MyDialogLayout) {
                                                                     } ?: MainDB.addFinFun.delDoxod(itemD)
                                                                 }
                                                         }
+
                                                         "Перевод" -> {
                                                             item.mayChange()?.let {
                                                                 MyShowMessage(dialLay, it)
@@ -172,7 +170,7 @@ class SchetPlanTab(val dialLay: MyDialogLayout) {
                                     Modifier.withSimplePlate(plate)
                                         .paddingStyle(MainDB.styleParam.finParam.schetParam.panelStatInnerPadding)
                                 ) {
-                                    RowVA{
+                                    RowVA {
                                         Text(
                                             it.rasxodsum.roundToStringProb(2),
                                             style = styleStat.textStat.getValue().copy(
@@ -182,13 +180,13 @@ class SchetPlanTab(val dialLay: MyDialogLayout) {
                                         Spacer(Modifier.weight(1f))
                                         Text(
                                             it.perevodsum.roundToStringProb(2),
-//                                            modifier = Modifier.weight(1f),
+
                                             style = styleStat.textStat.getValue().copy(
                                                 textAlign = TextAlign.Center,
                                                 color = styleStat.COLOR_STAT_PER.getValue().toColor()
                                             )
                                         )
-                                        if (it.popravkasum == 0.0){
+                                        if (it.popravkasum == 0.0) {
                                             Spacer(Modifier.weight(1f))
                                             Text(
                                                 it.doxodsum.roundToStringProb(2),
@@ -198,7 +196,7 @@ class SchetPlanTab(val dialLay: MyDialogLayout) {
                                             )
                                         }
                                     }
-                                    if (it.popravkasum != 0.0)RowVA {
+                                    if (it.popravkasum != 0.0) RowVA {
                                         Text(
                                             it.doxodsum.roundToStringProb(2),
                                             style = styleStat.textStat.getValue().copy(
@@ -208,7 +206,6 @@ class SchetPlanTab(val dialLay: MyDialogLayout) {
                                         Spacer(Modifier.weight(1f))
                                         Text(
                                             it.popravkasum.roundToStringProb(2),
-//                                            modifier = Modifier.weight(1f),
                                             style = styleStat.textStat.getValue().copy(
                                                 textAlign = TextAlign.Center,
                                                 color = styleStat.COLOR_STAT_POPRAV.getValue().toColor()

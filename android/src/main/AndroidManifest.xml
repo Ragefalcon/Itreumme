@@ -4,33 +4,8 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
-<!--    <uses-permission android:name="android.permission.CAMERA"/>-->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage"/>
     <uses-permission android:name="android.permission.INTERNET" />
-<!--
-https://stackoverflow.com/questions/36383560/android-removing-a-sql-database
-
-I know this is very old, but I was having the same issue and turning auto backup
-off fixed it (the database was being saved to the cloud and restored).
-Go into your manifest, and under application add
-
-android:allowBackup="false"
-
-Hope this helps anyone having this issue.
-
-answered Aug 13 '18 at 20:03
-CsSingleton
-
-3155 bronze badges
-CsSingleton's answer is correct from my test with my app I am upgrading to Kotlin.
-Changed to FALSE and the database deleted after uninstalling the app. Just need to
-make sure to turn it back on to true before publishing your app.
-– timv Jan 11 '19 at 23:55
-
-
-немного подробнее можно попробовать почитать здесь:
-https://developer.android.com/guide/topics/data/autobackup
--->
 
     <application
             android:allowBackup="true"
@@ -41,8 +16,6 @@ https://developer.android.com/guide/topics/data/autobackup
             android:theme="@style/AppTheme"
             android:requestLegacyExternalStorage="true"
     >
-
-<!--        android:screenOrientation="sensorPortrait"-->
         <activity android:name=".MainActivity"
                   android:exported="true"
                   android:theme="@style/SplashTheme"

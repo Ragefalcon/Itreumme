@@ -22,18 +22,10 @@ class SettFinValutTab(val dialLay: MyDialogLayout) {
 
     private val selection = SingleSelectionType<ItemValut>()
 
-//    val visClose = mutableStateOf(false)
-
     @Composable
     fun show(modifier: Modifier = Modifier) {
-        Column(modifier,horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             Row(modifier = Modifier.padding(bottom = 5.dp), verticalAlignment = Alignment.CenterVertically) {
-//                MyTextToggleButtStyle1("Закрытые", visClose, modifier = Modifier.padding(start = 15.dp)) {
-//                    MainDB.finFun.setVisibleOpenValut(!it)
-//                    selection.selected?.let {
-//                        if (!it.open_) selection.selected = null
-//                    }
-//                }
                 MyTextStyle1(
                     "Количесто: ${MainDB.finSpis.spisValut.getState().value?.size ?: 0}",
                     Modifier.weight(1f).padding(horizontal = 10.dp)
@@ -42,16 +34,16 @@ class SettFinValutTab(val dialLay: MyDialogLayout) {
                     PanAddValut(dialLay)
                 }
             }
-            MyList(MainDB.finSpis.spisValut, Modifier.weight(1f).padding(bottom = 10.dp)) { ind, itemValut ->
+            MyList(MainDB.finSpis.spisValut, Modifier.weight(1f).padding(bottom = 10.dp)) { _, itemValut ->
                 ComItemValutSett(itemValut, selection) { item, expanded ->
                     DropdownMenuItem(onClick = {
-                        PanAddValut(dialLay,item)
+                        PanAddValut(dialLay, item)
                         expanded.value = false
                     }) {
                         Text(text = "Изменить", color = Color.White)
                     }
-                    if (item.countschet == 0L){
-                        MyDeleteDropdownMenuButton(expanded){
+                    if (item.countschet == 0L) {
+                        MyDeleteDropdownMenuButton(expanded) {
                             MainDB.addFinFun.delValut(item.id.toLong())
                         }
                     }

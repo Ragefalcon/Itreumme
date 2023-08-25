@@ -1,12 +1,11 @@
 package MainTabs.Quest.Items
 
 
-import androidx.compose.material.Text
 import MainTabs.Quest.Element.PanAddNodeTreeSkillsQuest
 import MyDialog.MyDialogLayout
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +32,7 @@ import viewmodel.QuestVM
 private fun MainOpisLevel(
     item: ItemLevelTreeSkillsQuest,
     opisOn: MutableState<Boolean>?,
-    rowAdvanc: @Composable RowScope.()->Unit = {}
+    rowAdvanc: @Composable RowScope.() -> Unit = {}
 ) {
     RowVA {
         Text(
@@ -55,7 +54,7 @@ private fun MainOpisLevel(
             )
         )
         if (item.visible_stat == -2L || item.visible_stat == -3L) Image(
-            painterResource(if (item.visible_stat == -2L) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"), //BitmapPainter(
+            painterResource(if (item.visible_stat == -2L) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"),
             "statDenPlan",
             Modifier
                 .height(50.dp)
@@ -100,20 +99,19 @@ class ComItemLevelTreeSkillsQuest(
     var expandedDropMenu = mutableStateOf(false)
     val expandedOpis = mutableStateOf(!item.sver)
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         MyCardStyle1(false, 0, {
-//            selection.selected = item
+
         }, onDoubleClick = {
             item.sver = item.sver.not()
             expandedOpis.value = !expandedOpis.value
         },
             dropMenu = { exp -> dropMenu(item, exp) }
         ) {
-//            println("create")
+
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                MainOpisLevel(item, expandedOpis){
+                MainOpisLevel(item, expandedOpis) {
                     MyButtDropdownMenuStyle2(
                         Modifier.padding(top = 3.dp).padding(vertical = 0.dp),
                         expandedDropMenu
@@ -157,9 +155,7 @@ class ComItemLevelTreeSkillsForSelectNodeQuest(
     val listNode: List<ItemNodeTreeSkillsQuest>,
 ) {
     var expandedDropMenu = mutableStateOf(false)
-//    val expandedOpis = mutableStateOf(!item.sver)
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         MyCardStyle1(false, 0) {
@@ -188,7 +184,6 @@ class ComItemLevelTreeSkillsForSelectQuest(
     var expandedDropMenu = mutableStateOf(false)
     val expandedOpis = mutableStateOf(!item.sver)
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         MyCardStyle1(selection.isActive(item), 0, {

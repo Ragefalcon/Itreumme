@@ -11,7 +11,8 @@ import ru.ragefalcon.sharedcode.models.data.ItemBloknot
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.BloknotRVItem
-import ru.ragefalcon.tutatores.commonfragments.*
+import ru.ragefalcon.tutatores.commonfragments.MyFragDial
+import ru.ragefalcon.tutatores.commonfragments.MyFragmentForDialogVM
 import ru.ragefalcon.tutatores.databinding.FragmentSelectPlanPanelBinding
 import ru.ragefalcon.tutatores.extensions.getMyTransition
 import ru.ragefalcon.tutatores.extensions.getSFM
@@ -47,12 +48,10 @@ class SelectedBloknotPanelFragment(
 ) :
     MyFragmentForDialogVM<FragmentSelectPlanPanelBinding>(FragmentSelectPlanPanelBinding::inflate) {
 
-
     var callbackKey: String? by instanceState(callbackKey)
 
     var selItem: ItemBloknot? by instanceState(selItem)
     var arrayIskl: List<Long>? by instanceState(arrayIskl)
-
 
     private var rvmAdapter = UniRVAdapter()
 
@@ -70,14 +69,12 @@ class SelectedBloknotPanelFragment(
             }
             with(viewmodel) {
                 var firstLoad = true
-//                timeFun.setOpenSpisPlanIn(false, arrayIskl ?: listOf())
                 journalSpis.spisBloknot.observe(viewLifecycleOwner) { spisBl ->
                     rvmAdapter.updateData(formUniRVItemList<ItemBloknot>(spisBl) { item ->
                         BloknotRVItem(item,rvPlanList)
                     })
                     if (firstLoad) {
                         selItem?.let {
-                            Log.d("MyTut", "selItem: ItemBloknot");
                             rvmAdapter.setSelectItem(
                                 it,
                                 BloknotRVItem::class

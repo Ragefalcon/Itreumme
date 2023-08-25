@@ -1,7 +1,6 @@
 package MainTabs.Avatar.Element
 
 
-import MainTabs.MainAvatarTabs
 import MyDialog.MyDialogLayout
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -15,32 +14,29 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.loadImageBitmap
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.useResource
 import androidx.compose.ui.unit.dp
-import common.*
+import common.BackgroungPanelStyle1
+import common.CropBoxForImageFile
+import common.IconImageBuffer
+import common.MyTextButtStyle1
 import extensions.RowVA
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.tabElement
 
 
 fun PanAddImageCommon(
     dialLay: MyDialogLayout,
     defaultResource: String = "default_image_blank.jpg",
     maxSizePx: Int = 900,
-    ratio_W_H: Pair<Double,Double> = 1.0 to 1.0,
-    rezFun: (IconImageBuffer)->Unit
-
-//    item: ItemBestDays,
-//    image: MutableState<ImageBitmap?>
+    ratio_W_H: Pair<Double, Double> = 1.0 to 1.0,
+    rezFun: (IconImageBuffer) -> Unit
 ) {
     val fileForCrop = CropBoxForImageFile(null, defaultResource = defaultResource)
 
     dialLay.dial = @Composable {
 
-
         val size = 250.dp
-        val shape = RoundedCornerShape(5.dp) //CircleShape
-        val shape2 = RoundedCornerShape(3.dp) //CircleShape
+        val shape = RoundedCornerShape(5.dp)
+        val shape2 = RoundedCornerShape(3.dp)
 
         BackgroungPanelStyle1() {
             Column(
@@ -53,19 +49,18 @@ fun PanAddImageCommon(
                         Box(
                             Modifier.padding(20.dp)
                                 .width(this@BackgroungPanelStyle1.maxWidth * 0.3f)
-                                .height(this@BackgroungPanelStyle1.maxHeight * 0.6f)
-                            ,
+                                .height(this@BackgroungPanelStyle1.maxHeight * 0.6f),
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
                                 bitmap = fileForCrop.outImage.cropImageBitmap.value ?: useResource(
                                     fileForCrop.defaultResource,
                                     ::loadImageBitmap
-                                ), //BitmapPainter(  ?: painterResource("ic_baseline_wallpaper_24.xml")
+                                ),
                                 "defaultAvatar",
                                 Modifier.wrapContentSize()
-                                    .heightIn(0.dp,size)
-                                    .widthIn(0.dp,size)
+                                    .heightIn(0.dp, size)
+                                    .widthIn(0.dp, size)
                                     .clip(shape)
                                     .border(2.dp, Color.White, shape)
                                     .padding(2.dp)
@@ -81,7 +76,12 @@ fun PanAddImageCommon(
                                 .padding(10.dp),
                             Alignment.Center
                         ) {
-                            ImageCropSelector(fileForCrop, maxSizePx, true, if (ratio_W_H.second != 0.0) ratio_W_H.first/ratio_W_H.second else 0.0)
+                            ImageCropSelector(
+                                fileForCrop,
+                                maxSizePx,
+                                true,
+                                if (ratio_W_H.second != 0.0) ratio_W_H.first / ratio_W_H.second else 0.0
+                            )
                         }
                     }
                 }
@@ -93,9 +93,6 @@ fun PanAddImageCommon(
                         "Выбрать",
                         Modifier.padding(start = 5.dp)
                     ) {
-//                        fileForCrop.outImage.cropImageBitmap.value?.let {
-//                            image.value = it
-//                        }
                         rezFun(fileForCrop.outImage)
                         dialLay.close()
                     }
@@ -103,7 +100,6 @@ fun PanAddImageCommon(
             }
         }
     }
-
     dialLay.show()
 }
 

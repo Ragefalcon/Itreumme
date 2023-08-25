@@ -37,7 +37,7 @@ fun MyIconSimpleButt(iconResInner: String, color: Color, funRez: () -> Unit) {
                 2.5.dp.toPx()
             ), Modifier.clickable(
                 interactionSource = interactionSource,
-                indication = null//rememberRipple(),
+                indication = null
             ) {
                 funRez()
             }
@@ -52,15 +52,14 @@ fun MyIconSimpleButt(iconResInner: String, color: Color, funRez: () -> Unit) {
                             this.offset(
                                 (-2).dp,
                                 (-2).dp
-                            )//.background(itemPlanStapStyle.dropdown.BACKGROUND_HOVERED)
+                            )
                         else this
                     }
                     .height(30.dp)
                     .width(30.dp)
                     .run {
                         if (color.toMyColorARGB().A == 0) this.alpha(0.3f) else this
-                    }
-                ,
+                    },
                 colorFilter = ColorFilter.tint(
                     color,
                     BlendMode.Modulate
@@ -69,5 +68,4 @@ fun MyIconSimpleButt(iconResInner: String, color: Color, funRez: () -> Unit) {
             )
         }
     }
-
 }

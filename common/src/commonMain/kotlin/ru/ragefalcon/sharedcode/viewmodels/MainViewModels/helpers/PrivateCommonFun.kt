@@ -38,7 +38,6 @@ class PrivateCommonFun(private val mdb: Database, private val loadQSpis: LoadQue
                         }
 
                         TypeStartObjOfTrigger.STARTDIALOG -> {
-//                            println("${trig.child_name} - ${date}")
                             mdb.dialogLineQueries.insertOrReplace(
                                 TypeDialogMessage.QUESTDIALOG.code,
                                 trig.quest_id.toLong(),
@@ -49,12 +48,10 @@ class PrivateCommonFun(private val mdb: Database, private val loadQSpis: LoadQue
                             )
                         }
 
-//                        else -> {
-//                            loadQSpis.innerFinishTriggerAction.setValue(InnerFinishTriggerEnum.Cancel)
-//                        }
                         TypeStartObjOfTrigger.SUMTRIGGER -> {
                             loadQSpis.innerFinishTriggerAction.setValue(InnerFinishTriggerEnum.Cancel)
                         }
+
                         TypeStartObjOfTrigger.STARTTREE -> {
                             mdb.spisTreeSkillQueries.unlockTree(
                                 stat = TypeStatTreeSkills.UNBLOCKNOW.codValue,
@@ -63,6 +60,7 @@ class PrivateCommonFun(private val mdb: Database, private val loadQSpis: LoadQue
                                 statlock = listOf(TypeStatTreeSkills.BLOCK.codValue, TypeStatTreeSkills.INVIS.codValue)
                             )
                         }
+
                         TypeStartObjOfTrigger.STARTNODETREE -> {
                             mdb.spisNodeTreeSkillsQueries.unlockNode(
                                 stat = TypeStatPlan.UNBLOCKNOW.codValue,
@@ -71,9 +69,11 @@ class PrivateCommonFun(private val mdb: Database, private val loadQSpis: LoadQue
                                 statlock = listOf(TypeStatPlan.BLOCK.codValue, TypeStatPlan.INVIS.codValue)
                             )
                         }
+
                         TypeStartObjOfTrigger.STARTLEVELTREE -> {
                             loadQSpis.innerFinishTriggerAction.setValue(InnerFinishTriggerEnum.Cancel)
                         }
+
                         null -> {
                             loadQSpis.innerFinishTriggerAction.setValue(InnerFinishTriggerEnum.Cancel)
                         }

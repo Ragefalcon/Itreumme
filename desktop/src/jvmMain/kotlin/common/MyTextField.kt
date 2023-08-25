@@ -69,7 +69,7 @@ fun MyTextFieldInt(
     MyTextField(
         value = value,
         onValueChange = {
-//            var str1 = ",".toRegex().replace(it.text, ".")
+
             val str1 = "[0-9]+".toRegex().find(it.text, 0)?.value ?: ""
 
             val check = str1 == customStrToInt(it.text)
@@ -175,10 +175,6 @@ fun MyTextField(
     height: Dp? = null,
     textAlign: TextAlign = TextAlign.Start,
     onValueChange: (TextFieldValue) -> Unit = { value.value = it },
-//    placeholder: @Composable (() -> Unit)? = null,
-//    leadingIcon: @Composable (() -> Unit)? = null,
-//    trailingIcon: @Composable (() -> Unit)? = null,
-//    isError: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions(),
@@ -186,9 +182,6 @@ fun MyTextField(
     maxLines: Int = Int.MAX_VALUE,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     style: MyTextFieldStyleState
-//    shape: Shape =
-//        MaterialTheme.shapes.small.copy(bottomEnd = ZeroCornerSize, bottomStart = ZeroCornerSize),
-//    colors: TextFieldColors = TextFieldDefaults.textFieldColors()
 ) {
 
     val interactionSourceHover: MutableInteractionSource = remember { MutableInteractionSource() }
@@ -196,21 +189,20 @@ fun MyTextField(
     val hover by interactionSourceHover.collectIsHoveredAsState()
 
     with(style) {
-        @OptIn(ExperimentalMaterialApi::class)
         (BasicTextField(
             value = value.value,
             modifier = modifier
-//            .background(colors.backgroundColor(enabled).value, shape)
-//            .indicatorLine(enabled, isError, interactionSource, colors)
+
+
                 .defaultMinSize(
                     minWidth = 100.dp,
-//                minHeight = TextFieldDefaults.MinHeight
-                ),
+
+                    ),
             onValueChange = onValueChange,
             enabled = enabled,
             readOnly = readOnly,
             textStyle = textMain.copy(textAlign = textAlign),
-            cursorBrush = style.cursorBrush,// SolidColor(colors.cursorColor(isError).value),
+            cursorBrush = style.cursorBrush,
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
@@ -267,22 +259,8 @@ fun MyTextField(
                                         }
                                         Box(Modifier.matchParentSize().padding(top = (textName.fontSize / 2).toDp())
                                             .drawWithCache {
-                                                // Naive cache setup similar to foundation's Background.
-//                            val path = Path()
-//                            var lastSize: Size? = null
-//
-//                            fun updatePathIfNeeded() {
-//                                if (size != lastSize) {
-//                                    path.reset()
-//                                    path.addOutline(
-//                                        shape.createOutline(size, layoutDirection, this)
-//                                    )
-//                                    lastSize = size
-//                                }
-//                            }
 
                                                 onDrawWithContent {
-//                                updatePathIfNeeded()
                                                     clipRect(
                                                         (START_NAME - 5.dp).toPx(),
                                                         0f,
@@ -292,9 +270,6 @@ fun MyTextField(
                                                     ) {
                                                         this@onDrawWithContent.drawContent()
                                                     }
-//                                clipPath(path, ClipOp.Difference) {
-//                                    this@onDrawWithContent.drawContent()
-//                                }
                                                 }
                                             }
                                             .border(panel.BORDER_WIDTH, panel.BORDER, panel.shape)
@@ -322,18 +297,11 @@ fun MyTextFieldForCompexOpis(
     value: MutableState<TextFieldValue>,
     hint: String = "",
     modifier: Modifier = Modifier,
-//    enabled: Boolean = true,
-//    readOnly: Boolean = false,
     textColor: Color,
     fontSize: TextUnit,
     cursive: Boolean,
     thin: Int,
-//    textAlign: TextAlign = TextAlign.Start,
     onValueChange: (TextFieldValue) -> Unit = { value.value = it },
-//    placeholder: @Composable (() -> Unit)? = null,
-//    leadingIcon: @Composable (() -> Unit)? = null,
-//    trailingIcon: @Composable (() -> Unit)? = null,
-//    isError: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions(),
@@ -344,9 +312,6 @@ fun MyTextFieldForCompexOpis(
     parentScrollbarLC: LayoutCoordinates?,
     style: MyTextFieldStyleState,
     fill: Boolean = true
-//    shape: Shape =
-//        MaterialTheme.shapes.small.copy(bottomEnd = ZeroCornerSize, bottomStart = ZeroCornerSize),
-//    colors: TextFieldColors = TextFieldDefaults.textFieldColors()
 ) {
 
     val topCoor = remember { mutableStateOf(0f) }
@@ -363,23 +328,13 @@ fun MyTextFieldForCompexOpis(
             (BasicTextField(
                 value = value.value,
                 modifier = modifier
-//            .background(colors.backgroundColor(enabled).value, shape)
-//            .indicatorLine(enabled, isError, interactionSource, colors)
                     .defaultMinSize(
                         minWidth = 100.dp,
-//                minHeight = TextFieldDefaults.MinHeight
                     ),
                 onValueChange = {
                     lineEndCur = it.text.subSequence(0, it.selection.end).lines().count()
                     lineAll = it.text.lines().count()
-//                    println("line: $lineEndCur - $lineAll")
-//                    println(it.selection.start)
-//                    println("before cursor: ${it.text.subSequence(0, it.selection.start)}")
-//                    println("before line: ${it.text.subSequence(0, it.selection.start).lines().count()}")
-//                println("between cursor: ${it.text.subSequence(it.selection.start,it.selection.end)}")
-//                    println("between line: ${it.text.subSequence(0, it.selection.end).lines().count()}")
-//                    println("after cursor: ${it.text.subSequence(it.selection.end, it.text.length)}")
-                    cursorPosition.value = topCoor.value + heightCoor.value/lineAll*lineEndCur
+                    cursorPosition.value = topCoor.value + heightCoor.value / lineAll * lineEndCur
                     onValueChange(it)
                 },
                 enabled = true,
@@ -389,9 +344,9 @@ fun MyTextFieldForCompexOpis(
                     fontSize = fontSize,
                     fontStyle = if (cursive) FontStyle.Italic else FontStyle.Normal,
                     fontWeight = FontWeight(if (thin == 1) 600 else 400)
-//                            fontWeight = FontWeight(thin * 100)
+
                 ),
-                cursorBrush = SolidColor(Color.White),// style.cursorBrush,// SolidColor(colors.cursorColor(isError).value),
+                cursorBrush = SolidColor(Color.White),
                 visualTransformation = visualTransformation,
                 keyboardOptions = keyboardOptions,
                 keyboardActions = keyboardActions,
@@ -403,53 +358,44 @@ fun MyTextFieldForCompexOpis(
                         (if (focus || hover) textNamePoleFocus else textNamePole).let { textName ->
                             (if (focus) panelFocus else panelUnfocus).let { panel ->
                                 MyShadowBox(panel.shadow) {
-                                        Row(
+                                    Row(
+                                        Modifier
+
+                                            .hoverable(interactionSourceHover)
+                                            .background(
+                                                panel.BACKGROUND,
+                                                panel.shape
+                                            )
+                                            .border(panel.BORDER_WIDTH, panel.BORDER, panel.shape)
+                                            .focusable(true, interactionSource)
+                                            .then(inner_padding)
+
+                                    ) {
+                                        Box(
                                             Modifier
-//                                                .padding(top = (textName.fontSize / 2).toDp())
-                                                .hoverable(interactionSourceHover)
-                                                .background(
-                                                    panel.BACKGROUND,
-                                                    panel.shape
-                                                )
-                                                .border(panel.BORDER_WIDTH, panel.BORDER, panel.shape)
-                                                .focusable(true, interactionSource)
-                                                .then(inner_padding)
-//                                                    .fillMaxWidth()
-                                        ) {
-                                            Box(
-                                                Modifier
-                                                    .run {
-                                                        if (fill) this.weight(1f) else this//.weight(0.5f).weight(1f)//
-                                                    }
-                                                    .onGloballyPositioned { layCoor ->
-//                                                        layCoor
-//                                                            .parentLayoutCoordinates
-//                                                            ?.parentLayoutCoordinates
-//                                                            ?.parentLayoutCoordinates
-//                                                            ?.parentLayoutCoordinates
-//                                                            ?.parentLayoutCoordinates
-//                                                            ?.parentLayoutCoordinates
-//                                                            ?.let {
-//                                                            it.parentLayoutCoordinates?.let {   parentScrollbarLC.value = it.size.height.toFloat() }
-                                                            parentScrollbarLC?.localBoundingBoxOf(layCoor)?.let {
-                                                                topCoor.value = it.top
-                                                                heightCoor.value = layCoor.boundsInParent().height
-                                                                cursorPosition.value = topCoor.value + heightCoor.value/lineAll*lineEndCur
-                                                            }
-//                                                        }
-                                                    },
-                                            ) {
-                                                Box {
-                                                    if (value.value.text.isEmpty()) {
-                                                        Text(
-                                                            hint,
-                                                            style = textHint.copy(fontSize = fontSize)
-                                                        )
-                                                    }
-                                                    innerTextField()
+                                                .run {
+                                                    if (fill) this.weight(1f) else this
                                                 }
+                                                .onGloballyPositioned { layCoor ->
+                                                    parentScrollbarLC?.localBoundingBoxOf(layCoor)?.let {
+                                                        topCoor.value = it.top
+                                                        heightCoor.value = layCoor.boundsInParent().height
+                                                        cursorPosition.value =
+                                                            topCoor.value + heightCoor.value / lineAll * lineEndCur
+                                                    }
+                                                },
+                                        ) {
+                                            Box {
+                                                if (value.value.text.isEmpty()) {
+                                                    Text(
+                                                        hint,
+                                                        style = textHint.copy(fontSize = fontSize)
+                                                    )
+                                                }
+                                                innerTextField()
                                             }
                                         }
+                                    }
                                 }
                             }
                         }

@@ -28,7 +28,7 @@ fun PanAddDialog(
 
         val CB_spisAvtor = MyComboBox(
             questDB.spisQuest.spisGovorun,
-            comItem = { itemCB, hover -> ComItemGovorunPlate(itemCB,questDB.dirQuest) },
+            comItem = { itemCB, hover -> ComItemGovorunPlate(itemCB, questDB.dirQuest) },
             nameItem = { it.name }).apply {
             item?.govorun_id?.let { cod ->
                 questDB.spisQuest.spisGovorun.getState().value?.find { it.id.toLong() == cod }?.let {
@@ -37,16 +37,19 @@ fun PanAddDialog(
             }
         }
         val dialLayInner = MyDialogLayout()
-        val checkAvtor =  mutableStateOf((item?.govorun_id ?: -2L) != -1L )
+        val checkAvtor = mutableStateOf((item?.govorun_id ?: -2L) != -1L)
         dialPan.dial = @Composable {
             val text_name = remember { mutableStateOf(TextFieldValue(item?.name ?: "")) }
             val text_main = remember { mutableStateOf(TextFieldValue(item?.maintext ?: "")) }
-            BackgroungPanelStyle1 { //modif ->
+            BackgroungPanelStyle1 {
 
-                Column(Modifier.padding(15.dp).widthIn(0.dp,this.maxWidth*0.7f), horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    Modifier.padding(15.dp).widthIn(0.dp, this.maxWidth * 0.7f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     RowVA {
                         Checkbox(checkAvtor.value, onCheckedChange = {
-                            checkAvtor.value = it //checkAvtor.value.not()
+                            checkAvtor.value = it
                         })
                         CB_spisAvtor.show()
                     }
@@ -54,7 +57,7 @@ fun PanAddDialog(
                     MyOutlinedTextField(
                         "Основной текст",
                         text_main,
-                        Modifier.heightIn(200.dp, this@BackgroungPanelStyle1.maxHeight*0.5f),
+                        Modifier.heightIn(200.dp, this@BackgroungPanelStyle1.maxHeight * 0.5f),
                         TextAlign.Start
                     )
                     Row {
@@ -68,14 +71,16 @@ fun PanAddDialog(
                                         id = it.id.toLong(),
                                         name = text_name.value.text,
                                         maintext = text_main.value.text,
-                                        govorun_id = if (checkAvtor.value) CB_spisAvtor.getSelected()?.id?.toLong() ?: -1 else -1,
+                                        govorun_id = if (checkAvtor.value) CB_spisAvtor.getSelected()?.id?.toLong()
+                                            ?: -1 else -1,
                                     )
                                     dialPan.close()
                                 } ?: run {
                                     questDB.addQuest.addDialog(
                                         name = text_name.value.text,
                                         maintext = text_main.value.text,
-                                        govorun_id = if (checkAvtor.value) CB_spisAvtor.getSelected()?.id?.toLong() ?: -1 else -1,
+                                        govorun_id = if (checkAvtor.value) CB_spisAvtor.getSelected()?.id?.toLong()
+                                            ?: -1 else -1,
                                     )
                                     dialPan.close()
                                 }

@@ -11,7 +11,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -28,30 +27,23 @@ fun SplashScreen() {
         val keyVisDial = remember { mutableStateOf(true) }
         val keyVisDial2 = remember { mutableStateOf(true) }
 
-        var durationMainBox = mutableStateOf(2000)
-var click = mutableStateOf(false)
-
         val alpha: Float by animateFloatAsState(
             targetValue = if (keyVisDial.value) 1f else 0.0f,
-            // Configure the animation duration and easing.
             animationSpec = tween(durationMillis = 2000, easing = FastOutSlowInEasing)
         ) { if (!keyVisDial.value) keyDial.value = false }
 
         val alpha2: Float by animateFloatAsState(
             targetValue = if (keyVisDial2.value) 1f else 0.0f,
-            // Configure the animation duration and easing.
             animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
         ) { if (!keyVisDial2.value) keyDial.value = false }
 
         val alphaItreum: Float by animateFloatAsState(
             targetValue = if (keyVisSapere.value) 1f else 0.3f,
-            // Configure the animation duration and easing.
             animationSpec = tween(durationMillis = 700, easing = FastOutSlowInEasing)
-        ) //{ if (!keyVisDial.value) keyDial.value = false }
+        )
 
         val alphaSapere: Float by animateFloatAsState(
             targetValue = if (keyVisSapere.value) 1f else 0.3f,
-            // Configure the animation duration and easing.
             animationSpec = infiniteRepeatable(
                 tween(
                     durationMillis = 700,
@@ -59,10 +51,7 @@ var click = mutableStateOf(false)
                 ), repeatMode = RepeatMode.Reverse
             )
         ) {
-//        keyVisSapere.value = !keyVisSapere.value
-//        println(keyVisSapere.value)
         }
-
 
         Box(
             Modifier.fillMaxSize().alpha(alpha2).clickable {
@@ -78,47 +67,29 @@ var click = mutableStateOf(false)
                     painter = painterResource("background_01.jpg"),
                     contentDescription = "Sample",
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.FillBounds// .Fit
+                    contentScale = ContentScale.FillBounds
                 )
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
                         painter = painterResource("itreumme.png"),
                         contentDescription = "Sample",
                         modifier = Modifier.width(500.dp).alpha(alphaItreum),
-//            contentScale = ContentScale. .// .Fit
                     )
                     Spacer(Modifier.height(30.dp))
                     Image(
                         painter = painterResource("sapere_aude.png"),
                         contentDescription = "Sample",
                         modifier = Modifier.width(350.dp).alpha(alphaSapere),
-//            contentScale = ContentScale.FillBounds// .Fit
                     )
                 }
             }
         }
         if (keyFirst.value) {
             keyFirst.value = false
-//        LaunchedEffect(null) {
-
             coroutineScope.launch {
-                println("StartSplash")
-                println("StartSplash1")
                 keyVisSapere.value = true
                 delay(5000)
-//            keyVisSapere.value = false
-//            delay(1000)
-////            keyVisSapere.value = true
-//            delay(1000)
-////            keyVisSapere.value = false
-//            delay(1000)
-////            keyVisSapere.value = true
-//            delay(1000)
-////            keyVisSapere.value = false
-//            delay(1000)
-//            keyVisSapere.value = true
                 keyVisDial.value = false
-                println("EndSplash")
             }
         }
     }

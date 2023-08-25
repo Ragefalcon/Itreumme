@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
@@ -23,7 +21,6 @@ import extensions.*
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemDoxod
 import ru.ragefalcon.sharedcode.models.data.ItemShabDoxod
-import ru.ragefalcon.sharedcode.models.data.ItemShabRasxod
 import ru.ragefalcon.sharedcode.source.disk.getValue
 import viewmodel.MainDB
 import java.util.*
@@ -76,6 +73,7 @@ fun PanAddDoxod(
         }
         if (message != "") MyShowMessage(dialLayInner, message)
     }
+
     @Composable
     fun shablonButton() = Row(Modifier.padding(5.dp)) {
         MyIconButtStyle(
@@ -110,12 +108,19 @@ fun PanAddDoxod(
             sizeIcon = 40.dp,
             myStyleButton = IconButtonStyleState(MainDB.styleParam.finParam.doxodParam.panAddDoxod.shablLoadButt)
         ) {
-            PanSelectOneItem(dialLayInner, MainDB.finSpis.spisShabDoxod, { itemShab ->
-                loadShablon(itemShab)
-            },
-            stylePanelItem = MainDB.styleParam.finParam.doxodParam.panAddDoxod.plateShablon
-                ) { item, selection, dialL, listener ->
-                ComItemDoxodShab(item, selection, listener, MainDB.styleParam.finParam.doxodParam.panAddDoxod.itemDoxodShablon,dialL)
+            PanSelectOneItem(
+                dialLayInner, MainDB.finSpis.spisShabDoxod, { itemShab ->
+                    loadShablon(itemShab)
+                },
+                stylePanelItem = MainDB.styleParam.finParam.doxodParam.panAddDoxod.plateShablon
+            ) { item, selection, dialL, listener ->
+                ComItemDoxodShab(
+                    item,
+                    selection,
+                    listener,
+                    MainDB.styleParam.finParam.doxodParam.panAddDoxod.itemDoxodShablon,
+                    dialL
+                )
             }
         }
     }
@@ -127,7 +132,7 @@ fun PanAddDoxod(
             BackgroungPanelStyle1(
                 vignette = VIGNETTE.getValue(),
                 style = SimplePlateStyleState(platePanel)
-            ) { //modif ->
+            ) {
                 Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     MyTextField(
                         text_name,

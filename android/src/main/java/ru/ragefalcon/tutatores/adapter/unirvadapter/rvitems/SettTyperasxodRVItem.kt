@@ -1,12 +1,9 @@
 package ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems
 
-import android.content.res.ColorStateList
-import android.graphics.Color
-import ru.ragefalcon.sharedcode.extensions.roundToString
-import ru.ragefalcon.sharedcode.extensions.roundToStringProb
 import ru.ragefalcon.sharedcode.models.data.ItemSettTyperasxod
 import ru.ragefalcon.tutatores.R
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemSettSchetBinding
 
 class SettTyperasxodRVItem(
@@ -21,10 +18,10 @@ class SettTyperasxodRVItem(
             with(vh.binding) {
 
                 tvNameSchet.text = item.typer
-                tvSumSchet.text = item.countoper.toString()//""
+                tvSumSchet.text = item.countoper.toString()
                 tvCodSchet.text = item.planschet
 
-                if(!item.open)
+                if (!item.open)
                     clSettItem.setBackgroundResource(R.drawable.ripple_bg_sett_item_close)
                 else
                     clSettItem.setBackgroundResource(R.drawable.ripple_bg_idea_item)
@@ -32,7 +29,7 @@ class SettTyperasxodRVItem(
                 if (vh.itemView.isSelected) {
                     selectListener?.invoke(item)
                 }
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     tapListener?.invoke(item)
                 }

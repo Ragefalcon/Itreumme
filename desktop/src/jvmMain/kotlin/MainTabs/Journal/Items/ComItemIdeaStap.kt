@@ -3,31 +3,21 @@ package MainTabs.Journal.Items
 import MyDialog.MyDialogLayout
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.mouseClickable
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.*
 import extensions.ItemIdeaStapStyleState
-import extensions.ItemIdeaStyleState
 import extensions.RowVA
 import extensions.toColor
 import ru.ragefalcon.sharedcode.extensions.MyColorARGB
@@ -53,26 +43,28 @@ fun ComItemIdeaStap(
 
     with(itemIdeaStapStyleState) {
         MainDB.complexOpisSpis.spisComplexOpisForIdeaStap.getState().value?.let { mapOpis ->
-        val smallOpis = mapOpis[item.id.toLong()]?.let { it.sumOf { if (it is ItemComplexOpisTextCommon) it.text.length else 0 } < 700 || it.size > 30 } ?: true // item.opis.length < 700
-        MyCardStyle1(
-            (editable && selection.isActive(item)), onClick = {
-                selection.selected = item
-                if (editable) selFun(item)
-                if (!editable) openFun(item)
-//            expandedDropMenu.value = this.buttons.isSecondaryPressed
-            }, onDoubleClick = {
-                if (smallOpis) {
-                    expandedOpis.value = expandedOpis.value.not()
-                    item.sver = item.sver.not()
-                }   else    {
-//                    selection.selected = item
-                    openFun(item)
-                }
-            },
-            dropMenu = { exp -> dropMenu(item, exp) },
-            styleSettings = itemIdeaStapStyleState
-        )
-        {
+            val smallOpis =
+                mapOpis[item.id.toLong()]?.let { it.sumOf { if (it is ItemComplexOpisTextCommon) it.text.length else 0 } < 700 || it.size > 30 }
+                    ?: true
+            MyCardStyle1(
+                (editable && selection.isActive(item)), onClick = {
+                    selection.selected = item
+                    if (editable) selFun(item)
+                    if (!editable) openFun(item)
+
+                }, onDoubleClick = {
+                    if (smallOpis) {
+                        expandedOpis.value = expandedOpis.value.not()
+                        item.sver = item.sver.not()
+                    } else {
+
+                        openFun(item)
+                    }
+                },
+                dropMenu = { exp -> dropMenu(item, exp) },
+                styleSettings = itemIdeaStapStyleState
+            )
+            {
                 val colorItem = when (item.stat) {
                     0L -> MyColorARGB.colorStatTint_01
                     1L -> MyColorARGB.colorStatTint_02
@@ -84,7 +76,7 @@ fun ComItemIdeaStap(
                 Column {
                     RowVA {
                         Image(
-                            painterResource("bookmark_06.svg"), //BitmapPainter(
+                            painterResource("bookmark_06.svg"),
                             "statIdea",
                             Modifier
                                 .height(35.dp)
@@ -121,7 +113,7 @@ fun ComItemIdeaStap(
                                     .padding(horizontal = 10.dp)
                                     .padding(end = 0.dp),
                                 fontSize = 24.sp,
-                                color = buttOpenColor //MainDB.styleParam.journalParam.itemBloknot.COLOR_BUTT_OPEN.getValue().toColor()
+                                color = buttOpenColor
                             ) {
                                 selection.selected = item
                                 openFun(item)
@@ -129,7 +121,12 @@ fun ComItemIdeaStap(
                         }
                     }
                     mapOpis[item.id.toLong()]?.let { listOpis ->
-                        if (listOpis.isNotEmpty() && editable && smallOpis) MyBoxOpisStyle(expandedOpis, listOpis, dialLay, MainDB.styleParam.journalParam.complexOpisForIdeaStap)
+                        if (listOpis.isNotEmpty() && editable && smallOpis) MyBoxOpisStyle(
+                            expandedOpis,
+                            listOpis,
+                            dialLay,
+                            MainDB.styleParam.journalParam.complexOpisForIdeaStap
+                        )
                     }
                 }
             }

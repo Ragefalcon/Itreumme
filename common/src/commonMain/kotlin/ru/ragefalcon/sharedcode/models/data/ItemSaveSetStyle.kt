@@ -5,10 +5,9 @@ import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.Interface.TypeSaveStyl
 
 
 @Parcelize
-class ItemSaveSetStyle (
+class ItemSaveSetStyle(
     val id: Long,
     val name: String,
     val type: TypeSaveStyleSet
-): Id_class (id_main = id.toString())
-{
+) : Id_class(id_main = id.toString()) {
 }

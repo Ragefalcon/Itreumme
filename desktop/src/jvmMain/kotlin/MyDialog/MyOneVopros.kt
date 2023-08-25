@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.sun.tools.javac.Main
 import common.*
 import extensions.MyTextFieldStyleState
 import extensions.SimplePlateStyleState
@@ -35,16 +34,28 @@ fun MyOneVopros(
 
     dialPan.dial = @Composable {
         val textOtvet = remember { mutableStateOf(TextFieldValue(otvetDefault)) }
-        BackgroungPanelStyle1(vignette = stylePanel.VIGNETTE.getValue(), style = SimplePlateStyleState(stylePanel.platePanel)) { //modif ->
+        BackgroungPanelStyle1(
+            vignette = stylePanel.VIGNETTE.getValue(),
+            style = SimplePlateStyleState(stylePanel.platePanel)
+        ) {
             Column(Modifier.padding(15.dp).fillMaxWidth(0.6F), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(vopros,style = stylePanel.textName.getValue())
-                MyTextField( textOtvet, Modifier.padding(top = 5.dp, bottom = 15.dp), label = label, style = styleTextField)
+                Text(vopros, style = stylePanel.textName.getValue())
+                MyTextField(
+                    textOtvet,
+                    Modifier.padding(top = 5.dp, bottom = 15.dp),
+                    label = label,
+                    style = styleTextField
+                )
                 Row {
                     MyTextButtStyle1("Отмена", myStyleTextButton = TextButtonStyleState(stylePanel.butt)) {
                         cancelListener()
                         dialPan.close()
                     }
-                    MyTextButtStyle1(labelButton, Modifier.padding(start = 15.dp), myStyleTextButton = TextButtonStyleState(stylePanel.butt)) {
+                    MyTextButtStyle1(
+                        labelButton,
+                        Modifier.padding(start = 15.dp),
+                        myStyleTextButton = TextButtonStyleState(stylePanel.butt)
+                    ) {
                         listener(textOtvet.value.text)
                         dialPan.close()
                     }
@@ -69,7 +80,7 @@ fun MyOneVoprosTransit(
 
     dialPan.dial = @Composable {
         val textOtvet = remember { mutableStateOf(TextFieldValue(otvetDefault)) }
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp).fillMaxWidth(0.6F), horizontalAlignment = Alignment.CenterHorizontally) {
                 MyTextStyle1(vopros)
                 MyOutlinedTextField(label, textOtvet)

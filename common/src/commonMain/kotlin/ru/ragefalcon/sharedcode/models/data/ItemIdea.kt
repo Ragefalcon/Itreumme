@@ -16,7 +16,5 @@ class ItemIdea(
     val podstapcount: Long,
     var sverChild: Boolean = false,
     var sver: Boolean = true
-
-): Id_class (id_main = id), Parcelable
-{
+) : Id_class(id_main = id), Parcelable {
 }

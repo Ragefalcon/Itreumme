@@ -4,7 +4,6 @@ import MainTabs.Quest.Items.*
 import MyDialog.MyDialogLayout
 import MyList
 import MyListPlate
-import adapters.MyComboBox
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
@@ -41,11 +40,9 @@ fun PanAddTrigger(
     isklParam: List<Long> = listOf()
 ) {
     QuestVM.openQuestDB?.let { questDB ->
-//        val CB_spisTypeStartObjOfTrigger =
-//            MyComboBox(TypeStartObjOfTrigger.values().toList(), nameItem = { it.name })
-
         val seekTypeStartObjOfTrigger = DiskretSeekBarManyRows(
-            TypeStartObjOfTrigger.values().filter { it != TypeStartObjOfTrigger.STARTLEVELTREE }.toList().map { it.nameType to it.id.toString() },
+            TypeStartObjOfTrigger.values().filter { it != TypeStartObjOfTrigger.STARTLEVELTREE }.toList()
+                .map { it.nameType to it.id.toString() },
             3,
             TypeStartObjOfTrigger.STARTDIALOG.id.toString()
         ) {}
@@ -107,7 +104,7 @@ fun PanAddTrigger(
                         ) else true
                     } ?: listOf<ItemTreeSkillsQuest>(),
                     Modifier.weight(1f).padding(horizontal = 60.dp)
-                ) { ind, itemTreeSkill -> //_,
+                ) { ind, itemTreeSkill ->
                     ComItemTreeSkillsQuest(itemTreeSkill, selectionTreeSkillsQuest).getComposable()
                 }
                 Row {
@@ -148,7 +145,7 @@ fun PanAddTrigger(
                                     openTree = { itemA ->
                                         openSpis_Index_Item(ind, itemA)
                                     }
-                                ).getComposable() //{ item, expanded -> ... }
+                                ).getComposable()
                             }
                         }
                     },
@@ -182,7 +179,7 @@ fun PanAddTrigger(
                                 }
                                 Box(
                                     Modifier.myModWithBound1().padding(5.dp).fillMaxWidth()
-                                        .animateContentSize() //.fillMaxWidth()
+                                        .animateContentSize()
                                 ) {
                                     Column {
                                         when (TypeTreeSkills.getType(itemTS.id_type_tree)) {
@@ -204,6 +201,7 @@ fun PanAddTrigger(
                                                     }
                                                 }
                                             }
+
                                             TypeTreeSkills.LEVELS -> {
                                                 MyList(
                                                     questDB.spisQuest.spisLevelTreeSkillsForSelect,
@@ -221,6 +219,7 @@ fun PanAddTrigger(
                                                     ).getComposable()
                                                 }
                                             }
+
                                             TypeTreeSkills.TREE -> {
                                                 questDB.spisQuest.spisNodeTreeSkillsForSelectionForTrigger.getState().value?.toList()
                                                     ?.sortedBy { it.first }
@@ -239,6 +238,7 @@ fun PanAddTrigger(
                                                         }
                                                     }
                                             }
+
                                             null -> {
                                             }
                                         }
@@ -328,14 +328,14 @@ fun PanAddTrigger(
                                 TypeTreeSkills.getType(it.id_type_tree) == TypeTreeSkills.LEVELS && (if (itemPar.typeParent == TypeParentOfTrig.NODETREESKILLS) !isklParam.contains(
                                     it.id
                                 ) else true)
-                            } ,
+                            },
                                 Modifier.weight(1f).padding(horizontal = 60.dp).then(modifierList),
                                 lazyListState) { ind, itemTreeSkill ->
                                 ComItemTreeSkillsQuest(itemTreeSkill, selection,
                                     openTree = { itemA ->
                                         openSpis_Index_Item(ind, itemA)
                                     }
-                                ).getComposable() //{ item, expanded -> ... }
+                                ).getComposable()
                             }
                         }
                     },
@@ -369,25 +369,25 @@ fun PanAddTrigger(
                                 }
                                 Box(
                                     Modifier.myModWithBound1().padding(5.dp).fillMaxWidth()
-                                        .animateContentSize() //.fillMaxWidth()
+                                        .animateContentSize()
                                 ) {
                                     Column {
                                         if (TypeTreeSkills.getType(itemTS.id_type_tree) == TypeTreeSkills.LEVELS) {
-                                                MyList(
-                                                    questDB.spisQuest.spisLevelTreeSkillsForSelect,
-                                                    Modifier.weight(1f).padding(horizontal = 5.dp)
-                                                ) { ind, itemLevelTreeSkills ->
-                                                    ComItemLevelTreeSkillsForSelectQuest(
-                                                        questDB,
-                                                        itemLevelTreeSkills,
-                                                        selectionLevelTreeSkills,
-                                                        questDB.spisQuest.spisNodeTreeSkillsForSelectionForTrigger.getState().value?.get(
-                                                            itemLevelTreeSkills.num_level
-                                                        )
-                                                            ?.sortedByDescending { it.must_node }
-                                                            ?: listOf()
-                                                    ).getComposable()
-                                                }
+                                            MyList(
+                                                questDB.spisQuest.spisLevelTreeSkillsForSelect,
+                                                Modifier.weight(1f).padding(horizontal = 5.dp)
+                                            ) { ind, itemLevelTreeSkills ->
+                                                ComItemLevelTreeSkillsForSelectQuest(
+                                                    questDB,
+                                                    itemLevelTreeSkills,
+                                                    selectionLevelTreeSkills,
+                                                    questDB.spisQuest.spisNodeTreeSkillsForSelectionForTrigger.getState().value?.get(
+                                                        itemLevelTreeSkills.num_level
+                                                    )
+                                                        ?.sortedByDescending { it.must_node }
+                                                        ?: listOf()
+                                                ).getComposable()
+                                            }
                                         }
                                     }
                                 }
@@ -412,16 +412,13 @@ fun PanAddTrigger(
 
         val dialLayInner = MyDialogLayout()
         dialPan.dial = @Composable {
-            BackgroungPanelStyle1 { //modif ->
+            BackgroungPanelStyle1 {
                 Column(
                     Modifier.padding(15.dp)
                         .heightIn(0.dp, dialPan.layHeight.value * 0.7F)
                         .widthIn(0.dp, dialPan.layWidth.value * 0.7F),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-//                    CB_spisTypeTrigger.show(Modifier.padding(3.dp))
-//                    CB_spisTypeTrigger.getSelected()?.let {
-//                        when (it) {
                     seekTypeStartObjOfTrigger.show(Modifier.padding(bottom = 10.dp))
                     seekTypeStartObjOfTrigger.active?.cod?.toLong()?.let { cod ->
                         when (TypeStartObjOfTrigger.getType(cod)) {
@@ -429,26 +426,34 @@ fun PanAddTrigger(
                             TypeStartObjOfTrigger.STARTPLAN -> {
                                 StartPlan()
                             }
+
                             TypeStartObjOfTrigger.STARTDIALOG -> {
                                 StartDialog()
                             }
+
                             TypeStartObjOfTrigger.SUMTRIGGER -> {
                             }
+
                             TypeStartObjOfTrigger.STARTSTAP -> {
                                 StartStap()
                             }
+
                             TypeStartObjOfTrigger.INNERFINISH -> {
                                 StartInnerFinish()
                             }
+
                             TypeStartObjOfTrigger.STARTTREE -> {
                                 StartTree()
                             }
+
                             TypeStartObjOfTrigger.STARTNODETREE -> {
                                 StartNodeTree()
                             }
+
                             TypeStartObjOfTrigger.STARTLEVELTREE -> {
                                 StartLevelTree()
                             }
+
                             null -> {}
                         }
                     }

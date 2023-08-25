@@ -4,7 +4,6 @@ import ru.ragefalcon.sharedcode.myGoogleLib.ItemGDriveFile
 import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
 import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemSchetBinding
-import java.util.*
 
 class GDriveFileRVItem(
     data: ItemGDriveFile,
@@ -26,7 +25,7 @@ class GDriveFileRVItem(
                 if (vh.itemView.isSelected) {
                     selectListener?.invoke(item)
                 }
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     tapListener?.invoke(item)
                 }

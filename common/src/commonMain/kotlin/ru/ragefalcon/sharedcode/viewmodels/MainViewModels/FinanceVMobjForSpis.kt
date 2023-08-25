@@ -18,7 +18,6 @@ class FinanceVMobjForSpis(val mDB: Database) {
     }.apply { updateQuery(mDB.schetaQueries.sumAllCapital()) }
     var sumAllCap = sumAllCapAdapter.getMyObsObjOneValue()
 
-
     /** Переменные для работы с датой */
     val selPer = PeriodSelecter()
 
@@ -68,8 +67,8 @@ class FinanceVMobjForSpis(val mDB: Database) {
             it.data_.unOffset(),
             it.schet_id.toString(),
             it.schet ?: "счет не найден",
-            it.typerasxod_open == "true" || it.typerasxod_open == "True" ,
-            it.schet_open == "true" || it.schet_open == "True" ,
+            it.typerasxod_open == "true" || it.typerasxod_open == "True",
+            it.schet_open == "true" || it.schet_open == "True",
             it.schpl_open == 1L,
             it.schpl_id
         )
@@ -80,7 +79,7 @@ class FinanceVMobjForSpis(val mDB: Database) {
     }
 
     val rasxodSummaPeriod = UniConvertQueryPeriodAdapter<SumRasxPeriod, String>(selPer) {
-        val summ: Double = it.sum ?: 0.0 //.sum видимо для sqldeligth 1.2.2
+        val summ: Double = it.sum ?: 0.0
         "${summ.roundToStringProb(2)} Руб."
     }.apply {
         updateFunQuery { dtB, dtE ->
@@ -108,7 +107,7 @@ class FinanceVMobjForSpis(val mDB: Database) {
     }
 
     val doxodSummaPeriod = UniConvertQueryPeriodAdapter<SumDoxPeriod, String>(selPer) {
-        val summ: Double = it.sum ?: 0.0 //.sum видимо для sqldeligth 1.2.2
+        val summ: Double = it.sum ?: 0.0
         "${summ.roundToStringProb(2)} Руб."
 
     }.apply {
@@ -126,7 +125,7 @@ class FinanceVMobjForSpis(val mDB: Database) {
             it.summaoper ?: -1.0,
             it.summa2 ?: -1.0,
             it.data_?.unOffset() ?: 1L,
-            it.schetidd.toString(), //"-1",
+            it.schetidd.toString(),
             it.typeoper ?: "",
             it.second_schet_open == "True" || it.second_schet_open == "true"
         )
@@ -141,7 +140,7 @@ class FinanceVMobjForSpis(val mDB: Database) {
             it.summaoper ?: -1.0,
             it.summaoper ?: -1.0,
             it.data_?.unOffset() ?: 1L,
-            it.schetidd.toString(), //"-1",
+            it.schetidd.toString(),
             it.typeoper,
             it.second_schet_open == 1L
         )
@@ -250,7 +249,7 @@ class FinanceVMobjForSpis(val mDB: Database) {
             it._id.toString(),
             "${it.name}, ${it.cod}",
             it.val_id,
-            !((it.open_ == "false") || (it.open_ == "False")),// it.open_,
+            !((it.open_ == "false") || (it.open_ == "False")),
             it.cod ?: ""
         )
     }.apply {
@@ -280,7 +279,13 @@ class FinanceVMobjForSpis(val mDB: Database) {
             stat = it.stat ?: 0
         )
     }.apply {
-        updateQuery(mDB.bindForSchetPlanQueries.selectBindWithName(typePlanId = TypeBindElementForSchetPlan.PLAN.id, typePlanStapId = TypeBindElementForSchetPlan.PLANSTAP.id, typeGoalId = TypeBindElementForSchetPlan.GOAL.id))
+        updateQuery(
+            mDB.bindForSchetPlanQueries.selectBindWithName(
+                typePlanId = TypeBindElementForSchetPlan.PLAN.id,
+                typePlanStapId = TypeBindElementForSchetPlan.PLANSTAP.id,
+                typeGoalId = TypeBindElementForSchetPlan.GOAL.id
+            )
+        )
     }
 
     val spisValut = UniConvertQueryAdapter<SelectSpisValut, ItemValut> {
@@ -539,9 +544,6 @@ class FinanceVMobjForSpis(val mDB: Database) {
     fun addOldDate(): Long {
         var rez = qTypeRasxodDateOld.testOldDate().executeAsOne()
         if (qTypeRasxodDateOld.testOldDate().executeAsOne() < 1) {
-//            qTypeRasxodDateOld.addOldDate()
-//            qRasxodDataOld.addRasxodOldData()
-//            qRasxodDataOld.updateDataPlusYear()
             qDoxodDataOld.addDoxodOldData()
             qDoxodDataOld.updateDoxodData()
             rez = 666

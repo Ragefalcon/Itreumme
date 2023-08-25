@@ -28,7 +28,7 @@ class SettFinSchetTab(val dialLay: MyDialogLayout) {
 
     @Composable
     fun show(modifier: Modifier = Modifier) {
-        Column(modifier,horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
             Row(modifier = Modifier.padding(bottom = 5.dp), verticalAlignment = Alignment.CenterVertically) {
                 MyTextToggleButtStyle1("Закрытые", visClose, modifier = Modifier.padding(start = 15.dp)) {
                     MainDB.finFun.setVisibleOpenSettSchet(!it)
@@ -63,14 +63,13 @@ class SettFinSchetTab(val dialLay: MyDialogLayout) {
                     if (item.summa == 0.0) {
                         DropdownMenuItem(onClick = {
                             MainDB.addFinFun.updSchetOpen(item.id.toLong(), item.open_.not())
-//                        PanAddVxod(dialLay, item)
                             expanded.value = false
                         }) {
                             Text(text = if (item.open_) "Закрыть" else "Открыть", color = Color.White)
                         }
                     }
-                    if (item.countoper == 0L){
-                        MyDeleteDropdownMenuButton(expanded){
+                    if (item.countoper == 0L) {
+                        MyDeleteDropdownMenuButton(expanded) {
                             MainDB.addFinFun.delSchet(item.id.toLong())
                         }
                     }

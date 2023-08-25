@@ -38,6 +38,7 @@ fun PanSelectShablonDenPlan(
                 is ItemNextActionCommon -> MainDB.complexOpisSpis.spisComplexOpisForNextActionCommon.getState().value?.get(
                     itemNextAction.common_id
                 ) ?: listOf()
+
                 is ItemNextActionStap -> MainDB.complexOpisSpis.spisComplexOpisForNextActionStap.getState().value?.get(
                     itemNextAction.stap_prpl
                 ) ?: listOf()
@@ -54,7 +55,7 @@ fun PanSelectShablonDenPlan(
             BackgroungPanelStyle1(
                 style = SimplePlateStyleState(platePanel),
                 vignette = VIGNETTE.getValue()
-            ) { //modif ->
+            ) {
                 Column(
                     Modifier
                         .heightIn(0.dp, dialPan.layHeight.value * 0.8F)
@@ -140,7 +141,7 @@ fun PanSelectShablonDenPlan(
                                 }
                             }
                             RowVA(Modifier.padding(5.dp)) {
-//                                if (selectionNA.selected is ItemNextActionStap)
+
                                 RowVA(Modifier.weight(1f), horizontalArrangement = Arrangement.SpaceAround) {
                                     MyCheckbox(
                                         loadNameFromStap,
@@ -149,7 +150,7 @@ fun PanSelectShablonDenPlan(
                                     )
                                     MyCheckbox(loadOpis, "Описание", style = CheckboxStyleState(checkOpis))
                                 }
-//                                else Spacer(Modifier.weight(1F))
+
                                 MyTextButtStyle1(
                                     "+",
                                     width = 70.dp,

@@ -2,7 +2,8 @@ package ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems
 
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemEffekt
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemEffektBinding
 
 class EffektRVItem(
@@ -21,7 +22,7 @@ class EffektRVItem(
                         "  Г: ${item.sumYear.roundToString(1)}/${(nr * 52).roundToString(1)}"
                 effektShkalItem.setItemEffekt(item)
 
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     listener?.invoke(item)
                 }

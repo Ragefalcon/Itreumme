@@ -27,7 +27,6 @@ fun PanAddNextAction(
     listOp: List<ItemComplexOpis>? = null,
     finishListener: () -> Unit = {}
 ) {
-
     val text_name = mutableStateOf(TextFieldValue(item?.let { it.name } ?: ""))
     val vajn = MySelectStat(item?.vajn ?: 1L, statNabor = MySelectStat.statNaborPlan, iconRes = "bookmark_01.svg")
     val complexOpis =
@@ -63,7 +62,7 @@ fun PanAddNextAction(
     }
 
     dialPan.dial = @Composable {
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(
                 Modifier.fillMaxWidth(0.8F).fillMaxHeight(0.95f).padding(15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -82,7 +81,7 @@ fun PanAddNextAction(
                             MyTextButtStyle1(item?.let { "Изменить" } ?: "Добавить", Modifier.padding(start = 5.dp)) {
                                 complexOpis.listOpis.addUpdList { opis ->
                                     MainDB.addTime.updOrAddNextAction(
-                                        id = item?.let {  if (it.common_id > 0) it.common_id else null },
+                                        id = item?.let { if (it.common_id > 0) it.common_id else null },
                                         name = text_name.value.text,
                                         vajn = vajn.value,
                                         opis = opis,

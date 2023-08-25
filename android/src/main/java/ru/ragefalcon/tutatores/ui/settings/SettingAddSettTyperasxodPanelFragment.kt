@@ -15,9 +15,11 @@ class SettingAddSettTyperasxodPanelFragment(item: ItemSettTyperasxod? = null) :
 
     override fun addNote() {
         with(binding) {
-            viewmodel.finSpis.spisTyperasxodForSett.getLiveData().value?.find { it.typer == editNameText.text.toString() }?.let {
-                showMyMessage("Тип расхода с таким именем уже есть.")
-            } ?: run {
+            viewmodel.finSpis.spisTyperasxodForSett.getLiveData().value
+                ?.find { it.typer == editNameText.text.toString() }
+                ?.let {
+                    showMyMessage("Тип расхода с таким именем уже есть.")
+                } ?: run {
                 viewmodel.addFin.addTyperasxod(
                     name = editNameText.text.toString()
                 )

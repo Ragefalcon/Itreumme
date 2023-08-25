@@ -7,11 +7,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import ru.ragefalcon.sharedcode.models.data.ItemDenPlan
 import ru.ragefalcon.tutatores.R
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemDenplanBinding
-import ru.ragefalcon.tutatores.databinding.ItemVxodBinding
 import ru.ragefalcon.tutatores.extensions.*
-import ru.ragefalcon.tutatores.ui.viewmodels.MyStateViewModel
 import java.util.*
 
 class DenPlanRVItem(

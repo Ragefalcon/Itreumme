@@ -1,6 +1,5 @@
 package ru.ragefalcon.tutatores.adapter
 
-import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import ru.ragefalcon.tutatores.R
 

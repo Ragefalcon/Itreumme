@@ -1,7 +1,10 @@
 package ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers
 
 import ru.ragefalcon.sharedcode.Database
-import ru.ragefalcon.sharedcode.Finance.*
+import ru.ragefalcon.sharedcode.Finance.SelectDoxodPeriod
+import ru.ragefalcon.sharedcode.Finance.SelectRasxodPeriod
+import ru.ragefalcon.sharedcode.Finance.SumDoxPeriod
+import ru.ragefalcon.sharedcode.Finance.SumRasxPeriod
 import ru.ragefalcon.sharedcode.extensions.unOffset
 import ru.ragefalcon.sharedcode.models.data.ItemDoxod
 import ru.ragefalcon.sharedcode.models.data.ItemRasxod
@@ -20,29 +23,23 @@ class FinanceVMfun(private val mDB: Database, private val spisVM: FinanceVMobjFo
     fun getMinSumOperWeek(): Double {
         return spisVM.minSumOperWeek
     }
+
     /** Максимальный размер капитала в конце недели за все время */
     fun getMaxSumOperWeek(): Double {
         return spisVM.maxSumOperWeek
     }
 
     /** Функция выбора типа расхода по которому будет выведена диаграмма ежемесячных трат */
-    fun selectRasxodTypeByMonth(value: Pair<String, String>) { //typeid: Long
+    fun selectRasxodTypeByMonth(value: Pair<String, String>) {
         spisVM.spisRasxodTypeByMonth.updateQuery(mDB.rasxodQueries.analizRasxodTypeByMonth(value.first.toLong()))
     }
 
     /** Функция выбора типа расхода по которому будет выведена диаграмма ежемесячных трат, New with date */
-    fun selectRasxodTypeByMonthOnYear(typeid: Long) { //typeid: Long
+    fun selectRasxodTypeByMonthOnYear(typeid: Long) {
         spisVM.spisRasxodTypeByMonthWithDatePriv.updateQuery(mDB.rasxodQueries.analizRasxodTypeByMonth(typeid))
     }
 
-//    fun setListenerRasxodTypeByMonthOnYear(updF: (List<ItemYearGraf>) -> Unit) {
-//        spisVM.spisRasxodTypeByMonthWithDatePriv.updateFunc { statik ->
-//            setMapStatikToItemYearGraf(statik, updF)
-//        }
-//    }
-
     private var spisSchetInner: List<ItemSchet>? = null
-//    var spisSchetOld: List<Pair<Long, SelectAllSpisSchet>>? = null
 
     /** Функция сравнения типа валюты на счете с [idSch] и счете выбранном в основном разделе счетов */
     fun sravnVal(idSch: Long): String? {
@@ -58,7 +55,7 @@ class FinanceVMfun(private val mDB: Database, private val spisVM: FinanceVMobjFo
         return null
     }
 
-    fun sravnVal(idSch1: Long,idSch2: Long): String? {
+    fun sravnVal(idSch1: Long, idSch2: Long): String? {
         spisSchetInner?.let {
             val val1 = it.map { it.id.toLong() }.indexOf(idSch1)
             val val2 = it.map { it.id.toLong() }.indexOf(idSch2)
@@ -79,7 +76,8 @@ class FinanceVMfun(private val mDB: Database, private val spisVM: FinanceVMobjFo
                 perevodTypeTitle = FilterSchetOper.Perevod.title,
                 dtbegin = dtB,
                 dtend = dtE,
-                schet = new.first.toLong() ?: -1)
+                schet = new.first.toLong() ?: -1
+            )
         }
         spisVM.schetSumma.updateFunQuery { dtB, dtE ->
             mDB.schetaQueries.sumSchetPeriod(new.first.toLong())
@@ -134,7 +132,21 @@ class FinanceVMfun(private val mDB: Database, private val spisVM: FinanceVMobjFo
                     dtE,
                     new.first.toLong() ?: -1
                 ) { id, name, summa, type_id, data, schet_id, schpl_id, sumrub, type, schet, schet_open, schpl_open, typerasxod_open ->
-                    SelectRasxodPeriod( id, name, summa, type_id, data, schet_id, schpl_id, sumrub, type, schet, schet_open, schpl_open, typerasxod_open)
+                    SelectRasxodPeriod(
+                        id,
+                        name,
+                        summa,
+                        type_id,
+                        data,
+                        schet_id,
+                        schpl_id,
+                        sumrub,
+                        type,
+                        schet,
+                        schet_open,
+                        schpl_open,
+                        typerasxod_open
+                    )
                 }
             }
             spisVM.rasxodSummaPeriod.updateFunQuery { dtB, dtE ->
@@ -145,37 +157,37 @@ class FinanceVMfun(private val mDB: Database, private val spisVM: FinanceVMobjFo
         }
     }
 
-    fun getItemRasxodById(id: Long):ItemRasxod? = mDB.rasxodQueries.selectOneRasxodById(id).executeAsOneOrNull()?.let {
-            ItemRasxod(
-                it._id.toString(),
-                it.name,
-                it.type_id.toString(),
-                it.type.toString(),
-                it.summa,
-                it.data_.unOffset(),
-                it.schet_id.toString(),
-                it.schet ?: "счет не найден",
-                it.typerasxod_open == "true" || it.typerasxod_open == "True" ,
-                it.schet_open == "true" || it.schet_open == "True" ,
-                it.schpl_open == 1L,
-                it.schpl_id
-            )
-        }
+    fun getItemRasxodById(id: Long): ItemRasxod? = mDB.rasxodQueries.selectOneRasxodById(id).executeAsOneOrNull()?.let {
+        ItemRasxod(
+            it._id.toString(),
+            it.name,
+            it.type_id.toString(),
+            it.type.toString(),
+            it.summa,
+            it.data_.unOffset(),
+            it.schet_id.toString(),
+            it.schet ?: "счет не найден",
+            it.typerasxod_open == "true" || it.typerasxod_open == "True",
+            it.schet_open == "true" || it.schet_open == "True",
+            it.schpl_open == 1L,
+            it.schpl_id
+        )
+    }
 
     fun getItemDoxodById(id: Long): ItemDoxod? = mDB.doxodQueries.selectOneDoxodById(id).executeAsOneOrNull()?.let {
-            ItemDoxod(
-                it._id.toString(),
-                it.name,
-                it.type_id.toString(),
-                it.type.toString(),
-                it.summa,
-                it.data_.unOffset(),
-                it.schet_id.toString(),
-                it.schet ?: "",
-                typedoxod_open = it.typerasxod_open == "true" || it.typerasxod_open == "True",
-                schet_open = it.schet_open == "true" || it.schet_open == "True",
-            )
-        }
+        ItemDoxod(
+            it._id.toString(),
+            it.name,
+            it.type_id.toString(),
+            it.type.toString(),
+            it.summa,
+            it.data_.unOffset(),
+            it.schet_id.toString(),
+            it.schet ?: "",
+            typedoxod_open = it.typerasxod_open == "true" || it.typerasxod_open == "True",
+            schet_open = it.schet_open == "true" || it.schet_open == "True",
+        )
+    }
 
     fun setPosFilterRasx(value: Pair<String, String>) {
         pos_filter_typeRasx = value
@@ -194,8 +206,8 @@ class FinanceVMfun(private val mDB: Database, private val spisVM: FinanceVMobjFo
                     dtB,
                     dtE,
                     new.first.toLong() ?: -1
-                ) { a, s, d, f, g, h, j, k, b,c,e ->
-                    SelectDoxodPeriod(a, s, d, f, g, h, j, k, b,c,e)
+                ) { a, s, d, f, g, h, j, k, b, c, e ->
+                    SelectDoxodPeriod(a, s, d, f, g, h, j, k, b, c, e)
                 }
             }
             spisVM.doxodSummaPeriod.updateFunQuery { dtB, dtE ->
@@ -225,7 +237,21 @@ class FinanceVMfun(private val mDB: Database, private val spisVM: FinanceVMobjFo
                         dtE,
                         pos_filter_typeRasx.first.toLong() ?: -1
                     ) { id, name, summa, type_id, data, schet_id, schpl_id, sumrub, type, schet, schet_open, schpl_open, typerasxod_open ->
-                        SelectRasxodPeriod(id, name, summa, type_id, data, schet_id, schpl_id, sumrub, type, schet, schet_open, schpl_open, typerasxod_open)
+                        SelectRasxodPeriod(
+                            id,
+                            name,
+                            summa,
+                            type_id,
+                            data,
+                            schet_id,
+                            schpl_id,
+                            sumrub,
+                            type,
+                            schet,
+                            schet_open,
+                            schpl_open,
+                            typerasxod_open
+                        )
                     }
                 }
                 spisVM.rasxodSummaPeriod.updateFunQuery { dtB, dtE ->
@@ -238,8 +264,8 @@ class FinanceVMfun(private val mDB: Database, private val spisVM: FinanceVMobjFo
                         dtB,
                         dtE,
                         pos_filter_typeDox.first.toLong() ?: -1
-                    ) { a, s, d, f, g, h, j, k, b,c,e ->
-                        SelectDoxodPeriod(a, s, d, f, g, h, j, k, b,c,e)
+                    ) { a, s, d, f, g, h, j, k, b, c, e ->
+                        SelectDoxodPeriod(a, s, d, f, g, h, j, k, b, c, e)
                     }
                 }
                 spisVM.doxodSummaPeriod.updateFunQuery { dtB, dtE ->
@@ -248,6 +274,7 @@ class FinanceVMfun(private val mDB: Database, private val spisVM: FinanceVMobjFo
                     }
                 }
             }
+
             false -> {
                 spisVM.rasxodSpisPeriod.updateFunQuery { dtB, dtE ->
                     mDB.rasxodQueries.selectRasxodPeriod(dtB, dtE)
@@ -269,20 +296,26 @@ class FinanceVMfun(private val mDB: Database, private val spisVM: FinanceVMobjFo
         filter_enable = value
     }
 
-    fun setVisibleOpenSettSchet(open: Boolean){
-        spisVM.spisSchetForSett.updateQuery(mDB.schetaQueries.selectSpisSchetForSett( if (open) "false" else "true||false" ))
+    fun setVisibleOpenSettSchet(open: Boolean) {
+        spisVM.spisSchetForSett.updateQuery(mDB.schetaQueries.selectSpisSchetForSett(if (open) "false" else "true||false"))
     }
 
-    fun setVisibleOpenSettSchetPlan(open: Boolean){
-        spisVM.spisSchetPlanForSett.updateQuery(mDB.spisSchetPlQueries.selectSpisSchetPlanForSett( if (open) listOf(0) else listOf(-1L) ))
+    fun setVisibleOpenSettSchetPlan(open: Boolean) {
+        spisVM.spisSchetPlanForSett.updateQuery(
+            mDB.spisSchetPlQueries.selectSpisSchetPlanForSett(
+                if (open) listOf(0) else listOf(
+                    -1L
+                )
+            )
+        )
     }
 
-    fun setVisibleOpenSettTyperasxod(open: Boolean){
-        spisVM.spisTyperasxodForSett.updateQuery(mDB.typeRasxodQueries.selectTypeRasxodForSett( if (open) "false" else "true||false" ))
+    fun setVisibleOpenSettTyperasxod(open: Boolean) {
+        spisVM.spisTyperasxodForSett.updateQuery(mDB.typeRasxodQueries.selectTypeRasxodForSett(if (open) "false" else "true||false"))
     }
 
-    fun setVisibleOpenSettTypedoxod(open: Boolean){
-        spisVM.spisTypedoxodForSett.updateQuery(mDB.typeDoxodQueries.selectTypedoxodForSett( if (open) "false" else "true||false" ))
+    fun setVisibleOpenSettTypedoxod(open: Boolean) {
+        spisVM.spisTypedoxodForSett.updateQuery(mDB.typeDoxodQueries.selectTypedoxodForSett(if (open) "false" else "true||false"))
     }
 
     fun getEnableFilter(): Boolean {

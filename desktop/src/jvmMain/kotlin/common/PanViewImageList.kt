@@ -2,7 +2,6 @@ package common
 
 
 import MainTabs.imageFromFile
-import MyDialog.MyDialogLayout
 import MyListRow
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,12 +35,10 @@ fun PanViewImageList(
     fileList: List<File>,
     selection: File? = null
 ) {
-//    val dialLayInner = MyDialogLayout()
-
     val selectFile = SingleSelectionType<File>().apply {
         this.selected = selection ?: fileList.firstOrNull()
     }
-//dialPan
+
     StateVM.dialLayForViewPicture.dial = @Composable {
         Box(Modifier.fillMaxSize().background(Color.DarkGray.copy(0.99f)), contentAlignment = Alignment.Center) {
             if (MainDB.styleParam.commonParam.OLD_PAPER.getValue()) Image(
@@ -49,7 +46,7 @@ fun PanViewImageList(
                 "paperback",
                 Modifier.fillMaxSize(),
                 alpha = 0.6F,
-                contentScale = ContentScale.FillBounds// .Fit
+                contentScale = ContentScale.FillBounds
             )
             Column(
                 Modifier.fillMaxWidth(0.95f).fillMaxHeight(0.95f).padding(15.dp),
@@ -70,7 +67,7 @@ fun PanViewImageList(
                     selectFile.selected?.let { selFile ->
 
                         val imageIB: MutableState<ImageBitmap?> = mutableStateOf<ImageBitmap?>(null).apply {
-//                        val ff = File(StateVM.dirTemp, "complexOpisImage_tmp_${itImg.id}.jpg")
+
                             if (selFile.exists()) {
                                 value = imageFromFile(selFile)
                             }
@@ -78,7 +75,7 @@ fun PanViewImageList(
 
                         imageIB.value?.let { imgBtm ->
                             Image(
-                                bitmap = imgBtm, //BitmapPainter(
+                                bitmap = imgBtm,
                                 "defaultAvatar",
                                 Modifier
                                     .padding(5.dp)
@@ -97,7 +94,6 @@ fun PanViewImageList(
                     }
                 }
                 RowVA(Modifier.height(100.dp).fillMaxWidth()) {
-//                    Spacer(Modifier.weight(1f))
                     MyTextButtWithoutBorder(
                         "\uD83E\uDC44",
                         Modifier.padding(end = 10.dp),
@@ -111,15 +107,14 @@ fun PanViewImageList(
                     }
                     MyListRow(fileList, Modifier.weight(1f)) { ind, item ->
                         val imageIB: MutableState<ImageBitmap?> = mutableStateOf<ImageBitmap?>(null).apply {
-//                        val ff = File(StateVM.dirTemp, "complexOpisImage_tmp_${itImg.id}.jpg")
+
                             if (item.exists()) {
                                 value = imageFromFile(item)
                             }
                         }
-
                         imageIB.value?.let { imgBtm ->
                             Image(
-                                bitmap = imgBtm, //BitmapPainter(
+                                bitmap = imgBtm,
                                 "defaultAvatar",
                                 Modifier
                                     .padding(5.dp)
@@ -148,9 +143,8 @@ fun PanViewImageList(
                                 if (indexSel < fileList.count() - 1) fileList[indexSel + 1] else fileList[0]
                         }
                     }
-//                    Spacer(Modifier.weight(1f))
                     MyTextButtWithoutBorder(
-                        "❌",  // ✖ ❌
+                        "❌",
                         Modifier.padding(start = 10.dp),
                         fontSize = 24.sp,
                         textColor = MyColorARGB.colorMyBorderStroke.toColor()
@@ -160,8 +154,6 @@ fun PanViewImageList(
                 }
             }
         }
-//        dialLayInner.getLay()
     }
-
     if (fileList.isNotEmpty()) StateVM.dialLayForViewPicture.show()
 }

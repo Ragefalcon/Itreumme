@@ -24,7 +24,6 @@ import java.util.*
 
 fun PanAddPlanStap(
     dialPan: MyDialogLayout,
-//    MainDatabase: MainDatabase,
     itemPlanStapParent: ItemPlanStap? = null,
     itemPlanParent: ItemPlan? = null,
     item: ItemPlanStap? = null,
@@ -50,7 +49,7 @@ fun PanAddPlanStap(
         )
         val enabledGotov =
             mutableStateOf(item?.gotov?.let { it >= 0.0 } ?: MainDB.interfaceSpis.DefaultPercentForPlan.getValue())
-//    val enabledGotov = mutableStateOf((item?.gotov ?: -1.0) >= 0.0)
+
 
         val text_name = mutableStateOf(TextFieldValue(item?.let { it.name } ?: ""))
         val complexOpis =
@@ -93,14 +92,14 @@ fun PanAddPlanStap(
                 vignette = VIGNETTE.getValue()
             ) {
                 Column(
-                    Modifier.padding(15.dp).fillMaxWidth(0.8F).fillMaxHeight(0.8f), // dialPan.layHeight.value
+                    Modifier.padding(15.dp).fillMaxWidth(0.8F).fillMaxHeight(0.8f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     selParents.getComposable(Modifier.fillMaxWidth(0.8F).padding(bottom = 5.dp))
                     if (!selParents.isExpanded()) {
                         complexOpis.show(this, dialLayInner)
                         RowVA(Modifier.padding(bottom = 5.dp)) {
-//                        marker.show()
+
                             MyToggleButtIconStyle1(
                                 "ic_round_percent_24.xml", value = enabledGotov, sizeIcon = 25.dp,
                                 modifier = Modifier.padding(horizontal = 5.dp),
@@ -169,7 +168,7 @@ fun PanAddPlanStap(
                                                     name = text_name.value.text,
                                                     data1 = if (expandedDate.value) dateStart.value.time else 0,
                                                     data2 = if (expandedDate.value) dateEnd.value.time else 1,
-                                                    opis = opis,//text_opis.value.text,
+                                                    opis = opis,
                                                     parent_id = selParents.selectionPlanStapParent.selected?.id?.toLong()
                                                         ?: -1L,
                                                     idplan = idplan,
@@ -182,7 +181,7 @@ fun PanAddPlanStap(
                                                 gotov = if (enabledGotov.value) 0.0 else -1.0,
                                                 data1 = if (expandedDate.value) dateStart.value.time else 0,
                                                 data2 = if (expandedDate.value) dateEnd.value.time else 1,
-                                                opis = opis,//text_opis.value.text,
+                                                opis = opis,
                                                 parent_id = selParents.selectionPlanStapParent.selected?.id?.toLong()
                                                     ?: -1L,
                                                 idplan = idplan,

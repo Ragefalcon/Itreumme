@@ -1,11 +1,10 @@
 package ru.ragefalcon.sharedcode.viewmodels.MainViewModels.Interface
 
 import ru.ragefalcon.sharedcode.Database
-import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 
 class InterfaceVMspis(private val table: InterfaceStateTable) : CommonInterfaceSetting(table) {
 
-    inner class interfaceState() : MySettings() {
+    inner class InterfaceState() : MySettings() {
         inner class TimeServiceParam(
             code_name_razdel: String = "TimeServiceParam"
         ) : MySettings.RazdelSettingInner(
@@ -19,11 +18,29 @@ class InterfaceVMspis(private val table: InterfaceStateTable) : CommonInterfaceS
                     false
                 )
             )
-            val dateAlarmSrokUpdate by settName(addSett(InterfaceSettingsLong(code_name_razdel, "dateAlarmSrokUpdate", 0L)))
-            val shablonCheckRepeat by settName(addBoolean("Включение повторов из шаблонов по умолчанию",true))
-            val shablonCheckTime by settName(addBoolean("Включение времени из шаблонов по умолчанию",true))
-            val shablonCheckStapName by settName(addBoolean("Включение имени этапа из следующего действия по умолчанию",false))
-            val shablonCheckStapOpis by settName(addBoolean("Включение описания этапа из следующего действия по умолчанию",false))
+            val dateAlarmSrokUpdate by settName(
+                addSett(
+                    InterfaceSettingsLong(
+                        code_name_razdel,
+                        "dateAlarmSrokUpdate",
+                        0L
+                    )
+                )
+            )
+            val shablonCheckRepeat by settName(addBoolean("Включение повторов из шаблонов по умолчанию", true))
+            val shablonCheckTime by settName(addBoolean("Включение времени из шаблонов по умолчанию", true))
+            val shablonCheckStapName by settName(
+                addBoolean(
+                    "Включение имени этапа из следующего действия по умолчанию",
+                    false
+                )
+            )
+            val shablonCheckStapOpis by settName(
+                addBoolean(
+                    "Включение описания этапа из следующего действия по умолчанию",
+                    false
+                )
+            )
         }
 
         val timeServiceParam = TimeServiceParam()
@@ -38,7 +55,7 @@ class InterfaceVMspis(private val table: InterfaceStateTable) : CommonInterfaceS
 
     }
 
-    val intSett = interfaceState()
+    val intSett = InterfaceState()
 
 }
 

@@ -9,4 +9,4 @@ class ItemBestDays(
     val name: String,
     val data: Long,
     val enableIcon: Boolean
-    ) : Id_class(id_main = id), Parcelable
+) : Id_class(id_main = id), Parcelable

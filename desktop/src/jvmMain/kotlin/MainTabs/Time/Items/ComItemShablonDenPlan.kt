@@ -9,15 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.*
 import extensions.*
-import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 import ru.ragefalcon.sharedcode.models.data.ItemShablonDenPlan
 import ru.ragefalcon.sharedcode.source.disk.getValue
 import viewmodel.MainDB
@@ -30,7 +27,6 @@ fun ComItemShablonDenPlan(
     onClick: (ItemShablonDenPlan) -> Unit,
     doubleClick: (ItemShablonDenPlan) -> Unit,
     dialLay: MyDialogLayout? = null,
-//    dropMenu: @Composable ColumnScope.(ItemShablonDenPlan, MutableState<Boolean>) -> Unit = { _, _ -> }
 ) {
     val itemCommonStyle: CommonItemStyleState = CommonItemStyleState(
         MainDB.styleParam.timeParam.denPlanTab.itemDenPlan,
@@ -54,7 +50,7 @@ fun ComItemShablonDenPlan(
             style = itemCommonStyle.dropdown,
             "Изменить"
         ) {
-//            PanAddNextAction(dialL, itemNA)
+
         }
         MyDropdownMenuItem(
             expanded,
@@ -95,15 +91,19 @@ fun ComItemShablonDenPlan(
             onDoubleClick = {
                 doubleClick(item)
             },
-//            modifier = modifier,
             dropMenu = { dropMenu(item, it) },
             styleSettings = itemCommonStyle ?: this
         ) {
             MainDB.complexOpisSpis.spisComplexOpisForShabDenPlan.getState().value?.let { mapOpis ->
                 Column {
                     Row(Modifier.padding(top = 0.dp), verticalAlignment = Alignment.CenterVertically) {
-                        MySelectStat.statNaborPlan.getIcon("bookmark_01.svg",item.vajn,30.dp,Modifier.padding(horizontal = 5.dp))
-                        if (sort.value){
+                        MySelectStat.statNaborPlan.getIcon(
+                            "bookmark_01.svg",
+                            item.vajn,
+                            30.dp,
+                            Modifier.padding(horizontal = 5.dp)
+                        )
+                        if (sort.value) {
                             MyTextButtWithoutBorder(
                                 "\uD83E\uDC45",
                                 fontSize = 18.sp,
@@ -145,7 +145,7 @@ fun ComItemShablonDenPlan(
                                         "${item.nameprpl}${if (item.namestap != "") " -> [${item.namestap}]" else ""}"
                                     MyShadowBox(
                                         shadow_priv_plan,
-//                                        Modifier.padding(start = 15.dp),//.weight(1f),
+
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
@@ -172,7 +172,7 @@ fun ComItemShablonDenPlan(
                             expandedDropMenu,
                             buttMenu,
                             dropdown
-                        ) { //setDissFun ->
+                        ) {
                             dropMenu(item, expandedDropMenu)
                         } else Spacer(Modifier.width(35.dp))
                         mapOpis[item.id.toLong()]?.let {
@@ -183,7 +183,6 @@ fun ComItemShablonDenPlan(
                                 color = boxOpisStyleState.colorButt
                             ) {
                                 MainDB.timeSpis.spisShablonDenPlan.sverOpisElem(item)
-//                                item.sver = item.sver.not()
                             }
                         }
                     }

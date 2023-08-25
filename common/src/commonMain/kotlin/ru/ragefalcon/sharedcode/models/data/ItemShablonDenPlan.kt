@@ -20,6 +20,6 @@ data class ItemShablonDenPlan(
     val stap_prpl: Long,
     val povtor: String,
     override val sver: Boolean = true
-) : SverOpis<ItemShablonDenPlan>,  Id_class(id_main = id), Parcelable {
+) : SverOpis<ItemShablonDenPlan>, Id_class(id_main = id), Parcelable {
     override fun sver(newSver: Boolean): ItemShablonDenPlan = this.copy(sver = newSver)
 }

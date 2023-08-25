@@ -65,8 +65,8 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
             "item_idea_style",
             type_razdel = TypeSaveStyleSet.COMMONITEM
         ) {
-//            val COLOR_BUTT_OPEN by settName( addColor("Цвет кнопки \uD83D\uDD6E",MyColorARGB.colorMyBorderStroke))
-//            val countText = r_addTextStyle("count_text", "Текст количества", MyColorARGB("AFFFF7D9"), 10.0)
+
+
         }
 
         inner class ItemIdeaStapStyle(
@@ -262,8 +262,8 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
             val border_brush_no_edit_block by nameRazd { name -> r_addBrush(name, "Граница закр. ред. и заблок-го") }
             val background_brush_block by nameRazd { name -> r_addBrush(name, "Фон заблокированного") }
             val border_brush_block by nameRazd { name -> r_addBrush(name, "Граница заблокированного") }
-//            val background_brush_unblock by nameRazd { name -> r_addBrush(name, "Фон разблокированного")}
-//            val border_brush_unblock by nameRazd { name -> r_addBrush(name, "Граница разблокированного")}
+
+
         }
 
         inner class ItemGoalStyle(
@@ -394,7 +394,7 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
         inner class ItemSchetOperStyle(
             name_podrazdel: String, code_name_item: String, nameSett: String
         ) : StyleItemSetting(
-            nameSett,//"Айтем операции на счетах",
+            nameSett,
             "${code_name_item}_${name_podrazdel}",
             type_razdel = TypeSaveStyleSet.COMMONITEM
         ) {
@@ -785,7 +785,7 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
             val itemSchetGraf by nameRazd { name -> add2(ItemSchetGraf(name, code_name_razdel)) }
             val itemSchetPlanGraf by nameRazd { name -> add2(ItemSchetPlanGraf(name, code_name_razdel)) }
 
-            //            val seekBarTypeGrafStyle by nameRazd { name -> r_addSeekBar(name, "Кнопки выбора графика") }
+
             val cb_spisSchet by nameRazd { name -> r_addComboBox(name, "Список счетов") }
             val cb_spisSchetPlan by nameRazd { name -> r_addComboBox(name, "Список счетов планов") }
             val buttAddInnerRasxod by nameRazd { name -> r_addTextButton(name, "Кнопка доб. расхода") }
@@ -965,6 +965,7 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
                 )
             }
         }
+
         inner class CalendarPanel(
             name_podrazdel: String, code_name_parent: String, nameInMenu: String
         ) : RazdelSettingInner(
@@ -972,11 +973,28 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
             code_name_razdel = "${code_name_parent}_${name_podrazdel}",
             type_razdel = TypeSaveStyleSet.FULLPANEL
         ) {
-            val textDate by nameRazd { name -> r_addTextStyle(name, "Текст даты")}
-            val padding_date by nameRazd { name -> r_addPadding(name,"Отступы даты")}
-            val itemCalendarNapom by nameRazd { name -> add2(ItemCalendarNapom(name, code_name_razdel, "Айтем напоминания")) }
-            val itemCalendarDenPlan by nameRazd { name -> add2(ItemCalendarDenPlan(name, code_name_razdel, "Айтем плана на день")) }
+            val textDate by nameRazd { name -> r_addTextStyle(name, "Текст даты") }
+            val padding_date by nameRazd { name -> r_addPadding(name, "Отступы даты") }
+            val itemCalendarNapom by nameRazd { name ->
+                add2(
+                    ItemCalendarNapom(
+                        name,
+                        code_name_razdel,
+                        "Айтем напоминания"
+                    )
+                )
+            }
+            val itemCalendarDenPlan by nameRazd { name ->
+                add2(
+                    ItemCalendarDenPlan(
+                        name,
+                        code_name_razdel,
+                        "Айтем плана на день"
+                    )
+                )
+            }
         }
+
         open inner class ItemBasePlate(
             name_podrazdel: String, code_name_parent: String, nameInMenu: String
         ) : RazdelSettingInner(
@@ -984,15 +1002,15 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
             code_name_razdel = "${code_name_parent}_${name_podrazdel}",
             type_razdel = TypeSaveStyleSet.FULLPANEL
         ) {
-            val outer_padding by nameRazd { name -> r_addPadding(name, "Внешние отступы")}
-            val inner_padding by nameRazd { name -> r_addPadding(name)}
+            val outer_padding by nameRazd { name -> r_addPadding(name, "Внешние отступы") }
+            val inner_padding by nameRazd { name -> r_addPadding(name) }
             val plateItem by nameRazd { name -> r_addSimplePlateWithShadow(name, "Плитка айтема") }
-            val mainText by nameRazd { name -> r_addTextStyle(name, "Стиль заголовка")}
+            val mainText by nameRazd { name -> r_addTextStyle(name, "Стиль заголовка") }
         }
 
         inner class ItemCalendarNapom(
             name_podrazdel: String, code_name_parent: String, nameInMenu: String
-        ) : ItemBasePlate(name_podrazdel,code_name_parent, nameInMenu) {
+        ) : ItemBasePlate(name_podrazdel, code_name_parent, nameInMenu) {
             val BACKGROUND_BRUSH_GOTOV by nameRazd { name -> r_addBrush(name, "Фон выполненного") }
             val BORDER_BRUSH_GOTOV by nameRazd { name -> r_addBrush(name, "Граница выполненного") }
             val BORDER_BRUSH_SELECT by nameRazd { name -> r_addBrush(name, "Граница выделенного") }
@@ -1000,19 +1018,29 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
 
         inner class ItemCalendarDenPlan(
             name_podrazdel: String, code_name_parent: String, nameInMenu: String
-        ) : ItemBasePlate(name_podrazdel,code_name_parent, nameInMenu) {
+        ) : ItemBasePlate(name_podrazdel, code_name_parent, nameInMenu) {
             val COLOR_INDIK_BACK by settName(addColor("Фон индикатора", MyColorARGB("FF444444")))
             val COLOR_INDIK_COMPLETE by settName(addColor("Заполнение индикатора", MyColorARGB.colorEffektShkal_Month))
             val COLOR_INDIK_BORDER by settName(addColor("Граница индикатора", MyColorARGB.colorMyBorderStroke.copy(51)))
             val BORDER_BRUSH_SELECT by nameRazd { name -> r_addBrush(name, "Граница выделенного") }
-            val textHour by nameRazd { name -> r_addTextStyle(name, "Текст часов")}
+            val textHour by nameRazd { name -> r_addTextStyle(name, "Текст часов") }
         }
 
         open inner class PanSelectShablon(
             name_podrazdel: String, code_name_item: String, nameInMenu: String
         ) : PanAddBlank(name_podrazdel, code_name_item, nameInMenu) {
-            val ARROW_SORT_COLOR_next_stap by settName(addColor("Цвет стрелок сортировок для этапов", MyColorARGB.colorMyBorderStrokeCommon))
-            val ARROW_SORT_COLOR_next_denplan by settName(addColor("Цвет стрелок сортировок для планов", MyColorARGB.colorMyBorderStrokeCommon))
+            val ARROW_SORT_COLOR_next_stap by settName(
+                addColor(
+                    "Цвет стрелок сортировок для этапов",
+                    MyColorARGB.colorMyBorderStrokeCommon
+                )
+            )
+            val ARROW_SORT_COLOR_next_denplan by settName(
+                addColor(
+                    "Цвет стрелок сортировок для планов",
+                    MyColorARGB.colorMyBorderStrokeCommon
+                )
+            )
             val BORDER_WIDTH_next_stap by settName(addDoublePoz("Ширина границы для этапов", 1.0))
             val BORDER_WIDTH_next_denplan by settName(addDoublePoz("Ширина границы для планов", 1.0))
             val buttSort by nameRazd { name -> r_addToggleButton(name, "Кнопка сортировки") }
@@ -1022,8 +1050,8 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
             val plateNextAction by nameRazd { name -> r_addSimplePlateWithShadow(name, "Плитка следующих действий") }
             val textTitleShablon by nameRazd { name -> r_addTextStyle(name, "Текст заголовка шаблонов") }
             val textTitleNextAction by nameRazd { name -> r_addTextStyle(name, "Текст заголовка сдедующих действий") }
-//            val buttRepeat by nameRazd { name -> r_addToggleButton(name, "Кнопка включения загрузки повторов") }
-//            val buttTime by nameRazd { name -> r_addToggleButton(name, "Кнопка включения загрузки времени") }
+
+
             val checkRepeat by nameRazd { name -> r_addCheckbox(name, "Чекбокс \"повторы\"") }
             val checkTime by nameRazd { name -> r_addCheckbox(name, "Чекбокс \"время\"") }
             val checkNameFromStap by nameRazd { name -> r_addCheckbox(name, "Чекбокс \"название из плана\"") }
@@ -1037,11 +1065,27 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
             val paddingOuterStap by nameRazd { name -> r_addPadding(name, "Внешние отступы айтема этапа") }
             val cornerOpisDenPlan by nameRazd { name -> r_addShape(name, "Форма описания айтема плана") }
             val cornerOpisStap by nameRazd { name -> r_addShape(name, "Форма описания айтема этапа") }
-            val paddingOpisInnerDenPlan by nameRazd { name -> r_addPadding(name, "Внутренние отступы описания айтема плана") }
-            val paddingOpisOuterDenPlan by nameRazd { name -> r_addPadding(name, "Внешние отступы описания айтема плана") }
-            val paddingOpisInnerStap by nameRazd { name -> r_addPadding(name, "Внутренние отступы описания айтема этапа") }
+            val paddingOpisInnerDenPlan by nameRazd { name ->
+                r_addPadding(
+                    name,
+                    "Внутренние отступы описания айтема плана"
+                )
+            }
+            val paddingOpisOuterDenPlan by nameRazd { name ->
+                r_addPadding(
+                    name,
+                    "Внешние отступы описания айтема плана"
+                )
+            }
+            val paddingOpisInnerStap by nameRazd { name ->
+                r_addPadding(
+                    name,
+                    "Внутренние отступы описания айтема этапа"
+                )
+            }
             val paddingOpisOuterStap by nameRazd { name -> r_addPadding(name, "Внешние отступы описания айтема этапа") }
         }
+
         inner class DenPlanTabParam(
             code_name_razdel: String = "TIME_PANEL"
         ) : RazdelSettingInner(
@@ -1079,8 +1123,16 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
                     )
                 )
             }
-            val calendarPanel by nameRazd { name -> add2(CalendarPanel(name, code_name_razdel,"Календарь")) }
-            val panSelectShablon by nameRazd { name -> add2(PanSelectShablon(name, code_name_razdel, "Панель выбора шаблона"))}
+            val calendarPanel by nameRazd { name -> add2(CalendarPanel(name, code_name_razdel, "Календарь")) }
+            val panSelectShablon by nameRazd { name ->
+                add2(
+                    PanSelectShablon(
+                        name,
+                        code_name_razdel,
+                        "Панель выбора шаблона"
+                    )
+                )
+            }
             val timeSelector by nameRazd { name ->
                 add2(
                     TimeSelectorStyle(
@@ -1111,6 +1163,7 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
             val COLOR_TIME_PERIOD_5 by settName(addColor("Период времени 17-20", MyColorARGB.colorMyBorderStroke))
             val COLOR_TIME_PERIOD_6 by settName(addColor("Период времени 21-24", MyColorARGB.colorMyBorderStroke))
         }
+
         inner class TimelineDiagramColors(
             nameItem: String,
             code_name_parent_razdel: String,
@@ -1266,13 +1319,14 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
             name_podrazdel: String, code_name_item: String, nameInMenu: String
         ) : PanAddBlank(name_podrazdel, code_name_item, nameInMenu) {
             val textNameElem by nameRazd { name -> r_addTextStyle(name, "Текст заголовка") }
-            val seekBarHistory by nameRazd { name -> r_addSeekBar(name, "Кнопки выбора панелей")}
+            val seekBarHistory by nameRazd { name -> r_addSeekBar(name, "Кнопки выбора панелей") }
             val checkBoxYear by nameRazd { name -> r_addCheckbox(name, "Чекбокс \"по годам\"") }
             val cb_years by nameRazd { name -> r_addComboBox(name, "Список годов") }
             val buttHide by nameRazd { name -> r_addTextButton(name, "Кнопка добавления") }
-            val itemHistory by nameRazd { name -> add2(ItemHistoryPlan(name, code_name_razdel,"Айтем истории"))}
+            val itemHistory by nameRazd { name -> add2(ItemHistoryPlan(name, code_name_razdel, "Айтем истории")) }
             val rectDiagColor by nameRazd { name -> r_addRectDiagramColor(name, "Цвета диаграммы") }
         }
+
         open inner class ColorShkal(
             name_podrazdel: String, code_name_item: String, nameInMenu: String
         ) : RazdelSettingInner(
@@ -1285,6 +1339,7 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
             val colorTime by settName(addColor("Задействованное время", MyColorARGB.colorStatTint_01))
             val colorTommorow by settName(addColor("Время от завтрашнего дня", MyColorARGB.colorStatTint_02))
         }
+
         open inner class ItemHistoryPlan(
             name_podrazdel: String, code_name_item: String, nameInMenu: String
         ) : RazdelSettingInner(
@@ -1293,14 +1348,22 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
             type_razdel = TypeSaveStyleSet.FULLPANEL
         ) {
             val colorRazdelit by settName(addColor("Разделитель", MyColorARGB.colorMyBorderStroke))
-            val colorShkal by nameRazd { name -> add2(ColorShkal(name, code_name_razdel,"Цвета шкалы времени "))}
-            val textMonth by nameRazd { name -> r_addTextStyle(name, "Текст месяца",MyColorARGB.colorStatTint_02,25.0) }
-            val textDate by nameRazd { name -> r_addTextStyle(name, "Текст даты", MyColorARGB("FF00FFFF"),13.0) }
+            val colorShkal by nameRazd { name -> add2(ColorShkal(name, code_name_razdel, "Цвета шкалы времени ")) }
+            val textMonth by nameRazd { name ->
+                r_addTextStyle(
+                    name,
+                    "Текст месяца",
+                    MyColorARGB.colorStatTint_02,
+                    25.0
+                )
+            }
+            val textDate by nameRazd { name -> r_addTextStyle(name, "Текст даты", MyColorARGB("FF00FFFF"), 13.0) }
             val textPlanName by nameRazd { name -> r_addTextStyle(name, "Текст имени проекта") }
             val textStapName by nameRazd { name -> r_addTextStyle(name, "Текст имени этапа") }
             val textHour by nameRazd { name -> r_addTextStyle(name, "Текст часов", MyColorARGB("FFFFF7F9")) }
             val plateStapName by nameRazd { name -> r_addSimplePlateWithShadow(name, "Плитка названия этапа") }
         }
+
         inner class PlanTabParam(
             code_name_razdel: String = "TIME_PANEL"
         ) : RazdelSettingInner(
@@ -1332,7 +1395,7 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
             val itemPlan = add2(ItemPlanStyle())
             val itemPlanStap = add2(ItemPlanStapStyle())
 
-            val panAddPlan by nameRazd { name -> add2(PanAddPlan(name, code_name_razdel))}
+            val panAddPlan by nameRazd { name -> add2(PanAddPlan(name, code_name_razdel)) }
             val complexOpisForPlan by nameRazd { name ->
                 add2(
                     ComplexOpisStyleSetting(
@@ -1342,7 +1405,7 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
                     )
                 )
             }
-            val panAddPlanStap by nameRazd { name -> add2(PanAddPlanStap(name, code_name_razdel))}
+            val panAddPlanStap by nameRazd { name -> add2(PanAddPlanStap(name, code_name_razdel)) }
             val complexOpisForPlanStap by nameRazd { name ->
                 add2(
                     ComplexOpisStyleSetting(
@@ -1352,7 +1415,7 @@ class StyleVMspis(private val table: InterfaceStyleTable) : CommonInterfaceSetti
                     )
                 )
             }
-            val panHistory by nameRazd { name -> add2(PanHistory(name, code_name_razdel, "Панель хроник"))}
+            val panHistory by nameRazd { name -> add2(PanHistory(name, code_name_razdel, "Панель хроник")) }
         }
 
         inner class GoalTabParam(

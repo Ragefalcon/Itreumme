@@ -1,9 +1,9 @@
 package MainTabs
 
-import MainTabs.Quest.QuestsPanel
 import MainTabs.Quest.Element.QuestOpis
 import MainTabs.Quest.Items.ComItemFileQuest
 import MainTabs.Quest.QuestContent
+import MainTabs.Quest.QuestsPanel
 import MyDialog.MyDialogLayout
 import MyDialog.MyOneVopros
 import MyDialog.MyOneVoprosTransit
@@ -39,12 +39,11 @@ class MainQuestTabs(val dialLay: MyDialogLayout) {
         ) {}
 
     init {
-        println("init MainQuestTabs: $this")
         updateFileList()
     }
 
     fun updateFileList() {
-        val f = File(StateVM.dirQuest) //+ "\\MyGrids"
+        val f = File(StateVM.dirQuest)
         if (f.exists()) {
             filesList.clear()
             for (ff in f.listFiles()) {
@@ -75,20 +74,11 @@ class MainQuestTabs(val dialLay: MyDialogLayout) {
                 "Creating" -> Box() {
                     Row(Modifier.padding(10.dp)) {
                         Column(Modifier.fillMaxWidth(0.35f)) {
-                            //                Text(Mytext1.value)
-//                seekSettingTabs.show()
-//                seekSettingTabs.active?.let {
-//                    when (it.cod) {
-//                        "google" -> googleTab.show()
-//                        "finance" -> financeTab.show()
-//                        else -> {}
-//                    }
-//                }
+
                             fun openQuest(fileQuest: File) {
                                 StateVM.openTreeSkillsQuest.value = false
                                 StateVM.selectionTreeSkillsQuest.selected = null
                                 openQuestDB = QuestDB(fileQuest)
-//                        openQuestDB = QuestDB(File("Quests", fileQuest.name).path)
                             }
                             MyList(filesList, Modifier.heightIn(0.dp, 250.dp)) { ind, itemF ->
                                 ComItemFileQuest(itemF, selectionFileQuest, true, openFile = {
@@ -101,17 +91,9 @@ class MainQuestTabs(val dialLay: MyDialogLayout) {
                                         Text(text = "Открыть", color = Color.White)
                                     }
                                     MyDropdownMenuItem(exp, "LoadQuestToBase") {
-//                                DatabaseCreator.attachDatabase(item.path,MainDB.sqlDriver!!)
-//                                DatabaseCreator.loadQuestSkillTree(666, item.path,MainDB.sqlDriver!!,MainDB.db!!, mutableListOf(MainDB.spisTreeSkillsQuery!!))
                                         MainDB.loadQuestFromFileAttach(item, questId = null)
-//                                LoadQuestFromFile(MainDB.sqlDriver!!).let {
-//                                    it.loadQuestSkillTree(666, item.path,MainDB.sqlDriver!!,MainDB.db!!, mutableListOf(MainDB.spisTreeSkillsQuery!!))
-//                                    it.detach()
-//                                }
                                     }
-//                            MyDropdownMenuItem(exp, "SelectAttach") {
-//                                DatabaseCreator.selectDialog(MainDB.sqlDriver!!)
-//                            }
+
                                     MyDropdownMenuItem(exp, "Переименовать") {
                                         MyOneVopros(
                                             dialLay,
@@ -149,7 +131,7 @@ class MainQuestTabs(val dialLay: MyDialogLayout) {
                                         val dirQ = File(StateVM.dirQuest, nameNewQuest).path
                                         if (!File(dirQ).exists()) {
                                             File(dirQ).mkdirs()
-//                                    openQuestDB = QuestDB(nameNewQuest)
+
                                             openQuest(File(dirQ, "$nameNewQuest.db"))
                                             updateFileList()
                                             return@MyOneVoprosTransit false
@@ -175,10 +157,8 @@ class MainQuestTabs(val dialLay: MyDialogLayout) {
                             questContent.show()
                         }
                     }
-//            dialLay.getLay()
                 }
             }
         }
-
     }
 }

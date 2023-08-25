@@ -7,19 +7,12 @@ import MyList
 import MyShowMessage
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import common.MyDeleteDropdownMenuButton
 import common.MyDropdownMenuItem
 import common.SingleSelectionType
@@ -40,17 +33,17 @@ class RasxodTab(val dialLay: MyDialogLayout) {
         )
         {
             MainDB.styleParam.finParam.rasxodParam.itemRasxod.getComposable(::ItemRasxDoxOperStyleState) { itemStyle ->
-                MyList(MainDB.finSpis.rasxodSpisPeriod, Modifier.weight(1f)) { ind, itemR ->
-                    ComItemRasxod(itemR, selection,itemStyle) { item, expanded ->
+                MyList(MainDB.finSpis.rasxodSpisPeriod, Modifier.weight(1f)) { _, itemR ->
+                    ComItemRasxod(itemR, selection, itemStyle) { item, expanded ->
                         Text(
                             modifier = Modifier.padding(bottom = 5.dp),
                             text = item.name,
                             style = itemStyle.mainTextStyle
                         )
-                        MyDropdownMenuItem(expanded, itemStyle.dropdown,"Повторить"){
+                        MyDropdownMenuItem(expanded, itemStyle.dropdown, "Повторить") {
                             PanAddRasx(dialLay, item.copy(id = "-1", data = MainDB.dateFin.value.time))
                         }
-                        MyDropdownMenuItem(expanded, itemStyle.dropdown,"Изменить"){
+                        MyDropdownMenuItem(expanded, itemStyle.dropdown, "Изменить") {
                             item.mayChange()?.let {
                                 MyShowMessage(dialLay, it)
                             } ?: PanAddRasx(dialLay, item)
@@ -68,7 +61,6 @@ class RasxodTab(val dialLay: MyDialogLayout) {
                 Text(
                     MainDB.finSpis.rasxodSummaPeriod.getState().value ?: "",
                     style = MainDB.styleParam.finParam.rasxodParam.textRezSumm.getValue().copy(
-//                        fontFamily = FontFamily.SansSerif,
                         textAlign = TextAlign.End,
                     ),
                     modifier = Modifier.weight(1f).padding(vertical = 0.dp)

@@ -4,7 +4,7 @@ import ru.ragefalcon.sharedcode.models.data.ItemSaveSetStyle
 import ru.ragefalcon.sharedcode.source.disk.ItrCommObserveObj
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.Interface.TypeSaveStyleSet
 
-class EditStyleVMspis( private val spisVM: EditStyleVMobjForSpis) {
+class EditStyleVMspis(private val spisVM: EditStyleVMobjForSpis) {
     val spisColorLibrary = ItrCommObserveObj(spisVM.spisColorLibrary.getMyObserveObj())
     val spisSetColorLibrary = ItrCommObserveObj(spisVM.spisSetColorLibrary.getMyObserveObj())
     val spisSaveSetStyleFull = ItrCommObserveObj(spisVM.spisSaveSetStyleFull.getMyObserveObj())

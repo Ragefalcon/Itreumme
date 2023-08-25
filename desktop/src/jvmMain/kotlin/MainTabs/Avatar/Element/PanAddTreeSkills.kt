@@ -27,26 +27,13 @@ fun PanAddTreeSkills(
     item: ItemTreeSkill? = null
 ) {
     val CB_spisTypeTreeSkills = MyComboBox(TypeTreeSkills.values().toList(), nameItem = { it.nameType })
-//        .apply {
-//            item?.govorun_id?.let { cod ->
-//                questDB.spisGovorun.getState().value?.find { it.id.toLong() == cod }?.let {
-//                    select(it)
-//                }
-//            }
-//        }
     val dialLayInner = MyDialogLayout()
-//        val checkAvtor =  mutableStateOf((item?.govorun_id ?: -2L) != -1L )
     dialPan.dial = @Composable {
         val text_name = remember { mutableStateOf(TextFieldValue(item?.name ?: "")) }
         val text_opis = remember { mutableStateOf(TextFieldValue(item?.opis ?: "")) }
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-//                    RowVA {
-//                        Checkbox(checkAvtor.value, onCheckedChange = {
-//                            checkAvtor.value = it //checkAvtor.value.not()
-//                        })
                 if (item == null) CB_spisTypeTreeSkills.show()
-//                    }
                 MyOutlinedTextField("Название дерева", text_name)
                 MyOutlinedTextField(
                     "Описание дерева",

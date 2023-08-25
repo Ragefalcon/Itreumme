@@ -1,27 +1,24 @@
 package MainTabs.Time.Elements
 
-import MyList
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import common.MyTextButtStyle1
-import common.SingleSelectionType
-import ru.ragefalcon.sharedcode.models.data.ItemPlan
-import ru.ragefalcon.sharedcode.models.data.ItemPlanStap
 import MainTabs.Time.Items.ComItemPlan
-import MainTabs.Time.Items.ComItemStapPlan
 import MainTabs.Time.Items.ComItemPlanPlate
 import MainTabs.Time.Items.ComItemPlanStapPlate
+import MainTabs.Time.Items.ComItemStapPlan
+import MyList
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import common.MyShadowBox
+import common.MyTextButtStyle1
+import common.SingleSelectionType
 import common.color.BoxWithName
 import extensions.*
+import ru.ragefalcon.sharedcode.models.data.ItemPlan
+import ru.ragefalcon.sharedcode.models.data.ItemPlanStap
 import ru.ragefalcon.sharedcode.source.disk.getValue
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlanStap
@@ -54,9 +51,7 @@ class BoxSelectParentPlan(
         var regexStr by mutableStateOf("")
         val scopeR = rememberCoroutineScope()
         selectionPlanParent.launchedEffect {
-//            println("itemPlanPar: ${it}")
             it?.let {
-//                println("itemPlanParSelect")
                 MainDB.timeFun.setPlanForSpisStapPlanForSelect(
                     it.id.toLong(),
                     arrayIskl
@@ -69,7 +64,6 @@ class BoxSelectParentPlan(
             fun plateStap(item: ItemPlanStap) {
                 ComItemPlanStapPlate(
                     item,
-//                    Modifier.padding(horizontal = 10.dp),
                     itemPlanStapStyleState = ItemPlanStapStyleState(MainDB.styleParam.timeParam.planTab.itemPlanStap),
                     parentName = selectionPlanParent.selected?.name ?: "",
                     itemCommonStyle = CommonItemStyleState(
@@ -86,7 +80,7 @@ class BoxSelectParentPlan(
             fun platePlan(item: ItemPlan) {
                 ComItemPlanPlate(
                     item,
-//                    modifier = Modifier.padding(horizontal = 10.dp),
+
                     itemPlanStyleState = ItemPlanStyleState(MainDB.styleParam.timeParam.planTab.itemPlan),
                     itemCommonStyle = CommonItemStyleState(
                         MainDB.styleParam.timeParam.planTab.itemPlan,
@@ -97,7 +91,6 @@ class BoxSelectParentPlan(
                     if (!expandedSelPlanStap.value) expandedSelPlan.value = true
                 }
             }
-
 
             @Composable
             fun SelectionRez() {
@@ -147,26 +140,6 @@ class BoxSelectParentPlan(
                     }
                 }
             }
-
-//        with(ItemPlanStyleState(MainDB.styleParam.timeParam.planTab.itemPlan)) {
-//            MyCardStyle1(
-//                false, 0, {
-////                    onClick(item)
-//                },
-//                backBrush = when (selectionPlanParent.selected?.stat) {
-//                    ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan.COMPLETE.codValue -> background_brush_gotov
-//                    ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan.UNBLOCKNOW.codValue -> background_brush_unblock
-//                    else -> null
-//                },
-//                borderBrush = when (selectionPlanParent.selected?.stat) {
-//                    ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan.COMPLETE.codValue -> border_brush_gotov
-//                    ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan.UNBLOCKNOW.codValue -> border_brush_unblock
-//                    else -> null
-//                },
-//                modifier = modifier,
-//                styleSettings = this
-//            ) {
-//            MyShadowBox(mainPlate.shadow.getValue()) {
             BoxWithName(
                 label,
                 SimplePlateWithShadowStyleState(mainPlate),
@@ -177,9 +150,7 @@ class BoxSelectParentPlan(
             ) {
                 with(LocalDensity.current) {
                     Column(
-                        modifier = Modifier//.scale(1.5f)
-//                            .withSimplePlate(SimplePlateWithShadowStyleState(mainPlate))
-//                            .border( 1.dp, Color.White)
+                        modifier = Modifier
                             .padding(top = textLabelOn.FONT_SIZE.getValue().sp.toDp() / 2f)
                             .run {
                                 if (!expandedSelPlan.value && !expandedSelPlanStap.value) this else this.padding(7.dp)
@@ -204,7 +175,6 @@ class BoxSelectParentPlan(
                                                     }
                                                 }
                                                 if (regexStr1 != regexStr) regexStr = regexStr1
-//                                    println("regexStr = $regexStr")
                                             }
                                             MyList(
                                                 spisStap,
@@ -243,10 +213,6 @@ class BoxSelectParentPlan(
                                                                         svernutNew
                                                                     )
                                                                 }
-//                                                        MainDB.timeFun.setExpandStapPlan(
-//                                                            it.id.toLong(),
-//                                                            it.svernut.not()
-//                                                        )
                                                             },
                                                             onDoubleClick = {
                                                                 selectionPlanStapParent.selected = it
@@ -334,9 +300,11 @@ class BoxSelectParentPlan(
                                     expandedSelPlan.value = false
                                 }
                                 selectionPlanParentPriv.selected?.let {
-                                    MyTextButtStyle1("Выбрать",
+                                    MyTextButtStyle1(
+                                        "Выбрать",
                                         Modifier.padding(start = 10.dp),
-                                        myStyleTextButton = TextButtonStyleState(buttSelect)) {
+                                        myStyleTextButton = TextButtonStyleState(buttSelect)
+                                    ) {
                                         selectionPlanParent.selected = it
                                         expandedSelPlan.value = false
                                     }
@@ -346,7 +314,6 @@ class BoxSelectParentPlan(
                     }
                 }
             }
-//            }
         }
     }
 }

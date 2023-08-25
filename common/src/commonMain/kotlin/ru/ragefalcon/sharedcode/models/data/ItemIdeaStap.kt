@@ -12,7 +12,5 @@ class ItemIdeaStap(
     val stat: Long,
     val idea_id: Long,
     var sver: Boolean = true
-
-): Id_class (id_main = id), Parcelable
-{
+) : Id_class(id_main = id), Parcelable {
 }

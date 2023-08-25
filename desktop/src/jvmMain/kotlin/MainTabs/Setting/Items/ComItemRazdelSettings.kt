@@ -8,18 +8,18 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material.Text
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.font.FontWeight
 import common.*
 import extensions.RowVA
 import extensions.toColor
@@ -38,11 +38,10 @@ class ComItemRazdelSettings(
     val selection: SingleSelectionType<CommonInterfaceSetting.InterfaceSettingsType>,
     val selectionRazdel: SingleSelectionType<CommonInterfaceSetting.RazdelSetting>,
     val selFun: (CommonInterfaceSetting.InterfaceSettingsType) -> Unit
-//    val dropMenu: @Composable ColumnScope.(ItemValut, MutableState<Boolean>) -> Unit = { _, _ -> }
+
 ) {
     var expandedDropMenu = mutableStateOf(false)
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         Box(
@@ -63,7 +62,7 @@ class ComItemRazdelSettings(
                         else this
                     }) {
                         Image(
-                            painterResource(if (sver) "ic_plus.xml" else "ic_minus.xml"),//useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                            painterResource(if (sver) "ic_plus.xml" else "ic_minus.xml"),
                             "statDenPlan",
                             Modifier
                                 .height(25.dp)
@@ -157,29 +156,37 @@ class ComItemRazdelSettings(
                                     is CommonInterfaceSetting.InterfaceSettingsBoolean -> ComItemInterfaceSettingsBoolean(
                                         it
                                     )
+
                                     is CommonInterfaceSetting.InterfaceSettingsDoublePozitive -> ComItemInterfaceSettingsDoublePoz(
                                         it
                                     )
+
                                     is CommonInterfaceSetting.InterfaceSettingsDouble -> ComItemInterfaceSettingsDouble(
                                         it
                                     )
+
                                     is CommonInterfaceSetting.InterfaceSettingsLong -> ComItemInterfaceSettingsLong(it)
                                     is CommonInterfaceSetting.InterfaceSettingsFontWeight -> ComItemInterfaceSettingsFontWeight(
                                         it
                                     )
+
                                     is CommonInterfaceSetting.InterfaceSettingsAngle -> ComItemInterfaceSettingsAndle(it)
                                     is CommonInterfaceSetting.InterfaceSettingsTypeCorner -> ComItemInterfaceSettingsTypeCorner(
                                         it
                                     )
+
                                     is CommonInterfaceSetting.InterfaceSettingsMyColor -> ComItemInterfaceSettingsMyColor(
                                         it
                                     )
+
                                     is CommonInterfaceSetting.InterfaceSettingsMyColorGradient -> ComItemInterfaceSettingsMyColorGradient(
                                         it
                                     )
+
                                     is CommonInterfaceSetting.InterfaceSettingsString -> ComItemInterfaceSettingsString(
                                         it
                                     )
+
                                     else -> {}
                                 }
                             }
@@ -193,7 +200,9 @@ class ComItemRazdelSettings(
         }
     }
 }
+
 val fontSs = 15.sp
+
 @Composable
 fun ComItemInterfaceSettingsBoolean(item: CommonInterfaceSetting.InterfaceSettingsBoolean) {
     RowVA {
@@ -317,16 +326,6 @@ fun ComItemInterfaceSettingsMyColorGradient(item: CommonInterfaceSetting.Interfa
                 }
             }
         }
-/*
-        Box(Modifier.weight(1f,false)) {
-            MyListRow(item.itrObj.value) { ind, item ->
-                Box(
-                    Modifier.padding(horizontal = 3.dp).height(20.dp).width(20.dp).background(item.toColor())
-                        .border(1.dp, Color.Black)
-                )
-            }
-        }
-*/
     }
 }
 
@@ -341,7 +340,6 @@ fun getSettName(item: CommonInterfaceSetting.InterfaceSettingsType, modifier: Mo
         modifier = modifier.padding(vertical = 2.dp),
         text = if (item.nameSett != "") item.nameSett else item.code,
         style = MyTextStyleParam.style3.copy(
-//                color = Color.Black.toMyColorARGB().plusWhite().toColor().copy(alpha = 0.8f),
             fontWeight = FontWeight.Normal,
             fontSize = fontSs
         )

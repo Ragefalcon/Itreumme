@@ -1,6 +1,5 @@
 package MyDialog
 
-import androidx.compose.material.Text
 import MainTabs.Avatar.Items.ComItemLoadOtvetDialog
 import MainTabs.imageFromFile
 import MyList
@@ -12,6 +11,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,7 +45,6 @@ fun DialogEventLayout() {
     if (MainDB.loadQuestSpis.dialogEvent.getState().value != null) keyDial.value = true
     val alpha: Float by animateFloatAsState(
         targetValue = if (MainDB.loadQuestSpis.dialogEvent.getState().value != null) 1f else 0.0f,
-        // Configure the animation duration and easing.
         animationSpec = tween(durationMillis = 100, easing = FastOutSlowInEasing)
     ) { if (MainDB.loadQuestSpis.dialogEvent.getState().value == null) keyDial.value = false }
 
@@ -56,19 +55,18 @@ fun DialogEventLayout() {
                 color = Color(0x88000000)
             ) {
                 Box(
-//                modifier = Modifier.fillMaxSize().background(Color(0x88000000)).clickable {},
                     contentAlignment = Alignment.Center
-////                color = Color(0x88000000)
                 ) {
-                    dialogPanel(MainDB.loadQuestSpis.dialogEvent.getState().value, MainDB.loadQuestSpis.dialogForEvent.getState().value)
+                    dialogPanel(
+                        MainDB.loadQuestSpis.dialogEvent.getState().value,
+                        MainDB.loadQuestSpis.dialogForEvent.getState().value
+                    )
                 }
             }
     }
     dialLay.getLay()
     LaunchedEffect(MainDB.loadQuestSpis.innerFinishTriggerAction.getState().value) {
-        println("LaunchedEffect(MainDB.loadQuestSpis.innerFinishTriggerAction.getState().value)")
         MainDB.loadQuestSpis.innerFinishTriggerAction.getState().value?.let {
-        println("MainDB.loadQuestSpis.innerFinishTriggerAction.getState()")
             StateVM.innerFinishAction.value?.finishAction(it, dialLay)
         }
     }
@@ -76,19 +74,26 @@ fun DialogEventLayout() {
 
 @Composable
 private fun dialogPanel(dialogLine: ItemDialogLine?, dialEvent: ItemDialogQuestEvent?) {
-//private fun dialogPanel(dialogLine: MyStateObj<ItemDialogLine?>, dialEvent: MyStateObj<ItemDialogQuestEvent>){
+
     val scrollOpis: ScrollState = rememberScrollState(0)
-    LaunchedEffect(dialEvent?.maintext){
-            scrollOpis.scrollTo(0)
+    LaunchedEffect(dialEvent?.maintext) {
+        scrollOpis.scrollTo(0)
     }
     dialogLine?.let { dialLine ->
         dialEvent?.let { dial ->
             val loadAva =
-                mutableStateOf(File(if (dial.image_govorun != "") getPathWithSeparator(listOf(StateVM.dirLoadedQuestFiles,"Quest_${dial.quest_id}",dial.image_govorun))  else "null.jpg"))
-//                mutableStateOf(File("${FileMP.getSystemDir()}${FileMP.getFileSeparator()}LoadQuestFiles${FileMP.getFileSeparator()}${if (dial.image_govorun != "") dial.image_govorun else "null.jpg"}"))
-//            println(loadAva.value.path)
-//            println(loadAva.value.exists())
-//                            File("${FileMP.getSystemDir()}${FileMP.getFileSeparator()}LoadQuestFiles${FileMP.getFileSeparator()}Quest_${dial.quest_id}_gid_${dial.govorun_id}.jpg")
+                mutableStateOf(
+                    File(
+                        if (dial.image_govorun != "") getPathWithSeparator(
+                            listOf(
+                                StateVM.dirLoadedQuestFiles,
+                                "Quest_${dial.quest_id}",
+                                dial.image_govorun
+                            )
+                        ) else "null.jpg"
+                    )
+                )
+
             Box {
                 val heightPlate = remember { mutableStateOf(0.dp) }
                 StateVM.innerFinishAction.value?.let {
@@ -109,7 +114,7 @@ private fun dialogPanel(dialogLine: ItemDialogLine?, dialEvent: ItemDialogQuestE
                             start = if (loadAva.value.exists()) 100.dp else 0.dp,
                             top = if (loadAva.value.exists()) 75.dp else 0.dp
                         )
-                    ) { //modif ->
+                    ) {
                         if (dial.quest_name != "") {
                             Text(
                                 dial.quest_name,
@@ -147,14 +152,18 @@ private fun dialogPanel(dialogLine: ItemDialogLine?, dialEvent: ItemDialogQuestE
                                     color = MyColorARGB.colorEffektShkal_Nedel.toColor()
                                 )
                             )
-                            BoxWithVScrollBar(Modifier.padding(10.dp), maxHeight = (this@BackgroungPanelStyle1.maxHeight.value*0.4).toInt(), scroll = scrollOpis) { scrollStateBox ->
+                            BoxWithVScrollBar(
+                                Modifier.padding(10.dp),
+                                maxHeight = (this@BackgroungPanelStyle1.maxHeight.value * 0.4).toInt(),
+                                scroll = scrollOpis
+                            ) { scrollStateBox ->
                                 Text(
                                     modifier = Modifier
                                         .padding(5.dp)
                                         .padding(
                                             start = 10.dp,
                                             top = if (dial.govorun_name != "") 5.dp else 15.dp
-                                        ) //if (loadAva.exists()) 60.dp else
+                                        )
                                         .fillMaxWidth().verticalScroll(scrollStateBox, enabled = true),
                                     text = dial.maintext,
                                     style = MyTextStyleParam.style4.copy(
@@ -163,11 +172,13 @@ private fun dialogPanel(dialogLine: ItemDialogLine?, dialEvent: ItemDialogQuestE
                                     )
                                 )
                             }
-                            MyList(MainDB.loadQuestSpis.spisOtvetDialogForEvent, maxHeight = (this@BackgroungPanelStyle1.maxHeight.value*0.3).toInt(),) { ind, item ->
+                            MyList(
+                                MainDB.loadQuestSpis.spisOtvetDialogForEvent,
+                                maxHeight = (this@BackgroungPanelStyle1.maxHeight.value * 0.3).toInt(),
+                            ) { ind, item ->
                                 ComItemLoadOtvetDialog(item)
                             }
                             MainDB.loadQuestSpis.spisOtvetDialogForEvent.getState().value?.let {
-
                                 if (it.isEmpty()) MyTextButtStyle1("Ok", Modifier.padding(start = 5.dp)) {
                                     MainDB.addQuest.completeDialogEvent()
                                 }
@@ -175,7 +186,7 @@ private fun dialogPanel(dialogLine: ItemDialogLine?, dialEvent: ItemDialogQuestE
                         }
                     }
                     if (loadAva.value.exists()) {
-                        val shape = RoundedCornerShape(75.dp) //CircleShape
+                        val shape = RoundedCornerShape(75.dp)
                         Row {
                             Image(
                                 bitmap = imageFromFile(loadAva.value),
@@ -188,13 +199,12 @@ private fun dialogPanel(dialogLine: ItemDialogLine?, dialEvent: ItemDialogQuestE
                                     .padding(1.dp)
                                     .border(3.dp, Color(0x7FFFF7D9), RoundedCornerShape(74.dp))
                                     .shadow(2.dp, shape),
-                                contentScale = ContentScale.Crop,// Fit,
+                                contentScale = ContentScale.Crop,
                             )
                         }
                     }
                 }
             }
-
         }
     }
 }

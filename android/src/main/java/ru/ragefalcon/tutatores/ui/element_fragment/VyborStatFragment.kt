@@ -43,12 +43,6 @@ class VyborStatFragment @JvmOverloads constructor(
                 ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorStatTimeSquareTint_02))
             buttStat4.buttonTintList =
                 ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorStatTimeSquareTint_03))
-            /**
-             * https://stackoverflow.com/questions/29801031/how-to-add-button-tint-programmatically
-             * здесь отмечено кажется решение немного лучше,
-             * с поддержкой состояний, но вроде для данного случая мне должно
-             * хватать и этого
-             * */
             selectStat(selStat)
         }
     }

@@ -58,7 +58,7 @@ fun PanChangeShabRasxod(
             BackgroungPanelStyle1(
                 vignette = VIGNETTE.getValue(),
                 style = SimplePlateStyleState(platePanel)
-            ) { //modif ->
+            ) {
                 Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     MyTextField(
                         text_name,

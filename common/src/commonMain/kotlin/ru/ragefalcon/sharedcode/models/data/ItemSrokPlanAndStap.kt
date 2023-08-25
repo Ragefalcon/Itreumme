@@ -2,7 +2,6 @@ package ru.ragefalcon.sharedcode.models.data
 
 import ru.ragefalcon.sharedcode.extensions.Parcelable
 import ru.ragefalcon.sharedcode.extensions.Parcelize
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlanStap
 
 @Parcelize
 data class ItemSrokPlanAndStap(
@@ -18,6 +17,5 @@ data class ItemSrokPlanAndStap(
     val marker: Long,
     val quest: Boolean,
     val listDate: List<Long>
-):Id_class (id_main = id.toString()),  Parcelable
-{
+) : Id_class(id_main = id.toString()), Parcelable {
 }

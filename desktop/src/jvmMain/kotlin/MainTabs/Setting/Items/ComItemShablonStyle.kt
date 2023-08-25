@@ -1,6 +1,5 @@
 package MainTabs.Setting.Items
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -24,7 +23,6 @@ class ComItemShablonStyle(
 ) {
     val expandedDropMenu = mutableStateOf(false)
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         MyCardStyle1(selection.isActive(item), 0, {

@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import extensions.IconButtonStyleState
 import extensions.IconButtonWithoutBorderStyleState
 import extensions.mouseDoubleClick
 import extensions.toColor
@@ -60,8 +59,8 @@ fun MyTextButtWithoutBorder(
                 .offset(2.dp - (if (isHovered) 4f else 2f).dp, 2.dp - (if (isHovered) 4f else 2f).dp),
             style = MyTextStyleParam.style1.copy(
                 shadow = Shadow(
-                    offset = if (isHovered) Offset(4f, 4f) else Offset(2f, 2f), //Offset(activeElev,activeElev),
-                    blurRadius = if (isHovered) 4f else 2f //activeElev
+                    offset = if (isHovered) Offset(4f, 4f) else Offset(2f, 2f),
+                    blurRadius = if (isHovered) 4f else 2f
                 ), fontSize = fontSize,
                 color = textColor
             )
@@ -85,10 +84,12 @@ fun MyIconButtWithoutBorder(
     with(myStyleButton) {
         with(LocalDensity.current) {
             MyShadowBox(
-                shadow.copy(blurRadius = getElevation().elevation(true, interactionSource).value.toPx(), offset = Offset(
-                    shadow.offset.x*(if (isHovered) 2f else 1f),
-                    shadow.offset.y*(if (isHovered) 2f else 1f)
-                )),
+                shadow.copy(
+                    blurRadius = getElevation().elevation(true, interactionSource).value.toPx(), offset = Offset(
+                        shadow.offset.x * (if (isHovered) 2f else 1f),
+                        shadow.offset.y * (if (isHovered) 2f else 1f)
+                    )
+                ),
             ) {
                 Box(modifier
                     .run {
@@ -146,8 +147,8 @@ fun MyTextToggleButtWithoutBorder(
                 .offset(2.dp - (if (isHovered) 4f else 2f).dp, 2.dp - (if (isHovered) 4f else 2f).dp),
             style = (textStyle ?: MyTextStyleParam.style1).copy(
                 shadow = Shadow(
-                    offset = if (isHovered) Offset(4f, 4f) else Offset(2f, 2f), //Offset(activeElev,activeElev),
-                    blurRadius = if (isHovered) 4f else 2f //activeElev
+                    offset = if (isHovered) Offset(4f, 4f) else Offset(2f, 2f),
+                    blurRadius = if (isHovered) 4f else 2f
                 ), fontSize = fontSize,
                 color = if (boolVal.value) textColorTrue else textColor
             )

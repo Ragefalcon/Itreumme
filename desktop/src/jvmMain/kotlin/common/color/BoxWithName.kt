@@ -12,7 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.ClipOp
@@ -53,7 +52,6 @@ fun BoxWithName(
             ) { widthText ->
                 MyShadowBox(stylePlate.shadow) {
                     Box(modifierOut.hoverable(interactionSourceHover)
-//                            .border( 1.dp, Color.Red)
                         .run {
                             if (focusable) this.focusable(true, interactionSource) else this
                         }

@@ -19,7 +19,6 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
         private val stat = AvatarStat("avatar")
 
         val firstStart by lazy {
-//            stat.capital = sumAllCap.getValue() ?: "null"
         }
 
         val statAvatar = UniQueryAdapter<SelectAvatarStat>()
@@ -38,7 +37,6 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
             }
 
         private fun updateList() {
-//            val listStat = mutableListOf<ItemStat>()
             firstStart
             val listStat = listOf(
                 ItemStat("1", "Капитал", stat.capital),
@@ -60,10 +58,9 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
             updateSpisAvatarStat = ff
             updateList()
         }
-
     }
 
-    val avatarStat = AvatarStatObj() //private
+    val avatarStat = AvatarStatObj()
 
     var spisAvatarStat = MyObserveObj<List<ItemStat>> { ff ->
         avatarStat.setListFun(ff)
@@ -77,7 +74,6 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
             id_type_tree = it.id_type_tree,
             opis = it.opis,
             stat = TypeStatTreeSkills.getType(it.open_edit),
-//            open_edit = it.open_edit == 1L,
             icon = it.icon,
             completeCountNode = it.complete_count_node,
             countNode = it.count_node,
@@ -161,7 +157,6 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
         )
         lastValuesCharacteristic.get(characteristic._id)?.let {
             if (it != (characteristic.hour / 10).toLong()) {
-                println("${characteristic.name} ${(characteristic.hour / 10).toLong() - it}")
                 mutableSpisProgressCharacteristic.add(item to (characteristic.hour / 10).toLong() - it)
                 mutableSpisProgressCharacteristic.firstOrNull().let {
                     spisProgressCharacteristicForMessage.setValue(it)
@@ -172,7 +167,6 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
         } ?: run { lastValuesCharacteristic.put(characteristic._id, (characteristic.hour / 10).toLong()) }
         item
     }.apply {
-//        println("DenPlan date: ${dateOporTime.localUnix()}")
         this.updateQuery(mDB.spisCharacteristicQueries.selectCharacteristic())
     }
 
@@ -200,7 +194,6 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
         }
     }
 
-
     val spisGoals = UniConvertQueryAdapter<SelectGoals, ItemGoal>() {
         ItemGoal(
             id = it._id.toString(),
@@ -211,7 +204,7 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
             opis = it.opis,
             gotov = it.gotov,
             hour = it.hour,
-//            privscount = it.privscount,
+
             foto = it.foto,
             min_aim = it.min_aim,
             max_aim = it.max_aim,
@@ -220,7 +213,7 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
             schplOpen = it.open_ == 1L
         )
     }.apply {
-//        println("DenPlan date: ${dateOporTime.localUnix()}")
+
         this.updateQuery(mDB.spisGoalQueries.selectGoals(TypeBindElementForSchetPlan.GOAL.id, 100.0))
     }
 
@@ -236,10 +229,9 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
             foto = it.foto
         )
     }.apply {
-//        println("DenPlan date: ${dateOporTime.localUnix()}")
+
         this.updateQuery(mDB.spisDreamQueries.selectDreams(10))
     }
-
 
     val spisDenPlanInBestDays = UniConvertQueryAdapter<SelectDenPlan, ItemDenPlan>() {
         ItemDenPlan(
@@ -258,7 +250,6 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
             namestap = it.namestap
         )
     }
-
 
     val spisMainParam = UniConvertQueryAdapter<Mainparam, ItemMainParam>() {
         ItemMainParam(
@@ -280,9 +271,6 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
             addAll(listPlanNodeTreeSkills)
         }
         .sortedBy { it.id }.groupBy { it.level }
-//        spisNodeTreeSkills.setValue(commonListNode.copy().groupBy { it.level })
-//        spisNodeTreeSkillsForSelection.setValue(commonListNode.copy().groupBy { it.level })
-//    }
 
     fun updateInfoSpisNode(branchParent: ItemParentBranchNode?) {
         branchParent?.let {
@@ -311,17 +299,6 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
         }
     }
 
-
-/*
-    fun getListSelectNodeTreeSkills(selected: Array<Long>): List<ItemNodeTreeSkills> =
-        mutableListOf<ItemNodeTreeSkills>()
-            .apply {
-                addAll(listHandNodeTreeSkills.filterCopy { selected.contains(it.id) })
-                addAll(listPlanNodeTreeSkills.filterCopy { selected.contains(it.id) })
-            }
-*/
-
-
     val spisLevelTreeSkills = UniConvertQueryAdapter<SelectLevelTreeSkill, ItemLevelTreeSkills>() {
         ItemLevelTreeSkills(
             id = it._id,
@@ -348,7 +325,6 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
     }
 
     val spisHandNodeTreeSkills = UniConvertQueryAdapter<SelectHandNodes, ItemHandNodeTreeSkills>() {
-//        println("open_node: ${it.open_node}")
         ItemHandNodeTreeSkills(
             id = it._id,
             id_tree = it.id_tree,
@@ -370,11 +346,9 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
         )
     }.apply {
         updateFunc {
-//            println("listHandNodeTreeSkills: ${it.size}")
             listHandNodeTreeSkills = it
             spisNodeTreeSkills.update()
             spisNodeTreeSkillsForSelection.update()
-//            updateSpisNode()
         }
         updateQuery(mDB.spisNodeTreeSkillsQueries.selectHandNodes("KIT", -1L, -1L, TypeNodeTreeSkills.HAND.id))
     }
@@ -404,11 +378,9 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
         )
     }.apply {
         updateFunc {
-//            println("listPlanNodeTreeSkills: ${it.size}")
             listPlanNodeTreeSkills = it
             spisNodeTreeSkills.update()
             spisNodeTreeSkillsForSelection.update()
-//            updateSpisNode()
         }
         updateQuery(
             mDB.propertyPlanNodeTSQueries.selectPlanNodeTreeSkills(
@@ -419,15 +391,6 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
             )
         )
     }
-
-
-//    val spisBindingNodeTreeSkills = UniQueryAdapter<Spis_binding_node_tree_skill>() .apply {
-//        updateFunc { spisBinding ->
-//            spisChildNodeTreeSkills.setValue(spisBinding.groupBy { it.id_parent }.map { ItemBindingNode(it.key,it.value.map { it.id_child }.toTypedArray()) })
-//            spisParentNodeTreeSkills.setValue(spisBinding.groupBy { it.id_child }.map { ItemBindingNode(it.key,it.value.map { it.id_parent }.toTypedArray()) })
-//        }
-//        updateQuery(mDB.spisBindingNodeTreeSkillsQueries.selectForTree(-1L))
-//    }
 
     val spisWholeBranchParentNodeTreeSkills = UniQueryAdapter<SelectWholeBranchParent>().apply {
         updateFunc { spisBinding ->
@@ -455,16 +418,13 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
         updateQuery(mDB.spisBindingNodeTreeSkillsQueries.selectWholeBranchChild(-1L))
     }
 
-    //    var spisNodeTreeSkills = CommonObserveObj<Map<Long, List<ItemNodeTreeSkills>>>()
     var spisNodeTreeSkills = CommonComplexObserveObj<Map<Long, List<ItemNodeTreeSkills>>>().apply {
         setValueFun { updateSpisNode() }
     }
 
-    //    var spisNodeTreeSkillsForSelection = CommonObserveObj<Map<Long, List<ItemNodeTreeSkills>>>()
     var spisNodeTreeSkillsForSelection = CommonComplexObserveObj<Map<Long, List<ItemNodeTreeSkills>>>().apply {
         setValueFun { updateSpisNode() }
     }
-
 
     var spisNodeTreeSkillsSelection = CommonObserveObj<List<ItemNodeTreeSkills>>()
     var spisNodeTreeSkillsForInfo = CommonObserveObj<List<ItemNodeTreeSkills>>()
@@ -480,8 +440,6 @@ class AvatarVMobjForSpis(private val mDB: Database, private val spisQueryListene
     }.apply {
         this.updateQuery(mDB.spisIconNodeTreeSkillsQueries.select())
     }
-
-
 }
 
 

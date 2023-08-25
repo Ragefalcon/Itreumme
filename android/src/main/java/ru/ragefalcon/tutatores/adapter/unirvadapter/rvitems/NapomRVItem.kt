@@ -4,7 +4,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import ru.ragefalcon.sharedcode.models.data.ItemNapom
 import ru.ragefalcon.tutatores.R
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemDenplanBinding
 import ru.ragefalcon.tutatores.databinding.ItemNapomBinding
 import ru.ragefalcon.tutatores.extensions.*
@@ -15,14 +16,14 @@ class NapomRVItem(
     recyclerView: RecyclerView,
     listener: ((ItemNapom) -> Unit)? = null,
     longTapListener: ((ItemNapom) -> Unit)? = null,
-    setVypNap: (Boolean,String)->Unit
+    setVypNap: (Boolean, String) -> Unit
 ) : BaseUniRVItem<ItemNapom>(
     data,
     getUniRVViewHolder(ItemDenplanBinding::inflate) { vh, dataIn, rvset ->
         if (vh.binding is ItemNapomBinding) with(vh.binding) {
 
             fun sverItemOpis(sver: Boolean, anim: Boolean) {
-                    sverOpis(recyclerView, rvset.position, textOpis, sver, anim)
+                sverOpis(recyclerView, rvset.position, textOpis, sver, anim)
                 if (textOpis.text != "\n") {
                     rotateElemItem(ivExpandOpis, sver, anim, 180F)
                     sverWidthElemItem(viewSvertext, !sver, anim, 100.dpToPx)
@@ -34,16 +35,16 @@ class NapomRVItem(
             }
 
             when (dataIn.gotov) {
-                false -> cbNapom.setImageResource(R.drawable.napom_et) //setColorFilter(Color.YELLOW, android.graphics.PorterDuff.Mode.MULTIPLY)
-                true -> cbNapom.setImageResource(R.drawable.napom_g) //setColorFilter(Color.WHITE, android.graphics.PorterDuff.Mode.MULTIPLY)
+                false -> cbNapom.setImageResource(R.drawable.napom_et)
+                true -> cbNapom.setImageResource(R.drawable.napom_g)
             }
 
             cbNapom.setOnClickListener {
                 dataIn.gotov = dataIn.gotov.not()
-                setVypNap(dataIn.gotov,dataIn.id)
+                setVypNap(dataIn.gotov, dataIn.id)
                 when (dataIn.gotov) {
-                    false -> cbNapom.setImageResource(R.drawable.napom_et) //setColorFilter(Color.YELLOW, android.graphics.PorterDuff.Mode.MULTIPLY)
-                    true -> cbNapom.setImageResource(R.drawable.napom_g) //setColorFilter(Color.WHITE, android.graphics.PorterDuff.Mode.MULTIPLY)
+                    false -> cbNapom.setImageResource(R.drawable.napom_et)
+                    true -> cbNapom.setImageResource(R.drawable.napom_g)
                 }
             }
             ivSelectIndic.requestLayout()
@@ -59,7 +60,7 @@ class NapomRVItem(
                 }
             }
             if (vh.itemView.isSelected) listener?.invoke(dataIn)
-            vh.itemView.setOnClickListener { // } .setOnClickListener {
+            vh.itemView.setOnClickListener {
                 vh.bindItem?.let { rvset.selFunc(it) }
             }
             vh.itemView.setOnLongClickListener {

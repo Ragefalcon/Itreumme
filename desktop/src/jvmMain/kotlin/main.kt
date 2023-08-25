@@ -8,13 +8,14 @@ import MyDialog.MyDialogLayout
 import MyDialog.SplashScreen
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -33,7 +34,10 @@ import androidx.compose.ui.window.*
 import common.EnumDiskretSeekBar
 import common.MyButtIconStyle
 import common.MyShadowBox
-import extensions.*
+import extensions.SimplePlateWithShadowStyleState
+import extensions.ToggleButtonStyleState
+import extensions.getValue
+import extensions.withSimplePlate
 import ru.ragefalcon.sharedcode.source.disk.getValue
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.tabElement
 import viewmodel.MainDB
@@ -54,15 +58,7 @@ enum class MainTabsEnum(override val nameTab: String) : tabElement {
 @OptIn(ExperimentalFoundationApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
 fun main() = application {
 
-//    System.setProperty( "skiko.renderApi" , "OPENGL" )
-//    System.setProperty( "skiko.renderApi" , "METAL" )
-//    System.setProperty("skiko.renderApi", "DIRECTX")
-//    System.setProperty( "skiko.renderApi" , "SOFTWARE" )
-
-//    val db = remember { MainDatabase() }
-//    val stateVM = remember { StateVM() }
     val dialLay = remember { MyDialogLayout() }
-    val keyFirst = mutableStateOf(true)
 
     val timeScreen = remember { MainTimeTabs(dialLay) }
     val avatarScreen = remember { MainAvatarTabs(dialLay) }
@@ -73,10 +69,6 @@ fun main() = application {
     val statPanel = remember { MainStatusPanel(dialLay) }
     val avatarSize = 130.dp
 
-    //    Locale.getAvailableLocales().forEach{
-//        println("locale: $it")
-//    }
-//    Locale.setDefault(Locale("en_US"))
     val mainSeekBar = remember { EnumDiskretSeekBar(MainTabsEnum::class, MainTabsEnum.Time, true) }
 
 
@@ -94,7 +86,6 @@ fun main() = application {
              * Код отсюда выполняется при нажатии комбинации клавиш Alt + F4
              * */
             sess?.stop(10, 10)
-            println("exiiiittt!!!!")
             val tempFiles = File(StateVM.dirTemp)
             if (tempFiles.exists()) tempFiles.deleteRecursively()
             exitApplication()
@@ -112,43 +103,15 @@ fun main() = application {
              * */
             saf.key == Key.AltLeft || saf.key == Key.AltRight
         },
-//        title = "Tutatores",
         state = state,
         transparent = true,
         undecorated = true
     ) {
 
-/*
-ghпрghпрghрghрghрghпрhрgпg
-        MenuBar() {
-            Menu("File") {
-                Item("New window", onClick = {})
-                Item("Exit", onClick = {})
-            }
-        }
-*/
-//        MaterialTheme(
-//            colors = Colors(
-//                primary = Color(0xFF9eba85),//99851F),
-//                primaryVariant = Color(0xFF9eba85),
-//                secondary = Color.Transparent,//Color(0xFF9eba85),
-//                secondaryVariant = Color(0xFF00FF00),
-//                background = Color.Transparent,//Color(0xFF464D45),
-//                surface = Color.Transparent,//Color(0xFF0000FF),
-//                error = Color(0xFFFF0000),
-//                onPrimary = Color(0xFF000000),
-//                onSecondary = Color(0xFF000000),
-//                onBackground = Color(0xFF0000FF),
-//                onSurface = Color(0xFF00FF00),
-//                onError = Color(0xFFFFFF00),
-//                isLight = false
-//            )
-//        )
         MaterialTheme {
             val widthRamk = if (MainDB.styleParam.commonParam.HARD_BORDER.getValue()) (20 * 1.5).dp else 0.dp
 
             StateVM.startLaunchCommonStyle()
- //CutCornerShape() RoundedCornerShape
             Box(
                 Modifier.clip(MainDB.styleParam.appBarStyle.shape_window.getValue(limit = 50.0))
                     .border(
@@ -164,21 +127,18 @@ ghпрghпрghрghрghрghпрhрgпg
             ) {
                 Column(
                     Modifier
-
-//                        .background(color = MyColorARGB.colorBackGr2.toColor()) //Color(0xFF576350))
                         .background(
                             brush = MainDB.styleParam.commonParam.COLOR_BACKGROUND.getValue()
-//                                ?: MyColorARGB.colorBackGr2.toColor()
-                        ) //Color(0xFF576350))
+                        )
                         .padding(widthRamk / 2f)
                         .fillMaxSize()
                 ) {
-                    Box() { //Modifier.padding(top = if (MainDB.styleParam.commonParam.HARD_BORDER.getValue()) 15.dp else 0.dp)) {
+                    Box() {
                         Column {
                             AppWindowTitleBar(this@application, state)
                             statPanel.show(avatarSize, 60.dp)
                         }
-                        avatar(dialLay, Modifier, avatarSize) //.padding(start = widthRamk / 2f)
+                        avatar(dialLay, Modifier, avatarSize)
                     }
                     Row(
                         Modifier.padding(10.dp)
@@ -202,16 +162,12 @@ ghпрghпрghрghрghрghпрhрgпg
                     "paperback",
                     Modifier.fillMaxSize(),
                     alpha = 0.6F,
-                    contentScale = ContentScale.FillBounds// .Fit
+                    contentScale = ContentScale.FillBounds
                 )
                 StateVM.dialLayForViewPicture.getLay()
                 SplashScreen()
                 if (MainDB.styleParam.commonParam.HARD_BORDER.getValue()) BorderWindow(widthRamk)
             }
-//        rememberCoroutineScope().launch {
-//
-//            state.se size.width = 500.dp
-//            start.value = true
         }
     }
 
@@ -221,12 +177,11 @@ ghпрghпрghрghрghрghпрhрgпg
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun WindowScope.AppWindowTitleBar(appScope: ApplicationScope, state: WindowState) =
-    WindowDraggableArea(Modifier) { //.cursorForMove()
+    WindowDraggableArea(Modifier) {
         MainDB.styleParam.appBarStyle.let { style ->
-            MyShadowBox(style.plateAppBar.shadow.getValue()){
+            MyShadowBox(style.plateAppBar.shadow.getValue()) {
                 Row(
                     modifier = Modifier
                         .withSimplePlate(SimplePlateWithShadowStyleState(style.plateAppBar))
@@ -236,7 +191,7 @@ private fun WindowScope.AppWindowTitleBar(appScope: ApplicationScope, state: Win
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Box(
-                        Modifier.weight(1f).height(48.dp), //.background(MyColorARGB.colorMyAppBarDesktop.toColor()),
+                        Modifier.weight(1f).height(48.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -250,19 +205,14 @@ private fun WindowScope.AppWindowTitleBar(appScope: ApplicationScope, state: Win
                             "ic_round_minimize_24.xml",
                             style.outerIconPadding.getValue(Modifier),
                             sizeIcon = 15.dp,
-//                        width = 20.dp,
-//                        height = 20.dp,
                             myStyleToggleButton = ToggleButtonStyleState(style.buttIcon)
                         ) {
                             state.isMinimized = !state.isMinimized
                         }
-//                    Spacer(modifier = Modifier.width(5.dp))
                         MyButtIconStyle(
                             "ic_baseline_code_24.xml",
                             style.outerIconPadding.getValue(Modifier),
                             sizeIcon = 15.dp,
-//                        width = 20.dp,
-//                        height = 20.dp,
                             myStyleToggleButton = ToggleButtonStyleState(style.buttIcon),
                             rotation = true
                         ) {
@@ -272,13 +222,10 @@ private fun WindowScope.AppWindowTitleBar(appScope: ApplicationScope, state: Win
                                 WindowPlacement.Floating
                             }
                         }
-//                    Spacer(modifier = Modifier.width(5.dp))
                         MyButtIconStyle(
                             "ic_round_close_24.xml",
                             style.outerIconPadding.getValue(Modifier),
                             sizeIcon = 15.dp,
-//                        width = 20.dp,
-//                        height = 20.dp,
                             myStyleToggleButton = ToggleButtonStyleState(style.buttIcon)
                         ) {
                             sess?.stop(10, 10)

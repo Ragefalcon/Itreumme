@@ -5,11 +5,11 @@ import ru.ragefalcon.sharedcode.extensions.Parcelize
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan
 
 @Parcelize
-data class ItemPlan (
+data class ItemPlan(
     val id: String,
     val name: String,
     val vajn: Long,
-    val gotov:Double,
+    val gotov: Double,
     val data1: Long,
     val data2: Long,
     val opis: String,
@@ -29,5 +29,5 @@ data class ItemPlan (
     val schplOpen: Boolean? = null,
     override val sver: Boolean = true
 ) : SverOpis<ItemPlan>, Id_class(id_main = id.toString()), Parcelable {
-    override fun sver(newSver: Boolean): ItemPlan = this.copy( sver = newSver )
+    override fun sver(newSver: Boolean): ItemPlan = this.copy(sver = newSver)
 }

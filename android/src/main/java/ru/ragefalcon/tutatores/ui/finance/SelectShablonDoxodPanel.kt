@@ -72,7 +72,6 @@ class SelectShablonDoxodPanelFragment(
                 }
 
                 var firstLoad = true
-//                timeFun.setOpenSpisPlanIn(false, arrayIskl ?: listOf())
                 finSpis.spisShabDoxod.observe(viewLifecycleOwner) {
                     rvmAdapter.updateData(formUniRVItemList(it) { item ->
                         ShabDoxodRVItem(item,

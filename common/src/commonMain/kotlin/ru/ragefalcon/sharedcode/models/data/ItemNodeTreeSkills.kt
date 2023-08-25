@@ -4,9 +4,7 @@ package ru.ragefalcon.sharedcode.models.data
 import ru.ragefalcon.sharedcode.extensions.Parcelable
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.MarkerNodeTreeSkills
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatNodeTree
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan
 
-//@Parcelize
 sealed class ItemNodeTreeSkills(
     val id: Long,
     val id_tree: Long,
@@ -28,7 +26,6 @@ sealed class ItemNodeTreeSkills(
     abstract fun copy(): ItemNodeTreeSkills
 }
 
-//@Parcelize
 class ItemHandNodeTreeSkills(
     id: Long,
     id_tree: Long,
@@ -43,7 +40,6 @@ class ItemHandNodeTreeSkills(
     must_node: Boolean,
     quest_id: Long,
     quest_key_id: Long,
-//    var sver: Boolean = true
 ) : ItemNodeTreeSkills(
     id,
     id_tree,
@@ -58,7 +54,7 @@ class ItemHandNodeTreeSkills(
     must_node,
     quest_id = quest_id,
     quest_key_id = quest_key_id
-    ) {
+) {
     override fun copy(): ItemNodeTreeSkills = ItemHandNodeTreeSkills(
         id,
         id_tree,
@@ -76,7 +72,7 @@ class ItemHandNodeTreeSkills(
     )
 }
 
-//@Parcelize
+
 class ItemPlanNodeTreeSkills(
     id: Long,
     id_tree: Long,
@@ -94,7 +90,6 @@ class ItemPlanNodeTreeSkills(
     val privplan: Long,
     val stap_prpl: Long,
     val porog_hour: Double,
-//    var sver: Boolean = true
 ) : ItemNodeTreeSkills(
     id,
     id_tree,
@@ -130,7 +125,7 @@ class ItemPlanNodeTreeSkills(
     )
 }
 
-//@Parcelize
+
 class ItemCountNodeTreeSkills(
     id: Long,
     id_tree: Long,
@@ -149,7 +144,6 @@ class ItemCountNodeTreeSkills(
     val count_value: Long,
     val max_value: Long,
     val porog_value: Long,
-//    var sver: Boolean = true
 ) : ItemNodeTreeSkills(
     id,
     id_tree,

@@ -24,7 +24,7 @@ class AddChangeSchetPanFragment(item: ItemCommonFinOper? = null) :
                     if (editSummaZach.isVisible) {
                         sumz = editSummaZach.editText?.text.toString().toDoubleOrNull()
                     } else {
-                        sumz = sumsp //editSumma.editText?.text.toString().toDouble() ?: 0.0
+                        sumz = sumsp
                     }
                     sumz?.let { sumzach ->
                         val sd = spinner.selectedItem as Pair<String, String>
@@ -32,7 +32,7 @@ class AddChangeSchetPanFragment(item: ItemCommonFinOper? = null) :
                         viewmodel.addFin.addPerevod(
                             name = editNameText.text.toString(),
                             schsp_id = viewmodel.financeFun.getPosMainSchet().first.toLong(),
-                            sumsp = sumsp,//editSumma.editText?.text.toString().toDouble() ?: 0.0,
+                            sumsp = sumsp,
                             schz_id = sd.first.toLong(),
                             sumz = sumzach,
                             data = etDate.dateLong
@@ -47,23 +47,6 @@ class AddChangeSchetPanFragment(item: ItemCommonFinOper? = null) :
     }
 
     override fun changeNote() {
-//        with(binding) {
-//            try {
-//                val sd = spinner.selectedItem as Pair<String, String>
-//                val ssch = srSchetAdd.selectedItem as Pair<String, String>
-//                item?.let {
-//                    viewmodel.addFin.updRasxod(
-//                        id = it.id.toLong(),
-//                        name = editNameText.text.toString(),
-//                        summa = editSumma.editText?.text.toString().toDouble() ?: 0.0,
-//                        typeid = sd.first.toLong(),
-//                        data = etDate.dateLong, //.toLongPlusOffset(),
-//                        schet = ssch.first.toLong()
-//                    )
-//                }
-//            } catch (ignored: ClassCastException) {
-//            }
-//        }
     }
 
     val startSpinner by lazy {

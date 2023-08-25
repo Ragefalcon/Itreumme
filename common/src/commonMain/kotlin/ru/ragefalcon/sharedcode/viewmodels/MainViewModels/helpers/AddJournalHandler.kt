@@ -34,7 +34,7 @@ class AddJournalHandler(
 
     fun delBloknot(
         id: Long,
-        delImageComplexOpis: (Long)->Unit
+        delImageComplexOpis: (Long) -> Unit
     ) {
         mdb.spisBloknotQueries.delete(id = id)
         delImageComplexOpis(id)
@@ -81,7 +81,7 @@ class AddJournalHandler(
 
     fun delIdea(
         id: Long,
-        delImageComplexOpis: (Long)->Unit
+        delImageComplexOpis: (Long) -> Unit
     ) {
         mdb.spisIdeaQueries.delete(id = id)
         delImageComplexOpis(id)
@@ -132,7 +132,7 @@ class AddJournalHandler(
 
     fun delStapIdea(
         id: Long,
-        delImageComplexOpis: (Long)->Unit
+        delImageComplexOpis: (Long) -> Unit
     ) {
         mdb.spisStapIdeaQueries.delete(id = id)
         delImageComplexOpis(id)

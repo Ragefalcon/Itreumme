@@ -10,4 +10,4 @@ data class ItemRectDiag(
     val summa: Double,
     val sumyear: Double,
     val procent: Double
-): Parcelable
+) : Parcelable

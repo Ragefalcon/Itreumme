@@ -2,13 +2,14 @@ package MainTabs.Setting.Items
 
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -42,33 +43,31 @@ class ComItemSchetPlanSett(
     val first by lazy {
         var i = 0
         for (type in listTypeRasx) {
-            if (i != 0) opisType += ", "//\n"
+            if (i != 0) opisType += ", "
             opisType += type
             i++
         }
     }
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         first
         MyCardStyle1(selection.isActive(item), 0, {
             selection.selected = item
-//            expandedDropMenu.value = this.buttons.isSecondaryPressed
-        },{
+        }, {
             if (listTypeRasx.isNotEmpty()) expandedOpis.value = !expandedOpis.value
         }, backColor = if (item.open_ != 1L)
-            Color.Red.toMyColorARGB().plusWhite().plusWhite().toColor().copy(alpha = 0.7f)// Color(0xFF468F45)
+            Color.Red.toMyColorARGB().plusWhite().plusWhite().toColor().copy(alpha = 0.7f)
         else
             Color(0xFF464D45),
             dropMenu = { exp -> dropMenu(item, exp) }
-
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.padding(5.dp).padding(start = 15.dp, end = 10.dp).weight(1f).animateContentSize()) {
+                Column(
+                    modifier = Modifier.padding(5.dp).padding(start = 15.dp, end = 10.dp).weight(1f)
+                        .animateContentSize()
+                ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-
-//                        Column(Modifier.padding(0.dp).weight(1f)) {
                         Text(
                             modifier = Modifier.padding(bottom = 2.dp).weight(1f),
                             text = item.name,
@@ -84,7 +83,7 @@ class ComItemSchetPlanSett(
                             expandedOpis,
                             Modifier.padding(start = 10.dp, end = 10.dp)
                         ) {
-//                            item.sver = item.sver.not()
+
                         }
                         Text(
                             modifier = Modifier,
@@ -95,7 +94,7 @@ class ComItemSchetPlanSett(
                             )
                         )
                     }
-                    bind.forEach{
+                    bind.forEach {
                         Text(
                             it.name,
                             Modifier
@@ -136,7 +135,7 @@ class ComItemSchetPlanSett(
                         if (ostatok < 0) {
                             ostatok = 0.0
                         }
-//                Row(Modifier.padding(vertical = 3.dp).alpha(0.7f), verticalAlignment = Alignment.CenterVertically) {
+
                         PlateOrderLayout(Modifier.padding(vertical = 3.dp).alpha(0.7f)) {
                             RowVA(Modifier.padding(end = 10.dp)) {
                                 Text(
@@ -146,7 +145,7 @@ class ComItemSchetPlanSett(
                                         fontSize = 12.sp
                                     )
                                 )
-//                        Spacer(Modifier.weight(1f))
+
                                 if (item.min_aim != -1.0) Text(
                                     modifier = Modifier,
                                     text = item.min_aim.roundToStringProb(2),
@@ -205,7 +204,7 @@ class ComItemSchetPlanSett(
                                     modifier = Modifier,
                                     text = pererasxod.roundToStringProb(2),
                                     style = MyTextStyleParam.style2.copy(
-                                        color =  Color.Red.toMyColorARGB().plusWhite(1.3f).toColor(),
+                                        color = Color.Red.toMyColorARGB().plusWhite(1.3f).toColor(),
                                         fontSize = 12.sp
                                     )
                                 )
@@ -220,14 +219,14 @@ class ComItemSchetPlanSett(
                                     modifier = Modifier,
                                     text = item.summaRasxod.roundToStringProb(2),
                                     style = MyTextStyleParam.style2.copy(
-                                        color =  Color.Yellow.toMyColorARGB().plusWhite().toColor(),
+                                        color = Color.Yellow.toMyColorARGB().plusWhite().toColor(),
                                         fontSize = 12.sp
                                     )
                                 )
                             }
                         }
                         BoxWithConstraints(
-                            Modifier//.padding(top = 5.dp)
+                            Modifier
                                 .shadow(5.dp, shape = RoundedCornerShape(5.dp))
                                 .background(
                                     color = if (item.max_aim > 0) Color.DarkGray
@@ -240,7 +239,6 @@ class ComItemSchetPlanSett(
                         ) {
                             if (item.max_aim > 0 && item.min_aim < item.max_aim) Box(
                                 Modifier
-//                            .shadow(5.dp, shape = RoundedCornerShape(5.dp))
                                     .background(
                                         color = Color.Gray,
                                         shape = RoundedCornerShape(5.dp)
@@ -251,7 +249,7 @@ class ComItemSchetPlanSett(
                             Row {
                                 Box(
                                     Modifier
-//                            .shadow(5.dp, shape = RoundedCornerShape(5.dp))
+
                                         .background(
                                             color = Color.Yellow.copy(0.5f),
                                         )
@@ -274,12 +272,12 @@ class ComItemSchetPlanSett(
                                 }
                                 if (proc_aim > 0.0) Box(
                                     Modifier
-//                            .shadow(5.dp, shape = RoundedCornerShape(5.dp))
+
                                         .background(
                                             color = Color.Green.copy(0.5f),
                                         )
                                         .width(this@BoxWithConstraints.maxWidth * proc_aim.toFloat())
-//                                .fillMaxWidth(proc_aim.toFloat())
+
                                         .fillMaxHeight()
                                 )
                             }
@@ -300,12 +298,12 @@ class ComItemSchetPlanSett(
 
                         }
                     }
-                    if (expandedOpis.value) { //(isActive()) &&
+                    if (expandedOpis.value) {
                         BoxExpand(
                             expandedOpis,
                             Modifier.myModWithBound1(),
                             Modifier.fillMaxWidth()
-                        ) {  //, endModif = Modifier::withMyBound1
+                        ) {
                             Text(
                                 modifier = Modifier
                                     .padding(5.dp)

@@ -23,7 +23,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import common.*
+import common.MyButtDropdownMenuStyle2
+import common.MyCardStyle1
+import common.MyTextStyleParam
+import common.SingleSelectionType
 import common.tests.IconNode
 import extensions.ItemNodeTreeSkillsState
 import extensions.RowVA
@@ -33,7 +36,9 @@ import ru.ragefalcon.sharedcode.models.data.ItemCountNodeTreeSkills
 import ru.ragefalcon.sharedcode.models.data.ItemHandNodeTreeSkills
 import ru.ragefalcon.sharedcode.models.data.ItemNodeTreeSkills
 import ru.ragefalcon.sharedcode.models.data.ItemPlanNodeTreeSkills
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.*
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.MarkerNodeTreeSkills
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatNodeTree
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeTreeSkills
 import viewmodel.MainDB
 
 
@@ -43,7 +48,7 @@ fun ShowIconNodeFromComlete(item: ItemNodeTreeSkills, size: Dp = 50.dp, pair: Pa
         IconNode(
             item.icon_complete ?: item.icon,
             "icon_skill_color_lamp.png",
-//            complete = item.icon_complete?.let { TypeIconBorder.getType(it.type_ramk) != TypeIconBorder.NONE } ?: true,
+
             size = size,
             modifier = Modifier.padding(horizontal = 8.dp), pair = pair
         )
@@ -95,90 +100,84 @@ fun ComItemNodeLevelTreeSkills(
                         brush = border_brush_DIRECTPARENT,
                         shape = shapeCard
                     )
+
                     MarkerNodeTreeSkills.INDIRECTPARENT -> this.border(
                         width = border_width_parent_child,
                         brush = border_brush_INDIRECTPARENT,
                         shape = shapeCard
                     )
+
                     MarkerNodeTreeSkills.DIRECTCHILD -> this.border(
                         width = border_width_parent_child,
                         brush = border_brush_DIRECTCHILD,
                         shape = shapeCard
                     )
+
                     MarkerNodeTreeSkills.INDIRECTCHILD -> this.border(
                         width = border_width_parent_child,
                         brush = border_brush_INDIRECTCHILD,
                         shape = shapeCard
                     )
+
                     else -> this
                 } else this
             },
-            backBrush = if (item.complete == TypeStatNodeTree.COMPLETE) background_brush_complete else  if (item.complete == TypeStatNodeTree.UNBLOCKNOW) background_brush_unblock else if (item.open) null else background_brush_block,
+            backBrush = if (item.complete == TypeStatNodeTree.COMPLETE) background_brush_complete else if (item.complete == TypeStatNodeTree.UNBLOCKNOW) background_brush_unblock else if (item.open) null else background_brush_block,
             borderBrush = if (item.complete == TypeStatNodeTree.COMPLETE) border_brush_complete else if (item.open) null else border_brush_block,
             dropMenu = { exp -> if (block.not()) dropMenu(item, exp) },
             styleSettings = itemNodeTreeSkillStyleState
         ) {
-//            RowVA(
-/*
-                Modifier.padding(horizontal = 2.dp).padding(vertical = 2.dp).run {
-
-                    if (block) this.background(Color.White.copy(alpha = 0.5f)) else if (item.complete == TypeStatNodeTree.UNBLOCKNOW) this.background(
-                        MyColorARGB.colorUnblockNowElement.toColor().copy(alpha = 0.7f)
-                    ) else this
-//                    RoundedCornerShape(15.dp)
-                },
-*/
-//            ) {
-                Column(
-//                    Modifier.run { if (block) this.background(Color.White.copy(alpha = 0.5f)) else this },
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box {
-                        Box(contentAlignment = Alignment.Center) {
-                            if (item.complete != TypeStatNodeTree.INVIS) ShowIconNodeFromComlete(item, pair = border_width_icon to BORDER_ICON_COLOR)
-                            if (item.complete == TypeStatNodeTree.BLOCK || item.complete == TypeStatNodeTree.INVIS) Image(
-                                painterResource(if (item.complete == TypeStatNodeTree.BLOCK) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"), //BitmapPainter(
-                                "statDenPlan",
-                                Modifier
-                                    .height(80.dp)
-                                    .width(80.dp),
-                                alpha = 0.7F,
-                                contentScale = ContentScale.FillBounds,
-                            )
-                        }
-                        if (selection.isActive(item) && block.not()) MyButtDropdownMenuStyle2(
-                            Modifier.padding(top = 0.dp).padding(vertical = 0.dp).align(Alignment.TopStart),
-                            expandedDropMenu,
-                            buttMenu
-                        ) {
-                            dropMenu(item, expandedDropMenu)
-                        }
-
-                        if (item.complete != TypeStatNodeTree.INVIS) Text(
-                            text = "(${
-                                when (item) {
-                                    is ItemCountNodeTreeSkills -> "С"
-                                    is ItemHandNodeTreeSkills -> "Р"
-                                    is ItemPlanNodeTreeSkills -> "П"
-                                    else -> ""
-                                }
-                            })",
-                            modifier = Modifier.padding(top = 18.dp, end = 5.dp).align(Alignment.TopEnd).alpha(0.3f),
-                            style = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start, fontSize = 8.sp)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box {
+                    Box(contentAlignment = Alignment.Center) {
+                        if (item.complete != TypeStatNodeTree.INVIS) ShowIconNodeFromComlete(
+                            item,
+                            pair = border_width_icon to BORDER_ICON_COLOR
                         )
-                        if (item.quest_id != 0L && item.quest_key_id == 0L) Text(
-                            modifier = Modifier.padding(end = 5.dp).align(Alignment.TopEnd),
-                            text = "*",
-                            style = noQuestText
+                        if (item.complete == TypeStatNodeTree.BLOCK || item.complete == TypeStatNodeTree.INVIS) Image(
+                            painterResource(if (item.complete == TypeStatNodeTree.BLOCK) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"),
+                            "statDenPlan",
+                            Modifier
+                                .height(80.dp)
+                                .width(80.dp),
+                            alpha = 0.7F,
+                            contentScale = ContentScale.FillBounds,
                         )
                     }
+                    if (selection.isActive(item) && block.not()) MyButtDropdownMenuStyle2(
+                        Modifier.padding(top = 0.dp).padding(vertical = 0.dp).align(Alignment.TopStart),
+                        expandedDropMenu,
+                        buttMenu
+                    ) {
+                        dropMenu(item, expandedDropMenu)
+                    }
+
                     if (item.complete != TypeStatNodeTree.INVIS) Text(
-                        text = item.name, // "(${item.id_type_node})${item.name}",
-                        modifier = Modifier.padding(horizontal = 5.dp).padding(bottom = 7.dp),
-                        style = mainTextStyle // MyTextStyleParam.style1.copy(textAlign = TextAlign.Start, fontSize = 12.sp)
+                        text = "(${
+                            when (item) {
+                                is ItemCountNodeTreeSkills -> "С"
+                                is ItemHandNodeTreeSkills -> "Р"
+                                is ItemPlanNodeTreeSkills -> "П"
+                                else -> ""
+                            }
+                        })",
+                        modifier = Modifier.padding(top = 18.dp, end = 5.dp).align(Alignment.TopEnd).alpha(0.3f),
+                        style = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start, fontSize = 8.sp)
+                    )
+                    if (item.quest_id != 0L && item.quest_key_id == 0L) Text(
+                        modifier = Modifier.padding(end = 5.dp).align(Alignment.TopEnd),
+                        text = "*",
+                        style = noQuestText
                     )
                 }
-//            }
+                if (item.complete != TypeStatNodeTree.INVIS) Text(
+                    text = item.name,
+                    modifier = Modifier.padding(horizontal = 5.dp).padding(bottom = 7.dp),
+                    style = mainTextStyle
+                )
+            }
         }
     }
 }
@@ -208,10 +207,9 @@ class ComItemNodeLevelTreeSkillsCheckable(
             }
         }
         MyCardStyle1(
-            if (selection.selected == null) false else false,
+            false,
             0,
             {
-//            selection.selected = item
             },
             {
                 checkedItem()
@@ -232,7 +230,7 @@ class ComItemNodeLevelTreeSkillsCheckable(
                     Box(contentAlignment = Alignment.Center) {
                         if (item.complete != TypeStatNodeTree.INVIS) ShowIconNodeFromComlete(item)
                         if (item.complete == TypeStatNodeTree.BLOCK || item.complete == TypeStatNodeTree.INVIS) Image(
-                            painterResource(if (item.complete == TypeStatNodeTree.BLOCK) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"), //BitmapPainter(
+                            painterResource(if (item.complete == TypeStatNodeTree.BLOCK) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"),
                             "statDenPlan",
                             Modifier
                                 .height(80.dp)
@@ -270,10 +268,7 @@ class ComItemNodeLevelTreeSkillsSelParents(
     fun getComposable() {
         val markerCheck = remember { mutableStateOf(item.check) }
         MyCardStyle1(false, 0, {
-//            selection.selected = item
         }, {
-//            item.marker = item.marker.not()
-//            markerCheck.value = !markerCheck.value
         },
             fillWidth = false
         ) {
@@ -291,7 +286,7 @@ class ComItemNodeLevelTreeSkillsSelParents(
                         Box(contentAlignment = Alignment.Center) {
                             if (item.complete != TypeStatNodeTree.INVIS) ShowIconNodeFromComlete(item)
                             if (item.complete == TypeStatNodeTree.BLOCK || item.complete == TypeStatNodeTree.INVIS) Image(
-                                painterResource(if (item.complete == TypeStatNodeTree.BLOCK) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"), //BitmapPainter(
+                                painterResource(if (item.complete == TypeStatNodeTree.BLOCK) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"),
                                 "statDenPlan",
                                 Modifier
                                     .height(80.dp)

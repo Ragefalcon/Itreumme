@@ -11,8 +11,8 @@ import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemPlanStap
 import ru.ragefalcon.tutatores.R
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
-import ru.ragefalcon.tutatores.databinding.ItemPlanBinding
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemPlanStapBinding
 import ru.ragefalcon.tutatores.extensions.dpToPx
 import ru.ragefalcon.tutatores.extensions.rotateElemItem
@@ -47,9 +47,6 @@ class PlanStapRVItem(
                     ivExpandOpis.layoutParams.width = 1
                 }
             }
-
-
-//                (itemView.layoutParams as ViewGroup.MarginLayoutParams).marginStart = 16.dpToPx*data.level.toInt()
 
             (vh.itemView.layoutParams as ViewGroup.MarginLayoutParams).marginStart = 16.dpToPx * item.level.toInt()
             vh.itemView.invalidate()
@@ -86,45 +83,19 @@ class PlanStapRVItem(
             }
 
             ivSelectIndic.requestLayout()
-            Log.d("itemPS", "name: ${item.name}, level: ${item.level}, svernut: ${item.svernut}")
             textName.text = item.name
             textName.requestLayout()
             textSumhour.text = item.hour.roundToString(1)
-//            text_data.text = Date(item.data).format("dd MMM yyyy")
             progbarGotov.progress = (progbarGotov.max * item.gotov / 100).toInt()
             textOpis.text = item.opis
             sverItemOpis(item.sver, false)
-//            text_opis.text = time.toString() // item.opis
-//            if (itemView.isSelected){
-//                onItemSelected()
-//            }   else    {
-//                onItemCleared()
-//            }
             if (item.podstapcount > 0) {
                 ivStatDp.alpha = 1F
                 ivStatDp.layoutParams.width = 30.dpToPx
                 ivStatDp.requestLayout()
                 when (item.svernut) {
-                    false -> ivStatDp.setImageResource(R.drawable.ic_minus) //setColorFilter(Color.YELLOW, android.graphics.PorterDuff.Mode.MULTIPLY)
-                    true -> ivStatDp.setImageResource(R.drawable.ic_add_butt) //setColorFilter(Color.WHITE, android.graphics.PorterDuff.Mode.MULTIPLY)
-                    /**
-                     * https://stackoverflow.com/questions/20121938/how-to-set-tint-for-an-image-view-programmatically-in-android/45571812#45571812
-                     *
-                     * У пользователя @Tad есть свой ответ в правильном направлении, но он работает только с API 21+.
-                     * Чтобы установить оттенок на всех версиях Android, используйте ImageViewCompat:
-                     * ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(yourTint));
-                     * Обратите внимание, что yourTintв этом случае должен быть "цвет int". Если у вас есть ресурс цвета, например R.color.blue, вам нужно сначала загрузить цвет int:
-                     * ContextCompat.getColor(context, R.color.blue);
-                     * */
-                    /**
-                     * https://stackoverflow.com/questions/20121938/how-to-set-tint-for-an-image-view-programmatically-in-android/45571812#45571812
-                     *
-                     * У пользователя @Tad есть свой ответ в правильном направлении, но он работает только с API 21+.
-                     * Чтобы установить оттенок на всех версиях Android, используйте ImageViewCompat:
-                     * ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(yourTint));
-                     * Обратите внимание, что yourTintв этом случае должен быть "цвет int". Если у вас есть ресурс цвета, например R.color.blue, вам нужно сначала загрузить цвет int:
-                     * ContextCompat.getColor(context, R.color.blue);
-                     * */
+                    false -> ivStatDp.setImageResource(R.drawable.ic_minus)
+                    true -> ivStatDp.setImageResource(R.drawable.ic_add_butt)
                 }
             } else {
                 ivStatDp.alpha = 0F
@@ -137,20 +108,18 @@ class PlanStapRVItem(
                 }
             }
             ivExpandOpis.setOnClickListener {
-//                svernut = svernut.not()
                 item.sver = item.sver.not()
                 sverItemOpis(item.sver, true)
                 if (vh.itemView.isSelected) {
                     vh.bindItem?.let { rvset.selFunc(it) }
                 }
             }
-            vh.itemView.setOnClickListener { // } .setOnClickListener {
+            vh.itemView.setOnClickListener {
                 vh.bindItem?.let { rvset.selFunc(it) }
             }
             vh.itemView.setOnLongClickListener {
                 vh.bindItem?.let { rvset.selFunc(it) }
                 listener?.invoke(item)
-                Log.d("item", "До ${vh.itemView.javaClass}")
                 true
             }
         }

@@ -1,6 +1,6 @@
 package MainTabs.Time.Items
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -9,13 +9,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.PaintingStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import common.*
+import common.MyButtDropdownMenuStyle2
+import common.MyCardStyle1
+import common.SingleSelectionType
 import extensions.ItemEffectStyleState
 import extensions.MyRectF
 import extensions.RowVA
@@ -45,10 +50,9 @@ class ComItemEffekt(
 
     private val otstupOut = 3.dp
     private val otstupIn = 2.dp
-    private val otstupBetween = Dp.Hairline // 1.5.dp
+    private val otstupBetween = Dp.Hairline
     private val otstupSum = otstupOut + otstupIn
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         with(itemEffectStyleState) {
@@ -68,7 +72,7 @@ class ComItemEffekt(
                                 Text(
                                     modifier = Modifier.padding(top = 5.dp).padding(start = 15.dp),
                                     text = item.name,
-                                    style = mainTextStyle// MyTextStyleParam.style1.copy(fontSize = 17.sp)
+                                    style = mainTextStyle
                                 )
                                 val nr = item.norma
                                 Text(
@@ -77,8 +81,6 @@ class ComItemEffekt(
                                             "  М: ${item.sumMonth.roundToString(1)}/${(nr * 4.286).roundToString(1)} " +
                                             "  Г: ${item.sumYear.roundToString(1)}/${(nr * 52).roundToString(1)}",
                                     style = hourTextStyle
-//                                        TextStyle(color = Color(0xAFFFF7D9)),
-//                                fontSize = 10.sp
                                 )
                             }
                             Box {
@@ -108,13 +110,6 @@ class ComItemEffekt(
                             } else {
                                 boxFr = canvasWidth
                             }
-//                            val area = MyAreaCanvas(fizAreaSize.value, fizAreaSize.value, boxFr)
-/*
-                            drawRect(
-                                color = MyColorARGB.colorEffektShkal_Back.toColor(),// Color(0xFFefeb85),//fff589),
-                                size = Size(canvasWidth, canvasHeight),
-                            )
-*/
 
                             val rectRamk = MyRectF(canvasWidth, canvasHeight, 0F, 0F).apply {
                                 inset(otstupOut.toPx(), otstupOut.toPx())
@@ -140,11 +135,7 @@ class ComItemEffekt(
                             }
 
                             if (koefMax > 1F) {
-//            if (item.norma>0){
                                 rectRamk.width = rectRamk.width / koefMax
-//            }   else    {
-//                rectRamk.left = rectRamk.right - rectRamk.width()/koefMax
-//            }
                             }
 
                             val innerRectHeight = canvasHeight - 2 * otstupSum.toPx()
@@ -235,7 +226,6 @@ class ComItemEffekt(
                                     width = 1.dp.toPx(),
                                 )
                             )
-
 
                             drawRoundRect(
                                 color = Color.Black,

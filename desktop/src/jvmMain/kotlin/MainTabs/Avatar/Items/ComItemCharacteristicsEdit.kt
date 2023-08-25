@@ -30,7 +30,6 @@ class ComItemCharacteristicsEdit(
 
     val text_sum_hour = mutableStateOf("${item.hour.roundToStringProb(1)} ч.")
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         with(itemCharacteristicState) {
@@ -54,9 +53,7 @@ class ComItemCharacteristicsEdit(
                             textColor = ARROW_COLOR
                         ) {
                             MainDB.avatarSpis.spisCharacteristics.getState().value?.let {
-                                println(it.size)
                                 it.findLast { it.sort < item.sort }?.let {
-                                    println(it)
                                     MainDB.addAvatar.setSortCharacteristic(item, it.sort)
                                 }
                             }
@@ -68,7 +65,6 @@ class ComItemCharacteristicsEdit(
                         ) {
                             MainDB.avatarSpis.spisCharacteristics.getState().value?.let {
                                 it.find { it.sort > item.sort }?.let {
-                                    println(it)
                                     MainDB.addAvatar.setSortCharacteristic(item, it.sort)
                                 }
                             }
@@ -76,10 +72,12 @@ class ComItemCharacteristicsEdit(
                         Text(
                             item.name,
                             Modifier.weight(1f).padding(10.dp),
-                            style = mainTextStyle // MyTextStyleParam.style1.copy(textAlign = TextAlign.Start)
+                            style = mainTextStyle
                         )
                         if (selection.isActive(item)) MyButtDropdownMenuStyle2(
-                            Modifier.padding(start = 5.dp, end = 10.dp).padding(vertical = 0.dp), expandedDropMenu, buttMenu
+                            Modifier.padding(start = 5.dp, end = 10.dp).padding(vertical = 0.dp),
+                            expandedDropMenu,
+                            buttMenu
                         ) {
                             dropMenu(item, expandedDropMenu)
                         }
@@ -91,21 +89,21 @@ class ComItemCharacteristicsEdit(
                             item.sver = item.sver.not()
                         }
                         if (item.startStat >= 10L) Text(
-                            "${(item.startStat/10).toInt()} + ",
+                            "${(item.startStat / 10).toInt()} + ",
                             Modifier.padding(end = 5.dp).alpha(0.7f),
-                            style = startValueText // MyTextStyleParam.style1.copy(fontSize = 16.sp, textAlign = TextAlign.Center)
+                            style = startValueText
                         )
                         Text(
                             item.stat.toString(),
                             Modifier.padding(end = 20.dp),
-                            style = valueText //MyTextStyleParam.style1.copy(textAlign = TextAlign.Center)
+                            style = valueText
                         )
                         Box(
                             Modifier.padding(end = 20.dp).width(3.dp).height(25.dp)
                                 .background(COLOR_INDIK_BACK).border(
-                                0.5.dp,
-                                COLOR_INDIK_BORDER
-                            )
+                                    0.5.dp,
+                                    COLOR_INDIK_BORDER
+                                )
                         ) {
                             Box(
                                 Modifier.align(Alignment.BottomCenter).width(3.dp)

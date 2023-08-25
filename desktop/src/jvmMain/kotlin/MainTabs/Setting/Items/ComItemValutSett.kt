@@ -1,8 +1,7 @@
 package MainTabs.Setting.Items
 
-import androidx.compose.material.Text
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -11,7 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import common.*
+import common.MyButtDropdownMenuStyle1
+import common.MyCardStyle1
+import common.MyTextStyleParam
+import common.SingleSelectionType
 import extensions.toColor
 import extensions.toMyColorARGB
 import ru.ragefalcon.sharedcode.extensions.roundToStringProb
@@ -26,12 +28,10 @@ class ComItemValutSett(
     var expandedDropMenu = mutableStateOf(false)
     var lastEvent = mutableStateOf<MouseEvent?>(null)
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         MyCardStyle1(selection.isActive(item), 0, {
             selection.selected = item
-//            expandedDropMenu.value = this.buttons.isSecondaryPressed
         },
             dropMenu = { exp -> dropMenu(item, exp) }
         ) {
@@ -42,11 +42,17 @@ class ComItemValutSett(
                     dropMenu(item, expandedDropMenu)
                 }
 
-                Column(modifier = Modifier.padding(5.dp).padding(start = 15.dp, end = 10.dp, ).weight(1f)) {
-                    Row(Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween,verticalAlignment = Alignment.CenterVertically) { //horizontalArrangement = Arrangement.SpaceBetween,
+                Column(modifier = Modifier.padding(5.dp).padding(start = 15.dp, end = 10.dp).weight(1f)) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-//                        Column(Modifier.padding(0.dp).weight(1f)) {
-                        Row(Modifier.padding(bottom = 2.dp).weight(1f, fill = false),verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            Modifier.padding(bottom = 2.dp).weight(1f, fill = false),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Text(
                                 modifier = Modifier.padding(bottom = 2.dp).weight(1f, fill = false),
                                 text = item.name,
@@ -61,10 +67,10 @@ class ComItemValutSett(
                                 )
                             )
                         }
-//                        Spacer(Modifier.weight(0.001f))
+
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                modifier = Modifier.padding(start = 10.dp), //.align(Alignment.CenterVertically)
+                                modifier = Modifier.padding(start = 10.dp),
                                 text = "(",
                                 style = MyTextStyleParam.style2.copy(
                                     color = Color(0xDFFFF7D9),
@@ -88,7 +94,7 @@ class ComItemValutSett(
                                 )
                             )
                             Text(
-                                modifier = Modifier.padding(start = 10.dp), //.align(Alignment.CenterVertically)
+                                modifier = Modifier.padding(start = 10.dp),
                                 text = item.cod,
                                 style = MyTextStyleParam.style2,
                                 maxLines = 1

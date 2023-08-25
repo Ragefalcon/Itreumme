@@ -22,17 +22,15 @@ class AnalizRasxodDraw {
     var shirVisGraf = 100
     var scrollValue = 0
 
-
     private var sumItogo = "0 руб."
 
-    /** Если true, то при перерисовке произойдет обновление/перерасчет круговой диаграммы */
     private var updateSectorDiag = true
     private var updateRectDiag = true
     private var updateSpis = true
     private var updateSumOnSchet = true
 
     fun drawRasxodByType(canvas: Canvas) {
-//        println("drawRasxodByType")
+
         val centr = PointF(canvas.width / 2.toFloat(), canvas.height * 9 / 20.toFloat())
         val radOut = min(canvas.width, canvas.height) * 4 / 5 / 2.toFloat()
         val radIn = radOut / 3
@@ -45,7 +43,7 @@ class AnalizRasxodDraw {
 
         for (type in sectorDiag.filter { it.procent > 0.02 }) {
             delta = (type.procent * 360F).toFloat()
-//            if (delta == 360F) delta = 359F
+
             canvas.drawSectorWhiter(
                 type.color.toMyIntCol().toIntColor(),
                 centr,
@@ -53,7 +51,8 @@ class AnalizRasxodDraw {
                 radIn,
                 angle,
                 delta
-            )  // myColorRaduga(color).toIntColor()
+            )
+
             angle += delta
             color += dd
         }
@@ -90,11 +89,10 @@ class AnalizRasxodDraw {
 
     fun getWidthGraf(): Int {
         var month = 0
-//        if (sumOperWeek.count() > 0) {
         sumOperWeek.lastOrNull()?.data?.let {
             month = 12 - Date(it).format("MM").toInt()
         }
-        return ((sumOperWeek.count() + month*4) * 2.pxF + 20.pxF).toInt()
+        return ((sumOperWeek.count() + month * 4) * 2.pxF + 20.pxF).toInt()
     }
 
     fun drawRasxodSpisByType(canvas: Canvas) {
@@ -116,7 +114,7 @@ class AnalizRasxodDraw {
         pT.style = Paint.Style.FILL
         pT.color = Color.WHITE
         pT.textSize = 15.pxF
-//        p2.textAlign = Paint.Align.CENTER
+
         var delta = 0F
         var dd =
             1024 / (if (sectorDiag.filter { it.procent > 0.02 }.count() != 0) sectorDiag.filter { it.procent > 0.02 }
@@ -124,30 +122,17 @@ class AnalizRasxodDraw {
         var color = 0
         var i = 0
         for (type in sectorDiag.filter { it.procent > 0.02 }) {
-            p1.color = type.color.toMyIntCol().plusWhite().toIntColor() //myColorRaduga(color).toIntColor()
+            p1.color = type.color.toMyIntCol().plusWhite().toIntColor()
             bitmapCanvas1.drawRoundRect(RectF(16.pxF, 5.pxF + i * 30.pxF, 36.pxF, 25.pxF + i * 30.pxF), 0F, 0F, p1)
             bitmapCanvas1.drawRoundRect(RectF(16.pxF, 5.pxF + i * 30.pxF, 36.pxF, 25.pxF + i * 30.pxF), 0F, 0F, p2)
             for (txt in type.name.split("\n")) {
                 bitmapCanvas1.drawText(
                     txt, 46.pxF, 15.pxF + i * 30.pxF + pT.textSize / 3, pT
-                )//+pT.textSize/2 //"${txt} ( ${type.summa.roundToStringProb(2)} - ${(type.procent * 100).roundToString(1)}% )"
+                )
                 i++
             }
             color += dd
         }
-//        var  mTextPaint:TextPaint = TextPaint();
-//        var  mTextLayout = StaticLayout(sectorDiag.filter{ it.procent>0.02 }.lastOrNull().name, mTextPaint, canvas.getWidth(), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-//
-//        canvas.save();
-//// calculate x and y position where your text will be placed
-//
-//        var textX = 46.pxF
-//        var textY = 15.pxF + i*30.pxF+pT.textSize/3
-//
-//        canvas.translate(textX, textY)
-//        mTextLayout.draw(canvas)
-//        canvas.restore()
-
         var paintDst = Paint(Paint.ANTI_ALIAS_FLAG)
         canvas.drawBitmap(bitmap1, 0F, 0F, paintDst)
     }
@@ -171,14 +156,9 @@ class AnalizRasxodDraw {
         val diap = if (minSumOperWeek < 0) maxSumOperWeek - minSumOperWeek else maxSumOperWeek
         val minusMin = if (minSumOperWeek < 0) minSumOperWeek else 0.0F
 
-        scrollValue/shag + shirVisGraf/shag*cursor
-        var cur: Int = (scrollValue/shag + shirVisGraf/shag*cursor + 1).toInt()
-        if (cur>=sumOperWeek.count()) cur = sumOperWeek.count() - 1
-//        println("progress cur: $cur")
-//        println("progress scrollValue: $scrollValue")
-//        println("progress shirVisGraf: $shirVisGraf")
-
-
+        scrollValue / shag + shirVisGraf / shag * cursor
+        var cur: Int = (scrollValue / shag + shirVisGraf / shag * cursor + 1).toInt()
+        if (cur >= sumOperWeek.count()) cur = sumOperWeek.count() - 1
 
         var pY = Paint(Paint.ANTI_ALIAS_FLAG)
         pY.style = Paint.Style.FILL
@@ -206,15 +186,15 @@ class AnalizRasxodDraw {
         pT.textSize = 10.pxF
         pT.textAlign = Paint.Align.RIGHT
         var i = 0
-        p1.color = Color.RED.toMyColorARGB().plusWhite().plusWhite().toIntColor()// myColorRaduga(color).toIntColor()
-        p3.color = Color.WHITE.toMyColorARGB().plusWhite().plusWhite().toIntColor()// myColorRaduga(color).toIntColor()
+        p1.color = Color.RED.toMyColorARGB().plusWhite().plusWhite().toIntColor()
+        p3.color = Color.WHITE.toMyColorARGB().plusWhite().plusWhite().toIntColor()
         p2.color = Color.GREEN.toMyColorARGB().toIntColor()
         var textPath = Path()
 
         /**
          * Отрисовка полосок между годами
          * */
-        var date = sumOperWeek.firstOrNull()?.data?.let{ Date(sumOperWeek.first().data).format("yyyy")} ?: "0000"
+        var date = sumOperWeek.firstOrNull()?.data?.let { Date(sumOperWeek.first().data).format("yyyy") } ?: "0000"
         var num = 0
         var key = false
         for (item in sumOperWeek) {
@@ -242,9 +222,20 @@ class AnalizRasxodDraw {
                     pY2
                 )
             }
-            if (num==cur) {
-                bitmapCanvas1.drawLine(num * shag - 1.0F, 20.pxF + otstupVerx / 2 - otstupNiz * 3 / 4, num * shag - 1.0F, hh, p2)
-                bitmapCanvas1.drawCircle(num * shag, hh - otstupNiz - (item.sumCap.toFloat() - minusMin) / diap * hhGraph,4.pxF,p1)
+            if (num == cur) {
+                bitmapCanvas1.drawLine(
+                    num * shag - 1.0F,
+                    20.pxF + otstupVerx / 2 - otstupNiz * 3 / 4,
+                    num * shag - 1.0F,
+                    hh,
+                    p2
+                )
+                bitmapCanvas1.drawCircle(
+                    num * shag,
+                    hh - otstupNiz - (item.sumCap.toFloat() - minusMin) / diap * hhGraph,
+                    4.pxF,
+                    p1
+                )
                 textPath.reset()
                 textPath.moveTo(10.pxF + num * shag, 56.pxF)
                 textPath.lineTo(100.pxF + num * shag, 56.pxF)
@@ -281,22 +272,12 @@ class AnalizRasxodDraw {
             p1
         )
 
-
-
         graf.moveTo(0.0F, hh - otstupNiz + minusMin / diap * hhGraph)
         for (item in sumOperWeek) {
             graf.lineTo(i * shag, hh - otstupNiz - (item.sumCap.toFloat() - minusMin) / diap * hhGraph)
-//            Log.d("MyPath", "yy week: ${hh - otstupNiz - (item.sumCap.toFloat() - minusMin) / diap * hhGraph}")
-
-//            textPath.reset()
-//            textPath.moveTo(22.pxF+i*shir.pxF,24.pxF + maxVal*2)
-//            textPath.lineTo(22.pxF+i*shir.pxF,24.pxF + maxVal)
-//            bitmapCanvas1.drawTextOnPath("( ${type.summa.roundToStringProb(2)} ) ${type.month}",textPath,0F,0F,pT)//16.pxF,9.pxF + i*30.pxF,pT)//+pT.textSize/3
             i++
         }
 
-//        Log.d("MyPath", "count week: ${sumOperWeek.count()}")
-//        graf.close()
         bitmapCanvas1.drawPath(graf, p3)
         bitmapCanvas1.drawPath(graf, p2)
         var paintDst = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -324,14 +305,14 @@ class AnalizRasxodDraw {
         pT.color = Color.WHITE
         pT.textSize = 10.pxF
         pT.textAlign = Paint.Align.RIGHT
-//        p2.textAlign = Paint.Align.CENTER
+
         var delta = 0F
         var dd =
             1024 / (if (sectorDiag.filter { it.procent > 0.02 }.count() != 0) sectorDiag.filter { it.procent > 0.02 }
                 .count() + 1 else 1)
         var color = 0
         var i = 0
-        p1.color = Color.RED.toMyColorARGB().plusWhite().plusWhite().toIntColor()// myColorRaduga(color).toIntColor()
+        p1.color = Color.RED.toMyColorARGB().plusWhite().plusWhite().toIntColor()
         p2.color = Color.RED.toMyColorARGB().toIntColor()
         var textPath = Path()
         for (type in rectDiag.asReversed()) {
@@ -351,20 +332,18 @@ class AnalizRasxodDraw {
                     16.pxF + maxVal * (1 - type.procent.toFloat())
                 ), 0F, 0F, p2
             )
-//            bitmapCanvas1.drawRoundRect(RectF(16.pxF,12.pxF+i*30.pxF, 16.pxF + (canvas.width - 16.pxF)*type.procent.toFloat(), 25.pxF + i*30.pxF),0F,0F,p2)
 
             textPath.reset()
             textPath.moveTo(22.pxF + i * shir.pxF, 24.pxF + maxVal * 2)
             textPath.lineTo(22.pxF + i * shir.pxF, 24.pxF + maxVal)
-//            textPath.moveTo(16.pxF+i*shir.pxF,16.pxF + maxVal)
-//            textPath.lineTo(16.pxF+i*shir.pxF,16.pxF + maxVal*2)
+
             bitmapCanvas1.drawTextOnPath(
                 "( ${type.summa.roundToStringProb(2)} ) ${type.month}",
                 textPath,
                 0F,
                 0F,
                 pT
-            )//16.pxF,9.pxF + i*30.pxF,pT)//+pT.textSize/3
+            )
             i++
             color += dd
         }
@@ -416,9 +395,9 @@ class AnalizRasxodDraw {
         p4.strokeWidth = 1.pxF
 
         var i = 0
-        p1.color = Color.RED.toMyColorARGB().plusWhite().plusWhite().toIntColor()// myColorRaduga(color).toIntColor()
+        p1.color = Color.RED.toMyColorARGB().plusWhite().plusWhite().toIntColor()
         p2.color = Color.RED.toMyColorARGB().toIntColor()
-        p3.color = Color.GREEN.toMyColorARGB().plusWhite().plusWhite().toIntColor()// myColorRaduga(color).toIntColor()
+        p3.color = Color.GREEN.toMyColorARGB().plusWhite().plusWhite().toIntColor()
         p4.color = MyColorARGB.DOXODDARKGREEN.toIntColor()
         var textPath = Path()
         for (type in twoRectDiag.asReversed()) {
@@ -459,15 +438,14 @@ class AnalizRasxodDraw {
                 textPath.reset()
                 textPath.moveTo(20.pxF + i * shir.pxF, 24.pxF)
                 textPath.lineTo(70.pxF + i * shir.pxF, 24.pxF)
-//            textPath.moveTo(16.pxF+i*shir.pxF,16.pxF + maxVal)
-//            textPath.lineTo(16.pxF+i*shir.pxF,16.pxF + maxVal*2)
+
                 bitmapCanvas1.drawTextOnPath(
                     "${type.year}",
                     textPath,
                     0F,
                     0F,
                     pY
-                )//16.pxF,9.pxF + i*30.pxF,pT)//+pT.textSize/3
+                )
                 textPath.reset()
                 textPath.moveTo(20.pxF + i * shir.pxF, 40.pxF)
                 textPath.lineTo(100.pxF + i * shir.pxF, 40.pxF)
@@ -477,7 +455,7 @@ class AnalizRasxodDraw {
                     0F,
                     0F,
                     pY3
-                )//16.pxF,9.pxF + i*30.pxF,pT)//+pT.textSize/3
+                )
                 textPath.reset()
                 textPath.moveTo(20.pxF + i * shir.pxF, 56.pxF)
                 textPath.lineTo(100.pxF + i * shir.pxF, 56.pxF)
@@ -487,22 +465,20 @@ class AnalizRasxodDraw {
                     0F,
                     0F,
                     pY2
-                )//16.pxF,9.pxF + i*30.pxF,pT)//+pT.textSize/3
+                )
             }
-//            bitmapCanvas1.drawRoundRect(RectF(16.pxF,12.pxF+i*30.pxF, 16.pxF + (canvas.width - 16.pxF)*type.procent.toFloat(), 25.pxF + i*30.pxF),0F,0F,p2)
 
             textPath.reset()
             textPath.moveTo(24.pxF + i * shir.pxF, 24.pxF + maxVal * 2.5F)
             textPath.lineTo(24.pxF + i * shir.pxF, 24.pxF + maxVal)
-//            textPath.moveTo(16.pxF+i*shir.pxF,16.pxF + maxVal)
-//            textPath.lineTo(16.pxF+i*shir.pxF,16.pxF + maxVal*2)
+
             bitmapCanvas1.drawTextOnPath(
                 "( ${type.summarasx.roundToStringProb(2)}/${type.summadox.roundToStringProb(2)} ) ${type.monthyear}",
                 textPath,
                 0F,
                 0F,
                 pT
-            )//16.pxF,9.pxF + i*30.pxF,pT)//+pT.textSize/3
+            )
             i++
         }
         var paintDst = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -518,7 +494,7 @@ class AnalizRasxodDraw {
 
         var p1 = Paint(Paint.ANTI_ALIAS_FLAG)
         p1.style = Paint.Style.FILL
-        p1.color = Color.GREEN.toMyColorARGB().plusWhite().plusWhite().toIntColor()// myColorRaduga(color).toIntColor()
+        p1.color = Color.GREEN.toMyColorARGB().plusWhite().plusWhite().toIntColor()
         p1.setShadowLayer(3.0F, 2.0F, 2.0F, Color.BLACK)
 
         var p2 = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -527,27 +503,25 @@ class AnalizRasxodDraw {
         p2.color = Color.WHITE
         p2.setShadowLayer(3.0F, 2.0F, 2.0F, Color.BLACK)
 
-
         var pT = Paint(Paint.ANTI_ALIAS_FLAG)
         pT.style = Paint.Style.FILL
         pT.color = Color.WHITE
         pT.textSize = 12.pxF
         pT.setShadowLayer(3.0F, 2.0F, 2.0F, Color.BLACK)
-//        p2.textAlign = Paint.Align.CENTER
 
         var i = 0
         var koef = 0F
-//        p2.color = Color.RED.toMyColorARGB().plusWhite().toIntColor()
+
         for (schet in sumOnSchet) {
-//            bitmapCanvas1.drawRoundRect(RectF(16.pxF,12.pxF+i*30.pxF, 16.pxF + (canvas.width - 16.pxF)*schet.procent.toFloat(), 25.pxF + i*30.pxF),0F,0F,p1)
+
             if (schet.procent > 0) {
                 koef = schet.procent.toFloat()
                 p1.color =
-                    Color.GREEN.toMyColorARGB().plusWhite().plusWhite().toIntColor()// myColorRaduga(color).toIntColor()
+                    Color.GREEN.toMyColorARGB().plusWhite().plusWhite().toIntColor()
             } else {
                 koef = -schet.procent.toFloat()
                 p1.color =
-                    Color.RED.toMyColorARGB().plusWhite().plusWhite().toIntColor()// myColorRaduga(color).toIntColor()
+                    Color.RED.toMyColorARGB().plusWhite().plusWhite().toIntColor()
             }
             bitmapCanvas1.drawRoundRect(
                 RectF(
@@ -557,7 +531,7 @@ class AnalizRasxodDraw {
                     60.pxF + i * sumOnSchetHeight.pxF
                 ), 0F, 0F, p1
             )
-//            bitmapCanvas1.drawRoundRect(RectF(16.pxF,12.pxF+i*30.pxF, 16.pxF + (canvas.width - 16.pxF)*schet.procent.toFloat(), 25.pxF + i*30.pxF),0F,0F,p2)
+
             bitmapCanvas1.drawRoundRect(
                 RectF(
                     16.pxF,
@@ -571,13 +545,13 @@ class AnalizRasxodDraw {
                 24.pxF,
                 12.pxF + i * sumOnSchetHeight.pxF + pT.textSize,
                 pT
-            )//+pT.textSize/3
+            )
             bitmapCanvas1.drawText(
                 schet.summaStr,
                 24.pxF,
                 16.pxF + i * sumOnSchetHeight.pxF + pT.textSize * 2,
                 pT
-            )//+pT.textSize/3
+            )
             i++
         }
         var paintDst = Paint(Paint.ANTI_ALIAS_FLAG)

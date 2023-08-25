@@ -13,4 +13,4 @@ data class ItemSectorDiag(
     val angle: Float,
     val delta: Float,
     val color: MyColorFloatARGB
-): Id_class (id_main = id), Parcelable
+) : Id_class(id_main = id), Parcelable

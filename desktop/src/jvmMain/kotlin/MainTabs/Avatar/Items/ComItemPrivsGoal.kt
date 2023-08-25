@@ -1,7 +1,10 @@
 package MainTabs.Avatar.Items
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.mouseClickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
@@ -32,9 +35,7 @@ class ComItemPrivsGoal(
 
     val expandedDropMenu = mutableStateOf(false)
     val progressGotov = mutableStateOf((item.gotov / 100f).toFloat())
-
     val expandedOpis = mutableStateOf(!item.sver)
-
     val text_sum_hour = mutableStateOf("${item.hour.roundToStringProb(1)} ч.")
 
     @OptIn(ExperimentalFoundationApi::class)
@@ -43,7 +44,6 @@ class ComItemPrivsGoal(
         MyCardStyle1(selection.isActive(item), 0, {
             selection.selected = item
             selFun(item)
-//            expandedDropMenu.value = this.buttons.isSecondaryPressed
         },
             dropMenu = { exp -> dropMenu(item, exp) },
             onDoubleClick = {
@@ -53,9 +53,9 @@ class ComItemPrivsGoal(
         ) {
             Column {
 
-                RowVA(Modifier.padding(3.dp).padding(end = 5.dp)) { //
+                RowVA(Modifier.padding(3.dp).padding(end = 5.dp)) {
                     Image(
-                        bitmap = useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                        bitmap = useResource("ic_stat_00.png", ::loadImageBitmap),
                         "statPrivsPlan",
                         Modifier
                             .height(50.dp)
@@ -88,7 +88,7 @@ class ComItemPrivsGoal(
                             .border(
                                 width = 0.5.dp,
                                 brush = Brush.horizontalGradient(listOf(Color.Yellow, Color.Yellow)),
-                                shape = RoundedCornerShape(0.dp) //if (it.type != TypeBindElementForSchetPlan.GOAL) 5.dp else
+                                shape = RoundedCornerShape(0.dp)
                             )
                             .padding(2.dp)
                             .padding(horizontal = 2.dp),
@@ -117,7 +117,7 @@ class ComItemPrivsGoal(
                             if (editable && selection.isActive(item)) MyButtDropdownMenuStyle2(
                                 Modifier.padding(vertical = 0.dp),
                                 expandedDropMenu
-                            ) {// setDissFun ->
+                            ) {
                                 dropMenu(item, expandedDropMenu)
                             }
                             if (item.opis != "") RotationButtStyle1(
@@ -129,8 +129,7 @@ class ComItemPrivsGoal(
                         }
                         LinearProgressIndicator(
                             progress = (item.gotov / 100f).toFloat(),
-                            modifier = Modifier.padding(vertical = 5.dp)
-                            ,
+                            modifier = Modifier.padding(vertical = 5.dp),
                             Color.Green,
                             Color(0x6FFF8888)
                         )

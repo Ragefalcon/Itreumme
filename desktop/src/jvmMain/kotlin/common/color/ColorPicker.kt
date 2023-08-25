@@ -44,8 +44,6 @@ import kotlin.math.roundToInt
 class ColorPicker() {
 
 
-//    val selectColor: MutableState<MyColorARGB> = mutableStateOf(MyColorARGB(255, 128, 128, 128))
-
     var colorEdit: MutableState<MyColorARGB> = mutableStateOf(MyColorARGB(255, 128, 128, 128))
 
     private val offsetX = mutableStateOf(127.dp)
@@ -121,8 +119,7 @@ class ColorPicker() {
     @Composable
     private fun spisColorLibrary() {
         MainDB.editStyleSpis.spisColorLibrary.getState().value?.let {
-            println("testttt ColorLibraryList")
-            MyListRow(it, Modifier.padding(horizontal = 20.dp).padding(bottom = 10.dp)) { ind, item -> //ind,
+            MyListRow(it, Modifier.padding(horizontal = 20.dp).padding(bottom = 10.dp)) { ind, item ->
                 ComItemColorLibrary(item, doubleClick = {
                     aColor.value = it.color.A.toFloat()
                     rColor.value = it.color.R.toFloat()
@@ -156,14 +153,6 @@ class ColorPicker() {
             }
             MainDB.editStyleSpis.spisSetColorLibrary.getState().value?.let { list ->
                 if (list.isNotEmpty()) {
-//                    CB_spisSetColorLibrary.getSelected()?.let {
-//                        MyDeleteButton {
-//                            println("delete button test")
-//                            CB_spisSetColorLibrary.getSelected()?.let { selSet ->
-//                                MainDB.addEditStyle.delSetColorLibrary(selSet.id)
-//                            }
-//                        }
-//                    }
                     CB_spisSetColorLibrary.show(Modifier.padding(horizontal = 15.dp))
                     MyButtDropdownMenuStyle1(
                         Modifier.padding(start = 0.dp), expandedDropMenu
@@ -195,22 +184,6 @@ class ColorPicker() {
     private fun colorToHexString(color: Color): String =
         java.lang.String.format("%08X", 0xFFFFFFFF and color.toArgb().toLong()) ?: "FF000000"
 
-//    private enum class MainChanel {
-//        R, G, B
-//    }
-
-/*
-    private val typeBox = DiskretSeekBar(
-        listOf(
-            "R(GB)" to "R",
-            "G(RB)" to "G",
-            "B(RG)" to "B",
-        ), "R"
-    ) {
-        println("test listener diskretSeekBar")
-        changeFromRGB()
-    }
-*/
 
     @Composable
     private fun currentColor() {
@@ -229,12 +202,6 @@ class ColorPicker() {
                         style = MyTextStyleParam.style2.copy(fontSize = 14.sp)
                     )
                 }
-//                SelectionContainer {
-//                    MyTextStyle(
-//                        "#${colorToHexString(getColor())}",
-//                        param = MyTextStyleParam.style2.copy(fontSize = 14.sp)
-//                    )
-//                }
                 SelectionContainer {
                     Text(
                         "#${getColorMyARGB().toHexString()}",
@@ -274,9 +241,9 @@ class ColorPicker() {
                     aColor,
                     Color.White,
                     Modifier.padding(5.dp),
-                    { vv -> "${(vv / 255f * 100f).toInt()}%" }){
+                    { vv -> "${(vv / 255f * 100f).toInt()}%" }) {
                     colorEdit.value = getColorMyARGB()
-//                    changeFromRGB()
+
                 }
                 RowVA {
                     MyOutlinedTextField(
@@ -292,7 +259,6 @@ class ColorPicker() {
                         gColor.value = aa.G.toFloat()
                         bColor.value = aa.B.toFloat()
                         changeFromRGB()
-//                                    rezEdit(editText.value.text)
                     }
                 }
             }
@@ -328,14 +294,13 @@ class ColorPicker() {
         }
     }
 
-    fun setColorEditObj(colEdit: MutableState<MyColorARGB>){
+    fun setColorEditObj(colEdit: MutableState<MyColorARGB>) {
         colorEdit = colEdit
         if (colEdit.value != getColorMyARGB()) {
             aColor.value = colorEdit.value.A.toFloat()
             rColor.value = colorEdit.value.R.toFloat()
             gColor.value = colorEdit.value.G.toFloat()
             bColor.value = colorEdit.value.B.toFloat()
-            println("setColorEditObj")
             changeFromRGB(updColorEdit = false)
         }
     }
@@ -402,10 +367,12 @@ class ColorPicker() {
                 gColor.value = colorValueFromOffset(offsetX) / 1.dp
                 bColor.value = colorValueFromOffset(offsetY) / 1.dp
             }
+
             MainChanel.G -> {
                 rColor.value = colorValueFromOffset(offsetX) / 1.dp
                 bColor.value = colorValueFromOffset(offsetY) / 1.dp
             }
+
             MainChanel.B -> {
                 rColor.value = colorValueFromOffset(offsetX) / 1.dp
                 gColor.value = colorValueFromOffset(offsetY) / 1.dp
@@ -424,7 +391,7 @@ class ColorPicker() {
     private fun colorBox(alpha: Int = 255) {
         with(LocalDensity.current) {
             val interactionSource = remember { MutableInteractionSource() }
-            val isPressed by interactionSource.collectIsPressedAsState() // .collectIsHoveredAsState()
+            val isPressed by interactionSource.collectIsPressedAsState()
             var r = 0
             var g = 0
             var b = 0
@@ -435,11 +402,13 @@ class ColorPicker() {
                         g = w
                         b = h
                     }
+
                     MainChanel.G -> {
                         r = w
                         g = gColor.value.toInt()
                         b = h
                     }
+
                     MainChanel.B -> {
                         r = w
                         g = h
@@ -451,9 +420,9 @@ class ColorPicker() {
                 Canvas(modifier = Modifier.width(256.dp).height(256.dp)
                     .clickable(
                         interactionSource = interactionSource,
-                        indication = null, //LocalIndication.current,
-//                        enabled = false
-                    ) {
+                        indication = null,
+
+                        ) {
                         offsetX.value = cursorPosition.value.x.toDp()
                         offsetY.value = cursorPosition.value.y.toDp()
                         updateFromOffset()
@@ -465,7 +434,7 @@ class ColorPicker() {
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDragEnd = {
-//                                    updateImage.value = true
+
                             }
                         ) { change, dragAmount ->
                             if (offsetX.value + dragAmount.x.toDp() <= 256.dp && offsetX.value + dragAmount.x.toDp() >= 0.dp) offsetX.value += dragAmount.x.toDp()
@@ -486,16 +455,6 @@ class ColorPicker() {
                             Offset(iw.dp.toPx(), 0.dp.toPx()),
                             Size(1.dp.toPx(), 256.dp.toPx())
                         )
-/*
-                        for (ih in 0..255) {
-                            rr(iw, ih)
-                            drawRect(
-                                MyColorARGB(alpha, r, g, b).toColor(),
-                                Offset(iw.dp.toPx(), ih.dp.toPx()),
-                                Size(1.dp.toPx(), 1.dp.toPx())
-                            )
-                        }
-*/
                     }
                 }
                 Surface(
@@ -515,10 +474,10 @@ class ColorPicker() {
                         .pointerInput(Unit) {
                             detectDragGestures(
                                 onDragEnd = {
-//                                    updateImage.value = true
+
                                 }
                             ) { change, dragAmount ->
-//                                second = false
+
                                 if (offsetX.value + dragAmount.x.toDp() <= 256.dp && offsetX.value + dragAmount.x.toDp() >= 0.dp) offsetX.value += dragAmount.x.toDp()
                                 if (offsetY.value + dragAmount.y.toDp() <= 256.dp && offsetY.value + dragAmount.y.toDp() >= 0.dp) offsetY.value += dragAmount.y.toDp()
                                 updateFromOffset()
@@ -533,10 +492,10 @@ class ColorPicker() {
     }
 
     private fun getAngle(x: Float, y: Float): Double {
-        return 0.5 * Math.PI - atan2( //
+        return 0.5 * Math.PI - atan2(
             x.toDouble(),
             y.toDouble()
-        ) //note the atan2 call, the order of paramers is y then x
+        )
     }
 
     @OptIn(ExperimentalComposeUiApi::class)
@@ -582,7 +541,7 @@ class ColorPicker() {
                 }
                 rotate(hColor.value / 255f * 360f, Offset(128.dp.toPx(), 128.dp.toPx())) {
                     drawRect(
-                        Color.White, //.copy(0.5f),
+                        Color.White,
                         Offset(128.dp.toPx(), -5.dp.toPx()), Size(3.dp.toPx(), shir + 10.dp.toPx()),
                         style = Stroke(1.5.dp.toPx())
                     )
@@ -595,7 +554,7 @@ class ColorPicker() {
     @Composable
     private fun colorSaturationBox(
         modifier: Modifier = Modifier
-    ) { //valueMain: Int, alpha: Int = 255
+    ) {
         with(LocalDensity.current) {
             val shirDp = 40.dp
             val shir = shirDp.toPx()
@@ -604,7 +563,7 @@ class ColorPicker() {
                     interactionSource = MutableInteractionSource(),
                     indication = null
                 ) {
-                    sColor.value = maxOf(0f, minOf(cursorPositionS.value.x / 1.dp.toPx(), 255f)) // - padding.toPx()
+                    sColor.value = maxOf(0f, minOf(cursorPositionS.value.x / 1.dp.toPx(), 255f))
                     changeFromHSL()
                 }
                 .pointerMoveFilter(onMove = {
@@ -613,9 +572,9 @@ class ColorPicker() {
                 })
                 .pointerInput(Unit) {
                     detectDragGestures() { change, dragAmount ->
-//                        sColor.value = maxOf(0f, minOf(cursorPositionS.value.x / 1.dp.toPx(), 255f)) // - padding.toPx()
+
                         sColor.value =
-                            maxOf(0f, minOf(sColor.value + dragAmount.x / 1.dp.toPx(), 255f)) // - padding.toPx()
+                            maxOf(0f, minOf(sColor.value + dragAmount.x / 1.dp.toPx(), 255f))
                         changeFromHSL()
                     }
                 }
@@ -628,7 +587,7 @@ class ColorPicker() {
                     )
                 }
                 drawRect(
-                    Color.White, //.copy(0.5f),
+                    Color.White,
                     Offset((sColor.value.dp - 1.5.dp).toPx(), -5.dp.toPx()), Size(3.dp.toPx(), shir + 10.dp.toPx()),
                     style = Stroke(1.5.dp.toPx())
                 )
@@ -648,7 +607,7 @@ class ColorPicker() {
                     interactionSource = MutableInteractionSource(),
                     indication = null
                 ) {
-                    lColor.value = maxOf(0f, minOf(cursorPositionL.value.x / 1.dp.toPx(), 255f)) // - padding.toPx()
+                    lColor.value = maxOf(0f, minOf(cursorPositionL.value.x / 1.dp.toPx(), 255f))
                     changeFromHSL()
                 }
                 .pointerMoveFilter(onMove = {
@@ -658,7 +617,7 @@ class ColorPicker() {
                 .pointerInput(Unit) {
                     detectDragGestures() { change, dragAmount ->
                         lColor.value =
-                            maxOf(0f, minOf(lColor.value + dragAmount.x / 1.dp.toPx(), 255f)) // - padding.toPx()
+                            maxOf(0f, minOf(lColor.value + dragAmount.x / 1.dp.toPx(), 255f))
                         changeFromHSL()
                     }
                 }
@@ -671,7 +630,7 @@ class ColorPicker() {
                     )
                 }
                 drawRect(
-                    Color.White, //.copy(0.5f),
+                    Color.White,
                     Offset((lColor.value.dp - 1.5.dp).toPx(), -5.dp.toPx()), Size(3.dp.toPx(), shir + 10.dp.toPx()),
                     style = Stroke(1.5.dp.toPx())
                 )
@@ -696,14 +655,14 @@ class ColorPicker() {
                     onValueChange?.invoke(it)
                 },
                 onValueChangeFinished = {
-//                        changeGotov?.invoke(item, redColor.value)
+
                 },
                 colors = SliderDefaults.colors(
-                    thumbColor = colorVyp, //MaterialTheme.colors.primary,
+                    thumbColor = colorVyp,
                     disabledThumbColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
                         .compositeOver(MaterialTheme.colors.surface),
-                    activeTrackColor = colorVyp, //MaterialTheme.colors.primary,
-                    inactiveTrackColor = Color(0x6FFF8888), //activeTrackColor.copy(alpha = InactiveTrackAlpha),
+                    activeTrackColor = colorVyp,
+                    inactiveTrackColor = Color(0x6FFF8888),
                     disabledActiveTrackColor = MaterialTheme.colors.onSurface.copy(alpha = SliderDefaults.DisabledActiveTrackAlpha),
                     disabledInactiveTrackColor = MaterialTheme.colors.onSurface.copy(
                         alpha = SliderDefaults.DisabledInactiveTrackAlpha
@@ -745,7 +704,7 @@ fun hslToRgb(h: Float, s: Float, l: Float): IntArray? {
     if (s == 0f) {
         b = l
         g = b
-        r = g // achromatic
+        r = g
     } else {
         val q = if (l < 0.5f) l * (1 + s) else l + s - l * s
         val p = 2 * l - q

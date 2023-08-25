@@ -2,7 +2,6 @@ package MainTabs.Time.Items
 
 import MainTabs.Time.Elements.PanAddNextAction
 import MyDialog.MyDialogLayout
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -13,21 +12,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.*
 import extensions.*
-import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 import ru.ragefalcon.sharedcode.models.data.ItemNextAction
 import ru.ragefalcon.sharedcode.models.data.ItemNextActionCommon
 import ru.ragefalcon.sharedcode.source.disk.getValue
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlanStap
 import viewmodel.MainDB
 
 @Composable
@@ -36,8 +29,7 @@ fun ComItemNextActionCommon(
     selection: SingleSelectionType<ItemNextAction>,
     sort: MutableState<Boolean>,
     onClick: (ItemNextActionCommon) -> Unit,
-    doubleClick: (ItemNextActionCommon,()->Unit) -> Unit,
-//    itemRasxDoxStyleState: StyleVMspis.InterfaceState.ItemRasxDoxOperStyle,
+    doubleClick: (ItemNextActionCommon, () -> Unit) -> Unit,
     dialL: MyDialogLayout
 ) {
     val itemCommonStyle: CommonItemStyleState = CommonItemStyleState(
@@ -63,7 +55,7 @@ fun ComItemNextActionCommon(
             style = itemCommonStyle.dropdown,
             "Запланировать и удалить"
         ) {
-            doubleClick(item){
+            doubleClick(item) {
                 MainDB.addTime.delNextAction(item.common_id) {
                     MainDB.complexOpisSpis.spisComplexOpisForNextActionCommon.delAllImageForItem(it)
                 }
@@ -113,9 +105,9 @@ fun ComItemNextActionCommon(
                 onClick(item)
             },
             onDoubleClick = {
-                doubleClick(item){}
+                doubleClick(item) {}
             },
-//            modifier = modifier,
+
             dropMenu = { dropMenu(item, it) },
             styleSettings = itemCommonStyle
         ) {
@@ -175,7 +167,7 @@ fun ComItemNextActionCommon(
                                             "${item.namePlan}${if (item.nameStap != "") " -> [${item.nameStap}]" else ""}"
                                         MyShadowBox(
                                             shadow_priv_plan,
-//                                        Modifier.padding(start = 15.dp),//.weight(1f),
+
                                             contentAlignment = Alignment.Center
                                         ) {
                                             Text(
@@ -202,10 +194,10 @@ fun ComItemNextActionCommon(
                                 expandedDropMenu,
                                 buttMenu,
                                 dropdown
-                            ) { //setDissFun ->
+                            ) {
                                 dropMenu(item, expandedDropMenu)
                             } else Spacer(Modifier.width(30.dp))
-                            listOpis?.also {  //if (item.opis != "")
+                            listOpis?.also {
                                 RotationButtStyle1(
                                     expandedOpis,
                                     Modifier.padding(start = 0.dp, end = 0.dp),

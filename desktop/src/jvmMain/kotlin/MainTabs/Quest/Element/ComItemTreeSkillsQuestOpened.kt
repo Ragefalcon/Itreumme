@@ -1,6 +1,5 @@
 package MainTabs.Quest.Element
 
-import androidx.compose.material.Text
 import MainTabs.Quest.Items.ComItemLevelCommonTreeSkillsQuest
 import MainTabs.Quest.Items.ComItemLevelTreeSkillsQuest
 import MainTabs.Quest.Items.ComItemNodeTreeSkillsQuest
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.mouseClickable
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +35,7 @@ class ComItemTreeSkillsQuestOpened(
     val questDB: QuestDB,
     val itemTS: ItemTreeSkillsQuest,
     val selection: SingleSelectionType<ItemTreeSkillsQuest>,
-//    val doubleClick: (ItemTreeSkillsQuest)->Unit = {},
+
     val openTree: (ItemTreeSkillsQuest) -> Unit = {},
     val dropMenu: @Composable ColumnScope.(ItemTreeSkillsQuest, MutableState<Boolean>) -> Unit = { _, _ -> }
 ) {
@@ -47,24 +47,15 @@ class ComItemTreeSkillsQuestOpened(
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
-//        rememberCoroutineScope().launch {
-//            delay(10)
-//            println("expandedOpis.value = true")
-//            expandedOpis.value = true
-//        }
         MyCardStyle1(false, 0, {
-//            selection.selected = itemTS
         }, {
-//            item.sver = item.sver.not()
-//            expandedOpis.value = !expandedOpis.value
         },
             backColor = MyColorARGB.colorMyMainTheme.toColor(),
             dropMenu = { exp -> dropMenu(itemTS, exp) }
         ) {
-
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 RowVA(Modifier.mouseDoubleClick({}, onDoubleClick = { openTree(itemTS) })) {
-                IconNode(
+                    IconNode(
                         File(System.getProperty("user.dir"), "Quests").path,
                         "${itemTS.icon}.jpg",
                         "free-icon-tree-shape-42090.png",
@@ -84,7 +75,7 @@ class ComItemTreeSkillsQuestOpened(
                                 openTree(itemTS)
                             })
                 }
-                questDB.spisQuest.spisNodeTreeSkills.getState().value?.let {  spisNodeTreeSkills ->
+                questDB.spisQuest.spisNodeTreeSkills.getState().value?.let { spisNodeTreeSkills ->
                     BoxExpand(
                         expandedOpis,
                         Modifier.myModWithBound1(),
@@ -120,6 +111,7 @@ class ComItemTreeSkillsQuestOpened(
                                         )
                                     }
                                 }
+
                                 TypeTreeSkills.LEVELS -> {
                                     MyList(
                                         questDB.spisQuest.spisLevelTreeSkills,
@@ -156,6 +148,7 @@ class ComItemTreeSkillsQuestOpened(
                                         PanAddLevelTreeSkillsQuest(dialLay, questDB, itemTS.id)
                                     }
                                 }
+
                                 TypeTreeSkills.TREE -> {
                                     spisNodeTreeSkills.toList()?.sortedBy { it.first }
                                         ?.let { listLevels ->
@@ -185,6 +178,7 @@ class ComItemTreeSkillsQuestOpened(
                                         )
                                     }
                                 }
+
                                 null -> {
 
                                 }
@@ -192,7 +186,6 @@ class ComItemTreeSkillsQuestOpened(
                         }
                     }
                 }
-//                }
             }
         }
     }

@@ -11,23 +11,26 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.skia.ImageFilter
 
 @Composable
-fun MyShadowBox(shadow: Shadow, modifier: Modifier = Modifier, contentAlignment: Alignment = Alignment.Center, content: @Composable BoxScope.() -> Unit) {
+fun MyShadowBox(
+    shadow: Shadow,
+    modifier: Modifier = Modifier,
+    contentAlignment: Alignment = Alignment.Center,
+    content: @Composable BoxScope.() -> Unit
+) {
     with(LocalDensity.current) {
         Box(
             modifier
                 .graphicsLayer(
                     renderEffect = ImageFilter.makeDropShadow(
-                        shadow.offset.x.dp.toPx(), //2.dp.toPx(), //
-                        shadow.offset.y.dp.toPx(), //2.dp.toPx(), //
+                        shadow.offset.x.dp.toPx(),
+                        shadow.offset.y.dp.toPx(),
                         shadow.blurRadius.dp.toPx(),
                         shadow.blurRadius.dp.toPx(),
                         shadow.color.toArgb()
                     )
-                        .asComposeRenderEffect() // .makeBlur(elevation.toPx(), elevation.toPx(), FilterTileMode.REPEAT).asComposeRenderEffect()
+                        .asComposeRenderEffect()
                 ),
-//            propagateMinConstraints = true,
             contentAlignment = contentAlignment
-
         ) {
             content()
         }

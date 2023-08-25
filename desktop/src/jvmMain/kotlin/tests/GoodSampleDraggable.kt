@@ -16,13 +16,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import org.junit.Test
 import kotlin.math.roundToInt
 
 @Composable
 fun GoodSampleDraggable() {
     val coroutineScope = rememberCoroutineScope()
-            val offsetY = remember { Animatable(300f) }
+    val offsetY = remember { Animatable(300f) }
     Box(contentAlignment = Alignment.TopCenter, modifier = Modifier.fillMaxSize()) {
         Surface(
             color = Color(0xFF34AB52),

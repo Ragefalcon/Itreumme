@@ -8,9 +8,9 @@ import ru.ragefalcon.sharedcode.models.data.itemQuest.ItemDialogQuestEvent
 import ru.ragefalcon.sharedcode.models.data.itemQuest.ItemOtvetDialogQuest
 import ru.ragefalcon.sharedcode.models.data.itemQuest.ItemQuestTrigger
 import ru.ragefalcon.sharedcode.quest.*
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeDialogMessage
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.InnerDialogs.InnerFinishTriggerEnum
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers.SpisQueryForListener
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeDialogMessage
 import ru.ragefalcon.sharedcode.viewmodels.UniAdapters.CommonObserveObj
 import ru.ragefalcon.sharedcode.viewmodels.UniAdapters.MyObserveObj
 import ru.ragefalcon.sharedcode.viewmodels.UniAdapters.UniConvertQueryAdapter
@@ -28,8 +28,6 @@ class LoadQuestVMobjForSpis(private val mDB: Database, private val spisQueryList
         dialogEventValue = newDialog
         newDialog?.let {
             if (it.type_message == TypeDialogMessage.QUESTDIALOG.code) {
-//                val quest_id = newDialog?.subtype_id ?: -1
-//                val dialog_id = newDialog?.key_id ?: -1
                 spisOtvetDialogForEvent.updateQuery(
                     mDB.spisOtvetDialogQuestQueries.selectForDialog(
                         newDialog.subtype_id,

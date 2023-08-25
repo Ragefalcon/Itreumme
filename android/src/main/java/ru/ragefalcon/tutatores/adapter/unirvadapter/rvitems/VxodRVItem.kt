@@ -5,7 +5,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import ru.ragefalcon.sharedcode.models.data.ItemVxod
 import ru.ragefalcon.tutatores.R
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemVxodBinding
 import ru.ragefalcon.tutatores.extensions.*
 import java.util.*
@@ -72,20 +73,9 @@ class VxodRVItem(
                         R.color.colorStatTint_05
                     ), android.graphics.PorterDuff.Mode.MULTIPLY
                 )
-                /**
-                 * https://stackoverflow.com/questions/20121938/how-to-set-tint-for-an-image-view-programmatically-in-android/45571812#45571812
-                 *
-                 * У пользователя @Tad есть свой ответ в правильном направлении, но он работает только с API 21+.
-                 * Чтобы установить оттенок на всех версиях Android, используйте ImageViewCompat:
-                 * ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(yourTint));
-                 * Обратите внимание, что yourTintв этом случае должен быть "цвет int". Если у вас есть ресурс цвета, например R.color.blue, вам нужно сначала загрузить цвет int:
-                 * ContextCompat.getColor(context, R.color.blue);
-                 * */
             }
             sverItemOpis(dataIn.sver, false)
             (binding as ItemVxodBinding).ivExpandOpis.setOnClickListener {
-//        iv_stat_dp.setOnClickListener {
-//                svernut = svernut.not()
                 dataIn.sver = dataIn.sver.not()
                 sverItemOpis(dataIn.sver, true)
                 if (vh.itemView.isSelected) {

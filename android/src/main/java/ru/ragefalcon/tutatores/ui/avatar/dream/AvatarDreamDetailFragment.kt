@@ -15,14 +15,10 @@ import ru.ragefalcon.tutatores.extensions.showMyFragDial
 import ru.ragefalcon.tutatores.ui.avatar.PrivsGoalDial
 
 class AvatarDreamDetailFragment() : BaseFragmentVM<FragmentDreamDetailBinding>(FragmentDreamDetailBinding::inflate) {
-
-
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedElementReturnTransition = getMyTransition(end = {
-            Log.d("safsaf", "sharedElementReturnTransition idea")
-        })
+        sharedElementReturnTransition = getMyTransition(end = {})
         sharedElementEnterTransition =  getMyTransition(end = {
             binding.clDreamDetailFrcl.invalidate()
             binding.clDreamDetailFrcl.requestLayout()
@@ -31,9 +27,8 @@ class AvatarDreamDetailFragment() : BaseFragmentVM<FragmentDreamDetailBinding>(F
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        postponeEnterTransition()
-        with(binding) {
 
+        with(binding) {
             buttBack.setOnClickListener {
                 findNavController().navigateUp()
             }
@@ -48,14 +43,12 @@ class AvatarDreamDetailFragment() : BaseFragmentVM<FragmentDreamDetailBinding>(F
                 with(viewmodel) {
                     avatarFun.selectDreamForDiagram(it.id.toLong())
                     avatarFun.setListenerStatikHourDream {
-//                        if (it.count()>0) {
                         rectDiagStatikDream.setItemsYears(it)
                         rectDiagStatikDream.layoutParams = LinearLayout.LayoutParams(
                             rectDiagStatikDream.getWidthRectDiag(),
                             LinearLayout.LayoutParams.MATCH_PARENT
                         )
                         hsvStatikDiag.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
-//                        }
                     }
                     avatarFun.setSelectedDreamListenerForStatistik(it.id.toLong())
                     avatarFun.setListenerHourForStatistikDream{ week, month, year, all, count ->

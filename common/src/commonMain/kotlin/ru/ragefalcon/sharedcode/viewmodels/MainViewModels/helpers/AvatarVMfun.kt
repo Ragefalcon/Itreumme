@@ -90,7 +90,6 @@ class AvatarVMfun(
     }
 
 
-
     private fun setMapHourToUpdF(
         list: List<SelectHourGoalDream>,
         updF: (String, String, String, String, String) -> Unit
@@ -140,7 +139,6 @@ class AvatarVMfun(
      * Устанавливает цель для слушателя обновления статистики по потраченным на цель часам (в неделю, в месяц, в год, всего, количество привязанных проектов)
      * */
     fun setSelectedGoalListenerForStatistik(idGoal: Long) {
-//        mDB.spisGoalQueries.updateTempHourGoal(idGoal)
         selectHourForStatistikGoal.updateQuery(
             mDB.spisGoalQueries.selectHourGoalDream(
                 idGoal,
@@ -153,7 +151,6 @@ class AvatarVMfun(
      * Устанавливает цель для слушателя обновления статистики по потраченным на мечту часам (в неделю, в месяц, в год, всего, количество привязанных проектов)
      * */
     fun setSelectedDreamListenerForStatistik(idGoal: Long) {
-//        mDB.spisGoalQueries.updateTempHourGoal(idGoal)
         selectHourForStatistikDream.updateQuery(
             mDB.spisGoalQueries.selectHourGoalDream(
                 idGoal,
@@ -173,7 +170,11 @@ class AvatarVMfun(
      * Указывает характеристику для списка привязанных к характеристике планов и этапов
      * */
     fun setSelectedIdForPrivsCharacteristic(idCharacteristic: Long) {
-        spisVM.spisPrivsCharacteristic.updateQuery(mDB.spisPlanCharacteristicQueries.selectSpisPlanForCharacteristic(idCharacteristic))
+        spisVM.spisPrivsCharacteristic.updateQuery(
+            mDB.spisPlanCharacteristicQueries.selectSpisPlanForCharacteristic(
+                idCharacteristic
+            )
+        )
     }
 
     /**
@@ -219,8 +220,8 @@ class AvatarVMfun(
 
     private fun setMapStatikToItemYearGraf(statik: List<SelectStatikHourGoal>, updF: (List<ItemYearGraf>) -> Unit) {
         if (statik.isNotEmpty()) {
-            val dateStart: Int = DateTimeTz.fromUnixLocal(statik.firstOrNull()?.data1 ?: 0L).year.year //.unOffset()
-            val dateEnd = DateTimeTz.fromUnixLocal(statik.lastOrNull()?.data1 ?: 0L).year.year //.unOffset()
+            val dateStart: Int = DateTimeTz.fromUnixLocal(statik.firstOrNull()?.data1 ?: 0L).year.year
+            val dateEnd = DateTimeTz.fromUnixLocal(statik.lastOrNull()?.data1 ?: 0L).year.year
             val max = statik.maxOf { it.hour ?: 0.0 }
             val listRez: MutableList<ItemYearGraf> = mutableListOf()
             var aa = 10.0
@@ -229,14 +230,14 @@ class AvatarVMfun(
                     ItemYearGraf(
                         year,
                         statik.filter {
-                            DateTimeTz.fromUnixLocal(it.data1).year.year == year //.unOffset()
+                            DateTimeTz.fromUnixLocal(it.data1).year.year == year
                         }.map {
                             aa = statik.filter {
-                                DateTimeTz.fromUnixLocal(it.data1).year.year == year //.unOffset()
+                                DateTimeTz.fromUnixLocal(it.data1).year.year == year
                             }.sumOf { it.hour ?: 0.0 }
                             ItemRectDiag(
                                 year.toString(),
-                                DateTimeTz.fromUnixLocal(it.data1).month1.toString(), //.unOffset() //.toString( "dd.HH.mm"),//
+                                DateTimeTz.fromUnixLocal(it.data1).month1.toString(),
                                 it.hour ?: 0.0,
                                 aa,
                                 (it.hour ?: 0.0) / max
@@ -288,9 +289,9 @@ class AvatarVMfun(
 
     fun setOpenspisGoals(open: Boolean) {
         if (open) {
-            spisVM.spisGoals.updateQuery(mDB.spisGoalQueries.selectGoals(TypeBindElementForSchetPlan.GOAL.id,-1.0))
+            spisVM.spisGoals.updateQuery(mDB.spisGoalQueries.selectGoals(TypeBindElementForSchetPlan.GOAL.id, -1.0))
         } else {
-            spisVM.spisGoals.updateQuery(mDB.spisGoalQueries.selectGoals(TypeBindElementForSchetPlan.GOAL.id,100.0))
+            spisVM.spisGoals.updateQuery(mDB.spisGoalQueries.selectGoals(TypeBindElementForSchetPlan.GOAL.id, 100.0))
         }
     }
 
@@ -316,11 +317,15 @@ class AvatarVMfun(
                 typeTree.name,
                 codNodeComplete = TypeStatNodeTree.COMPLETE.codValue,
                 id_tree = idTree,
-                id_type_plan =TypeNodeTreeSkills.PLAN.id
+                id_type_plan = TypeNodeTreeSkills.PLAN.id
             )
         )
-        spisVM.spisLevelTreeSkills.updateQuery(mDB.spisLevelTreeSkillsQueries.selectLevelTreeSkill(idTree, cod_node_complete = TypeStatNodeTree.COMPLETE.codValue))
-//        spisVM.spisBindingNodeTreeSkills.updateQuery(mDB.spisBindingNodeTreeSkillsQueries.selectForTree(idTree))
+        spisVM.spisLevelTreeSkills.updateQuery(
+            mDB.spisLevelTreeSkillsQueries.selectLevelTreeSkill(
+                idTree,
+                cod_node_complete = TypeStatNodeTree.COMPLETE.codValue
+            )
+        )
         spisVM.spisWholeBranchParentNodeTreeSkills.updateQuery(
             mDB.spisBindingNodeTreeSkillsQueries.selectWholeBranchParent(
                 idTree
@@ -351,7 +356,7 @@ class AvatarVMfun(
                 }
             }
         }
-        spisVM.spisNodeTreeSkillsSelection.setValue(listNode) // spisVM.getListSelectNodeTreeSkills(rez.toTypedArray()))
+        spisVM.spisNodeTreeSkillsSelection.setValue(listNode)
         return Pair(level, rez.toTypedArray())
     }
 
@@ -457,7 +462,10 @@ class AvatarVMfun(
         }
     }
 
-    private fun setMarkerNodeTreeSkillsForSelection(selected: Array<Long>, marker: MarkerNodeTreeSkills = MarkerNodeTreeSkills.NONE) {
+    private fun setMarkerNodeTreeSkillsForSelection(
+        selected: Array<Long>,
+        marker: MarkerNodeTreeSkills = MarkerNodeTreeSkills.NONE
+    ) {
         spisVM.spisNodeTreeSkillsForSelection.getValue()?.toList()?.forEach {
             it.second.forEach {
                 if (selected.contains(it.id)) it.marker = marker
@@ -491,27 +499,26 @@ class AvatarVMfun(
         }
     }
 
-    fun removeFromProgressCharacteristicsMessage(item: Pair<ItemCharacteristic,Long>){
-        println( spisVM.mutableSpisProgressCharacteristic.remove(item))
+    fun removeFromProgressCharacteristicsMessage(item: Pair<ItemCharacteristic, Long>) {
         spisVM.spisProgressCharacteristicForMessage.setValue(spisVM.mutableSpisProgressCharacteristic.firstOrNull())
-/*
-        if (spisVM.mutableSpisProgressCharacteristic.isEmpty()) spisVM.spisProgressCharacteristicForMessage.setValue(null) else {
-            println(spisVM.mutableSpisProgressCharacteristic.first().first.name)
-            spisVM.spisProgressCharacteristicForMessage.setValue(listOf(spisVM.mutableSpisProgressCharacteristic.first()))
-        }
-*/
     }
 
     /** Минимальное значение характеристики в конце недели за все время */
     fun getMinSumWeekHourOfCharacteristic(): Double {
         return spisVM.minSumWeekHourOfCharacteristic
     }
+
     /** Максимальное значение характеристики в конце недели за все время */
     fun getMaxSumWeekHourOfCharacteristic(): Double {
         return spisVM.maxSumWeekHourOfCharacteristic
     }
-    fun setCharacteristicForGrafProgress(idCharacteristic: Long){
-            spisVM.sumWeekHourOfCharacteristic.updateQuery(mDB.spisCharacteristicQueries.selectGrafProgressCharacteristic(idCharacteristic))
+
+    fun setCharacteristicForGrafProgress(idCharacteristic: Long) {
+        spisVM.sumWeekHourOfCharacteristic.updateQuery(
+            mDB.spisCharacteristicQueries.selectGrafProgressCharacteristic(
+                idCharacteristic
+            )
+        )
     }
 
     init {
@@ -522,10 +529,22 @@ class AvatarVMfun(
             )
         )
         spisCO.spisComplexOpisForDenPlanInBestDays.updateQuery(
-            mDB.complexOpisTextQueries.selectComplexOpisTextCommonWithId("den_plan", dateOporTime.withOffset().localUnix()),
-            mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxCommonWithId("den_plan", dateOporTime.withOffset().localUnix()),
-            mDB.complexOpisImageGroupQueries.selectComplexOpisImageGroupCommonWithId("den_plan", dateOporTime.withOffset().localUnix()),
-            mDB.complexOpisLinkQueries.selectComplexOpisLinkCommonWithId("den_plan", dateOporTime.withOffset().localUnix()),
+            mDB.complexOpisTextQueries.selectComplexOpisTextCommonWithId(
+                "den_plan",
+                dateOporTime.withOffset().localUnix()
+            ),
+            mDB.complexOpisCheckboxQueries.selectComplexOpisCheckboxCommonWithId(
+                "den_plan",
+                dateOporTime.withOffset().localUnix()
+            ),
+            mDB.complexOpisImageGroupQueries.selectComplexOpisImageGroupCommonWithId(
+                "den_plan",
+                dateOporTime.withOffset().localUnix()
+            ),
+            mDB.complexOpisLinkQueries.selectComplexOpisLinkCommonWithId(
+                "den_plan",
+                dateOporTime.withOffset().localUnix()
+            ),
         )
 
     }

@@ -34,7 +34,7 @@ fun PanOpenQuest(
 
     val filesList = mutableStateListOf<File>()
 
-    val f = File(StateVM.dirQuest)//System.getProperty("user.dir"), "Quests") //+ "\\MyGrids"
+    val f = File(StateVM.dirQuest)
     if (f.exists()) {
         filesList.clear()
         for (ff in f.listFiles()) {
@@ -44,9 +44,6 @@ fun PanOpenQuest(
                     filesList.add(tmpF)
                 }
             }
-//            if (ff.extension == "db") {
-//                filesList.add(ff)
-//            }
         }
     } else {
         f.mkdir()
@@ -56,14 +53,13 @@ fun PanOpenQuest(
     val openOpisQuest = mutableStateOf(false)
 
     dialPan.dial = @Composable {
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(
                 Modifier
                     .heightIn(0.dp, dialPan.layHeight.value * 0.7F)
                     .widthIn(0.dp, dialPan.layWidth.value * 0.7F)
                     .padding(10.dp)
             ) {
-
                 Column(
                     modifier = Modifier.padding(bottom = 5.dp).animateContentSize().border(
                         width = 1.dp,
@@ -83,33 +79,25 @@ fun PanOpenQuest(
                                 onClick = { openOpisQuest.value = false })
                         }
                     } else {
-                        MyList(filesList, Modifier.heightIn(0.dp, dialPan.layHeight.value * 0.7F).padding(vertical = 5.dp).weight(1f)) { ind, it ->
+                        MyList(
+                            filesList,
+                            Modifier.heightIn(0.dp, dialPan.layHeight.value * 0.7F).padding(vertical = 5.dp).weight(1f)
+                        ) { ind, it ->
                             ComItemFileQuest(it, selectionFileQuest, true, openFile = {
 
-                                QuestVM.loadQuestDB = QuestDB(it)//File("Quests", fileQuest.name).path)
-//                                QuestVM.loadQuestDB = QuestDB(File("Quests", it.name).path)
+                                QuestVM.loadQuestDB = QuestDB(it)
+
                                 openOpisQuest.value = true
                             }, dropMenu = { fileQuest, exp ->
                                 MyDropdownMenuItem(exp, "Открыть описание") {
-                                    QuestVM.loadQuestDB = QuestDB(fileQuest)//File("Quests", fileQuest.name).path)
+                                    QuestVM.loadQuestDB = QuestDB(fileQuest)
                                     openOpisQuest.value = true
                                 }
                                 MyDropdownMenuItem(exp, "Начать") {
-                                    QuestVM.loadQuestDB = QuestDB(fileQuest)//File("Quests", fileQuest.name).path)
-//                                    QuestVM.loadQuestDB = QuestDB(File("Quests", fileQuest.name).path)
+                                    QuestVM.loadQuestDB = QuestDB(fileQuest)
+
                                     QuestVM.loadQuestDB?.ObserFM?.let { questBVM ->
-                                        MainDB.loadQuestFromFileAttach(fileQuest,null)
-/*
-                                        MainDB.addQuest.loadQuest(questBVM,
-                                            fileQuest.nameWithoutExtension,
-                                            fileQuest.parent,
-                                            StateVM.dirLoadedQuestFiles
-//                                            File(fileQuest.name).nameWithoutExtension,
-//                                            File(StateVM.dirQuest,File(fileQuest.name).nameWithoutExtension).path
-                                        ) {
-//                                            println(QuestVM.loadQuestDB?.spisMainParam?.getState()?.value?.size)
-                                        }
-*/
+                                        MainDB.loadQuestFromFileAttach(fileQuest, null)
                                     }
                                 }
                             })
@@ -123,13 +111,20 @@ fun PanOpenQuest(
                     selectionFileQuest.selected?.let { selFile ->
                         QuestVM.loadQuestDB?.let { questDB ->
                             questDB.spisQuest.spisMainParam.getState().value?.let { list ->
-                                Column(Modifier.padding(20.dp).weight(1f, false)){
+                                Column(Modifier.padding(20.dp).weight(1f, false)) {
                                     list.find { itemMainParam -> itemMainParam.name == "name" }?.let { nameMainParam ->
-                                        Text(nameMainParam.stringparam, Modifier.padding(bottom = 20.dp), style = MyTextStyleParam.style1)
+                                        Text(
+                                            nameMainParam.stringparam,
+                                            Modifier.padding(bottom = 20.dp),
+                                            style = MyTextStyleParam.style1
+                                        )
                                     }
                                     MyList(questDB.spisQuest.spisMainParam, Modifier) { ind, item ->
                                         if (item.name != "name") {
-                                            Text(if (item.name == "opis") "Описание" else item.name, style = MyTextStyleParam.style2.copy(fontSize = 18.sp))
+                                            Text(
+                                                if (item.name == "opis") "Описание" else item.name,
+                                                style = MyTextStyleParam.style2.copy(fontSize = 18.sp)
+                                            )
                                             Text(
                                                 item.stringparam,
                                                 Modifier.padding(bottom = 15.dp),
@@ -143,8 +138,6 @@ fun PanOpenQuest(
                     }
                 }
                 Row {
-//                    MyCheckbox(loadPovtor, "Повторы")
-//                    MyCheckbox(loadTime, "Время")
                 }
                 Row {
                     Spacer(Modifier.weight(1F))
@@ -154,19 +147,9 @@ fun PanOpenQuest(
                     Spacer(Modifier.weight(1F))
                     selectionFileQuest.selected?.let { fileQuest ->
                         MyTextButtStyle1("Начать", Modifier.padding(start = 5.dp)) {
-                            QuestVM.loadQuestDB = QuestDB(fileQuest)// File("Quests", fileQuest.name).path)
+                            QuestVM.loadQuestDB = QuestDB(fileQuest)
                             QuestVM.loadQuestDB?.ObserFM?.let { questBVM ->
-                                MainDB.loadQuestFromFileAttach(fileQuest,null)
-
-/*
-                                MainDB.addQuest.loadQuest(questBVM,
-                                    fileQuest.nameWithoutExtension,
-                                    fileQuest.parent,
-                                    StateVM.dirLoadedQuestFiles
-                                ) {
-//                                            println(QuestVM.loadQuestDB?.spisMainParam?.getState()?.value?.size)
-                                }
-*/
+                                MainDB.loadQuestFromFileAttach(fileQuest, null)
                             }
                             dialPan.close()
                         }

@@ -4,7 +4,7 @@ import ru.ragefalcon.sharedcode.extensions.Parcelable
 import ru.ragefalcon.sharedcode.extensions.Parcelize
 
 @Parcelize
-class ItemEffekt (
+class ItemEffekt(
     val id: String,
     val name: String,
     val idplan: Long,
@@ -12,7 +12,6 @@ class ItemEffekt (
     val sumNedel: Double,
     val sumMonth: Double,
     val sumYear: Double
-
-):  Id_class (id_main = id), Parcelable
+) : Id_class(id_main = id), Parcelable
 
 

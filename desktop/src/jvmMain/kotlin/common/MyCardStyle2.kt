@@ -1,43 +1,31 @@
 package common
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.awtEventOrNull
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.isSecondaryPressed
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import extensions.mouseDoubleClick
-import androidx.compose.runtime.*
-import androidx.compose.ui.awt.awtEventOrNull
-import androidx.compose.ui.input.pointer.PointerEventType
-import androidx.compose.ui.input.pointer.onPointerEvent
 import extensions.dashedBorder
 import java.awt.event.MouseEvent
 
-@OptIn(ExperimentalFoundationApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
+@OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Composable
 fun MyCardStyle2(
     active: Boolean,
     level: Long = 0,
-    onClick: () -> Unit = {}, //MouseClickScope.
-    onDoubleClick: () -> Unit = {}, //MouseClickScope.
-//    backColor: Color = Color(0xFF464D45),
+    onClick: () -> Unit = {},
+    onDoubleClick: () -> Unit = {},
     radius: Dp = 15.dp,
     modifier: Modifier = Modifier,
     widthBorder: Dp = 0.5.dp,
-//    horizontal: Boolean = false,
     dropMenu: @Composable ColumnScope.(MutableState<Boolean>) -> Unit = { },
     content: @Composable () -> Unit
 ) {
@@ -57,7 +45,7 @@ fun MyCardStyle2(
                     }
                 )
                 .padding(start = (level * 40).toInt().dp)
-                .padding(horizontal = 6.dp, vertical = 6.dp) //.fillMaxWidth()
+                .padding(horizontal = 6.dp, vertical = 6.dp)
                 .dashedBorder(
                     width = widthBorder,
                     brush = if (active) Brush.horizontalGradient(
@@ -79,37 +67,24 @@ fun MyCardStyle2(
                             1 -> {
                                 onClick()
                             }
+
                             2 -> {
                                 onDoubleClick()
                             }
                         }
-                        MouseEvent.BUTTON2 -> {
-                        }
+
+                        MouseEvent.BUTTON2 -> Unit
                         MouseEvent.BUTTON3 -> {
                             onClick()
                             if (dropMenu != null) expandedDropMenuRightButton.value = true
-                        } //onRightClick()
-//                            when {
-//                            it.buttons.isPrimaryPressed -> when (it.awtEvent.clickCount) {
-//                                1 -> onSingleLeftClick()
-//                                2 -> onDoubleLeftClick()
-//                            }
-//                            it.buttons.isSecondaryPressed -> onRightClick()
+                        }
                     }
-                }
-/*
-                .mouseDoubleClick(onClick = {
-                    expandedDropMenuRightButton.value = this.buttons.isSecondaryPressed
-                    onClick()
-                }, onDoubleClick = { onDoubleClick() })
-*/
-            ,
-//            backgroundColor = backColor,
+                },
         )
         {
             content()
             if (expandedDropMenuRightButton.value) Box(
-                Modifier.matchParentSize()//.fillMaxWidth()
+                Modifier.matchParentSize()
                     .padding(start = if (xBox >= 0.dp) xBox else 0.dp, top = if (yBox >= 0.dp) yBox else 0.dp)
             ) {
                 Box(Modifier.height(0.dp).width(0.dp)) {

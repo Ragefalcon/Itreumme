@@ -33,7 +33,7 @@ class ComItemPlan(
     val itemPlanStyleState: ItemPlanStyleState,
     val dialLay: MyDialogLayout? = null,
     val sortEnable: Boolean = false,
-    val dropMenu: (@Composable ColumnScope.(ItemPlan, MutableState<Boolean>, (() -> Unit) -> Unit) -> Unit)? = null //{ _, _, _ -> }
+    val dropMenu: (@Composable ColumnScope.(ItemPlan, MutableState<Boolean>, (() -> Unit) -> Unit) -> Unit)? = null
 ) {
 
 
@@ -41,11 +41,10 @@ class ComItemPlan(
     @Composable
     fun getComposable() {
         val expandedDropMenu = remember { mutableStateOf(false) }
-        val expandedOpis =  mutableStateOf(!item.sver)
+        val expandedOpis = mutableStateOf(!item.sver)
         val progressGotov = remember { mutableStateOf((item.gotov / 100f).toFloat()) }
         val remScope = rememberCoroutineScope()
         with(itemPlanStyleState) {
-
             MyCardStyle1(
                 selection.isActive(item),
                 0,
@@ -55,12 +54,7 @@ class ComItemPlan(
                     selFun(item)
                 },
                 {
-//                    if (editable) {
-                        onDoubleClick()
-//                    }
-//                item.sver = item.sver.not()
-//                    MainDB.timeFun.sverPlan(item)
-//                    expandedOpis.value = !expandedOpis.value
+                    onDoubleClick()
                 },
                 backBrush = when (item.stat) {
                     TypeStatPlan.COMPLETE -> background_brush_gotov
@@ -82,7 +76,7 @@ class ComItemPlan(
                     shape = shapeCard
                 ),
                 modifier = if (item.stat == TypeStatPlan.FREEZE) Modifier.alpha(0.25f) else Modifier,
-                dropMenu = dropMenu?.let{ {exp -> it(item, exp, {}) } },
+                dropMenu = dropMenu?.let { { exp -> it(item, exp, {}) } },
                 styleSettings = itemPlanStyleState
             ) {
                 Column {
@@ -109,14 +103,13 @@ class ComItemPlan(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box {
                                 Image(
-                                    painterResource("bookmark_01.svg"), //BitmapPainter(
-//                                bitmap = useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                                    painterResource("bookmark_01.svg"),
                                     "statDenPlan",
                                     Modifier
                                         .padding(horizontal = 9.dp, vertical = 6.dp)
                                         .height(44.dp)
                                         .width(44.dp)
-//                                    .padding(start = 7.dp, end = 5.dp)
+
                                         .mouseClickable {
                                             if (editable) {
                                                 selFun(item)
@@ -135,7 +128,6 @@ class ComItemPlan(
                                         BlendMode.Modulate
                                     ),
                                     contentScale = ContentScale.FillBounds,
-//                                filterQuality = FilterQuality.High
                                 )
                             }
                             Column(
@@ -154,34 +146,45 @@ class ComItemPlan(
                                             "\uD83E\uDC45",
                                             Modifier.padding(start = 0.dp),
                                             fontSize = 24.sp,
-//                                    textColor = arrow_color
                                         ) {
                                             MainDB.timeSpis.spisPlan.getState().let {
                                                 it.filter { if (item.stat == TypeStatPlan.FREEZE) it.stat == TypeStatPlan.FREEZE else it.stat != TypeStatPlan.FREEZE }
                                                     .findLast { it.sort > item.sort }?.let {
-                                                        MainDB.timeSpis.spisPlan.updateElem(item, item.copy(sort = it.sort))
-                                                        MainDB.timeSpis.spisPlan.updateElem(it, it.copy(sort = item.sort)){ itt -> itt.sort }
+                                                        MainDB.timeSpis.spisPlan.updateElem(
+                                                            item,
+                                                            item.copy(sort = it.sort)
+                                                        )
+                                                        MainDB.timeSpis.spisPlan.updateElem(
+                                                            it,
+                                                            it.copy(sort = item.sort)
+                                                        ) { itt -> itt.sort }
                                                         remScope.run {
                                                             MainDB.addTime.setSortPlan(item, it.sort)
                                                         }
-                                                }
+                                                    }
                                             }
                                         }
                                         MyTextButtWithoutBorder(
                                             "\uD83E\uDC47",
                                             Modifier.padding(horizontal = 10.dp),
                                             fontSize = 24.sp,
-//                                    textColor = arrow_color
-                                        ) {
+
+                                            ) {
                                             MainDB.timeSpis.spisPlan.getState().let {
                                                 it.filter { if (item.stat == TypeStatPlan.FREEZE) it.stat == TypeStatPlan.FREEZE else it.stat != TypeStatPlan.FREEZE }
                                                     .find { it.sort < item.sort }?.let {
-                                                        MainDB.timeSpis.spisPlan.updateElem(item, item.copy(sort = it.sort))
-                                                        MainDB.timeSpis.spisPlan.updateElem(it, it.copy(sort = item.sort)){ itt -> itt.sort }
+                                                        MainDB.timeSpis.spisPlan.updateElem(
+                                                            item,
+                                                            item.copy(sort = it.sort)
+                                                        )
+                                                        MainDB.timeSpis.spisPlan.updateElem(
+                                                            it,
+                                                            it.copy(sort = item.sort)
+                                                        ) { itt -> itt.sort }
                                                         remScope.run {
                                                             MainDB.addTime.setSortPlan(item, it.sort)
                                                         }
-                                                }
+                                                    }
                                             }
                                         }
                                     }
@@ -198,14 +201,12 @@ class ComItemPlan(
                                 }
                                 if (item.data1 > 1L && item.data2 > 1L) RowVA {
                                     Text(
-//                                        modifier = Modifier.padding(start = if (item.podstapcount > 0 || sortEnable) 3.dp else 10.dp),
                                         text = Date(item.data1).format("dd.MM.yyyy"),
                                         style = dataText
                                     )
                                     Spacer(Modifier.weight(1f))
                                     Text(
-//                                        modifier = Modifier.padding(start = 0.dp),
-                                        text = Date(item.data2).format("dd.MM.yyyy"), // HH:mm
+                                        text = Date(item.data2).format("dd.MM.yyyy"),
                                         style = dataText
                                     )
                                 }
@@ -222,7 +223,6 @@ class ComItemPlan(
                                     .padding(top = if (item.namequest == "") 3.dp else 0.dp, bottom = 3.dp, end = 13.dp)
                                     .width(170.dp)
                             ) {
-
                                 Row(
                                     modifier = Modifier.fillMaxWidth().height(25.dp),
                                     verticalAlignment = Alignment.CenterVertically,
@@ -232,8 +232,6 @@ class ComItemPlan(
                                         modifier = Modifier.padding(start = 0.dp),
                                         text = "${item.hour.roundToStringProb(1)} ч.",
                                         style = hourTextStyle
-//                                            TextStyle(color = Color(0xFFFFF7F9)),
-//                                    fontSize = 15.sp
                                     ) else Spacer(Modifier.width(1.dp))
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
@@ -244,7 +242,7 @@ class ComItemPlan(
                                             buttMenu,
                                             dropdown
                                         ) {
-                                            dropMenu?.let{it(item, expandedDropMenu, {})}
+                                            dropMenu?.let { it(item, expandedDropMenu, {}) }
                                         }
 
                                         mapOpis[item.id.toLong()]?.let {
@@ -254,9 +252,6 @@ class ComItemPlan(
                                                 color = boxOpisStyleState.colorButt
                                             ) {
                                                 MainDB.timeSpis.spisPlan.sverOpisElem(item)
-//                                                    .updateElem(item, item.copy(sver = item.sver.not()))
-//                                                MainDB.timeFun.sverPlan(item.copy(sver = item.sver.not()))
-//                                                MainDB.timeFun.sverPlan(item)
                                             }
                                         }
                                     }
@@ -279,7 +274,7 @@ class ComItemPlan(
                                         } else {
                                             LinearProgressIndicator(
                                                 progress = (item.gotov / 100f).toFloat(),
-                                                modifier = Modifier.padding(8.dp),//.padding(vertical = 8.dp),
+                                                modifier = Modifier.padding(8.dp),
                                                 sliderThumb,
                                                 sliderInactive
                                             )

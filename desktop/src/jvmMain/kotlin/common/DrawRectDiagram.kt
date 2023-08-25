@@ -1,8 +1,16 @@
 package common
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.DragInteraction
+import androidx.compose.foundation.interaction.Interaction
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
@@ -25,7 +33,6 @@ import extensions.*
 import org.jetbrains.skia.*
 import ru.ragefalcon.sharedcode.extensions.roundToStringProb
 import ru.ragefalcon.sharedcode.models.data.ItemRectDiag
-import ru.ragefalcon.sharedcode.models.data.ItemTwoRectDiag
 import ru.ragefalcon.sharedcode.models.data.ItemYearGraf
 
 class DrawRectDiagram {
@@ -70,7 +77,7 @@ class DrawRectDiagram {
                 16.dp.toPx() + otstupUp.toPx() + maxVal * (1 - item.procent.toFloat()),
             )
 
-            val select = //false
+            val select =
                 rr.offsetX + yearOffset < cursorPosition.value.x && rr.offsetX + rr.width + yearOffset > cursorPosition.value.x
 
             canvas.apply {
@@ -105,7 +112,7 @@ class DrawRectDiagram {
                             it.nativeCanvas.drawTextLine(
                                 textL,
                                 textSize1 + x - textL.width / 2 - shir.toPx() / 2 + tmp,
-                                rr.offsetY - shir.toPx() / 2, // 24.dp.toPx() + otstupUp.toPx() + maxVal,
+                                rr.offsetY - shir.toPx() / 2,
                                 Paint().apply {
                                     isAntiAlias = true
                                     style = PaintingStyle.Stroke
@@ -116,11 +123,11 @@ class DrawRectDiagram {
                             it.nativeCanvas.drawTextLine(
                                 textL,
                                 textSize1 + x - textL.width / 2 - shir.toPx() / 2 + tmp,
-                                rr.offsetY - shir.toPx() / 2, // 24.dp.toPx() + otstupUp.toPx() + maxVal,
+                                rr.offsetY - shir.toPx() / 2,
                                 Paint().apply {
                                     isAntiAlias = true
                                     style = PaintingStyle.Fill
-//                                    strokeWidth = 1f
+
                                     color = colorDiagHour
                                 }.asFrameworkPaint()
                             )
@@ -154,33 +161,6 @@ class DrawRectDiagram {
                 thisDrawTExt90(textRasx, colorDiagTextHourBelow)
                 thisDrawTExt90(textSkobka, colorDiagTextMonthBelow)
 
-/*
-                rotate(-90f, Offset(textSize + x, 24.dp.toPx() + otstupUp.toPx() + maxVal)) {
-                    drawIntoCanvas {
-                        val textL = TextLine.make("( ${item.summa.roundToStringProb(1)} ) ${item.month}", Font(
-                            Typeface.makeFromName(
-                                "sadf",
-                                FontStyle.BOLD
-                            )
-                        ).apply {
-                            size = textSize
-                            this.edging = FontEdging.ANTI_ALIAS
-                        })
-                        it.nativeCanvas.drawTextLine(
-                            textL,
-                            textSize + x - textL.width,
-                            24.dp.toPx() + otstupUp.toPx() + maxVal,
-                            p_text_stroke.asFrameworkPaint()
-                        )
-                        it.nativeCanvas.drawTextLine(
-                            textL,
-                            textSize + x - textL.width,
-                            24.dp.toPx() + otstupUp.toPx() + maxVal,
-                            p_text_fill.asFrameworkPaint()
-                        )
-                    }
-                }
-*/
             }
             return x + shir.toPx() + 2 * otstup.toPx()
         }
@@ -196,25 +176,22 @@ class DrawRectDiagram {
             val p1 = Paint().apply {
                 isAntiAlias = true
                 style = PaintingStyle.Fill
-                color = colorFillText //Color.White//.copy(0.8f)
-//            strokeWidth = 1f
+                color = colorFillText
             }
             val p2 = Paint().apply {
                 isAntiAlias = true
                 style = PaintingStyle.Stroke
                 strokeWidth = 2.dp.toPx()
-                color = colorStrokeText // Color.Black
+                color = colorStrokeText
             }
 
             var x = otstupYear.toPx()
 
             val maxVal: Float = height - otstupUp.toPx() - otstupBottom.toPx()
 
-
-
             canvas.apply {
                 drawLine(
-                    colorRazdelit,// colorDiag.toMyColorARGB().plusWhite().toColor().copy(alpha = 0.7f),
+                    colorRazdelit,
                     Offset(4.5.dp.toPx(), 16.dp.toPx() + maxVal + otstupUp.toPx()),
                     Offset(4.5.dp.toPx(), 6.dp.toPx()),
                     1f
@@ -278,37 +255,42 @@ class DrawRectDiagram {
         styleState: RectDiagramColorStyleState? = null
     ) {
         val interactionSource = remember { MutableInteractionSource() }
-        val isPressedBy = remember { mutableStateOf(false) } // by interactionSource.collectIsPressedAsState()
+        val isPressedBy = remember { mutableStateOf(false) }
         val interactions = remember { mutableStateListOf<Interaction>() }
 
         LaunchedEffect(interactionSource) {
             interactionSource.interactions.collect { interaction ->
                 when (interaction) {
                     is PressInteraction.Press -> {
-//                        println("PressInteraction.Press")
+
                         isPressedBy.value = true
                         interactions.add(interaction)
                     }
+
                     is PressInteraction.Release -> {
                         isPressedBy.value = false
-//                        println("PressInteraction.Release")
+
                         interactions.remove(interaction.press)
                     }
+
                     is PressInteraction.Cancel -> {
                         isPressedBy.value = false
-//                        println("PressInteraction.Cancel")
+
                         interactions.remove(interaction.press)
                     }
+
                     is DragInteraction.Start -> {
-//                        println("PressInteraction.Start")
+
                         interactions.add(interaction)
                     }
+
                     is DragInteraction.Stop -> {
-//                        println("PressInteraction.Stop")
+
                         interactions.remove(interaction.start)
                     }
+
                     is DragInteraction.Cancel -> {
-//                        println("PressInteraction.Cancel")
+
                         interactions.remove(interaction.start)
                     }
                 }
@@ -335,7 +317,7 @@ class DrawRectDiagram {
                 Modifier.horizontalScroll(scrollSt, reverseScrolling = true)
             ) {
                 with(LocalDensity.current) {
-//                    Box{
+
                     yearDiag.forEach {
                         it.month.forEach {
                             getShirPodpis(it, textSizeSp.sp.toPx()).toDp().let {
@@ -348,7 +330,7 @@ class DrawRectDiagram {
                         interactionSource = interactionSource,
                         indication = null,
                         color = Color.Transparent,
-                        modifier = Modifier//.matchParentSize()
+                        modifier = Modifier
                             .padding(horizontal = 13.dp)
                             .padding(bottom = 10.dp)
                             .pointerMoveFilter(onMove = {
@@ -379,7 +361,6 @@ class DrawRectDiagram {
                             if (isPressedBy.value) drawCursorSum.invoke(this)
                         }
                     }
-//                    }
                 }
             }
         }

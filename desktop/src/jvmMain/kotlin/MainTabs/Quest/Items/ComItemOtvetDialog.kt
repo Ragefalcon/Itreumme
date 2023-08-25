@@ -4,7 +4,10 @@ import MainTabs.Quest.Element.PanAddTrigger
 import MyDialog.MyDialogLayout
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -28,7 +31,7 @@ import viewmodel.QuestVM
 fun ComItemOtvetDialog(item: ItemOtvetDialog, dialPan: MyDialogLayout) {
 
     @Composable
-    fun ColumnScope.dropMenu(expandedDropMenuOtvet: MutableState<Boolean>){
+    fun ColumnScope.dropMenu(expandedDropMenuOtvet: MutableState<Boolean>) {
         MyDropdownMenuItem(expandedDropMenuOtvet, "+ Триггер") {
             PanAddTrigger(dialPan, item.parentOfTrig())
         }
@@ -39,8 +42,7 @@ fun ComItemOtvetDialog(item: ItemOtvetDialog, dialPan: MyDialogLayout) {
 
     QuestVM.openQuestDB?.let { questDB ->
         var activeElev by remember { mutableStateOf(0.5F) }
-//        BoxWithRightClickContextMenu(dropMenu = { expandedDropMenuOtvet -> dropMenu(expandedDropMenuOtvet) }) {
-        BoxWithMyRightClick (dropMenu = { expandedDropMenuOtvet -> dropMenu(expandedDropMenuOtvet) }) {
+        BoxWithMyRightClick(dropMenu = { expandedDropMenuOtvet -> dropMenu(expandedDropMenuOtvet) }) {
             RowVA(Modifier.fillMaxWidth().padding(2.dp).animateContentSize()
                 .pointerMoveFilter(
                     onEnter = {
@@ -69,7 +71,6 @@ fun ComItemOtvetDialog(item: ItemOtvetDialog, dialPan: MyDialogLayout) {
                 )) {
                 Column(
                     Modifier.weight(1f)
-
                 ) {
                     MyTextToggleEdit3(
 
@@ -79,9 +80,13 @@ fun ComItemOtvetDialog(item: ItemOtvetDialog, dialPan: MyDialogLayout) {
                     ) { newText ->
                         questDB.addQuest.updOtvetDialog(item.id.toLong(), newText)
                     }
-//                    RowVA {
-                    PlateOrderLayout(){
-                        QuestVM.getComItemTriggers(TypeParentOfTrig.OTVDIALOG.code, item.id.toLong(), Modifier.padding(start = 5.dp, bottom = 5.dp),true)
+                    PlateOrderLayout() {
+                        QuestVM.getComItemTriggers(
+                            TypeParentOfTrig.OTVDIALOG.code,
+                            item.id.toLong(),
+                            Modifier.padding(start = 5.dp, bottom = 5.dp),
+                            true
+                        )
                     }
                 }
                 val expandedDropMenuOtvet = remember { mutableStateOf(false) }
@@ -90,12 +95,6 @@ fun ComItemOtvetDialog(item: ItemOtvetDialog, dialPan: MyDialogLayout) {
                     expandedDropMenuOtvet,
                 ) {
                     dropMenu(expandedDropMenuOtvet)
-//                    MyDropdownMenuItem(expandedDropMenuOtvet, "+ Триггер") {
-//                        PanAddTrigger(dialPan, item.parentTrig())
-//                    }
-//                    MyDeleteDropdownMenuButton(expandedDropMenuOtvet) {
-//                        questDB.addQuest.delOtvetDialog(item.id.toLong())
-//                    }
                 }
             }
         }

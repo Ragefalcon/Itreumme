@@ -29,28 +29,12 @@ class SchetFragment() : BaseFragmentVM<FragmentFinanceBinding>(FragmentFinanceBi
                 addButton(MenuPopupButton.DELETE) {
                     viewmodel.addFin.delPerevod(it)
                 }
-//                addButton(MenuPopupButton.CHANGE) {
-//                    showAddChangeFragDial(AddChangeSchetPanFragment(item = it))
-//                }
             }
             tvFinPeriod.setTextColor(Color.WHITE)//resources.getColor(razdelName.colorText))
             with(rvFinanceList) {
                 adapter = rvmAdapter
                 layoutManager = LinearLayoutManager(context)
             }
-//            stateViewModel.visFilterFinPanel.observe(viewLifecycleOwner) {
-//                if (it) {
-//                    srFilter.visibility = View.VISIBLE
-//                    srFilter.layoutParams.height = 40.pxF.toInt()
-//                    /** requestLayout() Нужно для обновления */
-//                    srFilter.requestLayout()
-//                } else {
-//                    srFilter.visibility = View.INVISIBLE
-//                    srFilter.layoutParams.height = 0
-//                    /** requestLayout() Нужно для обновления */
-//                    srFilter.requestLayout()
-//                }
-//            }
             srSchet.visibility = View.VISIBLE
             with(viewmodel) {
                 finSpis.spisSchet.observe(viewLifecycleOwner) {

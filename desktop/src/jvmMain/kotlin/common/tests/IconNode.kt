@@ -29,8 +29,16 @@ import viewmodel.StateVM
 import java.io.File
 
 @Composable
-fun IconNode(icon: ItemIconNodeTree?, defaultResource: String, dirQuest: String? = null, complete:Boolean = false, size: Dp = 50.dp, modifier: Modifier = Modifier, pair: Pair<Dp,Brush>? = null){
-    if (icon == null){
+fun IconNode(
+    icon: ItemIconNodeTree?,
+    defaultResource: String,
+    dirQuest: String? = null,
+    complete: Boolean = false,
+    size: Dp = 50.dp,
+    modifier: Modifier = Modifier,
+    pair: Pair<Dp, Brush>? = null
+) {
+    if (icon == null) {
         IconNode(
             file = null,
             defaultResource,
@@ -40,7 +48,7 @@ fun IconNode(icon: ItemIconNodeTree?, defaultResource: String, dirQuest: String?
             modifier,
             TypeIconBorder.ROUNDCORNER, pair
         )
-    }   else {
+    } else {
         val iconFile = File(dirQuest ?: StateVM.dirIconNodeTree, icon.name())
         IconNode(
             if (iconFile.exists()) imageFromFile(iconFile) else null,
@@ -55,33 +63,99 @@ fun IconNode(icon: ItemIconNodeTree?, defaultResource: String, dirQuest: String?
 }
 
 @Composable
-fun IconNode(folder: String, fileName: String, defaultResource: String, complete:Boolean = false, size: Dp = 50.dp, shape: Shape? = null, modifier: Modifier = Modifier, type: TypeIconBorder = TypeIconBorder.ROUNDCORNER, pair: Pair<Dp,Brush>? = null){
+fun IconNode(
+    folder: String,
+    fileName: String,
+    defaultResource: String,
+    complete: Boolean = false,
+    size: Dp = 50.dp,
+    shape: Shape? = null,
+    modifier: Modifier = Modifier,
+    type: TypeIconBorder = TypeIconBorder.ROUNDCORNER,
+    pair: Pair<Dp, Brush>? = null
+) {
     val iconFile = File(
-        File(System.getProperty("user.dir"), folder).path,fileName)
-    IconNode(if (iconFile.exists()) imageFromFile(iconFile) else null,defaultResource, complete, size, shape, modifier, type, pair)
+        File(System.getProperty("user.dir"), folder).path, fileName
+    )
+    IconNode(
+        if (iconFile.exists()) imageFromFile(iconFile) else null,
+        defaultResource,
+        complete,
+        size,
+        shape,
+        modifier,
+        type,
+        pair
+    )
 }
 
 @Composable
-fun IconNode(iconName: String, defaultResource: String, complete:Boolean = false, size: Dp = 50.dp, shape: Shape? = null, modifier: Modifier = Modifier, type: TypeIconBorder = TypeIconBorder.ROUNDCORNER, pair: Pair<Dp,Brush>? = null){
-    val iconFile = File(StateVM.dirIconNodeTree,iconName)
-    IconNode(if (iconFile.exists()) imageFromFile(iconFile) else null,defaultResource, complete, size, shape, modifier, type, pair)
+fun IconNode(
+    iconName: String,
+    defaultResource: String,
+    complete: Boolean = false,
+    size: Dp = 50.dp,
+    shape: Shape? = null,
+    modifier: Modifier = Modifier,
+    type: TypeIconBorder = TypeIconBorder.ROUNDCORNER,
+    pair: Pair<Dp, Brush>? = null
+) {
+    val iconFile = File(StateVM.dirIconNodeTree, iconName)
+    IconNode(
+        if (iconFile.exists()) imageFromFile(iconFile) else null,
+        defaultResource,
+        complete,
+        size,
+        shape,
+        modifier,
+        type,
+        pair
+    )
 }
 
 @Composable
-fun IconNode(byteArray: ByteArray?, defaultResource: String, complete:Boolean = false, size: Dp = 50.dp, shape: Shape? = null, modifier: Modifier = Modifier, type: TypeIconBorder = TypeIconBorder.ROUNDCORNER, pair: Pair<Dp,Brush>? = null){
-//    imageFromByteArray(byteArray!!).asSkiaBitmap().asComposeImageBitmap().
-    IconNode(if (byteArray != null) imageFromByteArray(byteArray) else null,defaultResource, complete, size, shape, modifier, type, pair)
+fun IconNode(
+    byteArray: ByteArray?,
+    defaultResource: String,
+    complete: Boolean = false,
+    size: Dp = 50.dp,
+    shape: Shape? = null,
+    modifier: Modifier = Modifier,
+    type: TypeIconBorder = TypeIconBorder.ROUNDCORNER,
+    pair: Pair<Dp, Brush>? = null
+) {
+
+    IconNode(
+        if (byteArray != null) imageFromByteArray(byteArray) else null,
+        defaultResource,
+        complete,
+        size,
+        shape,
+        modifier,
+        type,
+        pair
+    )
 }
+
 @Composable
-fun IconNode(file: ImageBitmap?, defaultResource: String, complete:Boolean = false, size: Dp = 50.dp, shape: Shape? = null, modifier: Modifier = Modifier, type: TypeIconBorder = TypeIconBorder.ROUNDCORNER, pair: Pair<Dp,Brush>? = null){
+fun IconNode(
+    file: ImageBitmap?,
+    defaultResource: String,
+    complete: Boolean = false,
+    size: Dp = 50.dp,
+    shape: Shape? = null,
+    modifier: Modifier = Modifier,
+    type: TypeIconBorder = TypeIconBorder.ROUNDCORNER,
+    pair: Pair<Dp, Brush>? = null
+) {
     val avatarF =
-        if (file!=null) file else useResource(defaultResource,::loadImageBitmap)
+        if (file != null) file else useResource(defaultResource, ::loadImageBitmap)
     val padd = 10.dp
-    val shapeBorder = shape ?: when (type){
-            TypeIconBorder.NONE -> RectangleShape
-            TypeIconBorder.ROUND -> CircleShape
-            TypeIconBorder.SQUARE -> RectangleShape
-            TypeIconBorder.ROUNDCORNER -> RoundedCornerShape(15.dp)
+    val shapeBorder = shape ?: when (type) {
+        TypeIconBorder.NONE -> RectangleShape
+        TypeIconBorder.ROUND -> CircleShape
+        TypeIconBorder.SQUARE -> RectangleShape
+        TypeIconBorder.ROUNDCORNER -> RoundedCornerShape(15.dp)
         TypeIconBorder.CUTCORNER -> CutCornerShape(15.dp)
         TypeIconBorder.TICKETCORNER -> CustomShape(MyTypeCorner.Ticket, CornerSize(15.dp))
     }
@@ -90,20 +164,18 @@ fun IconNode(file: ImageBitmap?, defaultResource: String, complete:Boolean = fal
         "defaultAvatar",
         modifier
             .padding(padd)
-            .height(padd*2+size)
-            .width(padd*2+size)
+            .height(padd * 2 + size)
+            .width(padd * 2 + size)
             .clip(shapeBorder)
             .run {
-                if(type != TypeIconBorder.NONE || complete) {
+                if (type != TypeIconBorder.NONE || complete) {
                     if (pair != null) {
                         this.border(pair.first, pair.second, shapeBorder)
                     } else this.border(2.dp, if (complete) Color.Green else Color.White, shapeBorder)
                 } else this
             }
-//            .padding(4.dp)
             .wrapContentSize(),
-        contentScale = ContentScale.Crop,// Fit,
-//                            colorFilter = ColorFilter.tint(Color.White)
+        contentScale = ContentScale.Crop,
     )
 }
 

@@ -1,7 +1,5 @@
 package ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems;
 
-import android.graphics.Color
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -9,14 +7,15 @@ import androidx.core.view.ViewCompat
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
-import ru.ragefalcon.sharedcode.extensions.MyColorARGB
-import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemIdea
 import ru.ragefalcon.tutatores.R
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemIdeaBinding
-import ru.ragefalcon.tutatores.extensions.*
-import java.util.*
+import ru.ragefalcon.tutatores.extensions.dpToPx
+import ru.ragefalcon.tutatores.extensions.rotateElemItem
+import ru.ragefalcon.tutatores.extensions.sverOpis
+import ru.ragefalcon.tutatores.extensions.sverWidthElemItem
 
 class IdeaRVItem(
     data: ItemIdea,
@@ -47,12 +46,6 @@ class IdeaRVItem(
                 ViewCompat.setTransitionName(tvNameIdea, "ideaname${item.id}")
 
                 (vh.itemView.layoutParams as ViewGroup.MarginLayoutParams).marginStart = 16.dpToPx * item.level.toInt()
-//                var col = MyColorARGB("FFF7D9")
-//                var lvl = item.level
-//                while (lvl > 0) {
-//                    col.R = (col.R * 0.95).toInt()
-//                    lvl--
-//                }
                 when (item.stat.toInt()) {
                     0 -> ivStatIdeaGrad.setColorFilter(
                         ContextCompat.getColor(
@@ -88,15 +81,6 @@ class IdeaRVItem(
                             R.color.colorStatTint_05
                         ), android.graphics.PorterDuff.Mode.MULTIPLY
                     )
-                    /**
-                     * https://stackoverflow.com/questions/20121938/how-to-set-tint-for-an-image-view-programmatically-in-android/45571812#45571812
-                     *
-                     * У пользователя @Tad есть свой ответ в правильном направлении, но он работает только с API 21+.
-                     * Чтобы установить оттенок на всех версиях Android, используйте ImageViewCompat:
-                     * ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(yourTint));
-                     * Обратите внимание, что yourTintв этом случае должен быть "цвет int". Если у вас есть ресурс цвета, например R.color.blue, вам нужно сначала загрузить цвет int:
-                     * ContextCompat.getColor(context, R.color.blue);
-                     * */
                 }
 
                 ivSelectIndic.requestLayout()
@@ -109,17 +93,8 @@ class IdeaRVItem(
                     ivStatDp.layoutParams.width = 30.dpToPx
                     ivStatDp.requestLayout()
                     when (item.sverChild) {
-                        false -> ivStatDp.setImageResource(ru.ragefalcon.tutatores.R.drawable.ic_minus) //setColorFilter(Color.YELLOW, android.graphics.PorterDuff.Mode.MULTIPLY)
-                        true -> ivStatDp.setImageResource(ru.ragefalcon.tutatores.R.drawable.ic_add_butt) //setColorFilter(Color.WHITE, android.graphics.PorterDuff.Mode.MULTIPLY)
-                        /**
-                         * https://stackoverflow.com/questions/20121938/how-to-set-tint-for-an-image-view-programmatically-in-android/45571812#45571812
-                         *
-                         * У пользователя @Tad есть свой ответ в правильном направлении, но он работает только с API 21+.
-                         * Чтобы установить оттенок на всех версиях Android, используйте ImageViewCompat:
-                         * ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(yourTint));
-                         * Обратите внимание, что yourTintв этом случае должен быть "цвет int". Если у вас есть ресурс цвета, например R.color.blue, вам нужно сначала загрузить цвет int:
-                         * ContextCompat.getColor(context, R.color.blue);
-                         * */
+                        false -> ivStatDp.setImageResource(ru.ragefalcon.tutatores.R.drawable.ic_minus)
+                        true -> ivStatDp.setImageResource(ru.ragefalcon.tutatores.R.drawable.ic_add_butt)
                     }
                 } else {
                     ivStatDp.alpha = 0F
@@ -142,7 +117,7 @@ class IdeaRVItem(
                 if (vh.itemView.isSelected) {
                     selectListener?.invoke(item)
                 }
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     tapListener?.invoke(item)
                     funForTransition?.invoke(

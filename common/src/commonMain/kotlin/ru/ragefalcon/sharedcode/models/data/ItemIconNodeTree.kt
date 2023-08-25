@@ -9,6 +9,6 @@ class ItemIconNodeTree(
     val extension: String,
     val type_ramk: Long
 ) : Id_class(id_main = id.toString()), Parcelable {
-    fun name():String = "icon_$id.$extension"
+    fun name(): String = "icon_$id.$extension"
 }
 

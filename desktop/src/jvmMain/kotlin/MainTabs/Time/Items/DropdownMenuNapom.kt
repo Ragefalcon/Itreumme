@@ -16,7 +16,12 @@ import ru.ragefalcon.sharedcode.models.data.ItemNapom
 import viewmodel.MainDB
 
 @Composable
-fun DropdownMenuNapom(item: ItemNapom, expanded: MutableState<Boolean>, dialLay: MyDialogLayout, calendar: Boolean = false) {
+fun DropdownMenuNapom(
+    item: ItemNapom,
+    expanded: MutableState<Boolean>,
+    dialLay: MyDialogLayout,
+    calendar: Boolean = false
+) {
     ItemNapomStyleState(MainDB.styleParam.timeParam.denPlanTab.itemNapom).let { itemNapomStyle ->
         Text(
             modifier = Modifier.padding(0.dp),

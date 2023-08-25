@@ -2,7 +2,6 @@ package MainTabs.Quest.Element
 
 import MainTabs.Quest.Items.ComItemLevelCommonTreeSkillsCheckableQuest
 import MyDialog.MyDialogLayout
-import MyList
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -27,14 +26,10 @@ fun PanSelectNodeParentsQuest(
     val dialLayInner = MyDialogLayout()
     val selection = SingleSelectionType<ItemNodeTreeSkillsQuest>()
     dialPan.dial = @Composable {
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 questDB.spisQuest.spisNodeTreeSkillsForSelection.getState().value?.toList()?.sortedBy { it.first }
                     ?.let { listLevels ->
-//                        MyList(
-//                            listLevels,
-//                            Modifier.weight(1f).padding(horizontal = 5.dp)
-//                        ) { levelTreeSkills ->
                         PlateOrderLayout(Modifier.weight(1f).padding(horizontal = 5.dp), alignmentCenter = true) {
                             listLevels.forEach { levelTreeSkills ->
                                 ComItemLevelCommonTreeSkillsCheckableQuest(
@@ -61,6 +56,5 @@ fun PanSelectNodeParentsQuest(
         }
         dialLayInner.getLay()
     }
-
     dialPan.show()
 }

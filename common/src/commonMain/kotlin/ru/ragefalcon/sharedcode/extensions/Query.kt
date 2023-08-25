@@ -1,15 +1,15 @@
 package ru.ragefalcon.sharedcode.extensions
 
+//import kotlinx.coroutines.*
+//import kotlinx.coroutines.*
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
-import kotlinx.coroutines.*
-//import kotlinx.coroutines.*
-//import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import ru.ragefalcon.sharedcode.source.disk.getCorDisp
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 fun <T : Any> Query<T>.startMy(
     keyF: () -> Int = { 1 },

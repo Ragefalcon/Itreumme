@@ -30,5 +30,5 @@ data class ItemPlanStap(
     val schplOpen: Boolean? = null,
     override val sver: Boolean = true
 ) : SverOpis<ItemPlanStap>, Id_class(id_main = id.toString()), Parcelable {
-    override fun sver(newSver: Boolean): ItemPlanStap = this.copy( sver = newSver )
+    override fun sver(newSver: Boolean): ItemPlanStap = this.copy(sver = newSver)
 }

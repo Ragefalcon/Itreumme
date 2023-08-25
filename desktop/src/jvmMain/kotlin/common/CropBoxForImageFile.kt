@@ -1,7 +1,6 @@
 package common
 
 import MainTabs.imageFromFile
-import MainTabs.imageFromFileScaleTest
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.ImageBitmap
@@ -12,26 +11,28 @@ import java.io.File
 
 class CropBoxForImageFile(file: File?, val outImage: IconImageBuffer = IconImageBuffer(), val defaultResource: String) {
 
-    private val sourceFile =  mutableStateOf(file)
+    private val sourceFile = mutableStateOf(file)
 
     var openFile: MutableState<Boolean> = mutableStateOf(sourceFile.value?.exists() ?: false)
 
-    val sourceImage: MutableState<ImageBitmap>  = mutableStateOf(
-            sourceFile.value?.let { if (it.exists()) imageFromFile(it) else useResource(
-                defaultResource,
-                ::loadImageBitmap
-            )} ?: useResource(
+    val sourceImage: MutableState<ImageBitmap> = mutableStateOf(
+        sourceFile.value?.let {
+            if (it.exists()) imageFromFile(it) else useResource(
                 defaultResource,
                 ::loadImageBitmap
             )
+        } ?: useResource(
+            defaultResource,
+            ::loadImageBitmap
         )
+    )
 
     fun extension(): String = sourceFile.value?.extension ?: ""
 
     fun setFile(file: File) {
         if (file.exists()) {
             sourceFile.value = file
-            sourceImage.value = imageFromFile(file) //imageFromFileScaleTest(file) //
+            sourceImage.value = imageFromFile(file)
             openFile.value = true
         }
     }
@@ -54,7 +55,7 @@ class CropBoxForImageFile(file: File?, val outImage: IconImageBuffer = IconImage
                 maxSize,
                 square
             )
-            outImage.setBuffer(aa.first,extension(),aa.second)
+            outImage.setBuffer(aa.first, extension(), aa.second)
         }
     }
 

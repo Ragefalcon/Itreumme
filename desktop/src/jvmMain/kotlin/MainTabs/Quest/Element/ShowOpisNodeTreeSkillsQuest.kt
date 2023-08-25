@@ -1,6 +1,5 @@
 package MainTabs.Quest.Element
 
-import androidx.compose.material.Text
 import MainTabs.Quest.Items.ComItemNodeTreeSkillsSelParentsQuest
 import MainTabs.Quest.Items.ItemPlanQuestPlate
 import MainTabs.Quest.Items.ItemPlanStapQuestPlate
@@ -10,6 +9,7 @@ import MyListRow
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Text
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +42,7 @@ fun ShowOpisNodeTreeSkillsQuest(
     MyInfoShow(dialLay) {
         Column(
             Modifier.padding(20.dp).width(dialLay.layWidth.value * 0.8f)
-                .fillMaxHeight(0.8f)//.heightIn(0.dp, 500.dp) .fillMaxSize(0.8f)//
+                .fillMaxHeight(0.8f)
         ) {
             Row(
                 Modifier.padding(horizontal = 2.dp).padding(vertical = 2.dp),
@@ -87,7 +87,7 @@ fun ShowOpisNodeTreeSkillsQuest(
                     ) {
                         MyTextStyle2(
                             when (item) {
-//                                    is ItemCountNodeTreeSkills -> "Счетчик"
+
                                 is ItemHandNodeTreeSkillsQuest -> "После выполнения условий/заданий пользователь сам выставляет выполнение достижения (правая кнопка мышы на достижении и \"Выполнить\")."
                                 is ItemPlanNodeTreeSkillsQuest -> "Достижение будет автоматически защитано после того как пользователь выполнит привязанный к достижению проект/этап, который указан ниже."
                                 else -> ""
@@ -122,8 +122,8 @@ fun ShowOpisNodeTreeSkillsQuest(
                 MyListRow(
                     questDB.spisQuest.spisNodeTreeSkillsForInfo,
                     Modifier.padding(top = 8.dp).heightIn(0.dp, 150.dp)
-                ) { ind, nodeTreeSkills -> //.heightIn(0.dp, 150.dp) .height(150.dp)
-                    ComItemNodeTreeSkillsSelParentsQuest(nodeTreeSkills,questDB).getComposable()
+                ) { ind, nodeTreeSkills ->
+                    ComItemNodeTreeSkillsSelParentsQuest(nodeTreeSkills, questDB).getComposable()
                 }
             }
             if (item is ItemPlanNodeTreeSkillsQuest) {
@@ -132,7 +132,6 @@ fun ShowOpisNodeTreeSkillsQuest(
                     Modifier.padding(top = 15.dp),
                     style = MyTextStyleParam.style1.copy(fontSize = 18.sp)
                 )
-                println("ItemNode: ${item.stap_prpl}")
                 questDB.spisQuest.spisPlan.getState().value?.find { itemPlan ->
                     itemPlan.id.toLong() == item.privplan
                 }?.let {
@@ -143,9 +142,7 @@ fun ShowOpisNodeTreeSkillsQuest(
                 }
                 questDB.spisQuest.spisAllStapPlan.getState().value?.let {
 
-                    println("ItemListCount: ${it.size}")
                     it.find { itemPlanStap ->
-                        println("ItemNode: ${itemPlanStap.id}")
                         itemPlanStap.id.toLong() == item.stap_prpl
                     }?.let {
                         ItemPlanStapQuestPlate(
@@ -162,13 +159,12 @@ fun ShowOpisNodeTreeSkillsQuest(
             )
             val scroll = rememberScrollState(0)
             BoxWithVScrollBar(Modifier.padding(10.dp), scroll) { scrollStateBox ->
-//                            SelectionContainer {
+
                 Text(
                     item.opis,
                     Modifier.verticalScroll(scrollStateBox, enabled = true),
                     style = MyTextStyleParam.style2.copy(textAlign = TextAlign.Start, fontSize = 15.sp)
                 )
-//                            }
             }
         }
     }

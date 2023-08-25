@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.*
@@ -26,13 +25,6 @@ import viewmodel.MainDB
 import java.util.*
 
 
-/**
- * Похоже с учетом того что в этих айтемах происходит взаимодействие со слайдером и меняется содержимое, причем без
- * подтягивания обновления из БД, то при переделывании этих айтемов в функции все идет как то не очень корректно...
- * Возможно можно настроить все это и в формате функции, но т.к. в формате класса все работает нормально, я решил
- * ничего не трогать, т.к. пока не вижу принципиальных различий, разве что нужно помнить во время использования, что
- * это не функция, а класс.
- * */
 class ComItemDenPlan(
     val item: ItemDenPlan,
     val selection: SingleSelection,
@@ -47,7 +39,7 @@ class ComItemDenPlan(
     val text_sum_hour = mutableStateOf(Date().fromHourFloat(item.sum_hour.toFloat()).humanizeTime())
     val progressGotov = mutableStateOf((item.gotov / 100f).toFloat())
 
-    @OptIn(ExperimentalComposeUiApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
+    @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
     @Composable
     fun getComposable() {
         val expandedOpis = mutableStateOf(!item.sver)
@@ -56,8 +48,6 @@ class ComItemDenPlan(
                 selection.selected = item
             }, {
                 MainDB.timeSpis.spisDenPlan.sverOpisElem(item)
-//                    .updateElem(item,item.copy(sver = item.sver.not()))
-//                MainDB.timeFun.sverDenPlan(item)
                 expandedOpis.value = !expandedOpis.value
             }, modifierThen = Modifier, dropMenu = { exp ->
                 dropMenu(item, exp)
@@ -66,14 +56,13 @@ class ComItemDenPlan(
             ) {
                 MainDB.complexOpisSpis.spisComplexOpisForDenPlan.getState().value?.let { mapOpis ->
                     Column {
-
                         Row(
                             Modifier.padding(start = 10.dp).padding(vertical = 2.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             if (item.vajn == -1L) {
                                 Image(
-                                    painterResource("ic_baseline_nights_stay_24.xml"), //BitmapPainter(
+                                    painterResource("ic_baseline_nights_stay_24.xml"),
                                     "statDenPlan",
                                     Modifier
                                         .height(40.dp)
@@ -86,12 +75,9 @@ class ComItemDenPlan(
                                 )
                             } else {
                                 Image(
-                                    painterResource("bookmark_01.svg"), //BitmapPainter(
-//                                bitmap = useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                                    painterResource("bookmark_01.svg"),
                                     "statDenPlan",
                                     Modifier
-//                                    .height(35.dp)
-//                                    .width(35.dp),
                                         .height(40.dp)
                                         .width(40.dp),
                                     colorFilter = ColorFilter.tint(
@@ -105,7 +91,6 @@ class ComItemDenPlan(
                                         BlendMode.Modulate
                                     ),
                                     contentScale = ContentScale.FillBounds,
-//                                filterQuality = FilterQuality.High
                                 )
                             }
                             Column(
@@ -177,7 +162,7 @@ class ComItemDenPlan(
                                                     expandedDropMenu,
                                                     buttMenu,
                                                     itemDenPlanStyleState.dropdown
-                                                ) { //setDissFun ->
+                                                ) {
                                                     dropMenu(item, expandedDropMenu)
                                                 }
                                                 mapOpis[item.id.toLong()]?.let {
@@ -187,8 +172,6 @@ class ComItemDenPlan(
                                                         color = boxOpisStyleState.colorButt
                                                     ) {
                                                         MainDB.timeSpis.spisDenPlan.sverOpisElem(item)
-//                                                            .updateElem(item,item.copy(sver = item.sver.not()))
-//                                                        MainDB.timeFun.sverDenPlan(item)
                                                     }
                                                 }
                                             }
@@ -199,8 +182,11 @@ class ComItemDenPlan(
                                                     value = progressGotov.value,
                                                     modifier = Modifier.height(20.dp).fillMaxWidth(),
                                                     onValueChange = {
-                                                        item.setGotov(it.toDouble() * 100){ hour, gotov, exp ->
-                                                            MainDB.timeSpis.spisDenPlan.updateElem(item, item.copy(sum_hour = hour, gotov = gotov))
+                                                        item.setGotov(it.toDouble() * 100) { hour, gotov, exp ->
+                                                            MainDB.timeSpis.spisDenPlan.updateElem(
+                                                                item,
+                                                                item.copy(sum_hour = hour, gotov = gotov)
+                                                            )
                                                         }
                                                         text_sum_hour.value =
                                                             Date().fromHourFloat(item.sum_hour.toFloat()).humanizeTime()
@@ -210,25 +196,6 @@ class ComItemDenPlan(
                                                         changeGotov?.invoke(item, progressGotov.value)
                                                     },
                                                     colors = getMySliderColor(sliderColor2, sliderColor1)
-                                                    /*SliderDefaults.colors(
-                                                    thumbColor = colorVyp,
-                                                    disabledThumbColor = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled)
-                                                        .compositeOver(MaterialTheme.colors.surface),
-                                                    activeTrackColor = colorVyp,
-                                                    inactiveTrackColor = sliderColor1,
-                                                    disabledActiveTrackColor = MaterialTheme.colors.onSurface.copy(alpha = SliderDefaults.DisabledActiveTrackAlpha),
-                                                    disabledInactiveTrackColor = MaterialTheme.colors.onSurface.copy(
-                                                        alpha = SliderDefaults.DisabledInactiveTrackAlpha
-                                                    ),
-                                                    activeTickColor = contentColorFor(Color.Blue).copy(alpha = TickAlpha),
-                                                    inactiveTickColor = Color.Magenta.copy(alpha = TickAlpha),
-                                                    disabledActiveTickColor = contentColorFor(colorVyp).copy(alpha = TickAlpha)
-                                                        .copy(alpha = DisabledTickAlpha),
-                                                    disabledInactiveTickColor = MaterialTheme.colors.onSurface.copy(
-                                                        alpha = SliderDefaults.DisabledInactiveTrackAlpha
-                                                    )
-                                                        .copy(alpha = DisabledTickAlpha)
-                                                )*/
                                                 )
                                             } else {
                                                 LinearProgressIndicator(
@@ -251,13 +218,6 @@ class ComItemDenPlan(
                                 dialLay,
                                 MainDB.styleParam.timeParam.denPlanTab.complexOpisForDenPlan
                             )
-/*
-                            MyBoxOpisStyle(
-                                expandedOpis,
-                                item.opis,
-                                boxOpisStyleState
-                            )
-*/
                         }
                     }
                 }

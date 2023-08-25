@@ -6,18 +6,13 @@ import MyDialog.MyDialogLayout
 import MyDialog.buttDatePickerWithButton
 import MyList
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import common.MyTextButtStyle1
 import common.SingleSelection
 import extensions.*
 import ru.ragefalcon.sharedcode.extensions.TimeUnits
@@ -39,19 +34,7 @@ fun PanCalendar(
             class daysItem(
                 val dayOfWeek: Int,
                 val dateItem: Long,
-//        var selection: SingleSelection
             ) {
-/*
-        val isActive: Boolean
-            get() = dateItem == selectionDate
-
-        fun activate() {
-            aa.time.time = dateItem
-            date = Date(dateItem)
-            selectionDate = dateItem
-//            selection.selected = this
-        }
-*/
             }
 
             class LineDay(dateStart: Date) {
@@ -82,17 +65,14 @@ fun PanCalendar(
                 val daysMonth = mutableListOf<LineDay>()
                 val dayWeekFD = (calendar.get(Calendar.DAY_OF_WEEK) - 1).let {
                     if (it == 0) 7 else it
-                } // воскресенье = 1, пн = 2, .. сб = 7 (до вычета 1 и перестановки вс)
+                }
                 val startDate = calendar.time.add(-7 - dayWeekFD, TimeUnits.DAY)
                 for (i in 1..MainDB.complexOpisSpis.countCalendarWeek) {
                     daysMonth.add(LineDay(startDate))
-//            startDate.add(7,TimeUnits.DAY)
                 }
                 return daysMonth
             }
 
-
-//            val daysMonth = getLines(changeDate.value)
             val selection = remember { SingleSelection() }
 
             @Composable
@@ -118,7 +98,13 @@ fun PanCalendar(
             }
 
             @Composable
-            fun comLine(ind: Int, line: LineDay, listNapom: Map<Long, List<ItemNapom>>, listDenPlan: Map<Long, List<ItemDenPlan>>,styleCDP: ItemCalendarDenPlanStyleState){
+            fun comLine(
+                ind: Int,
+                line: LineDay,
+                listNapom: Map<Long, List<ItemNapom>>,
+                listDenPlan: Map<Long, List<ItemDenPlan>>,
+                styleCDP: ItemCalendarDenPlanStyleState
+            ) {
                 val colorBorder = Color.White.copy(0.5f)
                 if (ind == 0) Box(Modifier.background(colorBorder).height(1.dp).fillMaxWidth())
                 Box {
@@ -127,7 +113,7 @@ fun PanCalendar(
                             ComItemDay(
                                 day,
                                 listNapom.get(day.dateItem)
-                                    ?: listOf(),// .filter { it.data == day.dateItem },
+                                    ?: listOf(),
                                 listDenPlan.get(day.dateItem) ?: listOf(),
                                 styleCDP
                             )
@@ -141,7 +127,6 @@ fun PanCalendar(
                                 Box(Modifier.background(colorBorder).fillMaxHeight().width(1.dp))
                             }
                         }
-
                     }
                 }
                 Box(Modifier.background(colorBorder).height(1.dp).fillMaxWidth())
@@ -155,12 +140,9 @@ fun PanCalendar(
                     MainDB.timeSpis.spisDenPlanForCalendar.getState().groupBy { it.data }.let { listDenPlan ->
                         (MainDB.timeSpis.spisNapomForCalendar.getState().value?.groupBy { it.data }
                             ?: mapOf()).let { listNapom ->
-
-//                            println("ItemCalendarDenPlanStyleState")
                             getLines(changeDate.value).let { lines ->
                                 MyList(lines, Modifier.weight(1f)) { ind, line ->
-//                                println("DrawMyListCalendar")
-                                    comLine(ind,line, listNapom, listDenPlan, styleCDP)
+                                    comLine(ind, line, listNapom, listDenPlan, styleCDP)
                                 }
                             }
                         }
@@ -175,7 +157,6 @@ fun PanCalendar(
                     }
                 }
             }
-//            }
         }
     }
 }

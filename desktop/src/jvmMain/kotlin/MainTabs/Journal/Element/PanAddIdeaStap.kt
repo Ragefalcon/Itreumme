@@ -6,7 +6,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import common.*
 import extensions.addUpdList
@@ -57,7 +56,7 @@ fun PanAddIdeaStap(
         )
 
     dialPan.dial = @Composable {
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 boxSelectParent.getComposable(Modifier.fillMaxWidth(0.7F))
                 if (!boxSelectParent.isExpanded()) {
@@ -134,9 +133,8 @@ fun PanAddIdeaStapFromVxod(
         )
 
     dialPan.dial = @Composable {
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-//                Row(verticalAlignment = Alignment.CenterVertically){
                 boxSelectParent.getComposable(Modifier.fillMaxWidth(0.7F))
                 if (!boxSelectParent.isExpanded()) {
                     complexOpis.show(this, dialLayInner)

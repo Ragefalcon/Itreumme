@@ -1,5 +1,6 @@
 package MainTabs.Avatar.Element
 
+import MainTabs.Avatar.Items.ComItemPrivsGoal
 import MyDialog.MyDialogLayout
 import MyList
 import androidx.compose.animation.animateContentSize
@@ -15,11 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import ru.ragefalcon.sharedcode.models.data.ItemPrivsGoal
-import MainTabs.Avatar.Items.ComItemPrivsGoal
 import androidx.compose.ui.text.style.TextAlign
-import common.*
+import androidx.compose.ui.unit.dp
+import common.BackgroungPanelStyle1
+import common.MyTextButtStyle1
+import common.MyTextStyleParam
+import common.SingleSelectionType
+import ru.ragefalcon.sharedcode.models.data.ItemPrivsGoal
 import viewmodel.MainDB
 
 fun PanPrivsGoal(
@@ -31,7 +34,7 @@ fun PanPrivsGoal(
     val selection = SingleSelectionType<ItemPrivsGoal>()
 
     dialPan.dial = @Composable {
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(
                 Modifier
                     .heightIn(0.dp, dialPan.layHeight.value * 0.8F)
@@ -59,11 +62,11 @@ fun PanPrivsGoal(
                         MainDB.run { if (characteristics) avatarSpis.spisPlanStapOfCharacteristic else avatarSpis.spisPlanStapOfGoal },
                         Modifier.weight(1f).padding(10.dp),
                         darkScroll = true
-                    ) {  ind,itemPrivsGoal ->
+                    ) { _, itemPrivsGoal ->
                         ComItemPrivsGoal(itemPrivsGoal, selection) { item, expanded ->
                             DropdownMenuItem(onClick = {
                                 if (characteristics) MainDB.addAvatar.delPrivsCharacteristic(item.id.toLong())
-                                    else MainDB.addAvatar.delPrivsGoal(item.id.toLong())
+                                else MainDB.addAvatar.delPrivsGoal(item.id.toLong())
                                 expanded.value = false
                             }) {
                                 Text(text = "Отвязать", color = Color.White)

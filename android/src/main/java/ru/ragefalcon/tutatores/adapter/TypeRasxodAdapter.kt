@@ -30,24 +30,15 @@ class TypeRasxodAdapter(
         return getCustomView(position, convertView, parent)
     }
 
-
     fun getCustomView(
         position: Int, convertView: View?,
         parent: ViewGroup?
     ): View {
         val inflater = LayoutInflater.from(parent?.context)
-        val row: View = inflater.inflate(textViewResourceId, parent, false)// android.R.layout.simple_list_item_1, parent, false)
+        val row: View = inflater.inflate(textViewResourceId, parent, false)
         val label = row.findViewById(R.id.text1) as TextView
         label.setTextColor(MyColorARGB.MYBEG.toIntColor())
         objects?.let{label.setText(let{objects[position]}.second)}
-//        val icon: ImageView = row.findViewById(R.id.icon) as ImageView
-//        if (dayOfWeek.get(position) === "Котопятница"
-//            || dayOfWeek.get(position) === "Субкота"
-//        ) {
-//            icon.setImageResource(R.drawable.paw_on)
-//        } else {
-//            icon.setImageResource(R.drawable.ic_launcher)
-//        }
         return row
     }
 
@@ -56,7 +47,7 @@ class TypeRasxodAdapter(
         parent: ViewGroup?
     ): View {
         val inflater = LayoutInflater.from(parent?.context)
-        val row: View = inflater.inflate(textDropViewResourceId, parent, false)// android.R.layout.simple_list_item_1, parent, false)
+        val row: View = inflater.inflate(textDropViewResourceId, parent, false)
         val label = row.findViewById(R.id.text1) as TextView
         objects?.let{label.setText(let{objects[position]}.second)}
         return row

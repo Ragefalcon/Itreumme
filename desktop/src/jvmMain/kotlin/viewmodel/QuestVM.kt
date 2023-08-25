@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.* //mutableStateOf
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.material.Text
 import common.MyTextStyleParam
 import extensions.toColor
 import ru.ragefalcon.sharedcode.extensions.MyColorARGB
@@ -23,12 +23,19 @@ object QuestVM {
     var openQuestDB by mutableStateOf<QuestDB?>(null)
     var loadQuestDB by mutableStateOf<QuestDB?>(null)
 
-    fun withDB(ff: (QuestDB)->Unit) = openQuestDB?.let { ff(it) }
-    @Composable
-    fun withDBC(ff: @Composable (QuestDB)->Unit) = openQuestDB?.let { ff(it) }
+    fun withDB(ff: (QuestDB) -> Unit) = openQuestDB?.let { ff(it) }
 
     @Composable
-    fun getComItemTriggers(code: String, parent_id: Long, modifier: Modifier = Modifier.padding(end = 5.dp), emptyMarker: Boolean = false, editable: Boolean = true){
+    fun withDBC(ff: @Composable (QuestDB) -> Unit) = openQuestDB?.let { ff(it) }
+
+    @Composable
+    fun getComItemTriggers(
+        code: String,
+        parent_id: Long,
+        modifier: Modifier = Modifier.padding(end = 5.dp),
+        emptyMarker: Boolean = false,
+        editable: Boolean = true
+    ) {
         openQuestDB?.spisQuest?.spisTrigger?.getState()?.value?.let { listTrig ->
             listTrig.filter { it.parent_type == code && it.parent_id == parent_id }?.let {
                 it.forEach { trig ->
@@ -46,7 +53,12 @@ object QuestVM {
     }
 
     @Composable
-    fun getTriggerMarkersForTriggerChilds(type_id: Long, child_id: Long, modifier: Modifier = Modifier.padding(end = 5.dp), emptyMarker: Boolean = false){
+    fun getTriggerMarkersForTriggerChilds(
+        type_id: Long,
+        child_id: Long,
+        modifier: Modifier = Modifier.padding(end = 5.dp),
+        emptyMarker: Boolean = false
+    ) {
         QuestVM.openQuestDB?.spisQuest?.spisTrigger?.getState()?.value?.let { listTrig ->
             listTrig.filter { it.type_id == type_id && it.child_id == child_id }
                 .let {

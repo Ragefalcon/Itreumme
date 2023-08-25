@@ -7,7 +7,9 @@ import ru.ragefalcon.sharedcode.models.data.ItemSettTyperasxod
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.SettTyperasxodRVItem
-import ru.ragefalcon.tutatores.commonfragments.*
+import ru.ragefalcon.tutatores.commonfragments.BaseFragmentVM
+import ru.ragefalcon.tutatores.commonfragments.MenuPopupButton
+import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentTabFinSettBinding
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
 
@@ -24,29 +26,31 @@ class FinSettTyperasxodPage() : BaseFragmentVM<FragmentTabFinSettBinding>(Fragme
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             }
             with(viewmodel) {
-                val menuPopupSettTyperasxod = MyPopupMenuItem<ItemSettTyperasxod>(this@FinSettTyperasxodPage, "TyperasxodDelChange").apply {
-                    addButton(MenuPopupButton.UNOPEN) {
-                        addFin.updTyperasxodOpen(id = it.id.toLong(), false)
+                val menuPopupSettTyperasxod =
+                    MyPopupMenuItem<ItemSettTyperasxod>(this@FinSettTyperasxodPage, "TyperasxodDelChange").apply {
+                        addButton(MenuPopupButton.UNOPEN) {
+                            addFin.updTyperasxodOpen(id = it.id.toLong(), false)
+                        }
+                        addButton(MenuPopupButton.OPEN) {
+                            addFin.updTyperasxodOpen(id = it.id.toLong(), true)
+                        }
+                        addButton(MenuPopupButton.DELETE) {
+                            addFin.delTyperasxod(it.id.toLong())
+                        }
+                        addButton(MenuPopupButton.CHANGE) {
+                            showAddChangeFragDial(SettingAddSettTyperasxodPanelFragment(it))
+                        }
                     }
-                    addButton(MenuPopupButton.OPEN) {
-                        addFin.updTyperasxodOpen(id = it.id.toLong(), true)
-                    }
-                    addButton(MenuPopupButton.DELETE) {
-                        addFin.delTyperasxod(it.id.toLong())
-                    }
-                    addButton(MenuPopupButton.CHANGE) {
-                        showAddChangeFragDial(SettingAddSettTyperasxodPanelFragment(it))
-                    }
-                }
                 finSpis.spisTyperasxodForSett.observe(viewLifecycleOwner) { listItem ->
                     rvmAdapter.updateData(formUniRVItemList(listItem) { item ->
                         SettTyperasxodRVItem(item, selectListener = {
                             selItem = it
-                        },longTapListener = {
-                            menuPopupSettTyperasxod.showMenu(item,name = "${item.typer}",{
-                                if (item.countoper == 0L) (it == MenuPopupButton.DELETE)||(it == MenuPopupButton.CHANGE)
-                                else if (item.open) (it == MenuPopupButton.CHANGE)||(it == MenuPopupButton.UNOPEN)
-                                else (it == MenuPopupButton.CHANGE)||(it == MenuPopupButton.OPEN) })
+                        }, longTapListener = {
+                            menuPopupSettTyperasxod.showMenu(item, name = "${item.typer}", {
+                                if (item.countoper == 0L) (it == MenuPopupButton.DELETE) || (it == MenuPopupButton.CHANGE)
+                                else if (item.open) (it == MenuPopupButton.CHANGE) || (it == MenuPopupButton.UNOPEN)
+                                else (it == MenuPopupButton.CHANGE) || (it == MenuPopupButton.OPEN)
+                            })
                         })
                     })
                     selItem?.let {

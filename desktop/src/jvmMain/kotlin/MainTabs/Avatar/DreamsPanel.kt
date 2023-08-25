@@ -1,6 +1,5 @@
 package MainTabs.Avatar
 
-import androidx.compose.material.Text
 import MainTabs.Avatar.Element.PanAddDream
 import MainTabs.Avatar.Element.PanAddImageCommon
 import MainTabs.Avatar.Items.ComItemDream
@@ -12,6 +11,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -34,7 +34,6 @@ import viewmodel.MainDB
 import viewmodel.StateVM
 import java.io.File
 import kotlin.random.Random
-import kotlin.random.nextInt
 
 class DreamsPanel {
 
@@ -55,50 +54,28 @@ class DreamsPanel {
 
     @Composable
     private fun dropMenuItemDream(item: ItemDream, expanded: MutableState<Boolean>, dialLay: MyDialogLayout) {
-/*
-        DropdownMenuItem(onClick = {
-            MainDB.addAvatar.setOpenDream(item.id.toLong(), item.stat != 10L)
-            if (!vypDream.value) selection.selected = null
-            expanded.value = false
-        }) {
-            Text(text = if (item.stat == 10L) "Раздостигнута" else "Достигнута", color = Color.White)
-        }
-*/
         DropdownMenuItem(onClick = {
             PanAddDream(dialLay, item)
             expanded.value = false
         }) {
             Text(text = "Изменить", color = Color.White)
         }
-        MyCompleteDropdownMenuButton(expanded, item.stat == 10L, textToFalse = "Раздостигнута", textToTrue = "Достигнута") {
+        MyCompleteDropdownMenuButton(
+            expanded,
+            item.stat == 10L,
+            textToFalse = "Раздостигнута",
+            textToTrue = "Достигнута"
+        ) {
             MainDB.addAvatar.setOpenDream(item.id.toLong(), item.stat != 10L)
             if (!vypDream.value) selection.selected = null
-//            MainDB.addAvatar.setOpenGoal(item.id.toLong(), item.stat != 10L)
-//            if (!vypGoal.value) {
-//                selection.selected = null
-//            }
         }
-        MyDeleteDropdownMenuButton(expanded){
+        MyDeleteDropdownMenuButton(expanded) {
             MainDB.addAvatar.delDream(item.id.toLong())
             selection.selected = null
         }
-/*
-        DropdownMenuItem(onClick = {
-            MainDB.addAvatar.delDream(item.id.toLong())
-            selection.selected = null
-            expanded.value = false
-        }) {
-            Text(text = "Удалить", color = Color.White)
-        }
-*/
     }
 
     fun updatePrivsDream() {
-//        selection.selected?.let {
-//            MainDB.avatarFun.selectDreamForDiagram(it.id.toLong())
-//            MainDB.avatarFun.setSelectedDreamListenerForStatistik(it.id.toLong())
-//            MainDB.avatarFun.setSelectedIdForPrivsDream(it.id.toLong())
-//        }
     }
 
     @Composable
@@ -153,7 +130,7 @@ class DreamsPanel {
                 width = 70.dp,
                 myStyleToggleButton = ToggleButtonStyleState(buttVypDream)
             ) {
-//            MyTextToggleButtStyle1("Вып", vypDream, modifier = Modifier.padding(start = 15.dp)) {
+
                 MainDB.avatarFun.setOpenspisDreams(it)
                 selection.selected = null
             }
@@ -166,7 +143,7 @@ class DreamsPanel {
                 width = 70.dp,
                 myStyleToggleButton = ToggleButtonStyleState(buttViewSpisDream)
             )
-//            MyTextToggleButtStyle1("Список", spisDreamView, modifier = Modifier.padding(start = 15.dp))
+
             Text(
                 "Мечты: ${MainDB.avatarSpis.spisDreams.getState().value?.size ?: 0}",
                 Modifier.weight(1f).padding(horizontal = 20.dp),
@@ -178,7 +155,7 @@ class DreamsPanel {
                 width = 70.dp, height = 35.dp,
                 myStyleTextButton = TextButtonStyleState(buttAddDream)
             ) {
-//            MyTextButtStyle1("+", modifier = Modifier.padding(end = 15.dp)) {
+
                 PanAddDream(dialLay)
             }
         }
@@ -205,18 +182,18 @@ class DreamsPanel {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (imageIB.value != null) imageIB.value?.let {
-                    MyShadowBox(panelImage.shadow.getValue()){
+                    MyShadowBox(panelImage.shadow.getValue()) {
                         Image(
-                            bitmap = it, //BitmapPainter(
+                            bitmap = it,
                             "defaultAvatar",
                             Modifier.padding(bottom = 5.dp)
-//                                        .fillMaxWidth(0.8f)
+
                                 .heightIn(0.dp, this@BoxWithConstraints.maxHeight * 0.5f)
                                 .widthIn(0.dp, this@BoxWithConstraints.maxWidth * 0.8f)
                                 .withSimplePlate(SimplePlateWithShadowStyleState(panelImage))
                                 .clip(panelImage.SHAPE.getValue())
-//                            .border(2.dp, Color.White, shape)
-//                            .shadow(2.dp, shape)
+
+
                                 .clickable {
                                     PanAddImageCommon(
                                         dialLay,
@@ -226,7 +203,7 @@ class DreamsPanel {
                                         outImage.saveIconFile(
                                             File(
                                                 StateVM.dirDreamsImages,
-                                                "dream_${selItem.id_main}.jpg"//${fileForCrop.extension()}"
+                                                "dream_${selItem.id_main}.jpg"
                                             ).path
                                         )
                                         val ff =
@@ -234,21 +211,21 @@ class DreamsPanel {
                                         if (ff.exists()) {
                                             imageIB.value = imageFromFile(ff)
                                         }
-//                                                MainDB.addAvatar.enableIconBestDay(item.id.toLong(), true)
+
                                     }
                                 },
                             contentScale = ContentScale.Fit,
                         )
                     }
                 } else {
-                    MyShadowBox(panelImage.shadow.getValue()){
+                    MyShadowBox(panelImage.shadow.getValue()) {
                         Box(
                             Modifier.padding(bottom = 5.dp)
                                 .height(100.dp)
                                 .width(200.dp)
                                 .withSimplePlate(SimplePlateWithShadowStyleState(panelImage))
-//                            .clip(shape)
-//                            .border(2.dp, Color.White, shape)
+
+
                                 .clickable {
                                     PanAddImageCommon(
                                         dialLay,
@@ -258,7 +235,7 @@ class DreamsPanel {
                                         outImage.saveIconFile(
                                             File(
                                                 StateVM.dirDreamsImages,
-                                                "dream_${selItem.id_main}.jpg"//${fileForCrop.extension()}"
+                                                "dream_${selItem.id_main}.jpg"
                                             ).path
                                         )
                                         val ff =
@@ -266,7 +243,7 @@ class DreamsPanel {
                                         if (ff.exists()) {
                                             imageIB.value = imageFromFile(ff)
                                         }
-//                                                MainDB.addAvatar.enableIconBestDay(item.id.toLong(), true)
+
                                     }
                                 }, contentAlignment = Alignment.Center
                         ) {
@@ -280,7 +257,7 @@ class DreamsPanel {
 
                 }
                 Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    BoxWithVScrollBar(Modifier.padding(10.dp) /*scroll*/) { scrollStateBox ->
+                    BoxWithVScrollBar(Modifier.padding(10.dp)) { scrollStateBox ->
                         SelectionContainer {
                             Text(
                                 modifier = Modifier.padding(vertical = 10.dp).fillMaxWidth()
@@ -297,7 +274,6 @@ class DreamsPanel {
         }
     }
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun show(
         dialLay: MyDialogLayout,
@@ -322,11 +298,11 @@ class DreamsPanel {
                                 selection.selected = it
                             } ?: run {
                                 selection.selected =
-                                    if (spisDreamView.value) it.firstOrNull() else it[Random.nextInt(it.indices)]
+                                    if (spisDreamView.value) it.firstOrNull() else it[Random.nextInt(it.indices.first,it.indices.last)]
                             }
                         } else {
                             selection.selected =
-                                if (spisDreamView.value) it.firstOrNull() else it[Random.nextInt(it.indices)]
+                                if (spisDreamView.value) it.firstOrNull() else it[Random.nextInt(it.indices.first,it.indices.last)]
                         }
                         updatePrivsDream()
                     }
@@ -340,7 +316,7 @@ class DreamsPanel {
                 } else {
                     topPanel(dialLay)
                     selection.selected?.let { selItem ->
-                        MyShadowBox(panelOpis.shadow.getValue(),Modifier.weight(1f)){
+                        MyShadowBox(panelOpis.shadow.getValue(), Modifier.weight(1f)) {
                             Box(
                                 Modifier
                                     .withSimplePlate(SimplePlateWithShadowStyleState(panelOpis))

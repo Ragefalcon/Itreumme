@@ -1,7 +1,9 @@
 package MainTabs.Setting
 
 import MyDialog.MyDialogLayout
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import common.DiskretSeekBar
@@ -33,14 +35,17 @@ class SettFinanceTabs(val dialLay: MyDialogLayout) {
                         schetTab.show(Modifier.weight(1f))
                         valutTab.show(Modifier.weight(1f))
                     }
+
                     "plans" -> Row(Modifier.weight(1f)) {
                         schetPlanTab.show(Modifier.weight(1f))
                         typeRasxForSchetPlanTab.show(Modifier.weight(1f))
                     }
+
                     "typerd" -> Row(Modifier.weight(1f)) {
                         typerTab.show(Modifier.weight(1f))
                         typedTab.show(Modifier.weight(1f))
                     }
+
                     else -> {
                     }
                 }

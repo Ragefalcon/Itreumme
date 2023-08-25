@@ -1,12 +1,12 @@
 package MainTabs.Time.Elements
 
 
-import androidx.compose.material.Text
 import MainTabs.Time.Items.ComItemHistoryPlan
 import MyDialog.MyDialogLayout
 import MyList
 import adapters.MyComboBox
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -50,7 +50,6 @@ fun PanViewPlanHistory(
     stapId: Boolean
 ) {
     val dialLayInner = MyDialogLayout()
-//    val dateInner = mutableStateOf(item.data.let { Date(it) } )
     if (!stapId) MainDB.timeFun.setPlanForHistory(id) else MainDB.timeFun.setStapPlanForHistory(id)
     val rectDiagram = DrawRectDiagram()
 
@@ -64,7 +63,7 @@ fun PanViewPlanHistory(
             BackgroungPanelStyle1(
                 style = SimplePlateStyleState(platePanel),
                 vignette = VIGNETTE.getValue()
-            ) { //modif ->
+            ) {
                 Column(
                     Modifier.padding(15.dp)
                         .heightIn(0.dp, dialPan.layHeight.value * 0.8F)
@@ -83,18 +82,27 @@ fun PanViewPlanHistory(
                                     ?.let { historyMap ->
                                         val comboBoxList = remember {
                                             MyComboBox(historyMap.map { it.key },
-                                                nameItem = { it }, width = 60.dp)
+                                                nameItem = { it }, width = 60.dp
+                                            )
                                         }
-                                        LaunchedEffect(historyMap){
+                                        LaunchedEffect(historyMap) {
                                             if (comboBoxList.getListItem.value != historyMap.map { it.key })
                                                 comboBoxList.getListItem.value = historyMap.map { it.key }
                                         }
                                         RowVA(
                                             Modifier.padding(5.dp).fillMaxWidth(0.7f)
                                         ) {
-                                            MyCheckbox(inYear, "по годам", Modifier.padding(horizontal = 15.dp), style = CheckboxStyleState(checkBoxYear))
+                                            MyCheckbox(
+                                                inYear,
+                                                "по годам",
+                                                Modifier.padding(horizontal = 15.dp),
+                                                style = CheckboxStyleState(checkBoxYear)
+                                            )
                                             Spacer(Modifier.weight(1f))
-                                            if (inYear.value) comboBoxList.show(Modifier.padding(horizontal = 15.dp),style = ComboBoxStyleState(cb_years))
+                                            if (inYear.value) comboBoxList.show(
+                                                Modifier.padding(horizontal = 15.dp),
+                                                style = ComboBoxStyleState(cb_years)
+                                            )
                                         }
                                         (if (inYear.value) comboBoxList.getSelected()
                                             ?.let { historyMap[it] } else spisHistory.getState().value)?.let {
@@ -109,6 +117,7 @@ fun PanViewPlanHistory(
                                     }
                             }
                         }
+
                         HistoryPlanTabsEnum.Diagram -> {
                             (if (!stapId) MainDB.timeSpis.spisSumHourForHistoryPlanDiag else MainDB.timeSpis.spisSumHourForHistoryStapPlanDiag).getState().value?.let {
                                 rectDiagram.drawDiagram(
@@ -120,6 +129,7 @@ fun PanViewPlanHistory(
                                 )
                             }
                         }
+
                         else -> {}
                     }
                     Row {

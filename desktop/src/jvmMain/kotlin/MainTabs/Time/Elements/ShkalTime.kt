@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Density
@@ -24,17 +23,20 @@ import viewmodel.MainDB
 import java.util.*
 
 @Composable
-fun ShkalTime(denPlan: ItemDenPlan, modifier: Modifier = Modifier.width(150.dp).height(15.dp), density: Density,
-              colors: StyleVMspis.InterfaceState.ColorShkal = MainDB.styleParam.timeParam.planTab.panHistory.itemHistory.colorShkal) {
+fun ShkalTime(
+    denPlan: ItemDenPlan, modifier: Modifier = Modifier.width(150.dp).height(15.dp), density: Density,
+    colors: StyleVMspis.InterfaceState.ColorShkal = MainDB.styleParam.timeParam.planTab.panHistory.itemHistory.colorShkal
+) {
     val time1 = denPlan.let { Date().timeFromHHmmss(it.time1) }
     val time2 = denPlan.let { Date().timeFromHHmmss(it.time2) }
-    ShkalTime(time1, time2, modifier, density,colors)
+    ShkalTime(time1, time2, modifier, density, colors)
 }
 
 @Composable
-fun ShkalTime(time1: Date, time2: Date, modifier: Modifier = Modifier.width(150.dp).height(15.dp), density: Density,
-              colors: StyleVMspis.InterfaceState.ColorShkal = MainDB.styleParam.timeParam.planTab.panHistory.itemHistory.colorShkal) {
-
+fun ShkalTime(
+    time1: Date, time2: Date, modifier: Modifier = Modifier.width(150.dp).height(15.dp), density: Density,
+    colors: StyleVMspis.InterfaceState.ColorShkal = MainDB.styleParam.timeParam.planTab.panHistory.itemHistory.colorShkal
+) {
 
     val colorRamk = colors.colorRamk.getValue().toColor()
     val colorBack = colors.colorBack.getValue().toColor()
@@ -42,19 +44,18 @@ fun ShkalTime(time1: Date, time2: Date, modifier: Modifier = Modifier.width(150.
     val colorTommorow = colors.colorTommorow.getValue().toColor()
 
     fun DateToFloat(date: Date): Float {
-//        return ((date.withOffset().time/60f/1000f).toInt()%(24*60+1))/5f
+
         return date.format("HH").toFloat() * 12f + date.format("mm").toFloat() / 5f
     }
 
-    val oneDay = 24f * 12f //1000*60*60*24
+    val oneDay = 24f * 12f
     val startTime: Float = DateToFloat(time1)
     val endTime: Float = DateToFloat(time2)
-//   if (startTime< 0f) startTime +=oneDay
-//    if (endTime< 0f) endTime +=oneDay
+
+
     Canvas(
         modifier = modifier
     ) {
-
 
         val canvasWidth = size.width
         val canvasHeight = size.height

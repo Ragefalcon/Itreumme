@@ -66,7 +66,6 @@ abstract class FragSaveInstanseDelegate(requestKey: String = "") : Fragment() {
     ) :
         FragSaveInstanseDelegate.InstanceStateProvider<T>(savable, plusSet, startValue) {
         operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
-            Log.d("MyTut", "orderMarker: 2 ${property.name}");
             return cache ?: savable.get(property.name) as T ?: defaultValue
         }
     }
@@ -125,7 +124,8 @@ fun <T> putValueInBundle(savable: Bundle, key: String, value: T?) {
             is Parcelable -> savable.putParcelable(key, it)
             is ArrayList<*> -> savable.putParcelableArrayList(key, it as ArrayList<Parcelable>)
             is LongArray -> savable.putLongArray(key, it)
-            is Enum<*> -> savable.putString(key, it.name) /**  ?????  **/
+            is Enum<*> -> savable.putString(key, it.name)
+            /**  ?????  **/
         }
     } ?: run {
         savable.remove(key)

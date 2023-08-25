@@ -49,7 +49,7 @@ class SelectedPlanStapPanel(
 class SelectedPlanStapPanelFragment(
     parPlan: ItemPlan? = null,
     selItem: ItemPlanStap? = null,
-     arrayIskl: ArrayList<Long>? = null,    //isklItem: Long? = null,
+     arrayIskl: ArrayList<Long>? = null,
     callbackKey: String? = null
 ) : MyFragmentForDialogVM<FragmentSelectPlanStapPanelBinding>(FragmentSelectPlanStapPanelBinding::inflate) {
 
@@ -58,7 +58,6 @@ class SelectedPlanStapPanelFragment(
     var selItem: ItemPlanStap? by instanceState(selItem)
 
     var arrayIskl: ArrayList<Long>? by instanceState(arrayIskl)
-//    var isklItem: Long by instanceStateDef(-1,isklItem)
 
     var callbackKey: String? by instanceState(callbackKey)
 
@@ -93,17 +92,14 @@ class SelectedPlanStapPanelFragment(
                     })
 
                     if (firstLoad) {
-                        Log.d("MyTut", "item: ${selItem?.name}");
                         selItem?.run {
                             rvmAdapter.setSelectItem(
                                 this,
-                                PlanStapRVItem::class //PlanStapViewHolder
-                            )//.setSelect(UniRVItem(PlanStapRVItem(this, viewmodel)))
+                                PlanStapRVItem::class
+                            )
                         }
                         firstLoad = false
-
                     }
-
                 }
             }
 

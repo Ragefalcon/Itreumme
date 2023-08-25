@@ -25,7 +25,6 @@ import common.*
 import extensions.ItemVxodStyleState
 import extensions.format
 import ru.ragefalcon.sharedcode.models.data.ItemVxod
-import viewmodel.MainDB
 import java.util.*
 
 class ComItemVxod(
@@ -35,8 +34,9 @@ class ComItemVxod(
     val dialLay: MyDialogLayout?,
     val dropMenu: @Composable ColumnScope.(ItemVxod, MutableState<Boolean>) -> Unit = { _, _ -> }
 ) {
-        val expandedDropMenu = mutableStateOf(false)
-        val expandedOpis = mutableStateOf(!item.sver)
+    val expandedDropMenu = mutableStateOf(false)
+    val expandedOpis = mutableStateOf(!item.sver)
+
     @Composable
     fun getComposable() {
         with(itemVxodStyleState) {
@@ -44,7 +44,6 @@ class ComItemVxod(
                 selection.isActive(item), 0,
                 {
                     selection.selected = item
-//            expandedDropMenu.value = this.buttons.isSecondaryPressed
                 },
                 {
                     item.sver = item.sver.not()
@@ -52,7 +51,6 @@ class ComItemVxod(
                 },
                 styleSettings = itemVxodStyleState,
                 dropMenu = { exp -> dropMenu(item, exp) },
-//                multiBorder = borderMulti
             ) {
                 viewmodel.MainDB.complexOpisSpis.spisComplexOpisForVxod.getState().value?.let { mapOpis ->
                     Column {
@@ -60,14 +58,10 @@ class ComItemVxod(
                             androidx.compose.ui.Modifier.padding(start = 15.dp).padding(vertical = 0.dp),
                             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                         ) {
-
                             Image(
-                                painterResource("bookmark_01.svg"), //BitmapPainter(
-//                            bitmap = useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                                painterResource("bookmark_01.svg"),
                                 "statVxod",
-                                Modifier
-                                    .height(33.dp)
-                                    .width(33.dp),
+                                Modifier.height(33.dp).width(33.dp),
                                 colorFilter = ColorFilter.tint(
                                     when (item.stat.toInt()) {
                                         0 -> Color(0xFF2FA61D)
@@ -76,12 +70,9 @@ class ComItemVxod(
                                         3 -> Color(0xFFFFA825)
                                         4 -> Color(0xFFFF5858)
                                         else -> Color(0xFFFFF42B)
-                                    },
-                                    BlendMode.Modulate
+                                    }, BlendMode.Modulate
                                 ),
-//                    alpha = 0.5F,
                                 contentScale = ContentScale.FillBounds,
-//                            filterQuality = FilterQuality.High
                             )
 
                             Column(
@@ -89,24 +80,23 @@ class ComItemVxod(
                                     .weight(1f)
                             ) {
                                 Row {
-
                                     Column(androidx.compose.ui.Modifier.padding(0.dp).weight(1f)) {
                                         Text(
                                             modifier = androidx.compose.ui.Modifier.padding(start = 10.dp),
                                             text = item.name,
                                             style = mainTextStyle,
-//                                    fontSize = 15.sp
-                                        )
+
+                                            )
                                         Text(
                                             modifier = androidx.compose.ui.Modifier.padding(start = 10.dp),
                                             text = Date(item.data).format("dd.MM.yyyy HH:mm"),
-                                            style = dateTextStyle// TextStyle(color = Color(0xAFFFF7D9)),
-//                                        fontSize = 10.sp
+                                            style = dateTextStyle
+
                                         )
                                     }
                                 }
                             }
-//                    Spacer(Modifier.weight(1f))
+
                             if (selection.isActive(item)) MyButtDropdownMenuStyle2(
                                 androidx.compose.ui.Modifier.padding(start = 10.dp).padding(vertical = 0.dp),
                                 expandedDropMenu,
@@ -117,8 +107,7 @@ class ComItemVxod(
                             mapOpis[item.id.toLong()]?.let {
                                 RotationButtStyle1(
                                     expandedOpis,
-                                    modifier = androidx.compose.ui.Modifier
-                                        .padding(horizontal = 10.dp)
+                                    modifier = androidx.compose.ui.Modifier.padding(horizontal = 10.dp)
                                         .padding(end = 20.dp),
                                     color = boxOpisStyleState.colorButt
                                 ) {
@@ -142,8 +131,6 @@ class ComItemVxod(
 }
 
 
-
-
 @Composable
 fun ComItemVxodPlate(
     item: ItemVxod,
@@ -155,16 +142,13 @@ fun ComItemVxodPlate(
     }) {
         Column {
             Row(
-                Modifier.padding(start = 15.dp).padding(vertical = 5.dp),
-                verticalAlignment = Alignment.CenterVertically
+                Modifier.padding(start = 15.dp).padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Image(
-                    bitmap = useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                    bitmap = useResource("ic_stat_00.png", ::loadImageBitmap),
                     "statVxod",
-                    Modifier
-                        .height(50.dp)
-                        .width(50.dp),
+                    Modifier.height(50.dp).width(50.dp),
                     colorFilter = ColorFilter.tint(
                         when (item.stat.toInt()) {
                             0 -> Color(0xFF2FA61D)
@@ -173,23 +157,18 @@ fun ComItemVxodPlate(
                             3 -> Color(0xFFFFA825)
                             4 -> Color(0xFFFF5858)
                             else -> Color(0xFFFFF42B)
-                        },
-                        BlendMode.Modulate
+                        }, BlendMode.Modulate
                     ),
-//                    alpha = 0.5F,
                     contentScale = ContentScale.FillBounds,
                     filterQuality = FilterQuality.High
                 )
 
                 Column(modifier = Modifier.padding(5.dp).padding(end = 10.dp).weight(1f)) {
                     Row {
-
                         Column(Modifier.padding(0.dp).weight(1f)) {
                             MyTextStyle1(
                                 modifier = Modifier.padding(start = 10.dp),
                                 text = item.name,
-//                                    style = TextStyle(color = Color(0xFFFFF7D9)),
-//                                    fontSize = 15.sp
                             )
                             Text(
                                 modifier = Modifier.padding(start = 10.dp),
@@ -200,31 +179,7 @@ fun ComItemVxodPlate(
                         }
                     }
                 }
-//                    if (item.opis != "") RotationButtStyle1(
-//                        expandedOpis,
-//                        modifier = Modifier
-//                            .padding(horizontal = 10.dp)
-//                            .padding(end = 20.dp)
-//                    ) {
-//                        item.sver = item.sver.not()
-//                    }
             }
-//                if ((item.opis != "")) { //(selection.selected == item) &&&&(expandedOpis.value)
-//                    BoxExpand(
-//                        expandedOpis,
-//                        Modifier.myModWithBound1(),
-//                        Modifier.fillMaxWidth()
-//                    ) {  //, endModif = Modifier::withMyBound1
-//                        Text(
-//                            modifier = Modifier
-//                                .padding(5.dp)
-//                                .padding(start = 10.dp),
-//                            text = item.opis,
-//                            style = TextStyle(color = Color(0xFFFFF7D9)),
-//                            fontSize = 15.sp
-//                        )
-//                    }
-//                }
         }
     }
 }

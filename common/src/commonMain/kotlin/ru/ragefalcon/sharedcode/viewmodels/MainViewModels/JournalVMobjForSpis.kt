@@ -63,10 +63,15 @@ class JournalVMobjForSpis(val mDB: Database) {
             parent_id = it.parent_id,
             bloknot = it.bloknot,
             podstapcount = it.stapcount
-//            svernut = !((it.svernut == "false")||(it.svernut == "False")),
         )
     }.apply {
-        this.updateQuery(mDB.spisIdeaQueries.selectIdeaInBloknotForSelect(sortField = "name", idblok = -1,iskl = listOf()))
+        this.updateQuery(
+            mDB.spisIdeaQueries.selectIdeaInBloknotForSelect(
+                sortField = "name",
+                idblok = -1,
+                iskl = listOf()
+            )
+        )
     }
 
 }

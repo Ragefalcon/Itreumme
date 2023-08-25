@@ -39,7 +39,6 @@ fun comSeekTab(
     endBottom: Boolean = endTop,
     vertical: Boolean = false
 ) {
-    //    ThScope.row.apply {
     fun radius(bb: Boolean) = if (bb) 10.dp else 0.dp
     Surface(
         modifier = modifier, shape = RoundedCornerShape(
@@ -77,10 +76,10 @@ fun comSeekTab(
             )
         }
     }
-//    }
+
 }
 
-//@OptIn(ExperimentalMaterialApi::class)
+
 @Composable
 fun <T : tabElement> comEnumSeekTab(
     tab: MyEnumTabsForSeek<T>,
@@ -101,31 +100,23 @@ fun <T : tabElement> comEnumSeekTab(
         val interactionSource = remember { MutableInteractionSource() }
         val isHovered by interactionSource.collectIsHoveredAsState()
 
-//        Surface(
-//            modifier = modifier,
-//            shape = shapeCardShadow,
-//            color = Color.Transparent,
-////            border = BorderStroke(1.dp, Color.Red),
-//            elevation = getElevation().elevation(true, interactionSource).value,
-//            onClick = { tab.activate() },
-//            interactionSource = interactionSource,
-//            indication = null// rememberRipple()
-//        ) {
-        with(LocalDensity.current){
-            MyShadowBox(shadow.copy(blurRadius = getElevation().elevation(true, interactionSource).value.toPx()), modifier){
+        with(LocalDensity.current) {
+            MyShadowBox(
+                shadow.copy(blurRadius = getElevation().elevation(true, interactionSource).value.toPx()),
+                modifier
+            ) {
                 Box(
                     modifier
                         .run {
                             if (vertical) this.fillMaxHeight() else this.fillMaxWidth()
                         }
-//                    .shadow(getElevation().elevation(true, interactionSource).value,shapeCardShadow)
                         .border(BorderStroke(borderWidth, if (tab.isActive) borderActive else border), shapeCard)
                         .background(if (tab.isActive) backgroundActive else background, shapeCard)
                         .clickable(
                             interactionSource = interactionSource,
-                            indication =  null //rememberRipple()
-                        ) { tab.activate() }
-                    , contentAlignment = if (vertical) Alignment.BottomCenter else Alignment.Center
+                            indication = null
+                        ) { tab.activate() },
+                    contentAlignment = if (vertical) Alignment.BottomCenter else Alignment.Center
                 ) {
                     Row(
                         Modifier.run {
@@ -143,7 +134,7 @@ fun <T : tabElement> comEnumSeekTab(
                 }
             }
         }
-//        }
+
     }
 }
 
@@ -151,8 +142,8 @@ fun <T : tabElement> comEnumSeekTab(
 fun comSeekTabVert(
     tab: MyTabsForSeek, modifier: Modifier, start: Boolean = false, end: Boolean = false, vertical: Boolean = false
 ) {
-    //    ThScope.row.apply {
-    fun radius(bb: Boolean) = 10.dp // if (bb) 10.dp else 0.dp
+
+    fun radius(bb: Boolean) = 10.dp
     Surface(
         modifier = modifier, shape = RoundedCornerShape(
             topStart = radius(start), bottomStart = radius(start), topEnd = radius(end), bottomEnd = radius(end)
@@ -177,24 +168,22 @@ fun comSeekTabVert(
             ).padding(4.dp),
             verticalAlignment = Alignment.Bottom,
         ) {
-//            Box(Modifier.width(150.dp).height(150.dp)) {
+
             Text(
                 text = tab.name,
                 color = Color(0xFFFFF7D9),
                 fontSize = 15.sp,
-                modifier = Modifier.padding(5.dp),//.weight(1f).rotate(-90f),
+                modifier = Modifier.padding(5.dp),
                 maxLines = 1,
                 textAlign = TextAlign.Start
             )
-//            }
+
         }
     }
-//    }
+
 }
 
 inline fun <reified T : Enum<T>> iterator(): Iterator<T> = enumValues<T>().iterator()
-
-//fun getEnumValues(enumClass: KClass<out Enum<*>>): Array<out Enum<*>> = enumClass.java.enumConstants
 
 
 /**
@@ -213,8 +202,6 @@ inline fun <reified T : Enum<T>> iterator(): Iterator<T> = enumValues<T>().itera
  * Если вместо KClass<T> будет Class<T>, то вместо *tabs.java.enumConstants
  * будет  *tabs.enumConstants, но передавать нужно будет enumClassForTab::class.java
  *
- * TODO Думаю сюда было бы еще неплохо прикрутить MutableState<T> прямо в параметры конструктора
- *
  ***/
 class EnumDiskretSeekBar<T>(
     var tabs: KClass<T>,
@@ -225,24 +212,18 @@ class EnumDiskretSeekBar<T>(
 
     private val selection = SingleSelectionType<T>()
 
-    /**
-     * так походу тоже можно, но пожалуй так все таки менее очевидно в данном случае, но надо помнить, что можно )
-     * private val ttabs1 = listOf(*(selected::class).java.enumConstants).map  {
-     *     MyEnumTabsForSeek(it, selection)
-     * }
-     */
     private val ttabs = listOf(*tabs.java.enumConstants).map {
         MyEnumTabsForSeek(it, selection) {
             if (it.elem != selected) {
                 listenerSeekBar?.invoke(it.elem)
                 selected = it.elem
-//                println("test listener diskretSeekBar3 ${it} $listenerSeekBar")
+
             }
         }.apply {
             selected?.let {
                 if (selected == this.elem) {
                     activate()
-//                println("test listener diskretSeekBar1 ${this.elem} $listenerSeekBar")
+
                     listenerSeekBar?.invoke(this.elem)
                 }
             }
@@ -255,7 +236,7 @@ class EnumDiskretSeekBar<T>(
             if (selected != elem) {
                 selected = elem
                 it.activate()
-//                println("test listener diskretSeekBar2 $listenerSeekBar")
+
                 listenerSeekBar?.invoke(it.elem)
             }
         }
@@ -273,7 +254,7 @@ class EnumDiskretSeekBar<T>(
                     var i = ttabs.size
                     for (tab in ttabs) {
                         comEnumSeekTab(
-                            tab, Modifier.weight(1f).wrapContentWidth(), i == 1, i == ttabs.size, styleButt, true,thin
+                            tab, Modifier.weight(1f).wrapContentWidth(), i == 1, i == ttabs.size, styleButt, true, thin
                         )
                         i--
                     }
@@ -283,7 +264,7 @@ class EnumDiskretSeekBar<T>(
                     var i = 1
                     for (tab in ttabs) {
                         comEnumSeekTab(
-                            tab, Modifier.weight(1f), i == 1, i == ttabs.size, styleButt,thin = thin
+                            tab, Modifier.weight(1f), i == 1, i == ttabs.size, styleButt, thin = thin
                         )
                         i++
                     }
@@ -306,13 +287,13 @@ class DiskretSeekBar(
             if (it.cod != codActivated) {
                 listenerSeekBar?.invoke(it)
                 codActivated = it.cod
-//                println("test listener diskretSeekBar3 ${it.cod} $listenerSeekBar")
+
             }
         }.apply {
             codActivated?.let {
                 if (codActivated == this.cod) {
                     activate()
-//                println("test listener diskretSeekBar1 ${this.cod} $listenerSeekBar")
+
                     listenerSeekBar?.invoke(this)
                 }
             }
@@ -325,7 +306,7 @@ class DiskretSeekBar(
             if (codActivated != cod) {
                 codActivated = cod
                 it.activate()
-//                println("test listener diskretSeekBar2 $listenerSeekBar")
+
                 listenerSeekBar?.invoke(it)
             }
         }
@@ -410,22 +391,12 @@ class DiskretSeekBarManyRows(
         }
     }
 
-    //    class FinTabs {
-//
-//        val tabs = listOf(
-//            Tabs("Расход","Rasxod",selection).apply { activate() },
-//            Tabs("Доход","Doxod",selection),
-//            Tabs("Счета","Schet",selection)
-//        )
-//
-//    }
     @Composable
     private fun startListener(tb: MyTabsForSeek?) {
         listener?.let {
             tb?.let(it)
         }
     }
-
 
     @Composable
     fun show(modifier: Modifier = Modifier) {

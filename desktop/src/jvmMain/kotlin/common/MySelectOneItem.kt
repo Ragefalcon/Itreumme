@@ -74,7 +74,7 @@ fun <T : Any> MySelectOneItem(
         list = spisok,
         modifier = Modifier.weight(1f).padding(bottom = 10.dp).padding(horizontal = 20.dp),
         darkScroll = true
-    ) { _,itemShablonDenPlan ->
+    ) { _, itemShablonDenPlan ->
         comItem(itemShablonDenPlan) {
             selection.selected = it
             expandedSel.value = false
@@ -82,59 +82,6 @@ fun <T : Any> MySelectOneItem(
     }
 }
 
-/*
-@Composable
-fun <T : Any> MySelectOneItem(
-    selection: SingleSelectionType<T>,
-    spisok: MyStateObj<List<T>>,
-    textButt: String = "Выбрать что-то",
-    modifier: Modifier = Modifier,
-    startWithOpenPlan: Boolean = false,
-    emptyValue: Boolean = true,
-    comItemSelect: @Composable (T, (T) -> Unit) -> Unit,
-    comItem: @Composable (T, (T) -> Unit) -> Unit
-) {
-    val loadPovtor = mutableStateOf(true)
-    val loadTime = mutableStateOf(true)
-    val expandedSel = remember { mutableStateOf(startWithOpenPlan) }
-
-    Column(
-        modifier = modifier.padding(bottom = 5.dp).animateContentSize().border(
-            width = 1.dp,
-            brush = Brush.horizontalGradient(listOf(Color(0xFFFFF7D9), Color(0xFFFFF7D9))),
-            shape = RoundedCornerShape(10.dp)
-        ).background(
-            shape = RoundedCornerShape(corner = CornerSize(10.dp)),
-            color = Color(0xFFE4E0C7),
-        ), horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (!expandedSel.value) {
-            selection.selected?.let {
-                comItemSelect(it) { expandedSel.value = true }
-            }
-            if (selection.selected == null) MyTextButtStyle1(textButt) {
-                expandedSel.value = true
-            }
-        } else {
-            MyList(
-                stateObj = spisok,
-                modifier = Modifier.weight(1f).padding(bottom = 10.dp).padding(horizontal = 20.dp),
-                darkScroll = true
-            ) { itemShablonDenPlan ->
-                comItem(itemShablonDenPlan) {
-                    selection.selected = it
-                    expandedSel.value = false
-                }
-            }
-            if (emptyValue) MyTextButtStyle1("Отменить выбор") {
-                selection.selected = null
-                expandedSel.value = false
-            }
-        }
-    }
-}
-
-*/
 @Composable
 private fun <T : Any> MySelectOneItemCommon(
     selection: SingleSelectionType<T>,

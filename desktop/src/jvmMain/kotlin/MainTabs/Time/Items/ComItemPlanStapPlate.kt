@@ -1,24 +1,17 @@
 package MainTabs.Time.Items
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.BlendMode
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.soywiz.korio.lang.substr
 import common.MyCardStyle1
 import common.PlateOrderLayout
 import extensions.CommonItemStyleState
@@ -29,11 +22,9 @@ import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 import ru.ragefalcon.sharedcode.extensions.roundToStringProb
 import ru.ragefalcon.sharedcode.models.data.ItemPlanStap
 import ru.ragefalcon.sharedcode.source.disk.getValue
-import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlanStap
 import viewmodel.MainDB
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ComItemPlanStapPlate(
     item: ItemPlanStap,
@@ -45,7 +36,7 @@ fun ComItemPlanStapPlate(
 ) {
     with(itemPlanStapStyleState) {
         MyCardStyle1(
-            false, 0, { //if (item.level > 0) item.level else
+            false, 0, {
                 onClick(item)
             },
             backBrush = when (item.stat) {
@@ -61,13 +52,16 @@ fun ComItemPlanStapPlate(
             modifier = modifier,
             styleSettings = itemCommonStyle ?: itemPlanStapStyleState
         ) {
-            RowVA(modifier = Modifier.defaultMinSize(minHeight = 30.dp).padding(horizontal = 0.dp).padding(end = 10.dp)) {
-                PlateOrderLayout (Modifier.padding(start = 12.dp).weight(1f), alignmentVertRowCenter = true) {
+            RowVA(
+                modifier = Modifier.defaultMinSize(minHeight = 30.dp).padding(horizontal = 0.dp).padding(end = 10.dp)
+            ) {
+                PlateOrderLayout(Modifier.padding(start = 12.dp).weight(1f), alignmentVertRowCenter = true) {
                     if (parentName != "")
                         Text(
                             text = AnnotatedString(
                                 text = "[${parentName}] ",
-                                spanStyle = MainDB.styleParam.timeParam.boxSelectParentPlanParam.textParentPlan.getValue().toSpanStyle() //SpanStyle(fontSize = textSumm.fontSize)
+                                spanStyle = MainDB.styleParam.timeParam.boxSelectParentPlanParam.textParentPlan.getValue()
+                                    .toSpanStyle()
                             ).plus(
                                 AnnotatedString(
                                     text = item.name,
@@ -81,7 +75,7 @@ fun ComItemPlanStapPlate(
                     )
                 }
                 if (TypeStatPlanStap.getBlockList().contains(item.stat)) Image(
-                    painterResource(if (item.stat == TypeStatPlanStap.BLOCK) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"), //BitmapPainter(
+                    painterResource(if (item.stat == TypeStatPlanStap.BLOCK) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"),
                     "statDenPlan",
                     Modifier
                         .height(30.dp)
@@ -121,14 +115,6 @@ fun ComItemPlanStapPlate(
                     text = "*",
                     style = noQuestText
                 )
-//                    }
-//                    LinearProgressIndicator(
-//                        progress = (item.gotov / 100f).toFloat(),
-//                        modifier = Modifier.padding(vertical = 10.dp).width(100.dp),
-//                        sliderThumb,
-//                        sliderInactive
-//                    )
-//                }
             }
         }
     }

@@ -1,10 +1,12 @@
 package MainTabs.Quest.Items
 
-import androidx.compose.material.Text
 import MainTabs.imageFromFile
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -23,18 +25,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import common.*
-import extensions.*
+import extensions.ItemSkillsTreeState
+import extensions.RowVA
+import extensions.withSimplePlate
 import ru.ragefalcon.sharedcode.models.data.ItemTreeSkill
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatTreeSkills
 import viewmodel.MainDB
 import java.io.File
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ComItemTreeSkills(
     item: ItemTreeSkill,
     selection: SingleSelectionType<ItemTreeSkill>,
-//    val doubleClick: (ItemTreeSkill)->Unit = {},
     openTree: (ItemTreeSkill) -> Unit = {},
     itemTreeSkillStyleState: ItemSkillsTreeState,
     dropMenu: @Composable ColumnScope.(ItemTreeSkill, MutableState<Boolean>) -> Unit = { _, _ -> }
@@ -51,12 +53,8 @@ fun ComItemTreeSkills(
             selection.selected = item
         }, onDoubleClick = {
             openTree(item)
-//            if (item.stat != TypeStatTreeSkills.BLOCK) {
-//                item.sver = item.sver.not()
-//                expandedOpis.value = !expandedOpis.value
-//            }
         },
-            backBrush =  if (item.completeCountNode == item.countNode) background_brush_complete else when (item.stat) {
+            backBrush = if (item.completeCountNode == item.countNode) background_brush_complete else when (item.stat) {
                 TypeStatTreeSkills.OPEN_EDIT -> null
                 TypeStatTreeSkills.VISIB -> background_brush_no_edit
                 TypeStatTreeSkills.COMPLETE -> null
@@ -80,12 +78,12 @@ fun ComItemTreeSkills(
                 shape = shapeCard
             ),
             dropMenu = { exp -> dropMenu(item, exp) },
-                    styleSettings = itemTreeSkillStyleState
+            styleSettings = itemTreeSkillStyleState
         ) {
             if (item.stat == TypeStatTreeSkills.INVIS) {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
                     Image(
-                        painterResource("ic_round_visibility_off_24.xml"), //BitmapPainter(
+                        painterResource("ic_round_visibility_off_24.xml"),
                         "statDenPlan",
                         Modifier
                             .height(80.dp)
@@ -97,16 +95,18 @@ fun ComItemTreeSkills(
                 }
             } else Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 if (item.namequest != "") {
-                    MyShadowBox(quest_plate.shadow){
-                        RowVA(Modifier.fillMaxWidth()
-                            .padding(horizontal = 10.dp)
-                            .withSimplePlate(quest_plate)
-                            .padding(3.dp)
-                            .padding(horizontal = 2.dp),
-                            horizontalArrangement = Arrangement.Center) {
+                    MyShadowBox(quest_plate.shadow) {
+                        RowVA(
+                            Modifier.fillMaxWidth()
+                                .padding(horizontal = 10.dp)
+                                .withSimplePlate(quest_plate)
+                                .padding(3.dp)
+                                .padding(horizontal = 2.dp),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
                             Text(
                                 item.namequest,
-                                Modifier.weight(1f,false),
+                                Modifier.weight(1f, false),
                                 style = questNameText
                             )
                         }
@@ -115,9 +115,9 @@ fun ComItemTreeSkills(
 
                 RowVA(Modifier.padding(top = topPadding)) {
                     Box(contentAlignment = Alignment.Center) {
-                        MyShadowBox(quest_plate.shadow){
+                        MyShadowBox(quest_plate.shadow) {
                             Image(
-                                bitmap = useResource("free-icon-tree-shape-42090.png",::loadImageBitmap),
+                                bitmap = useResource("free-icon-tree-shape-42090.png", ::loadImageBitmap),
                                 "defaultAvatar",
                                 Modifier
                                     .height(70.dp)
@@ -125,20 +125,12 @@ fun ComItemTreeSkills(
                                     .withSimplePlate(icon_plate)
                                     .clip(icon_plate.shape)
                                     .wrapContentSize(),
-                                contentScale = ContentScale.Crop,// Fit,
+                                contentScale = ContentScale.Crop,
                                 colorFilter = ColorFilter.tint(ICON_TREE_COLOR)
                             )
                         }
-/*
-                        IconNode(
-                            File(System.getProperty("user.dir"), "Quests").path,
-                            "${item.icon}.jpg",
-                            "free-icon-tree-shape-42090.png",
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        )
-*/
                         if (item.stat == TypeStatTreeSkills.BLOCK) Image(
-                            painterResource("ic_round_lock_24.xml"), //BitmapPainter(
+                            painterResource("ic_round_lock_24.xml"),
                             "statDenPlan",
                             Modifier
                                 .height(50.dp)
@@ -185,7 +177,7 @@ fun ComItemTreeSkills(
                         }
                     }
                 }
-                if ((item.opis != "")) MyBoxOpisStyle(expandedOpis,item.opis,boxOpisStyleState)
+                if ((item.opis != "")) MyBoxOpisStyle(expandedOpis, item.opis, boxOpisStyleState)
             }
         }
     }
@@ -198,7 +190,7 @@ fun ComItemTreeSkillsPlate(
     val avatarFile = File(
         File(System.getProperty("user.dir"), "Quests").path,
         "${item.icon}.jpg"
-//        "${File(QuestVM.openQuestDB?.arg?.path ?: "").nameWithoutExtension}_${item.id}.jpg"
+
     )
     val avatarF =
         if (avatarFile.exists()) imageFromFile(avatarFile) else useResource(
@@ -206,10 +198,9 @@ fun ComItemTreeSkillsPlate(
             ::loadImageBitmap
         )
 
-    val shape = RoundedCornerShape(75.dp) //CircleShape
+    val shape = RoundedCornerShape(75.dp)
     Row(
-        Modifier.padding(vertical = 5.dp)//.height(130.dp)
-        ,
+        Modifier.padding(vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -223,7 +214,7 @@ fun ComItemTreeSkillsPlate(
                 .padding(1.dp)
                 .border(3.dp, Color(0x7FFFF7D9), RoundedCornerShape(74.dp))
                 .shadow(2.dp, shape),
-            contentScale = ContentScale.Crop,// Fit,
+            contentScale = ContentScale.Crop,
         )
         Text(
             text = item.name,

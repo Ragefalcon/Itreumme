@@ -28,18 +28,16 @@ fun PanAddTreeSkillsQuest(
     dialPan: MyDialogLayout,
     item: ItemTreeSkillsQuest? = null
 ) {
-
     val CB_spisTypeTreeSkills = MyComboBox(TypeTreeSkills.values().toList(), nameItem = { it.nameType })
 
-    val CB_spisStartVisible = MyComboBox(TypeStatQuestElementVisible.values().toList(), nameItem = { it.nameType }).apply {
-        item?.let {  itemTree ->
-            TypeStatQuestElementVisible.getType(itemTree.visibleStat)?.let {
-                select(it)
+    val CB_spisStartVisible =
+        MyComboBox(TypeStatQuestElementVisible.values().toList(), nameItem = { it.nameType }).apply {
+            item?.let { itemTree ->
+                TypeStatQuestElementVisible.getType(itemTree.visibleStat)?.let {
+                    select(it)
+                }
             }
-
         }
-    }
-
 
     val dialLayInner = MyDialogLayout()
 
@@ -47,7 +45,7 @@ fun PanAddTreeSkillsQuest(
         QuestVM.withDBC { questDB ->
             val text_name = remember { mutableStateOf(TextFieldValue(item?.name ?: "")) }
             val text_opis = remember { mutableStateOf(TextFieldValue(item?.opis ?: "")) }
-            BackgroungPanelStyle1 { //modif ->
+            BackgroungPanelStyle1 {
                 Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
                     if (item == null) CB_spisTypeTreeSkills.show()
@@ -78,8 +76,8 @@ fun PanAddTreeSkillsQuest(
                                         name = text_name.value.text,
                                         opis = text_opis.value.text,
                                         icon = -1L,
-                                        visibleStat = CB_spisStartVisible.getSelected()?.run{
-                                            if (this == TypeStatQuestElementVisible.VISIB ) TypeStatTreeSkills.UNBLOCKNOW.codValue else this.codValue
+                                        visibleStat = CB_spisStartVisible.getSelected()?.run {
+                                            if (this == TypeStatQuestElementVisible.VISIB) TypeStatTreeSkills.UNBLOCKNOW.codValue else this.codValue
                                         } ?: 0
                                     )
                                     dialPan.close()
@@ -90,20 +88,18 @@ fun PanAddTreeSkillsQuest(
                                         idTypeTree = CB_spisTypeTreeSkills.getSelected()?.id ?: 1,
                                         opis = text_opis.value.text,
                                         icon = -1L,
-                                        visibleStat = CB_spisStartVisible.getSelected()?.run{
-                                            if (this == TypeStatQuestElementVisible.VISIB ) TypeStatTreeSkills.UNBLOCKNOW.codValue else this.codValue
+                                        visibleStat = CB_spisStartVisible.getSelected()?.run {
+                                            if (this == TypeStatQuestElementVisible.VISIB) TypeStatTreeSkills.UNBLOCKNOW.codValue else this.codValue
                                         } ?: 0
                                     )
                                     dialPan.close()
                                 }
                         }
-
                     }
                 }
             }
             dialLayInner.getLay()
         }
     }
-
     dialPan.show()
 }

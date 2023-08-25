@@ -1,5 +1,6 @@
 package MainTabs.Avatar.Element
 
+import MainTabs.Avatar.Items.ComItemPrivsGoal
 import MainTabs.Time.Elements.BoxSelectParentPlan
 import MyDialog.MyDialogLayout
 import androidx.compose.animation.animateContentSize
@@ -18,7 +19,6 @@ import common.BackgroungPanelStyle1
 import common.MyTextButtStyle1
 import common.SingleSelectionType
 import ru.ragefalcon.sharedcode.models.data.ItemPrivsGoal
-import MainTabs.Avatar.Items.ComItemPrivsGoal
 import viewmodel.MainDB
 import java.util.*
 
@@ -29,21 +29,21 @@ fun PanAddPrivsGoal(
 ) {
     val dialLayInner = MyDialogLayout()
     val selection = SingleSelectionType<ItemPrivsGoal>()
-    val boxSelect = BoxSelectParentPlan(arrayIskl = MainDB.run { if (characteristic) avatarSpis.spisPlanStapOfCharacteristic else avatarSpis.spisPlanStapOfGoal }.getState().value?.filter {
-        it.stap != "0"
-    }?.map {
-        it.stap.toLong()
-    } ?: listOf(), selectForGoalOrDream = true,startWithOpenPlan = true, characteristic = characteristic)
+    val boxSelect =
+        BoxSelectParentPlan(arrayIskl = MainDB.run { if (characteristic) avatarSpis.spisPlanStapOfCharacteristic else avatarSpis.spisPlanStapOfGoal }
+            .getState().value?.filter {
+            it.stap != "0"
+        }?.map {
+            it.stap.toLong()
+        } ?: listOf(), selectForGoalOrDream = true, startWithOpenPlan = true, characteristic = characteristic)
 
     dialPan.dial = @Composable {
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(
                 Modifier
                     .heightIn(0.dp, dialPan.layHeight.value * 0.7F)
-//                    .wrapContentHeight()
                     .widthIn(0.dp, dialPan.layWidth.value * 0.7F)
-                    .padding(10.dp)
-            , horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 boxSelect.getComposable()
                 Column(
@@ -64,49 +64,49 @@ fun PanAddPrivsGoal(
                                 name = itemStap?.let { "${it.name}\n[${itemPlan.name}]" } ?: itemPlan.name,
                                 namePlan = itemPlan.name,
                                 vajn = itemPlan.vajn,
-                                stap = itemStap?.let { it.id }?: "0",
+                                stap = itemStap?.let { it.id } ?: "0",
                                 id_plan = itemPlan.id,
-                                gotov = itemStap?.let { it.gotov }?: itemPlan.gotov,
-                                hour = itemStap?.let { it.hour }?: itemPlan.hour,
-                                opis = itemStap?.let { it.opis }?: itemPlan.opis
+                                gotov = itemStap?.let { it.gotov } ?: itemPlan.gotov,
+                                hour = itemStap?.let { it.hour } ?: itemPlan.hour,
+                                opis = itemStap?.let { it.opis } ?: itemPlan.opis
                             ), editable = false, selection = SingleSelectionType()
                         ).getComposable()
                     }
                 }
-            Row {
-                Spacer(Modifier.weight(1F))
-                MyTextButtStyle1("Отмена") {
-                    dialPan.close()
-                }
-                Spacer(Modifier.weight(1F))
-                boxSelect.selectionPlanParent.selected?.let { itemPlan ->
-                    MyTextButtStyle1("Привязать", Modifier.padding(start = 5.dp)) {
-                        val itemStap = boxSelect.selectionPlanStapParent.selected
-                        if (characteristic) MainDB.addAvatar.addPrivsCharacteristic(
-                            id_characteristic = idGoal,
-                            stap = itemStap?.id?.toLong() ?: 0,
-                            id_plan = itemPlan.id.toLong()
-                        )
-                        else MainDB.addAvatar.addPrivsGoal(
-                            id_goal = idGoal,
-                            name = itemStap?.let { "${it.name}\n[${itemPlan.name}]" } ?: itemPlan.name,
-                            stap = itemStap?.id?.toLong() ?: 0,
-                            id_plan = itemPlan.id.toLong(),
-                            vajn = itemPlan.vajn,
-                            date = Date().time
-                        )
-//                            listener(itemShab,loadPovtor.value,loadTime.value)
+                Row {
+                    Spacer(Modifier.weight(1F))
+                    MyTextButtStyle1("Отмена") {
                         dialPan.close()
                     }
                     Spacer(Modifier.weight(1F))
+                    boxSelect.selectionPlanParent.selected?.let { itemPlan ->
+                        MyTextButtStyle1("Привязать", Modifier.padding(start = 5.dp)) {
+                            val itemStap = boxSelect.selectionPlanStapParent.selected
+                            if (characteristic) MainDB.addAvatar.addPrivsCharacteristic(
+                                id_characteristic = idGoal,
+                                stap = itemStap?.id?.toLong() ?: 0,
+                                id_plan = itemPlan.id.toLong()
+                            )
+                            else MainDB.addAvatar.addPrivsGoal(
+                                id_goal = idGoal,
+                                name = itemStap?.let { "${it.name}\n[${itemPlan.name}]" } ?: itemPlan.name,
+                                stap = itemStap?.id?.toLong() ?: 0,
+                                id_plan = itemPlan.id.toLong(),
+                                vajn = itemPlan.vajn,
+                                date = Date().time
+                            )
+
+                            dialPan.close()
+                        }
+                        Spacer(Modifier.weight(1F))
+                    }
                 }
             }
         }
+        dialLayInner.getLay()
     }
-    dialLayInner.getLay()
-}
 
-dialPan.show()
+    dialPan.show()
 }
 
 

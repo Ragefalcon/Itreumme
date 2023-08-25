@@ -5,7 +5,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.*
-import java.lang.Math.sqrt
 import kotlin.math.*
 
 /**
@@ -35,7 +34,6 @@ class LinearGradient constructor(
     useAsCssAngle: Boolean = false
 ) : ShaderBrush() {
 
-    // handle edge cases like: -1235, ...
     private val normalizedAngle: Float = if (useAsCssAngle) {
         ((90 - angleInDegrees) % 360 + 360) % 360
     } else {

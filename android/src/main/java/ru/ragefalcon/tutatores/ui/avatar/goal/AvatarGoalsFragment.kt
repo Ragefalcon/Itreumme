@@ -12,7 +12,9 @@ import ru.ragefalcon.sharedcode.models.data.ItemGoal
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.GoalRVItem
-import ru.ragefalcon.tutatores.commonfragments.*
+import ru.ragefalcon.tutatores.commonfragments.BaseFragmentVM
+import ru.ragefalcon.tutatores.commonfragments.MenuPopupButton
+import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentGoalBinding
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
 
@@ -22,12 +24,12 @@ class AvatarGoalsFragment() : BaseFragmentVM<FragmentGoalBinding>(FragmentGoalBi
 
     private var selItem: ItemGoal? by instanceState()
 
-    fun toGoalDetail(extras: FragmentNavigator.Extras) { //view_name: View,view_container: View,
+    fun toGoalDetail(extras: FragmentNavigator.Extras) {
         exitTransition = MaterialElevationScale(false).apply {
-            duration = 400 //resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            duration = 400
         }
         reenterTransition = MaterialElevationScale(true).apply {
-            duration = 400 //resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            duration = 400
         }
         ViewGroupCompat.setTransitionGroup(binding.rvGoals, true)
         val directions = AvatarGoalsFragmentDirections.actionGoalToDetail()
@@ -36,12 +38,11 @@ class AvatarGoalsFragment() : BaseFragmentVM<FragmentGoalBinding>(FragmentGoalBi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        postponeEnterTransition() /**без этого и  view.doOnPreDraw { startPostponedEnterTransition() } не будет срабатывать обратная анимация*/
+        postponeEnterTransition()
+        /**без этого и  view.doOnPreDraw { startPostponedEnterTransition() } не будет срабатывать обратная анимация*/
         with(binding) {
             view.doOnPreDraw { startPostponedEnterTransition() }
-//            stateViewModel.sel_jornal_nav.observe(viewLifecycleOwner) {
-//                if (it == MyStateViewModel.journal_nav.idea) rvIdeaList.requestLayout()
-//            }
+
             buttToggleOpenGoal.setOnClickListener {
                 viewmodel.avatarFun.setOpenspisGoals(buttToggleOpenGoal.isChecked)
             }
@@ -70,16 +71,19 @@ class AvatarGoalsFragment() : BaseFragmentVM<FragmentGoalBinding>(FragmentGoalBi
                 avatarSpis.spisGoals.observe(viewLifecycleOwner) {
                     tvNameSpisok.text = "Целей:  ${it.count()}"
                     rvmAdapter.updateData(formUniRVItemList(it) { item ->
-                        GoalRVItem(item,selectListener = {
+                        GoalRVItem(item, selectListener = {
                             selItem = it
                             stateViewModel.selectItemGoal.value = item
-                        },funForTransition = ::toGoalDetail,
-                        longTapListener = {
-                            menuPopupGoal.showMenu(item,name = "${item.name}",{ if (item.gotov == 100.0) it != MenuPopupButton.EXECUTE else it != MenuPopupButton.UNEXECUTE})
-                        })
+                        }, funForTransition = ::toGoalDetail,
+                            longTapListener = {
+                                menuPopupGoal.showMenu(
+                                    item,
+                                    name = "${item.name}",
+                                    { if (item.gotov == 100.0) it != MenuPopupButton.EXECUTE else it != MenuPopupButton.UNEXECUTE })
+                            })
                     })
                     selItem?.let {
-                        rvmAdapter.setSelectItem(it, GoalRVItem::class) //DenPlanViewHolder
+                        rvmAdapter.setSelectItem(it, GoalRVItem::class)
                     }
                 }
             }

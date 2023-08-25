@@ -15,40 +15,15 @@ class PlanTabFragment: Fragment()  {
     val fragment = PlanFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        val fragment = FragmentB()
-//        val supportFragmentManager = requireActivity().getSupportFragmentManager()
-//        supportFragmentManager.commit {
-//            setCustomAnimations(...)
-//            addSharedElement(itemImageView, “hero_image”)
-//            replace(R.id.fragment_container, fragment)
-//            addToBackStack(null)
-//        }
-//        val fragmentManager: FragmentManager = requireActivity().getSupportFragmentManager()
-//        requireActivity().supportFragmentManager.commit {
-//            setReorderingAllowed(true)
-//            replace(R.id.fragment_container, fragment)
-//            addToBackStack(null)
-//        }
-//        fragmentManager
-//            .beginTransaction()
-//            .add(R.id.fragment_container, PlanFragment(), PlanFragment::class.java.getSimpleName())
-//            .commit()
-
     }
 
     override fun onResume() {
         super.onResume()
-//        requireActivity().supportFragmentManager.commit {
-//            setReorderingAllowed(true)
-//            replace(R.id.fragment_container, fragment)
-//            addToBackStack(null)
-//        }
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_plan_tab, container, false)
     }
 

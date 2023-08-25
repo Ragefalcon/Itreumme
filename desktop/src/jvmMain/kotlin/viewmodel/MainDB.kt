@@ -5,10 +5,6 @@ import adapters.MyComboBox
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.res.useResource
 import extensions.add
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import ru.ragefalcon.sharedcode.extensions.TimeUnits
 import ru.ragefalcon.sharedcode.models.data.ItemYearGraf
 import ru.ragefalcon.sharedcode.source.disk.CommonName
@@ -36,19 +32,6 @@ object MainDB {
     ) = ObserFM.loadQuestFromFileAttach(
         quest.path, questId, quest.parent, StateVM.dirLoadedQuestFiles, StateVM.dirIconNodeTree
     )
-
-
-//    @Composable
-//    fun InterfaceVMspis.InterfaceSettingsType.getObs(content: @Composable (MutableState<Boolean>)->Unit) = this.itrObj.getComposeble(content)
-    /*
-        fun InterfaceVMspis.InterfaceSettingsType.getValue():Boolean = when (this){
-            is InterfaceVMspis.InterfaceSettingsBoolean -> true //this.itrObj.getValue()
-            is InterfaceVMspis.InterfaceSettingsDouble -> false
-            is InterfaceVMspis.InterfaceSettingsLong -> false
-            is InterfaceVMspis.InterfaceSettingsMyColor -> false
-            is InterfaceVMspis.InterfaceSettingsString -> false
-        }
-    */
 
     val interfaceSpis = ObserFM.interfaceSpis.intSett
     val styleParam = ObserFM.styleSpis.styleSett.styleParam
@@ -81,7 +64,6 @@ object MainDB {
         }
     }
 
-    //    val CB_spisTypeRasx = MyComboBox(listOf("1","2","3"), nameItem = { it }) {
     val CB_spisTypeRasx by lazy {
         MyComboBox(finSpis.spisTypeRasx, nameItem = { it.second }) {
             finFun.setPosFilterRasx(it)
@@ -113,7 +95,6 @@ object MainDB {
     val dreamHourYear = mutableStateOf("0")
     val dreamHourAll = mutableStateOf("0")
     val dreamCountPlan = mutableStateOf("0")
-//    val gridsList = mutableStateOf(mutableStateListOf<ItemYearGraf>())
 
 
     /*******************************************************/
@@ -165,8 +146,6 @@ object MainDB {
                 innerDialog_2.writeBytes(it.readBytes())
             }
         }
-//        QuestVM.loadQuestDB = QuestDB(innerDialogBD)
-//        QuestVM.loadQuestDB?.ObserFM?.let { questBVM ->
         val check = addQuest.loadCheckInnerDialog()
 
         if (overwrite || !check) {
@@ -176,14 +155,6 @@ object MainDB {
             loadQuestFromFileAttach(innerDialogBD, QUEST_ID_INNER_DIALOG)
             ObserFM.addQuest.completeInnerFinishTriggerAction()
         }
-//            addQuest.loadInnerDialog(
-//                questBVM,
-//                "InnerDialogs.db",
-//                StateVM.dirInnerDialogs,
-//                StateVM.dirLoadedQuestFiles,
-//                overwrite
-//            ) {}
-//        }
     }
 
     fun updateStartStyle(overwrite: Boolean) {
@@ -199,10 +170,7 @@ object MainDB {
             spis?.getState()?.value?.isNotEmpty() == true
         }
 
-        if (!check) { //overwrite ||
-//            if (check) addQuest.deleteFullQuest(
-//                QUEST_ID_INNER_DIALOG.toString(), StateVM.dirLoadedQuestFiles, StateVM.dirIconNodeTree
-//            )
+        if (!check) {
             if (startStyleBD.exists()) {
                 ObserFM.loadStyleFromFileAttach.loadStartStyle(startStyleBD.path)
                 MainDB.addEditStyle.loadSaveSetStyleCommon(
@@ -211,20 +179,11 @@ object MainDB {
                 )
             }
         }
-//            addQuest.loadInnerDialog(
-//                questBVM,
-//                "InnerDialogs.db",
-//                StateVM.dirInnerDialogs,
-//                StateVM.dirLoadedQuestFiles,
-//                overwrite
-//            ) {}
-//        }
     }
 
     private var setAvatarListener = false
     fun setAvatarDreamGoalListener() {
         if (!setAvatarListener) {
-            println("MainDB.setAvatarDreamGoalListener")
             avatarFun.setListenerStatikHourGoal {
                 goalYearStatistik.value = it
             }
@@ -261,7 +220,7 @@ object MainDB {
             val k = -1
             if (dateFinBegin.value != Date(dB)) dateFinBegin.value = Date(dB)
             if (dateFinEnd.value != Date(dE).add(k, TimeUnits.DAY)) dateFinEnd.value =
-                Date(dE).add(k, TimeUnits.DAY) //.add(1,TimeUnits.DAY)
+                Date(dE).add(k, TimeUnits.DAY)
         }
         timeFun.setFunDateOporTimeUpd {
             if (denPlanDate.value != Date(it)) denPlanDate.value = Date(it)

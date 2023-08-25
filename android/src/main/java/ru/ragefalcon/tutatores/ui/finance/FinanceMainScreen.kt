@@ -1,6 +1,6 @@
 package ru.ragefalcon.tutatores.ui.finance
 
-//import android.R
+
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -10,7 +10,6 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.widget.DatePicker
@@ -28,8 +27,6 @@ import ru.ragefalcon.tutatores.databinding.FragmentMainFinscreenBinding
 import ru.ragefalcon.tutatores.extensions.format
 import ru.ragefalcon.tutatores.extensions.setMargins
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
-import java.io.File
-import java.io.FileOutputStream
 import java.util.*
 import kotlin.math.hypot
 import kotlin.math.max
@@ -38,7 +35,7 @@ import kotlin.math.roundToInt
 
 class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentMainFinscreenBinding::inflate), Postman {
 
-    //    private lateinit var settingsPageAdapter: SettingsPageAdapter
+
     private lateinit var financePageAdapter: FinancePageAdapter
     private lateinit var financeAnalizPageAdapter: FinancePageAdapter
     private lateinit var colorMain: Array<Int>
@@ -48,24 +45,20 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
     private lateinit var myActivity: Activity
 
     override fun setKeyUpVol(keyUV: () -> Unit) {
-//        keyUpVol = keyUV
     }
 
     var monthBool = false
 
-    /** во фрагментах контекст лучше всего ловить здесь в onAttach иначе может быть ошибка
-     * Fragment not attached to a context
-     */
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is Activity) myActivity = context //as Activity
-        financeAnalizPageAdapter = FinancePageAdapter(true, childFragmentManager) // supportFragmentManager
-        financePageAdapter = FinancePageAdapter(false, childFragmentManager) // childFragmentManager
+        if (context is Activity) myActivity = context
+        financeAnalizPageAdapter = FinancePageAdapter(true, childFragmentManager)
+        financePageAdapter = FinancePageAdapter(false, childFragmentManager)
         colorMain = requireContext().run {
             arrayOf(
-                getColor(R.color.colorRasxodTheme),//.toMyColorARGB().plusWhite().plusWhite().toIntColor(),
-                getColor(R.color.colorDoxodTheme), //.toMyColorARGB().plusWhite().plusWhite().toIntColor(),
-                getColor(R.color.colorSchetTheme) //.toMyColorARGB().plusWhite().plusWhite().toIntColor()
+                getColor(R.color.colorRasxodTheme),
+                getColor(R.color.colorDoxodTheme),
+                getColor(R.color.colorSchetTheme)
             )
         }
 
@@ -76,7 +69,7 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
         val inflater = TransitionInflater.from(requireContext())
         enterTransition = inflater.inflateTransition(R.transition.slide_right)
         exitTransition = inflater.inflateTransition(R.transition.fade)
-//        setContentView(R.layout.fragment_main_finscreen)
+
     }
 
     @SuppressLint("MissingPermission")
@@ -87,9 +80,9 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
                 setMargins(buttFilter, buttFilter.marginStart, buttFilter.marginTop, buttFilter.marginEnd, stateViewModel.navigationBarSize.value!!)
             }
             vpFinance.adapter = financePageAdapter
-            buttAnaliz.setOnCheckedChangeListener { buttonView, isChecked -> // .setOnClickListener {
+            buttAnaliz.setOnCheckedChangeListener { buttonView, isChecked ->
                 colorNumberShift = tabLay.selectedTabPosition
-                financePageAdapter.analiz = isChecked // toggleAnaliz()
+                financePageAdapter.analiz = isChecked
                 financePageAdapter.notifyDataSetChanged()
                 if (isChecked) {
                     buttFilter.isChecked = false
@@ -98,14 +91,14 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
                     buttFilter.isEnabled = true
                 }
             }
-            buttFilter.setOnCheckedChangeListener { buttonView, isChecked -> //setOnClickListener{
-                stateViewModel.visFilterFinPanel.value = isChecked //stateViewModel.toggleFiler()
-                viewmodel.financeFun.setEnableFilter(isChecked) //stateViewModel.visFilterFinPanel.value ?: false)
+            buttFilter.setOnCheckedChangeListener { buttonView, isChecked ->
+                stateViewModel.visFilterFinPanel.value = isChecked
+                viewmodel.financeFun.setEnableFilter(isChecked)
             }
             viewmodel.dateOpor.observe(viewLifecycleOwner) {
                 etMaindate.text = it.format("dd MMM yyyy (EEE)")
             }
-//        viewmodel.addDateOwner(viewLifecycleOwner)
+
             etMaindate.setOnClickListener {
                 val aa = Calendar.getInstance()
                 aa.time = viewmodel.dateOpor.value
@@ -135,15 +128,11 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
             vpFinance.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                 v?.let {
                     var koef = (colorNumberShift * v.width + scrollX.toDouble()) / v.width
-                    //                    var koef = (scrollX.toDouble()) / v.width
+
                     var indCol1 = (koef - (koef % 1)).roundToInt()
                     if (indCol1 < 0) indCol1 = 0
                     val indCol2 = if (indCol1 == tabLay.tabCount - 1) indCol1 else indCol1 + 1
                     koef %= 1
-                    /**             buttAdd.text = "${tabLay.selectedTabPosition} - $scrollX - $indCol1 - $indCol2 - ${koef.roundToString(4)} "        */
-                    /**             buttAdd.text = "${tabLay.selectedTabPosition} - $scrollX - $indCol1 - $indCol2 - ${koef.roundToString(4)} "        */
-                    //                    var indCol1=tabLay.selectedTabPosition
-                    //                    var indCol2=if (koef>0) { if (indCol1==tabLay.tabCount-1) indCol1 else indCol1+1} else {if (indCol1==0) indCol1 else indCol1-1}
                     if (koef < 0) koef *= (-1)
                     val testR = colorMain[indCol1].red
                     val testG = colorMain[indCol1].green
@@ -187,9 +176,6 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
 
                 })
             }
-
-
-
 
             buttAdd.setOnClickListener {
                 when(stateViewModel.currentFinType){
@@ -304,24 +290,18 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
                 binding.tvAllCapital.text = it
             })
         }
-        Log.d("VersVM", "MainA-TimeStamp: ${viewmodel.tt}")
     }
 
     class MyVPAL() : ViewPropertyAnimatorListener {
         override fun onAnimationEnd(view: View?) {
             if (view?.alpha == 0f) {
                 view.visibility = android.view.View.INVISIBLE
-
             }
-//            Snackbar.make(view!!, "Анимация закончилась", Snackbar.LENGTH_LONG)
         }
-
         override fun onAnimationCancel(view: View?) {
         }
-
         override fun onAnimationStart(view: View?) {
         }
-
     }
 
     private fun animateBackgrReval(position: Int, centerX: Int, centerY: Int) {
@@ -339,7 +319,6 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
          *  https://stackoverflow.com/questions/26819429/cannot-start-this-animator-on-a-detached-view-reveal-effect
          * */
         view!!.post {
-            //create your anim here
             ViewAnimationUtils.createCircularReveal(
                 binding.vBackgr,
                 centerX,

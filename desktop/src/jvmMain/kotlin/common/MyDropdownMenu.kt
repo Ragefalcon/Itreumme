@@ -19,8 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import extensions.DropDownMenuStyleState
-import extensions.toColor
-import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 import viewmodel.MainDB
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -69,7 +67,7 @@ fun MyDropdownMenuItem(
 fun MyDropdownMenuCommonItem(
     expanded: MutableState<Boolean>,
     style: DropDownMenuStyleState,
-    content: @Composable (Boolean)->Unit,
+    content: @Composable (Boolean) -> Unit,
     autoClick: Boolean = true,
     onClick: () -> Unit
 ) {
@@ -82,7 +80,7 @@ fun MyDropdownMenuCommonItem(
                 if (autoClick) this.mouseClickable {
                     onClick()
                     expanded.value = false
-                }   else this
+                } else this
             }
             .hoverable(interactionSource = interactionSource)
         ) {
@@ -100,7 +98,7 @@ fun MyDropdownMenu(
     width: Dp? = null,
     funSelect: (Int) -> Unit
 ) {
-    MyDropdownMenu(expanded, style,width) {
+    MyDropdownMenu(expanded, style, width) {
         list.forEachIndexed { index, itemStr ->
             MyDropdownMenuItem(expanded, style, itemStr) {
                 funSelect(index)
@@ -120,28 +118,8 @@ fun MyDropdownMenu(
     with(style) {
         MaterialTheme(
             colors = lightColors().copy(surface = Color(0x000000FF)),
-/*
-                                Colors (
-                            primary = Color(0xFF0000FF),//99851F),
-                            primaryVariant = Color(0xFF0000FF),
-                            secondary = Color.Transparent,//Color(0xFF9eba85),
-                            secondaryVariant = Color(0xFF00FF00),
-                            background = Color.Transparent,//Color(0xFF464D45),
-                            surface = Color(0x2F0000FF), //Color.Transparent,//
-                            error = Color(0xFFFF0000),
-                            onPrimary = Color(0xFFFF0000),
-                            onSecondary = Color(0xFFFF0000),
-                            onBackground = Color(0xFF0000FF),
-                            onSurface = Color(0xFF00FF00),
-                            onError = Color(0xFFFFFF00),
-                            isLight = true
-                        ),
-*/
             shapes = Shapes(shape_for_shadow, shape_for_shadow, shape_for_shadow)
         ) {
-//                        with(LocalElevationOverlay.current?.apply (Color.White, elevation = 0.dp)){
-//            CompositionLocalProvider(LocalAbsoluteElevation provides 0.dp) {
-//                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
             val state = rememberScrollState(0)
             DropdownMenu(
                 expanded = expanded.value,
@@ -167,7 +145,7 @@ fun MyDropdownMenu(
                     ) {
                         content()
                     }
-                    if (state.maxValue != Int.MAX_VALUE && state.maxValue > 0) VerticalScrollbar( // && state.maxValue.dp >= 350.dp
+                    if (state.maxValue != Int.MAX_VALUE && state.maxValue > 0) VerticalScrollbar(
                         rememberScrollbarAdapter(state),
                         Modifier.width(8.dp).height(350.dp)
                             .clickable(false) {},

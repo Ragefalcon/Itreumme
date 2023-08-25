@@ -35,13 +35,12 @@ fun MyComplexOpisView(
     dialLay: MyDialogLayout? = null,
     styleState: ComplexOpisStyleState
 ) {
-
     with(styleState) {
         Column(modifier) {
             listOpis.forEach { itemOpis ->
                 with(LocalDensity.current) {
                     when (itemOpis) {
-                        is ItemComplexOpisTextCommon -> { //Common
+                        is ItemComplexOpisTextCommon -> {
                             MyShadowBox(
                                 if (itemOpis is ItemComplexOpisCheckbox) {
                                     when (itemOpis.checked) {
@@ -73,8 +72,6 @@ fun MyComplexOpisView(
                                                 )
                                         } else this
                                     }
-//                                .border(2.dp, MyColorARGB.colorMyBorderStroke.toColor(), Cust tCornerShape(8.dp))
-//                                .clip(CutCornerShape(8.dp))
                                 ) {
                                     @Composable
                                     fun mainText() {
@@ -130,7 +127,6 @@ fun MyComplexOpisView(
                                                 if (itemOpis.enableText && itemOpis.textBefore) mainText()
                                                 MyShadowBox(shadowImage) {
                                                     MeasureUnconstrainedViewWidth({ mainText() }) { widthText ->
-                                                        println("widthText = ${widthText}")
                                                         val smallText =
                                                             (widthText + 10.dp) / this@BoxWithConstraints.maxWidth < 1f / 3f
                                                         PlateOrderLayout(
@@ -150,7 +146,6 @@ fun MyComplexOpisView(
                                                                         )
                                                                     } else this
                                                                 },
-//                                                koefMaxWidth = if (itemOpis.enableText && smallText.not()) 2f / 3f else 1f,
                                                             fillWidth = false,
                                                             spaceBetween = 10.dp.toPx().toInt()
                                                         ) {
@@ -172,11 +167,9 @@ fun MyComplexOpisView(
 
                                                                 imageIB.value?.let { imgBtm ->
                                                                     Image(
-                                                                        bitmap = imgBtm, //BitmapPainter(
+                                                                        bitmap = imgBtm,
                                                                         "defaultAvatar",
                                                                         Modifier
-//                                                        .padding(vertical = 5.dp)
-//                                                        .padding(end = 10.dp)
                                                                             .wrapContentSize()
                                                                             .heightIn(
                                                                                 0.dp, when (itemOpis.sizePreview) {
@@ -223,7 +216,7 @@ fun MyComplexOpisView(
                                                                 if (imageIB.value == null) Image(
                                                                     painterResource("ic_round_delete_forever_24.xml"),
                                                                     "not_exist_img",
-                                                                    Modifier//.padding(end = 10.dp)
+                                                                    Modifier
                                                                         .height(
                                                                             when (itemOpis.sizePreview) {
                                                                                 1L -> 50.dp
@@ -274,7 +267,6 @@ fun MyComplexOpisView(
                                             }
                                         }
                                     }
-
                                 }
                             }
                         }

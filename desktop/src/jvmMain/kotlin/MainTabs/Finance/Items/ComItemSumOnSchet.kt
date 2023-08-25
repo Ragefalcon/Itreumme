@@ -1,27 +1,18 @@
 package MainTabs.Finance.Items
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.material.Text
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.unit.dp
 import com.soywiz.korio.lang.substr
 import common.MyShadowBox
-import common.MyTextStyleParam
 import extensions.ItemSchetGrafState
-import extensions.toColor
-import extensions.toMyColorARGB
 import extensions.withSimplePlate
 import ru.ragefalcon.sharedcode.extensions.roundToStringProb
 import ru.ragefalcon.sharedcode.models.data.ItemSumOnSchet
@@ -38,7 +29,11 @@ fun ComItemSumOnSchet(
         MyShadowBox(plateMain.shadow) {
             Column(outer_padding
                 .run {
-                    if (item.id == MainDB.CB_spisSchet.getSelected()?.id?.toLong()) this.border(border_width_active,borderActive,plateMain.shape) else this
+                    if (item.id == MainDB.CB_spisSchet.getSelected()?.id?.toLong()) this.border(
+                        border_width_active,
+                        borderActive,
+                        plateMain.shape
+                    ) else this
                 }
                 .withSimplePlate(plateMain)
                 .clickable { onClick(item) }
@@ -64,7 +59,7 @@ fun ComItemSumOnSchet(
                         style = textSumm
                     )
                     Text(
-                        modifier = Modifier.padding(start = 3.dp), //.align(Alignment.CenterVertically)
+                        modifier = Modifier.padding(start = 3.dp),
                         text = item.valut,
                         style = textValut
                     )

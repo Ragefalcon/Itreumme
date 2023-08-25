@@ -26,7 +26,7 @@ fun PanAddSchet(
 
     dialPan.dial = @Composable {
         val text_name = remember { mutableStateOf(TextFieldValue(item?.name ?: "")) }
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 MyOutlinedTextField("Название счета", text_name)
                 CB_spisValut.show(Modifier.padding(3.dp))

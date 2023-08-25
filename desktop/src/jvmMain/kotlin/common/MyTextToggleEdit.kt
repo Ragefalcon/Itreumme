@@ -1,7 +1,9 @@
 package common
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.mouseClickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -39,7 +41,7 @@ fun MyTextToggleEdit(
             )
         },
         comText = { txt ->
-            Text(txt, Modifier,  style = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start))
+            Text(txt, Modifier, style = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start))
         },
         label,
         text,
@@ -61,10 +63,14 @@ fun MyTextToggleEdit2(
 ) =
     MyTextToggleEditCommon(
         comLabel = { lab ->
-            if (lab != "") Text(lab, Modifier,  style = MyTextStyleParam.style2.copy(color = MyColorARGB.colorSchetItemText.toColor()))
+            if (lab != "") Text(
+                lab,
+                Modifier,
+                style = MyTextStyleParam.style2.copy(color = MyColorARGB.colorSchetItemText.toColor())
+            )
         },
         comText = { txt ->
-            Text(txt, Modifier,  style = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start))
+            Text(txt, Modifier, style = MyTextStyleParam.style1.copy(textAlign = TextAlign.Start))
         }, label, text, modifier, dropMenu, paramOutline, rezEdit
     )
 
@@ -78,10 +84,14 @@ fun MyTextToggleEdit3(
 ) =
     MyTextToggleEditCommon(
         comLabel = { lab ->
-            if (lab != "") Text(lab, Modifier, style = MyTextStyleParam.style2.copy(color = MyColorARGB.colorSchetItemText.toColor()))
+            if (lab != "") Text(
+                lab,
+                Modifier,
+                style = MyTextStyleParam.style2.copy(color = MyColorARGB.colorSchetItemText.toColor())
+            )
         },
         comText = { txt ->
-            Text(txt, Modifier,  style = paramOutline)
+            Text(txt, Modifier, style = paramOutline)
         }, "", text, modifier, dropMenu, paramOutline, rezEdit
     )
 
@@ -102,7 +112,7 @@ fun MyTextToggleEditCommon(
     val editText = remember { mutableStateOf(TextFieldValue(text)) }
 
     RowVA(
-        modifier//.combinedClickable(onClick = {}, onDoubleClick = { edit = true })
+        modifier
     ) {
         if (edit) {
             MyOutlinedTextField(
@@ -125,12 +135,11 @@ fun MyTextToggleEditCommon(
                         comLabel(label)
                         comText(text)
                     }
-//                    Spacer(Modifier.weight(1f))
+
                     MyTextStyle1(
                         "\uD83D\uDD6E",
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
-//                            .padding(end = 20.dp)
                             .mouseClickable {
                                 edit = true
                             })

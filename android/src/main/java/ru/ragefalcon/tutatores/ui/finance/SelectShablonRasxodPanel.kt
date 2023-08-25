@@ -78,7 +78,6 @@ class SelectShablonRasxodPanelFragment(
                 }
 
                 var firstLoad = true
-//                timeFun.setOpenSpisPlanIn(false, arrayIskl ?: listOf())
                 finSpis.spisShabRasxod.observe(viewLifecycleOwner) {
                     rvmAdapter.updateData(formUniRVItemList(it) { item ->
                         ShabRasxodRVItem(item,

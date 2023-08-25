@@ -15,29 +15,30 @@ import ru.ragefalcon.tutatores.extensions.getSFM
 import ru.ragefalcon.tutatores.extensions.setSFMResultListener
 
 
-abstract class FragAddChangeDialHelper<T : Id_class,K: ViewBinding>(
-    inflateBF:(LayoutInflater, ViewGroup?, Boolean)->K,
+abstract class FragAddChangeDialHelper<T : Id_class, K : ViewBinding>(
+    inflateBF: (LayoutInflater, ViewGroup?, Boolean) -> K,
     itemThis: T? = null,
-    callback_Key: String? = "callMyFragDial") :
+    callback_Key: String? = "callMyFragDial"
+) :
     BaseFragmentVM<K>(inflateBF) {
 
     var callbk_Key: String? by instanceState(callback_Key)
 
-    var item: T? //= itemThis
+    var item: T?
             by instanceState(itemThis)
             { cache, value ->
-                Log.d("MyTut", "orderMarker: 5");
                 change = value != null
             }
 
     abstract fun addNote()
     abstract fun changeNote()
-    protected fun setRezAddNote(){
+    protected fun setRezAddNote() {
         callbk_Key?.let {
             getSFM().setFragmentResult("${it}_add", bundleOf())
         }
     }
-    protected fun setRezChangeNote(item: T){
+
+    protected fun setRezChangeNote(item: T) {
         callbk_Key?.let {
             getSFM().setFragmentResult("${it}_change", bundleOf("item" to item))
         }
@@ -47,34 +48,23 @@ abstract class FragAddChangeDialHelper<T : Id_class,K: ViewBinding>(
         value = itemThis != null
     }
 
-    var change: Boolean = itemThis != null //by instanceStateDef(itemThis != null, if (itemThis != null) true else null)
-        //    var change =itemThis != null
+    var change: Boolean = itemThis != null
         set(value) {
             field = value
             changeLD.value = value
         }
 
-    fun changeObserve(owner: LifecycleOwner, listener: (Boolean)->Unit){
-        changeLD.observe(owner,listener)
+    fun changeObserve(owner: LifecycleOwner, listener: (Boolean) -> Unit) {
+        changeLD.observe(owner, listener)
     }
 
     init {
-        Log.d("MyTut", "orderMarker: 4");
-//        item
-//        change
-//        change = item != null
     }
 
     var bb: String? by instanceState()
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-//        item?.let {
-//            val keyItem = randomUUID().toString().hashCode()
-//            stateViewModel.saveInstanceUniItem.put(keyItem, UniItem(it)) //UniItemIdClass(it)))
-//            outState.putString("className", it::class.qualifiedName)
-//            outState.putInt("keyItem", keyItem)
-//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,24 +73,11 @@ abstract class FragAddChangeDialHelper<T : Id_class,K: ViewBinding>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        savedInstanceState?.let { bundle ->
-//            bundle.getString("className")?.let { className ->
-//                bundle.getInt("keyItem")?.let { keyItem ->
-//                    stateViewModel.saveInstanceUniItem.get(keyItem)?.let {
-//                        if (className == it.type.qualifiedName) {
-//                            item = it.item as T
         change = item != null
-//                        }
-//                    }
-//                    stateViewModel.saveInstanceUniItem.delete(keyItem)
-//                }
-//            }
-//        }
     }
 
     companion object {
-        fun <T: Id_class> setRezListenerChange(
+        fun <T : Id_class> setRezListenerChange(
             fragment: Fragment,
             requestKey: String,
             listener: ((item: T) -> Unit)? = null
@@ -112,6 +89,7 @@ abstract class FragAddChangeDialHelper<T : Id_class,K: ViewBinding>(
                 }
             }
         }
+
         fun setRezListenerAdd(
             fragment: Fragment,
             requestKey: String,

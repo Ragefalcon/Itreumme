@@ -28,11 +28,7 @@ fun BackCanvasWithHole(rectHole: MyRectF, modifier: Modifier = Modifier.fillMaxS
         testPath.addRect(rectRamk.getRect())
         val rectH = MyRectF(rectHole)
         rectH.inset(-cornerRadius, -cornerRadius)
-//        rectRamk.offsetX = -10f
-//        rectRamk.offsetY = -10f
-//            testPath.addRect(rectRamk.getRect())
         testPath.addRoundRect(RoundRect(rectH.getRect(), CornerRadius(cornerRadius)))
-//        testPath.addOval(rectRamk.getRect())
         testPath.fillType = PathFillType.EvenOdd
         drawPath(testPath, color = Color.Black.copy(alpha = 0.9f))
         drawPath(

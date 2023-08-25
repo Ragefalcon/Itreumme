@@ -1,17 +1,17 @@
 package common.tests
 
 import MyDialog.MyDialogLayout
-import androidx.compose.foundation.layout.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import common.*
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -19,6 +19,8 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
+import common.SingleSelectionType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -37,13 +39,13 @@ import kotlinx.coroutines.launch
  */
 class CommonOpenItemPanel<T : Any>(
     val whenOpen: (T) -> Unit,
-    val openedItem: @Composable (itemMainOpen: T, startOpenAnimation: MutableState<Boolean>, selection:  SingleSelectionType<T>, dialLay: MyDialogLayout?) -> Unit,
-    val mainSpis: @Composable ColumnScope.(modifierList: Modifier, selection:  SingleSelectionType<T>, openSpis_Index_Item:(Int, T)->Unit, lazyListState: LazyListState, dialLay: MyDialogLayout?)->Unit
+    val openedItem: @Composable (itemMainOpen: T, startOpenAnimation: MutableState<Boolean>, selection: SingleSelectionType<T>, dialLay: MyDialogLayout?) -> Unit,
+    val mainSpis: @Composable ColumnScope.(modifierList: Modifier, selection: SingleSelectionType<T>, openSpis_Index_Item: (Int, T) -> Unit, lazyListState: LazyListState, dialLay: MyDialogLayout?) -> Unit
 ) {
 
     val rectListTree = mutableStateOf(Rect(Offset(0f, 0f), Size(0f, 0f)))
     val rectParent = mutableStateOf(Rect(Offset(0f, 0f), Size(0f, 0f)))
-    var layoutParent: LayoutCoordinates? = null //  mutableStateOf(Rect(Offset(0f, 0f), Size(0f, 0f)))
+    var layoutParent: LayoutCoordinates? = null
     val offsetItem = mutableStateOf(0)
     val sizeItem = mutableStateOf(0)
 
@@ -58,7 +60,7 @@ class CommonOpenItemPanel<T : Any>(
         modifier: Modifier = Modifier,
         dialLay: MyDialogLayout? = null
     ) {
-//        val state: LazyListState = rememberLazyListState()
+
         LaunchedEffect(openTS.value) {
             if (openTS.value) {
                 selectionMainSpis.selected?.let { mainItem ->
@@ -68,35 +70,22 @@ class CommonOpenItemPanel<T : Any>(
         }
 
         Column(modifier.onGloballyPositioned {
-//            if (layoutParent != it) layoutParent = it //.boundsInParent()
+
             rectParent.value = it.boundsInParent()
-//            println("Column layoutParent")
+
         }, horizontalAlignment = Alignment.CenterHorizontally) {
             if (openTS.value) {
                 openMainSpis(dialLay)
             } else {
                 mainSpis(Modifier.onGloballyPositioned { itemLay ->
                     rectListTree.value = itemLay.boundsInParent()
-/*
-                    var tmp: LayoutCoordinates? = itemLay.parentLayoutCoordinates //.parentCoordinates
-//                    println("itemLay = ${itemLay}")
-//                    if (layoutParent != null) {
-//                        while (tmp?.parentCoordinates != layoutParent && tmp?.parentCoordinates != null){
-//                            tmp = tmp?.parentCoordinates
-//                        }
-
-//                        println("tmp = ${tmp}")
-                        tmp?.let { endBound -> rectListTree.value = endBound.localBoundingBoxOf(itemLay) }
-                        println("rectListTree.value = ${rectListTree.value}")
-//                    }
-*/
                 }, selectionMainSpis, { index, item ->
                     selectionMainSpis.selected = item
                     openTS.value = true
                     val visibleItem = state.layoutInfo.visibleItemsInfo.find { it.index == index }
                     offsetItem.value = visibleItem?.offset ?: 0
                     sizeItem.value = visibleItem?.size ?: 0
-                }, state,dialLay)
+                }, state, dialLay)
             }
         }
     }
@@ -115,7 +104,6 @@ class CommonOpenItemPanel<T : Any>(
             val durationAnim = 200
             val topOffsetTree: Float by animateFloatAsState(
                 targetValue = if (startOpenAnimation.value) 0f else zeroIfMinus(rectListTree.value.top + offsetItem.value),
-                // Configure the animation duration and easing.
                 animationSpec = tween(durationMillis = durationAnim, easing = FastOutSlowInEasing)
             ) {
                 if (!startOpenAnimation.value && openTS.value) {
@@ -124,7 +112,6 @@ class CommonOpenItemPanel<T : Any>(
             }
             val startOffsetTree: Float by animateFloatAsState(
                 targetValue = if (startOpenAnimation.value) 0f else zeroIfMinus(rectListTree.value.left),
-                // Configure the animation duration and easing.
                 animationSpec = tween(durationMillis = durationAnim, easing = FastOutSlowInEasing)
             ) {
                 if (!startOpenAnimation.value && openTS.value) {
@@ -132,22 +119,15 @@ class CommonOpenItemPanel<T : Any>(
                 }
             }
             val endOffsetTree: Float by animateFloatAsState(
-                targetValue = if (startOpenAnimation.value) 0f else zeroIfMinus(rectParent.value.width - rectListTree.value.right + 8.dp.toPx()),// 68f,
-                // Configure the animation duration and easing.
+                targetValue = if (startOpenAnimation.value) 0f else zeroIfMinus(rectParent.value.width - rectListTree.value.right + 8.dp.toPx()),
                 animationSpec = tween(durationMillis = durationAnim, easing = FastOutSlowInEasing)
             ) {
                 if (!startOpenAnimation.value && openTS.value) {
                     openTS.value = false
                 }
             }
-//        println("rectListTree.value.bottom = ${rectListTree.value.bottom}")
-//        println("rectParent.value.bottom = ${rectParent.value.height}")
-//        println("rectListTree.value.top = ${rectListTree.value.top}")
-//        println("offsetItem.value = ${offsetItem.value}")
-//        println("sizeItem.value = ${sizeItem.value}")
             val bottomOffsetTree: Float by animateFloatAsState(
-                targetValue = if (startOpenAnimation.value) 0f else zeroIfMinus(rectParent.value.height - rectListTree.value.top - offsetItem.value - sizeItem.value), //rectListTree
-                // Configure the animation duration and easing.
+                targetValue = if (startOpenAnimation.value) 0f else zeroIfMinus(rectParent.value.height - rectListTree.value.top - offsetItem.value - sizeItem.value),
                 animationSpec = tween(durationMillis = durationAnim, easing = FastOutSlowInEasing)
             ) {
                 if (!startOpenAnimation.value && openTS.value) {
@@ -173,5 +153,4 @@ class CommonOpenItemPanel<T : Any>(
     }
 
     fun zeroIfMinus(value: Float): Float = if (value < 0f) 0f else value
-
 }

@@ -16,7 +16,8 @@ import ru.ragefalcon.tutatores.ui.time.SelectedPlanPanel
 import ru.ragefalcon.tutatores.ui.time.SelectedPlanStapPanel
 import java.util.*
 
-class PrivsGoalDial(idGoalDream: Long? = null) : MyFragmentForDialogVM<FragmentPrivPlanAndStapBinding>(FragmentPrivPlanAndStapBinding::inflate) {
+class PrivsGoalDial(idGoalDream: Long? = null) :
+    MyFragmentForDialogVM<FragmentPrivPlanAndStapBinding>(FragmentPrivPlanAndStapBinding::inflate) {
 
     private var rvmAdapter = UniRVAdapter()
 
@@ -37,11 +38,12 @@ class PrivsGoalDial(idGoalDream: Long? = null) : MyFragmentForDialogVM<FragmentP
             }
             with(viewmodel) {
                 avatarFun.setSelectedIdForPrivsGoal(idGoalDream ?: -1)
-                val menuPopupPrivsGoal = MyPopupMenuItem<ItemPrivsGoal>(this@PrivsGoalDial, "menuPopupPrivsGoal").apply {
-                    addButton(MenuPopupButton.DELETE) {
-                        addAvatar.delPrivsGoal(it.id.toLong())
+                val menuPopupPrivsGoal =
+                    MyPopupMenuItem<ItemPrivsGoal>(this@PrivsGoalDial, "menuPopupPrivsGoal").apply {
+                        addButton(MenuPopupButton.DELETE) {
+                            addAvatar.delPrivsGoal(it.id.toLong())
+                        }
                     }
-                }
                 val dialAddPlan = SelectedPlanPanel(this@PrivsGoalDial, "addPrivsPlanForGoal") {
                     addAvatar.addPrivsGoal(
                         idGoalDream ?: -1,
@@ -84,7 +86,7 @@ class PrivsGoalDial(idGoalDream: Long? = null) : MyFragmentForDialogVM<FragmentP
                 avatarSpis.spisPlanStapOfGoal.observe(viewLifecycleOwner) {
                     rvmAdapter.updateData(formUniRVItemList(it) { item ->
                         PrivsGoalRVItem(item, rvPrivPlanAndStap, longTapListener = {
-                            menuPopupPrivsGoal.showMenu(it,name = item.name,)
+                            menuPopupPrivsGoal.showMenu(it, name = item.name)
                         })
                     })
                 }

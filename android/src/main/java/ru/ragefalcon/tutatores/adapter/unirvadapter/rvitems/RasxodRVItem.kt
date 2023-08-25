@@ -1,7 +1,8 @@
 package ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems;
 
 import ru.ragefalcon.sharedcode.models.data.ItemRasxod
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemRasxodBinding
 import ru.ragefalcon.tutatores.extensions.format
 import java.util.*
@@ -26,7 +27,7 @@ class RasxodRVItem(
                 if (vh.itemView.isSelected) {
                     selectListener?.invoke(item)
                 }
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     tapListener?.invoke(item)
                 }

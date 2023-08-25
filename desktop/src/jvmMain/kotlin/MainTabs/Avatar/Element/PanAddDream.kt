@@ -15,7 +15,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import common.BackgroungPanelStyle1
 import common.MyOutlinedTextField
-import common.MySelectStat
 import common.MyTextButtStyle1
 import ru.ragefalcon.sharedcode.models.data.ItemDream
 import viewmodel.MainDB
@@ -26,15 +25,14 @@ fun PanAddDream(
     item: ItemDream? = null
 ) {
     val dialLayInner = MyDialogLayout()
-//    val stat = MySelectStat(item?.lvl ?: 0L, MySelectStat.statNabor2)
 
     dialPan.dial = @Composable {
         val text_name = remember { mutableStateOf(TextFieldValue(item?.let { it.name } ?: "")) }
         val text_opis = remember { mutableStateOf(TextFieldValue(item?.let { it.opis } ?: "")) }
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 MyOutlinedTextField("Название мечты", text_name)
-//                stat.show()
+
                 MyOutlinedTextField(
                     "Описание мечты",
                     text_opis,
@@ -51,7 +49,6 @@ fun PanAddDream(
                             item?.let {
                                 MainDB.addAvatar.updDream(
                                     id = it.id.toLong(),
-//                                    lvl = stat.value,
                                     name = text_name.value.text,
                                     data1 = it.data1,
                                     opis = text_opis.value.text,
@@ -60,7 +57,6 @@ fun PanAddDream(
                                 dialPan.close()
                             } ?: run {
                                 MainDB.addAvatar.addDream(
-//                                    lvl = stat.value,
                                     name = text_name.value.text,
                                     data1 = Date().time,
                                     opis = text_opis.value.text,
@@ -75,6 +71,5 @@ fun PanAddDream(
         }
         dialLayInner.getLay()
     }
-
     dialPan.show()
 }

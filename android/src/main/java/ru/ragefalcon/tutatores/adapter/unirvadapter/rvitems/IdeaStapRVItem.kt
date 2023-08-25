@@ -1,18 +1,17 @@
 package ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems;
 
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import ru.ragefalcon.sharedcode.extensions.MyColorARGB
-import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemIdeaStap
 import ru.ragefalcon.tutatores.R
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemIdeaStapBinding
-import ru.ragefalcon.tutatores.extensions.*
+import ru.ragefalcon.tutatores.extensions.dpToPx
+import ru.ragefalcon.tutatores.extensions.rotateElemItem
+import ru.ragefalcon.tutatores.extensions.sverOpis
+import ru.ragefalcon.tutatores.extensions.sverWidthElemItem
 
 class IdeaStapRVItem(
     data: ItemIdeaStap,
@@ -40,7 +39,6 @@ class IdeaStapRVItem(
 
                 ivSelectIndic.requestLayout()
                 textName.text = item.name
-//            textData.text = Date(item.data).format("dd MMM yyyy")
                 textOpis.text = item.opis
                 when (item.stat.toInt()) {
                     0 -> ivStatIdeaGrad.setColorFilter(
@@ -77,24 +75,6 @@ class IdeaStapRVItem(
                             R.color.colorStatTint_05
                         ), android.graphics.PorterDuff.Mode.MULTIPLY
                     )
-//                    0 -> ivStatIdeaGrad.setColorFilter(Color.YELLOW, android.graphics.PorterDuff.Mode.MULTIPLY)
-//                    1 -> ivStatIdeaGrad.setColorFilter(Color.WHITE, android.graphics.PorterDuff.Mode.MULTIPLY)
-////                2 -> ImageViewCompat.setImageTintList(ivStatDp, ColorStateList.valueOf(MyColorARGB.DOXODDARKGREEN.toIntColor()))
-//                    2 -> ivStatIdeaGrad.setColorFilter(Color.CYAN, android.graphics.PorterDuff.Mode.MULTIPLY)
-//                    3 -> ivStatIdeaGrad.setColorFilter(
-//                        MyColorARGB.DOXODDARKGREEN.toIntColor(),
-//                        android.graphics.PorterDuff.Mode.MULTIPLY
-//                    )
-//                    4 -> ivStatIdeaGrad.setColorFilter(Color.RED, android.graphics.PorterDuff.Mode.MULTIPLY)
-                    /**
-                     * https://stackoverflow.com/questions/20121938/how-to-set-tint-for-an-image-view-programmatically-in-android/45571812#45571812
-                     *
-                     * У пользователя @Tad есть свой ответ в правильном направлении, но он работает только с API 21+.
-                     * Чтобы установить оттенок на всех версиях Android, используйте ImageViewCompat:
-                     * ImageViewCompat.setImageTintList(imageView, ColorStateList.valueOf(yourTint));
-                     * Обратите внимание, что yourTintв этом случае должен быть "цвет int". Если у вас есть ресурс цвета, например R.color.blue, вам нужно сначала загрузить цвет int:
-                     * ContextCompat.getColor(context, R.color.blue);
-                     * */
                 }
                 sverItemOpis(item.sver, false)
                 ivExpandOpis.setOnClickListener {
@@ -107,7 +87,7 @@ class IdeaStapRVItem(
                 if (vh.itemView.isSelected) {
                     selectListener?.invoke(item)
                 }
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     tapListener?.invoke(item)
                 }

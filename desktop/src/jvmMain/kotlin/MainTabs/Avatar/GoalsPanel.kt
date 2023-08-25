@@ -34,13 +34,13 @@ class GoalsPanel {
     val vypGoal = mutableStateOf(false)
     val spisGoalView = mutableStateOf(false)
     val rectDiagram = DrawRectDiagram()
-//    val gridsList = mutableStateOf(mutableStateListOf<ItemYearGraf>())
+
 
     val list = mutableStateOf<List<ItemYearGraf>>(listOf())
     var widthBox = mutableStateOf(100.dp)
     var heightBox = mutableStateOf(1000.dp)
     var contentWidth = mutableStateOf(200.dp)
-//    var scrollEvent = mutableStateOf(MouseScrollEvent(MouseScrollUnit.Line(0f), MouseScrollOrientation.Horizontal))
+
 
     fun selFirst() {
         if (selection.selected == null) MainDB.avatarSpis.spisGoals.getState().value?.let {
@@ -166,7 +166,7 @@ class GoalsPanel {
         }
 
         MyDeleteDropdownMenuButton(expanded) {
-//                        if (item.quest_key_id == 0L) {
+
             if (item.schplOpen == true) {
                 MyEmptyPanel(dialLay, false) { dialInner, closeFun ->
                     Text(
@@ -196,10 +196,14 @@ class GoalsPanel {
     }
 
     @Composable
-    private fun StyleVMspis.InterfaceState.GoalTabParam.topPanel(dialLay: MyDialogLayout){
+    private fun StyleVMspis.InterfaceState.GoalTabParam.topPanel(dialLay: MyDialogLayout) {
         RowVA(Modifier.padding(bottom = 0.dp)) {
             MainDB.avatarSpis.spisGoals.getState().value?.let { list ->
-                if (list.count() > 1) MyTextButtStyle1("❮❮", modifier = Modifier.padding(end = 5.dp), myStyleTextButton = TextButtonStyleState(buttArrowGoal)) {
+                if (list.count() > 1) MyTextButtStyle1(
+                    "❮❮",
+                    modifier = Modifier.padding(end = 5.dp),
+                    myStyleTextButton = TextButtonStyleState(buttArrowGoal)
+                ) {
                     list.indexOf(selection.selected).let { indexSel ->
                         selection.selected =
                             if (indexSel > 0) list[indexSel - 1] else list.lastOrNull()
@@ -219,7 +223,11 @@ class GoalsPanel {
                         }.getComposable()
                     }
                 }
-                if (list.count() > 1) MyTextButtStyle1("❯❯", modifier = Modifier.padding(start = 5.dp), myStyleTextButton = TextButtonStyleState(buttArrowGoal)) {
+                if (list.count() > 1) MyTextButtStyle1(
+                    "❯❯",
+                    modifier = Modifier.padding(start = 5.dp),
+                    myStyleTextButton = TextButtonStyleState(buttArrowGoal)
+                ) {
                     list.indexOf(selection.selected).let { indexSel ->
                         selection.selected =
                             if (indexSel < list.count() - 1) list[indexSel + 1] else list[0]
@@ -235,20 +243,20 @@ class GoalsPanel {
     }
 
     @Composable
-    private fun StyleVMspis.InterfaceState.GoalTabParam.buttPanel(dialLay: MyDialogLayout){
-        Row(Modifier.padding(top = 10.dp),verticalAlignment = Alignment.CenterVertically) {
+    private fun StyleVMspis.InterfaceState.GoalTabParam.buttPanel(dialLay: MyDialogLayout) {
+        Row(Modifier.padding(top = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             MyToggleButtIconStyle1(
                 "ic_round_check_circle_outline_24.xml",
                 "ic_round_check_circle_24.xml",
                 twoIcon = false,
                 value = vypGoal,
-//                sizeIcon = 35.dp,
+
                 modifier = Modifier.padding(start = 15.dp),
                 width = 70.dp,
                 height = 35.dp,
                 myStyleToggleButton = ToggleButtonStyleState(buttVypGoal)
             ) {
-//                    MyTextToggleButtStyle1("Вып", vypGoal, modifier = Modifier.padding(start = 15.dp)) {
+
                 MainDB.avatarFun.setOpenspisGoals(it)
                 selection.selected = null
             }
@@ -261,23 +269,25 @@ class GoalsPanel {
                 width = 70.dp,
                 myStyleToggleButton = ToggleButtonStyleState(buttViewSpisGoal)
             )
-//                MyTextToggleButtStyle1("Список", spisGoalView, modifier = Modifier.padding(start = 15.dp))
+
             Text(
                 text = "Цели: ${MainDB.avatarSpis.spisGoals.getState().value?.size ?: 0}",
                 modifier = Modifier.weight(1f).padding(horizontal = 20.dp),
                 style = textCountGoal.getValue()
             )
-            MyTextButtStyle1("+",
+            MyTextButtStyle1(
+                "+",
                 modifier = Modifier.padding(end = 15.dp),
                 width = 70.dp, height = 35.dp,
-                myStyleTextButton = TextButtonStyleState(buttAddGoal)) {
+                myStyleTextButton = TextButtonStyleState(buttAddGoal)
+            ) {
                 PanAddGoal(dialLay)
             }
         }
     }
 
     @Composable
-    private fun StyleVMspis.InterfaceState.GoalTabParam.spisok(dialLay: MyDialogLayout, modifier: Modifier){
+    private fun StyleVMspis.InterfaceState.GoalTabParam.spisok(dialLay: MyDialogLayout, modifier: Modifier) {
         itemGoal.getComposable(::ItemGoalStyleState) { itemStyle ->
             MyList(MainDB.avatarSpis.spisGoals, modifier) { ind, itemGoal ->
                 ComItemGoal(itemGoal, selection, selFun = {
@@ -292,7 +302,7 @@ class GoalsPanel {
     }
 
     @Composable
-    private fun StyleVMspis.InterfaceState.GoalTabParam.rectDiagramm(dialLay: MyDialogLayout){
+    private fun StyleVMspis.InterfaceState.GoalTabParam.rectDiagramm(dialLay: MyDialogLayout) {
         selection.selected?.let {
             RowVA(Modifier.padding(horizontal = 10.dp)) {
                 Column(Modifier.weight(1f)) {
@@ -334,7 +344,8 @@ class GoalsPanel {
                 }
                 MyTextButtStyle1(
                     "Проекты: ${MainDB.goalCountPlan.value}",
-                    Modifier.padding(horizontal = 0.dp).padding(bottom = 0.dp), myStyleTextButton = TextButtonStyleState(buttPrivPlan)
+                    Modifier.padding(horizontal = 0.dp).padding(bottom = 0.dp),
+                    myStyleTextButton = TextButtonStyleState(buttPrivPlan)
                 ) {
                     selection.selected?.id?.let {
                         PanPrivsGoal(it.toLong(), dialLay)
@@ -373,13 +384,15 @@ class GoalsPanel {
             val scrollState = rememberScrollState(0)
             Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
                 if (spisGoalView.value) {
-                    spisok(dialLay,Modifier.padding(vertical = 10.dp).weight(1f))
+                    spisok(dialLay, Modifier.padding(vertical = 10.dp).weight(1f))
                 } else {
                     topPanel(dialLay)
-                    MyShadowBox(panelDiagram.shadow.getValue(),Modifier.weight(1f)){
-                        Column(Modifier
-                            .withSimplePlate(SimplePlateWithShadowStyleState(panelDiagram))
-                            .fillMaxWidth().padding(10.dp).animateContentSize()) {
+                    MyShadowBox(panelDiagram.shadow.getValue(), Modifier.weight(1f)) {
+                        Column(
+                            Modifier
+                                .withSimplePlate(SimplePlateWithShadowStyleState(panelDiagram))
+                                .fillMaxWidth().padding(10.dp).animateContentSize()
+                        ) {
                             rectDiagramm(dialLay)
                         }
                     }
@@ -387,6 +400,5 @@ class GoalsPanel {
                 buttPanel(dialLay)
             }
         }
-
     }
 }

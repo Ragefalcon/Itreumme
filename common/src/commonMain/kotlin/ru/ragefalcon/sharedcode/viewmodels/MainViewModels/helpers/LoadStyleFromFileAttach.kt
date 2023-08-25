@@ -1,16 +1,13 @@
 package ru.ragefalcon.sharedcode.viewmodels.MainViewModels.helpers
 
-import com.soywiz.klock.DateTimeTz
 import com.squareup.sqldelight.TransacterImpl
 import com.squareup.sqldelight.db.SqlDriver
 import ru.ragefalcon.sharedcode.Database
-import ru.ragefalcon.sharedcode.extensions.localUnix
-import ru.ragefalcon.sharedcode.extensions.minusTime
 
 class LoadStyleFromFileAttach(
-        private val driver: SqlDriver,
-        private val db: Database,
-    ) : TransacterImpl(driver) {
+    private val driver: SqlDriver,
+    private val db: Database,
+) : TransacterImpl(driver) {
 
     fun loadStartStyle(
         path: String,
@@ -21,7 +18,6 @@ class LoadStyleFromFileAttach(
                 "attach database '$path' AS QDB; ",
                 0
             )
-            val datetime = DateTimeTz.nowLocal().minusTime().localUnix()
             driver.execute(
                 -64654056,
                 "INSERT INTO spis_save_set_style(_id,name,type) VALUES (-6, 'Стиль по умолчанию',1) ;",
@@ -40,5 +36,4 @@ class LoadStyleFromFileAttach(
             0
         )
     }
-
-    }
+}

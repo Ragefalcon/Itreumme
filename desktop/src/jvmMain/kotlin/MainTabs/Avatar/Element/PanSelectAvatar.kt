@@ -54,7 +54,7 @@ fun PanSelectAvatar(
         val selectionImageFromSpis = remember { SingleSelectionType<File>() }
 
         val size = 350.dp
-        val shape = RoundedCornerShape(15.dp) //CircleShape
+        val shape = RoundedCornerShape(15.dp)
 
         BackgroungPanelStyle1() {
             Column(
@@ -67,17 +67,14 @@ fun PanSelectAvatar(
                     when (seekBar.active?.cod) {
                         "new" -> RowVA {
                             Box(
-                                Modifier.padding(20.dp)
-//                        .height(size)
-//                        .width(size)
-                                ,
+                                Modifier.padding(20.dp),
                                 contentAlignment = Alignment.TopCenter
                             ) {
                                 Image(
                                     bitmap = fileForCrop.outImage.cropImageBitmap.value ?: useResource(
                                         "iv_barash.jpg",
                                         ::loadImageBitmap
-                                    ), //BitmapPainter(
+                                    ),
                                     "defaultAvatar",
                                     Modifier.wrapContentSize()
                                         .height(size)
@@ -87,7 +84,7 @@ fun PanSelectAvatar(
                                         .padding(1.dp)
                                         .border(3.dp, Color(0x7FFFF7D9), RoundedCornerShape(14.dp))
                                         .shadow(2.dp, shape),
-                                    contentScale = ContentScale.Crop,// Fit,
+                                    contentScale = ContentScale.Crop,
                                 )
                             }
                             Box(
@@ -100,6 +97,7 @@ fun PanSelectAvatar(
                                 ImageCropSelector(fileForCrop, 1000, true)
                             }
                         }
+
                         "spis" -> RowVA {
                             MyListRow(
                                 filesList,
@@ -124,6 +122,7 @@ fun PanSelectAvatar(
                                 }
                             }
                         }
+
                         else -> {}
                     }
                 }
@@ -153,6 +152,7 @@ fun PanSelectAvatar(
                             }
                             dialLay.close()
                         }
+
                         "spis" -> {
                             selectionImageFromSpis.selected?.let { avaFile ->
                                 MyDeleteButton(Modifier.padding(start = 5.dp)) {
@@ -184,6 +184,7 @@ fun PanSelectAvatar(
                                 }
                             }
                         }
+
                         else -> {}
                     }
                 }

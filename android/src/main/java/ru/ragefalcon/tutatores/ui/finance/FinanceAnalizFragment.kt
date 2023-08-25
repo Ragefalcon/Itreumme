@@ -2,7 +2,6 @@ package ru.ragefalcon.tutatores.ui.finance
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,30 +29,18 @@ class FinanceAnalizFragment() : Fragment() {
     }
     private var state_vid = 0
     internal var activity: Postman? = null
-//    internal var dView: DrawView? =
 
     val viewmodel: AndroidFinanceViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is Postman) activity = context //as Activity
+        if (context is Postman) activity = context
     }
 
     override fun onStart() {
         super.onStart()
         binding.dvDiagram.onStart()
         binding.dvSpisok.onStart()
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-//        draw_view.onRestartAnimation()
-    }
-
-    override fun onPause() {
-        super.onPause()
-//        draw_view.onStop()
     }
 
     override fun onStop() {
@@ -73,7 +60,7 @@ class FinanceAnalizFragment() : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+
         _binding = FragmentAnalizFinanceBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -122,10 +109,9 @@ class FinanceAnalizFragment() : Fragment() {
                         srTypeAnaliz.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                             override fun onNothingSelected(parent: AdapterView<*>?) {
                             }
-
                             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                                 financeFun.selectRasxodTypeByMonth(srTypeAnaliz.selectedItem as Pair<String, String>)
-//                            activity?.mDB?.analizFinance?.selectRasxodTypeByMonth((srTypeAnaliz.selectedItem as Pair<String, String>).first.toLong())
+
                             }
                         }
                     }
@@ -162,7 +148,7 @@ class FinanceAnalizFragment() : Fragment() {
                         prewVid()
                     }
                     prewVid()
-//                hsvSpisok.setSmoothScrollingEnabled(false);
+
                     hsvSpisok.postDelayed({
                         run() {
                             hsvSpisok?.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
@@ -228,31 +214,15 @@ class FinanceAnalizFragment() : Fragment() {
                                     analizDraw.getWidthGraf(),
                                     LinearLayout.LayoutParams.MATCH_PARENT
                                 )
-//                            println("progress : ${progress}")
-//                            println("progress cursor: ${analizDraw.cursor}")
-//                            println("progress max: ${sbCapital.max}")
                             }
-
                             override fun onStartTrackingTouch(seekBar: SeekBar?) {
-//                                    TODO("Not yet implemented")
+
                             }
 
                             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-//                                    TODO("Not yet implemented")
-                            }
 
+                            }
                         })
-//                    spisTypeRasx.observe(viewLifecycleOwner){
-//                        srTypeAnaliz?.adapter = TypeRasxodAdapter(requireContext(), it, R.layout.simple_list_item_white)
-//                    }
-//                    srTypeAnaliz.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//                        override fun onNothingSelected(parent: AdapterView<*>?) {
-//                        }
-//                        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//                            setPosFilterAnalizRasx(srTypeAnaliz.selectedItem as Pair<String, String>)
-////                            activity?.mDB?.analizFinance?.selectRasxodTypeByMonth((srTypeAnaliz.selectedItem as Pair<String, String>).first.toLong())
-//                        }
-//                    }
                     }
 
                     fun prewVid() {
@@ -277,7 +247,7 @@ class FinanceAnalizFragment() : Fragment() {
                                 srTypeAnaliz.visibility = View.INVISIBLE
 
                                 dvHorSpisok.setDrawFun(analizDraw::drawTwoRectDiag)
-//                            dvHorSpisok.setDrawFun(analizDraw::drawGraf)
+
                                 dvHorSpisok.setCalcFun(analizDraw::calculateRect)
                                 dvHorSpisok?.layoutParams = LinearLayout.LayoutParams(
                                     analizDraw.getWidthTwoRectDiag(),
@@ -307,7 +277,7 @@ class FinanceAnalizFragment() : Fragment() {
                                     analizDraw.getWidthGraf(),
                                     LinearLayout.LayoutParams.MATCH_PARENT
                                 )
-//                            seekBar?.layoutParams = LinearLayout.LayoutParams(analizDraw.getWidthGraf(), LinearLayout.LayoutParams.WRAP_CONTENT)
+
                                 analizDraw.setUpdateRect()
                                 hsvSpisok.postDelayed({
                                     run() {
@@ -324,7 +294,7 @@ class FinanceAnalizFragment() : Fragment() {
                         prewVid()
                     }
                     prewVid()
-//                hsvSpisok.setSmoothScrollingEnabled(false);
+
                     hsvSpisok.postDelayed({
                         run() {
                             hsvSpisok?.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
@@ -336,10 +306,8 @@ class FinanceAnalizFragment() : Fragment() {
                     var analizDraw = AnalizRasxodDraw()
 
                     buttChangeAnaliz.visibility = View.INVISIBLE
-                    Log.d("sumOnSchet", "count: test")
                     viewmodel.finSpis.spisSchetWithSumm.getLiveData().observe(viewLifecycleOwner, Observer {
                         analizDraw.sumOnSchet = it
-                        Log.d("sumOnSchet", "count: ${it.count()}")
                         dvSpisok?.layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             analizDraw.getHeightSumOnSchet()
@@ -349,10 +317,8 @@ class FinanceAnalizFragment() : Fragment() {
                     srTypeAnaliz.visibility = View.INVISIBLE
                     dvDiagram.visibility = View.VISIBLE
                     vsvSpisok.visibility = View.VISIBLE
-
                     dvDiagram.layoutParams =
                         ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, 1)
-
                     dvSpisok.setDrawFun(analizDraw::drawSumOnSchet)
                     dvSpisok.setCalcFun(analizDraw::calculateSumOnSchet)
                     analizDraw.setUpdateSumOnSchet()

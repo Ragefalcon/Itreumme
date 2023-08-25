@@ -15,7 +15,8 @@ import ru.ragefalcon.sharedcode.myGoogleLib.KtorGoogleOAuth
 import ru.ragefalcon.sharedcode.source.disk.DbArgs
 import ru.ragefalcon.tutatores.adapter.FinanceType
 
-class MyStateViewModel(application: Application, private val savedStateHandle: SavedStateHandle): AndroidViewModel(application)  {
+class MyStateViewModel(application: Application, private val savedStateHandle: SavedStateHandle) :
+    AndroidViewModel(application) {
 
     val someState: MutableLiveData<String> = savedStateHandle.getLiveData("someState")
     var firstStart = true
@@ -33,33 +34,35 @@ class MyStateViewModel(application: Application, private val savedStateHandle: S
         .build()
 
     val params = savedStateHandle.getLiveData<ItemKtorGoogleParams>("params", ItemKtorGoogleParams())
-    val authCode = savedStateHandle.getLiveData<String>("authCode","")
-    val ktorGOA = KtorGoogleOAuth(DbArgs(application), params.value ?: ItemKtorGoogleParams()){ params.value = it}
+    val authCode = savedStateHandle.getLiveData<String>("authCode", "")
+    val ktorGOA = KtorGoogleOAuth(DbArgs(application), params.value ?: ItemKtorGoogleParams()) { params.value = it }
 
     var currentFinType: FinanceType = FinanceType.RASXOD
     var changeItemCommonFinOper: ItemCommonFinOper? = savedStateHandle.get<ItemCommonFinOper?>("changeItemRasxod")
-    val selectItemPlan: LiveData<ItemPlan?> = savedStateHandle.getLiveData<ItemPlan?>("selectItemPlan",null)
-    val selectItemBloknot = savedStateHandle.getLiveData<ItemBloknot?>("selectItemBloknot",null)
-    val selectItemGoal = savedStateHandle.getLiveData<ItemGoal?>("selectItemGoal",null)
-    val selectItemDream = savedStateHandle.getLiveData<ItemDream?>("selectItemDream",null)
-    val selectItemIdea = savedStateHandle.getLiveData<ItemIdea?>("selectItemIdea",null)
+    val selectItemPlan: LiveData<ItemPlan?> = savedStateHandle.getLiveData<ItemPlan?>("selectItemPlan", null)
+    val selectItemBloknot = savedStateHandle.getLiveData<ItemBloknot?>("selectItemBloknot", null)
+    val selectItemGoal = savedStateHandle.getLiveData<ItemGoal?>("selectItemGoal", null)
+    val selectItemDream = savedStateHandle.getLiveData<ItemDream?>("selectItemDream", null)
+    val selectItemIdea = savedStateHandle.getLiveData<ItemIdea?>("selectItemIdea", null)
     val visAddFinPanel = savedStateHandle.getLiveData<Boolean>("visAddFinPanel", false)
     val visChangeFinPanel = savedStateHandle.getLiveData<Boolean>("visChangeFinPanel", false)
     val visFilterFinPanel = savedStateHandle.getLiveData<Boolean>("visFilterFinPanel", false)
 
 
-    val gotovSelDenPlan = savedStateHandle.getLiveData<Int>("gotovSelDenPlan",0)
-    val gotovSelPlan = savedStateHandle.getLiveData<Int>("gotovSelPlan",0)
-    val gotovSelPlanStap = savedStateHandle.getLiveData<Int>("gotovSelPlanStap",0)
+    val gotovSelDenPlan = savedStateHandle.getLiveData<Int>("gotovSelDenPlan", 0)
+    val gotovSelPlan = savedStateHandle.getLiveData<Int>("gotovSelPlan", 0)
+    val gotovSelPlanStap = savedStateHandle.getLiveData<Int>("gotovSelPlanStap", 0)
 
 
-    enum class journal_nav {bloknot, idea, stap_idea}
+    enum class journal_nav { bloknot, idea, stap_idea }
+
     val sel_jornal_nav = MutableLiveData<journal_nav>().apply { this.value = journal_nav.bloknot }
-    val needUpdateGoalDetailFrag = savedStateHandle.getLiveData<Boolean>("needUpdateGoalDetailFrag",false)
+    val needUpdateGoalDetailFrag = savedStateHandle.getLiveData<Boolean>("needUpdateGoalDetailFrag", false)
 
 
     var tmpItemNapom: ItemNapom? = null
-    val saveInstanceUniItem = savedStateHandle.get<SparseArray<UniItem>>("saveInstanceUniItem") ?: SparseArray<UniItem>()
+    val saveInstanceUniItem =
+        savedStateHandle.get<SparseArray<UniItem>>("saveInstanceUniItem") ?: SparseArray<UniItem>()
 
 
     var tmpTimeStampLong: Long = 0

@@ -41,23 +41,31 @@ class MyPopupNabor(
  * при повороте экрана или другом пересоздании экрана не пересоздадутся
  * слушатели для этого меню.
  * */
-class MyPopupMenuItem<T:Id_class>(private val fragment: Fragment, val callbackKey: String){
+class MyPopupMenuItem<T : Id_class>(private val fragment: Fragment, val callbackKey: String) {
     private val menuPopupPlan = mutableListOf<MenuPopupButton>()
     fun getListMenu() = menuPopupPlan.toList()
-    fun addButton(butt: MenuPopupButton,listener: ((item: T) -> Unit)) {
+    fun addButton(butt: MenuPopupButton, listener: ((item: T) -> Unit)) {
         FragMyPopupMenuDial.addRezListener<T>(menuPopupPlan, butt, fragment, callbackKey) {
             listener(it)
         }
     }
+
     fun showMenu(
-                 item:T,
-                 name: String? = null,
-                 predicate: (MenuPopupButton)->Boolean = {true},
-                 manager: FragmentManager = fragment.getSFM(),
-                 tag: String = "tegMyFragDial",
-                 bound: MyFragDial.BoundSlide = MyFragDial.BoundSlide.right
-    ){
-        fragment.showMyFragDial(FragMyPopupMenuDial( item, name = name, this.getListMenu().filter { predicate(it) },callbackKey),manager,tag,bound)
+        item: T,
+        name: String? = null,
+        predicate: (MenuPopupButton) -> Boolean = { true },
+        manager: FragmentManager = fragment.getSFM(),
+        tag: String = "tegMyFragDial",
+        bound: MyFragDial.BoundSlide = MyFragDial.BoundSlide.right
+    ) {
+        fragment.showMyFragDial(
+            FragMyPopupMenuDial(
+                item,
+                name = name,
+                this.getListMenu().filter { predicate(it) },
+                callbackKey
+            ), manager, tag, bound
+        )
     }
 }
 
@@ -128,7 +136,7 @@ class FragMyPopupMenuDial<T : Id_class>(
 ) :
     MyFragmentForDialogVM<FragmentSpisEffektBinding>(FragmentSpisEffektBinding::inflate) {
 
-    var name: String by instanceStateDef("",name)
+    var name: String by instanceStateDef("", name)
     var itemPop: T? by instanceState(itemPop)
     var nabor: MyPopupNabor? by instanceState(nabor?.let { MyPopupNabor(it.map { it.butt }) })
     var callbackKey: String? by instanceState(callbackKey)
@@ -159,11 +167,11 @@ class FragMyPopupMenuDial<T : Id_class>(
             }
             textName.text = name
 
-            val aa = rvEffektList.layoutParams as ViewGroup.MarginLayoutParams //as ConstraintLayout.LayoutParams
+            val aa = rvEffektList.layoutParams as ViewGroup.MarginLayoutParams
             aa.width = ViewGroup.MarginLayoutParams.WRAP_CONTENT
             aa.height = ViewGroup.MarginLayoutParams.WRAP_CONTENT
             rvEffektList.requestLayout()
-            val bb = clAddTpanel.layoutParams as ViewGroup.MarginLayoutParams //as ConstraintLayout.LayoutParams
+            val bb = clAddTpanel.layoutParams as ViewGroup.MarginLayoutParams
             bb.width = ViewGroup.MarginLayoutParams.WRAP_CONTENT
             bb.height = ViewGroup.MarginLayoutParams.WRAP_CONTENT
             rvEffektList.requestLayout()
@@ -175,10 +183,10 @@ class FragMyPopupMenuDial<T : Id_class>(
                             MyPopupDeleteRVItem(it) { podkey ->
                                 setRezList(podkey)
                             }
-                            else
-                        MyPopupRVItem(it) { podkey ->
-                            setRezList(podkey)
-                        }
+                        else
+                            MyPopupRVItem(it) { podkey ->
+                                setRezList(podkey)
+                            }
                     })
                 }
             }
@@ -202,7 +210,7 @@ class FragMyPopupMenuDial<T : Id_class>(
             listener: ((item: T) -> Unit)? = null
         ) {
             list.add(itemMenu)
-            fragment.setSFMResultListener("${requestKey}_${itemMenu.butt.podkey}") { key, bundle ->
+            fragment.setSFMResultListener("${requestKey}_${itemMenu.butt.podkey}") { _, bundle ->
                 val itemRez = bundle.getParcelable<T>("item")
                 itemRez?.let {
                     listener?.invoke(it)

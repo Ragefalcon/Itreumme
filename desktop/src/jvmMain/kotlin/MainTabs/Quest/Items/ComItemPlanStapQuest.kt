@@ -37,7 +37,6 @@ class ComItemPlanStapQuest(
     val editable: Boolean = true,
     val dropMenu: @Composable ColumnScope.(ItemPlanStapQuest, MutableState<Boolean>) -> Unit = { _, _ -> }
 ) {
-
     val expandedDropMenu = mutableStateOf(false)
 
     val expandedOpis = mutableStateOf(!item.sver)
@@ -61,11 +60,9 @@ class ComItemPlanStapQuest(
             }
         ) {
             Column {
-
                 Row(verticalAlignment = Alignment.CenterVertically) {
-
                     if (item.podstapcount > 0) Image(
-                        painterResource(if (item.svernut) "ic_plus.xml" else "ic_minus.xml"),//useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                        painterResource(if (item.svernut) "ic_plus.xml" else "ic_minus.xml"),
                         "statDenPlan",
                         Modifier
                             .height(40.dp)
@@ -75,7 +72,6 @@ class ComItemPlanStapQuest(
                                 sverFun(item)
                             },
                         contentScale = ContentScale.Fit,
-//                        filterQuality = FilterQuality.High
                     )
                     if (item.opis != "") RotationButtStyle1(
                         expandedOpis,
@@ -88,12 +84,16 @@ class ComItemPlanStapQuest(
 
                             Column(Modifier.padding(start = 15.dp).weight(1f)) {
                                 MyTextStyle1(
-                                    modifier = Modifier,//.padding(0.dp).padding(start = 15.dp),
+                                    modifier = Modifier,
                                     text = item.name,
                                     textAlign = TextAlign.Start
                                 )
                                 PlateOrderLayout() {
-                                    QuestVM.getComItemTriggers(TypeParentOfTrig.PLANSTAP.code, item.id.toLong(), editable = editable)
+                                    QuestVM.getComItemTriggers(
+                                        TypeParentOfTrig.PLANSTAP.code,
+                                        item.id.toLong(),
+                                        editable = editable
+                                    )
                                     QuestVM.getTriggerMarkersForTriggerChilds(
                                         TypeStartObjOfTrigger.STARTSTAP.id,
                                         item.id.toLong(),
@@ -107,23 +107,13 @@ class ComItemPlanStapQuest(
                                 dropMenu(item, expandedDropMenu)
                             }
                             if (item.commstat == -2L || item.commstat == -3L) Image(
-                                painterResource(if (item.commstat == -2L) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"), //BitmapPainter(
+                                painterResource(if (item.commstat == -2L) "ic_round_lock_24.xml" else "ic_round_visibility_off_24.xml"),
                                 "statDenPlan",
                                 Modifier
                                     .height(40.dp)
                                     .width(40.dp)
                                     .padding(vertical = 0.dp)
                                     .padding(start = 0.dp),
-//                        colorFilter = ColorFilter.tint(
-//                            when (item.vajn.toInt()) {
-//                                0 -> Color(0xFFFFF42B)
-//                                1 -> Color(0xFFFFFFFF)
-//                                2 -> Color(0xFF7FFAF6)
-//                                3 -> Color(0xFFFF5858)
-//                                else -> Color(0xFFFFF42B)
-//                            },
-//                            BlendMode.Modulate
-//                        ),
                                 alpha = 0.7F,
                                 contentScale = ContentScale.FillBounds,
                             )
@@ -143,12 +133,12 @@ class ComItemPlanStapQuest(
 
                     }
                 }
-                if ((item.opis != "")) { //(isActive()) &&  && (expandedOpis.value)
+                if ((item.opis != "")) {
                     BoxExpand(
                         expandedOpis,
                         Modifier.myModWithBound1(),
                         Modifier.fillMaxWidth()
-                    ) {  //, endModif = Modifier::withMyBound1
+                    ) {
                         Text(
                             modifier = Modifier
                                 .padding(5.dp)

@@ -2,31 +2,25 @@ package ru.ragefalcon.tutatores.ui.settings
 
 import android.content.Intent
 import android.net.Uri
-import android.opengl.Visibility
-import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Environment
-import android.os.Environment.*
+import android.os.Environment.getExternalStorageDirectory
 import android.provider.Settings
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
-import androidx.viewbinding.BuildConfig
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.ragefalcon.sharedcode.myGoogleLib.ItemGDriveFile
 import ru.ragefalcon.tutatores.BuildConfig.APPLICATION_ID
-import ru.ragefalcon.tutatores.MainActivity
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.GDriveFileRVItem
@@ -59,15 +53,6 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-// Configure sign-in to request the user's ID, email address, and basic
-// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        // Configure sign-in to request the user's ID, email address, and basic
-// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-//            var gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestEmail()
-//                .requestScopes(Scope(Scopes.DRIVE_APPFOLDER)) // "https://www.googleapis.com/auth/drive.appdata"
-//                .build()
-        // Build a GoogleSignInClient with the options specified by gso.
         with(binding) {
             with(rvDriveFileList) {
                 adapter = rvmAdapter
@@ -104,8 +89,6 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
             }
 
             val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), stateViewModel.gso);
-////            val ktorGOA = KtorGoogleOAuth()
-
             fun checkVisibleOnlineButt(value: Boolean) {
                 if (value) {
                     signInButton.visibility = INVISIBLE
@@ -125,11 +108,10 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
             buttOldMyBase.visibility = INVISIBLE
             checkVisibleOnlineButt(stateViewModel.authCode.value != "")
             stateViewModel.authCode.observe(viewLifecycleOwner) {
-//                tv_authCode.text = it
+
                 checkVisibleOnlineButt(it != "")
                 if (it != "") {
                     stateViewModel.ktorGOA.getToken(it, stateViewModel.clientID, stateViewModel.clientSecret) { token ->
-                        Log.d("GetToken", token)
                         lifecycleScope.launch(Dispatchers.Main) {
                             tvAuthCode.text = token
                         }
@@ -148,18 +130,13 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
                 mGoogleSignInClient.signOut()
                     .addOnCompleteListener(requireActivity(), OnCompleteListener<Void?> {
                         stateViewModel.authCode.value = ""
-                        // ...
+
                     })
 
             }
             buttBdToDevice.setOnClickListener {
                 if (SDK_INT >= 30) {
                     if (!Environment.isExternalStorageManager()) {
-                        /*         Snackbar.make(android.R.id.content, "Permission needed!", Snackbar.LENGTH_INDEFINITE)
-                                     .setAction("Settings", new View . OnClickListener () {
-                                         @Override
-                                         public void onClick(View v) {
-             */
                         try {
                             val uri = Uri.parse("package:" + APPLICATION_ID);
                             var intent = Intent(
@@ -172,10 +149,6 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
                             intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION;
                             startActivity(intent);
                         }
-                        /*                           }
-                                               })
-                                               .show();
-                       */
                         /**
                          * https://stackoverflow.com/questions/62782648/android-11-scoped-storage-permissions/67140033
                          * Т.к. я стартую активити без возвращения результата, то для копии БД кнопку будет нужно нажать еще раз.
@@ -184,7 +157,7 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
                         copyFileDBToDevice()
                     }
                 }   else    {
-//                    println("$SDK_INT < 30")
+
                     copyFileDBToDevice()
                 }
             }
@@ -222,19 +195,6 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
                     "Android_new_folder"
                 )
             }
-//            if (!GoogleSignIn.hasPermissions(
-//                    GoogleSignIn.getLastSignedInAccount(getActivity()),
-//                    Drive.SCOPE_APPFOLDER)) {
-//                GoogleSignIn.requestPermissions(
-//                    MyExampleActivity.this,
-//                    RC_REQUEST_PERMISSION_SUCCESS_CONTINUE_FILE_CREATION,
-//                    GoogleSignIn.getLastSignedInAccount(getActivity()),
-//                    Drive.SCOPE_APPFOLDER);
-//            } else {
-//                saveToDriveAppFolder();
-//            }
-
-
         }
     }
 
@@ -251,15 +211,12 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
 
     private fun loadBaseFileDB() {
         val ASSETS_PATH = "databases"
-//        val DATABASE_NAME = "databasefff"
+
         val DATABASE_NAME = "MyMainDB_2021_06_24"
         loadBaseFileDB(requireContext().assets.open("$ASSETS_PATH/$DATABASE_NAME.db"), "$ASSETS_PATH/$DATABASE_NAME.db")
     }
 
     private fun loadBaseNetworkFileDB() {
-//        val outputFile = File(requireContext().getDatabasePath("testNetwork.db").path)
-//        Log.d("LoadBD", "Открыт выходной файл")
-//        val outputStream = FileInputStream(outputFile)
         loadBaseFileDB(
             FileInputStream(File(requireContext().getDatabasePath("testNetwork.db").path)),
             requireContext().getDatabasePath("testNetwork.db").path
@@ -267,19 +224,11 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
     }
 
     private fun loadBaseFileDB(inputStream: InputStream, pathFile: String = "") {
-        Log.d("LoadBD", "До открытия входного потока")
-//        val inputStream = requireContext().assets.open(pathFile)
-        Log.d("LoadBD", "Поток открыт")
-
         try {
-
             val outputFile = File(requireContext().getDatabasePath("databasefff.db").path)
-            Log.d("LoadBD", "Открыт выходной файл")
             val outputStream = FileOutputStream(outputFile)
-            Log.d("LoadBD", "Открыт поток в выходной файл")
 
             inputStream.copyTo(outputStream)
-            Log.d("LoadBD", "База скопирована в выходной поток")
             inputStream.close()
 
             outputStream.flush()
@@ -293,31 +242,17 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
 
         try {
             val inputStream = FileInputStream(File(requireContext().getDatabasePath("databasefff.db").path))
-//            val pathFile = requireContext().getDatabasePath("testNetwork.db").path
 
-            Log.d("MyTag", context?.getExternalFilesDir("")?.absolutePath ?: "")
-//            return File(context.getExternalFilesDir("")!!.absolutePath /*"/storage/emulated/0/DCIM"/*context.filesDir*/*/, "IMG_${sdf.format(Date())}.$extension")
-//            var dirFile = "/storage/emulated/0/Itreumme"
             var dirFile = getExternalStorageDirectory()
-//            File(dirFile.path,"Itreumme").mkdirs()
-//            dirFile = "/storage/emulated/0/Itreumme/backupDB"
+
             val fileTmp = File(File(dirFile.path, "Itreumme"),"backupDB")
-            Log.d("LoadBD", "Создание директории: ${getExternalStorageState(fileTmp)}")
-//            Log.d("LoadBD", "Создание директории: ${isExternalStorageManager()}")
-//            Log.d("LoadBD", "Создание директории: ${isExternalStorageManager(fileTmp)}")
-
-            Log.d("LoadBD", "Создание директории: ${fileTmp.path}")
             fileTmp.mkdirs()
-            var mkdirr = fileTmp.exists() //&& fileTmp.isDirectory
-
-            Log.d("LoadBD", "Создание директории: $mkdirr")
+            var mkdirr = fileTmp.exists()
             mkdirr=true
             val outputFile = if (mkdirr) File(fileTmp,"database_${Date().time}.db") else File(context?.getExternalFilesDir("")?.absolutePath ?: "","database_${Date().time}.db")
             val outputStream = FileOutputStream(outputFile)
-            Log.d("LoadBD", "Открыт поток в выходной файл")
 
             val sizeCopy = inputStream.copyTo(outputStream)
-            Log.d("LoadBD", "База скопирована в выходной поток")
             inputStream.close()
 
             outputStream.flush()
@@ -327,5 +262,4 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
             throw RuntimeException("The pathFile database couldn't be installed.", exception)
         }
     }
-
 }

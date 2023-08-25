@@ -24,9 +24,9 @@ class AddChangeRasxodPanFragment(item: ItemRasxod? = null) :
                     val ssch = srSchetAdd.selectedItem as Pair<String, String>
                     viewmodel.addFin.addRasxod(
                         name = editNameText.text.toString(),
-                        summa = it, //editSumma.editText?.text.toString().toDouble() ?: 0.0,
+                        summa = it,
                         typeid = sd.first.toLong(),
-                        data = etDate.dateLong, //.toLongPlusOffset(),
+                        data = etDate.dateLong,
                         schet = ssch.first.toLong()
                     )
                 }
@@ -45,9 +45,9 @@ class AddChangeRasxodPanFragment(item: ItemRasxod? = null) :
                         viewmodel.addFin.updRasxod(
                             item = it,
                             name = editNameText.text.toString(),
-                            summa = sum, //editSumma.editText?.text.toString().toDouble() ?: 0.0,
+                            summa = sum,
                             typeid = sd.first.toLong(),
-                            data = etDate.dateLong, //.toLongPlusOffset(),
+                            data = etDate.dateLong,
                             schet = ssch.first.toLong()
                         )
                     }
@@ -137,7 +137,7 @@ class AddChangeRasxodPanFragment(item: ItemRasxod? = null) :
                     schet_id = ssch.first.toLong(),
                 )
             }, listener_cancel = {
-//                buttToggleBestday.isChecked = false
+
             })
             buttSaveShablon.setOnClickListener {
                 if ((editNameText.text.toString() != "") && (editSummaText.text.toString() != "")) {
@@ -173,7 +173,7 @@ class AddChangeRasxodPanFragment(item: ItemRasxod? = null) :
                     srSchetAdd.refreshDrawableState()
                 }
             }
-//                showMyFragDial(SelectDenPlanShablonPanelDial(callbackKey), getSFM(), bound = MyFragDial.BoundSlide.top)
+
             buttLoadShablon.setOnClickListener {
                 selShabPan.showMenu()
             }

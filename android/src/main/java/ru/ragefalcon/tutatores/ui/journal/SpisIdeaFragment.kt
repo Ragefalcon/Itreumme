@@ -6,41 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewGroupCompat
 import androidx.core.view.doOnPreDraw
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.transition.MaterialElevationScale
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import ru.ragefalcon.sharedcode.models.data.ItemBloknot
 import ru.ragefalcon.sharedcode.models.data.ItemIdea
-import ru.ragefalcon.sharedcode.models.data.ItemPlanStap
-import ru.ragefalcon.tutatores.R
-import ru.ragefalcon.tutatores.adapter.deprecated.IdeaItemViewHolder
-import ru.ragefalcon.tutatores.adapter.deprecated.RVMainAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
-import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.BloknotRVItem
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.IdeaRVItem
-import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.PlanStapRVItem
 import ru.ragefalcon.tutatores.adapter.unirvadapter.sravItemIdType
 import ru.ragefalcon.tutatores.commonfragments.BaseFragmentVM
 import ru.ragefalcon.tutatores.commonfragments.CommonAddChangeObj
 import ru.ragefalcon.tutatores.commonfragments.MenuPopupButton
 import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
-import ru.ragefalcon.tutatores.databinding.FragmentAddIdeaPanelBinding
-import ru.ragefalcon.tutatores.ui.viewmodels.MyStateViewModel
 import ru.ragefalcon.tutatores.databinding.FragmentSpisIdeaBinding
-import ru.ragefalcon.tutatores.databinding.ItemIdeaBinding
 import ru.ragefalcon.tutatores.extensions.KurokOneShot
 import ru.ragefalcon.tutatores.extensions.getMyTransition
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
-import ru.ragefalcon.tutatores.extensions.showMyMessage
+import ru.ragefalcon.tutatores.ui.viewmodels.MyStateViewModel
 
 
-class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisIdeaBinding::inflate) { //val parFrag: Fragment
+class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisIdeaBinding::inflate) {
 
     private var rvmAdapter = UniRVAdapter()
     private var selItem: ItemIdea? by instanceState()
@@ -50,10 +37,10 @@ class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisI
     fun toSpisStapIdea(extras: FragmentNavigator.Extras){
 
         exitTransition = MaterialElevationScale(false).apply {
-            duration = 400 //resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            duration = 400
         }
         reenterTransition = MaterialElevationScale(true).apply {
-            duration = 400 //resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            duration = 400
         }
         val tmp =                         FragmentNavigatorExtras(
             binding.clBloknotItemFrcl to "cl_bloknot_item_frideastap",
@@ -63,10 +50,6 @@ class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisI
                )
         val tmp2 = tmp.sharedElements.toMutableMap()
             tmp2.putAll(extras.sharedElements)
-
-
-//        extras.sharedElements.put(binding.clBloknotItemFrcl,"cl_bloknot_item_frideastap")
-//        extras.sharedElements.put(binding.tvIdeaNameFrsp,"tv_bloknot_name_frideastap")
         ViewGroupCompat.setTransitionGroup(binding.rvIdeaList,true)
         val directions = SpisIdeaFragmentDirections.actionIdeaToStapidea()
         findNavController().navigate(directions, tmp)
@@ -78,14 +61,10 @@ class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisI
 
         sharedElementEnterTransition =  getMyTransition(end = {
             stateViewModel.sel_jornal_nav.value = MyStateViewModel.journal_nav.idea
-            Log.d("safsaf", "sharedElementEnterTransition idea")
         })
         sharedElementReturnTransition = getMyTransition(end = {
-            Log.d("safsaf", "sharedElementReturnTransition idea")
             stateViewModel.sel_jornal_nav.value = MyStateViewModel.journal_nav.bloknot
         })
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -93,17 +72,6 @@ class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisI
         postponeEnterTransition()
         with(binding) {
         rvIdeaList.doOnPreDraw { startPostponedEnterTransition() }
-//        view.doOnPreDraw { startPostponedEnterTransition() }
-
-//        enterTransition = MaterialContainerTransform().apply {
-//            startView = stateViewModel.testBLoknotItemView //requireActivity().findViewById(R.id.cl_bloknot_item)
-//            endView = cl_bloknot_item_frcl
-//            duration = 1000 // resources.getInteger(R.integer.reply_motion_duration_large).toLong()
-//            scrimColor = Color.TRANSPARENT
-////            containerColor = requireContext().themeColor(R.attr.colorSurface)
-////            startContainerColor = requireContext().themeColor(R.attr.colorSecondary)
-////            endContainerColor = requireContext().themeColor(R.attr.colorSurface)
-//        }
             stateViewModel.sel_jornal_nav.observe(viewLifecycleOwner) {
                 if (it == MyStateViewModel.journal_nav.idea) rvIdeaList.requestLayout()
             }
@@ -119,17 +87,13 @@ class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisI
                 freshFun.setFire {
                     rvmAdapter.removeInsertItem(
                         it,
-                        IdeaRVItem::class //PlanStapViewHolder
+                        IdeaRVItem::class
                     )
                 }
             }
             val menuPopupIdea = MyPopupMenuItem<ItemIdea>(this@SpisIdeaFragment, "IdeaDelChange").apply {
                 addButton(MenuPopupButton.DELETE) {
-//                    if (it.countidea==0L) {
                         viewmodel.addJournal.delIdea(it.id.toLong())
-//                    }   else    {
-//                        showMyMessage("Удалите вначале все заметки из этого блокнота")
-//                    }
                 }
                 addButton(MenuPopupButton.CHANGE) {
                     panelAddChangeIdea.showDial(dial = { callbkKey ->
@@ -159,21 +123,11 @@ class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisI
                         }, funForTransition = ::toSpisStapIdea)
                     })
                     selItem?.let {
-                        rvmAdapter.setSelectItem(it, IdeaRVItem::class) //DenPlanViewHolder
+                        rvmAdapter.setSelectItem(it, IdeaRVItem::class)
                     }
                     freshFun.fire()
-                    // Start the transition once all views have been
-                    // measured and laid out
                     (rvIdeaList as? ViewGroup)?.doOnPreDraw {
-//                        rvIdeaList.doOnPreDraw {
-//                            lifecycleScope.launch(Dispatchers.Main) {
-////                                    delay(100)
-//                                startPostponedEnterTransition()
-//                            }
-//                        }
-//                            startPostponedEnterTransition()
                     }
-//                }
                 }
                 buttAddIdea.setOnClickListener {
                     showAddChangeFragDial(JournalAddIdeaPanelFragment(null,stateViewModel.selectItemBloknot.value))

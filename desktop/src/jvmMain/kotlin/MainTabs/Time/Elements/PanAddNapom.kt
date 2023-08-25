@@ -5,12 +5,10 @@ import MyDialog.buttDatePicker
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import common.*
 import extensions.addUpdList
@@ -26,12 +24,11 @@ fun PanAddNapom(
     item: ItemNapom? = null,
     calendar: Boolean = false
 ) {
-    val change = item != null
     val dialLayInner = MyDialogLayout()
-    val dateInner = mutableStateOf(item?.let{ Date(it.data) } ?: MainDB.denPlanDate.value)
-    val timeZvonok = mutableStateOf(item?.let{ Date().timeFromHHmmss(it.time) } ?: Date())
-//    val expandedTime = mutableStateOf(false)
-    val timePiker1 = MyTimePicker(timeZvonok)//, expandedTime)
+    val dateInner = mutableStateOf(item?.let { Date(it.data) } ?: MainDB.denPlanDate.value)
+    val timeZvonok = mutableStateOf(item?.let { Date().timeFromHHmmss(it.time) } ?: Date())
+
+    val timePiker1 = MyTimePicker(timeZvonok)
 
     val text_name = mutableStateOf(TextFieldValue(item?.let { it.name } ?: ""))
     val complexOpis =
@@ -43,15 +40,19 @@ fun PanAddNapom(
             TableNameForComplexOpis.spisNapom,
             MainDB.styleParam.timeParam.denPlanTab.complexOpisForNapom,
             item?.let {
-                MainDB.complexOpisSpis.run { if (calendar)spisComplexOpisForCalendarNapom else spisComplexOpisForNapom }.getState().value?.get(it.id.toLong())?.toMutableStateList()
+                MainDB.complexOpisSpis.run { if (calendar) spisComplexOpisForCalendarNapom else spisComplexOpisForNapom }
+                    .getState().value?.get(it.id.toLong())?.toMutableStateList()
             },
         )
 
     dialPan.dial = @Composable {
-        BackgroungPanelStyle1 { //modif ->
-            Column(Modifier.padding(15.dp).fillMaxWidth(0.8F).heightIn(0.dp, this@BackgroungPanelStyle1.maxHeight * 0.8F), horizontalAlignment = Alignment.CenterHorizontally) {
+        BackgroungPanelStyle1 {
+            Column(
+                Modifier.padding(15.dp).fillMaxWidth(0.8F).heightIn(0.dp, this@BackgroungPanelStyle1.maxHeight * 0.8F),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 complexOpis.show(this, dialLayInner)
-                Row(verticalAlignment = Alignment.CenterVertically){
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     buttDatePicker(dialLayInner, dateInner)
                 }
                 Row {
@@ -61,7 +62,7 @@ fun PanAddNapom(
                     MyTextButtStyle1("Отмена") {
                         dialPan.close()
                     }
-                    MyTextButtStyle1(item?.let{ "Изменить" } ?: "Добавить", Modifier.padding(start = 5.dp)) {
+                    MyTextButtStyle1(item?.let { "Изменить" } ?: "Добавить", Modifier.padding(start = 5.dp)) {
                         if (text_name.value.text != "")
                             complexOpis.listOpis.addUpdList { opis ->
                                 item?.let {
@@ -84,13 +85,12 @@ fun PanAddNapom(
                                     )
                                 }
                             }
-                                dialPan.close()
+                        dialPan.close()
                     }
                 }
             }
         }
         dialLayInner.getLay()
     }
-
     dialPan.show()
 }

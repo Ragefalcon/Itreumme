@@ -98,6 +98,7 @@ fun PanCreateIconNode(
                                 ImageCropSelector(fileForCrop)
                             }
                         }
+
                         "spisQuest" -> RowVA {
                             if (questDB != null) MyListPlate(questDB.spisQuest.spisIconNodeTree) { itemIcon ->
                                 ComItemIconNode(
@@ -116,6 +117,7 @@ fun PanCreateIconNode(
                                 }.getComposable()
                             }
                         }
+
                         "spis" -> RowVA {
                             MyListPlate(MainDB.avatarSpis.spisIconNodeTree) { itemIcon ->
                                 ComItemIconNode(itemIcon, selectionIconFromSpis, doubleClick = { itemDC ->
@@ -151,6 +153,7 @@ fun PanCreateIconNode(
                                 }.getComposable()
                             }
                         }
+
                         else -> {}
                     }
                 }
@@ -195,6 +198,7 @@ fun PanCreateIconNode(
                                 }
                             }
                         }
+
                         "spisQuest" -> {
                             selectionIconFromSpisQuest.selected?.let { itemSelectQuest ->
                                 MyTextButtStyle1(
@@ -206,6 +210,7 @@ fun PanCreateIconNode(
                                 }
                             }
                         }
+
                         "spis" -> {
                             selectionIconFromSpis.selected?.let { itemSelectInner ->
                                 MyTextButtStyle1(
@@ -242,6 +247,7 @@ fun PanCreateIconNode(
                                 }
                             }
                         }
+
                         else -> {}
                     }
                 }

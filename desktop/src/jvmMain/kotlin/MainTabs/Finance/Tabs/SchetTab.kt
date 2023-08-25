@@ -64,6 +64,7 @@ class SchetTab(val dialLay: MyDialogLayout) {
                                                             )
                                                         }
                                                     }
+
                                                     "Доход" -> {
                                                         MainDB.finFun.getItemDoxodById(itemSchet.id.toLong())?.let {
                                                             PanAddDoxod(
@@ -72,6 +73,7 @@ class SchetTab(val dialLay: MyDialogLayout) {
                                                             )
                                                         }
                                                     }
+
                                                     "Перевод" -> {
                                                         PanAddPerevod(
                                                             dialLay,
@@ -91,6 +93,7 @@ class SchetTab(val dialLay: MyDialogLayout) {
                                                                 } ?: PanAddRasx(dialLay, itemR)
                                                             }
                                                     }
+
                                                     "Доход" -> {
                                                         MainDB.finFun.getItemDoxodById(itemSchet.id.toLong())
                                                             ?.let { itemD ->
@@ -99,8 +102,9 @@ class SchetTab(val dialLay: MyDialogLayout) {
                                                                 } ?: PanAddDoxod(dialLay, itemD)
                                                             }
                                                     }
+
                                                     "Перевод" -> {
-                                                        item.mayChange()?.let{
+                                                        item.mayChange()?.let {
                                                             MyShowMessage(dialLay, it)
                                                         } ?: PanAddPerevod(
                                                             dialLay,
@@ -120,6 +124,7 @@ class SchetTab(val dialLay: MyDialogLayout) {
                                                                 } ?: MainDB.addFinFun.delRasxod(itemR)
                                                             }
                                                     }
+
                                                     "Доход" -> {
                                                         MainDB.finFun.getItemDoxodById(itemSchet.id.toLong())
                                                             ?.let { itemD ->
@@ -128,8 +133,9 @@ class SchetTab(val dialLay: MyDialogLayout) {
                                                                 } ?: MainDB.addFinFun.delDoxod(itemD)
                                                             }
                                                     }
+
                                                     "Перевод" -> {
-                                                        item.mayChange()?.let{
+                                                        item.mayChange()?.let {
                                                             MyShowMessage(dialLay, it)
                                                         } ?: MainDB.addFinFun.delPerevod(item)
                                                     }
@@ -146,10 +152,13 @@ class SchetTab(val dialLay: MyDialogLayout) {
             RowVA(Modifier.padding(top = 5.dp).padding(start = 10.dp)) {
                 MainDB.finSpis.sumsOperForPeriod.getState().value?.let {
                     SimplePlateWithShadowStyleState(MainDB.styleParam.finParam.schetParam.panelStat).let { plate ->
-                        MyShadowBox(plate.shadow,Modifier.weight(1f)) {
+                        MyShadowBox(plate.shadow, Modifier.weight(1f)) {
                             MainDB.styleParam.finParam.schetParam.let { styleStat ->
 
-                                RowVA(Modifier.withSimplePlate(plate).paddingStyle(MainDB.styleParam.finParam.schetParam.panelStatInnerPadding)) {
+                                RowVA(
+                                    Modifier.withSimplePlate(plate)
+                                        .paddingStyle(MainDB.styleParam.finParam.schetParam.panelStatInnerPadding)
+                                ) {
                                     Text(
                                         it.rasxodsum.roundToStringProb(2),
                                         style = styleStat.textStat.getValue().copy(
@@ -177,7 +186,6 @@ class SchetTab(val dialLay: MyDialogLayout) {
                     Text(
                         MainDB.finSpis.schetSumma.getState().value ?: "",
                         style = MainDB.styleParam.finParam.schetParam.textRezSumm.getValue().copy(
-//                        fontFamily = FontFamily.SansSerif,
                             textAlign = TextAlign.End,
                         ),
                         modifier = Modifier.padding(start = 50.dp)

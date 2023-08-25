@@ -1,8 +1,8 @@
 package ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems;
 
-import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemStat
-import ru.ragefalcon.tutatores.adapter.unirvadapter.*
+import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
+import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemAvatarStatBinding
 
 class StatAvatarRVItem(
@@ -18,7 +18,7 @@ class StatAvatarRVItem(
                 tvNameAvatarStat.text = item.name
                 tvValueAvatarStat.text = item.value
 
-                vh.itemView.setOnClickListener { // } .setOnClickListener {
+                vh.itemView.setOnClickListener {
                     vh.bindItem?.let { rvset.selFunc(it) }
                     listener?.invoke(item)
                 }

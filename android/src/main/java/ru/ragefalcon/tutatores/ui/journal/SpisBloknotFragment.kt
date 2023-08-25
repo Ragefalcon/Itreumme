@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.transition.MaterialElevationScale
 import ru.ragefalcon.sharedcode.models.data.ItemBloknot
-import ru.ragefalcon.sharedcode.models.data.ItemDream
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.BloknotRVItem
@@ -19,7 +18,6 @@ import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentSpisBloknotBinding
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
 import ru.ragefalcon.tutatores.extensions.showMyMessage
-import ru.ragefalcon.tutatores.ui.avatar.dream.AvatarAddDreamFragDial
 import ru.ragefalcon.tutatores.ui.viewmodels.MyStateViewModel
 
 class SpisBloknotFragment : BaseFragmentVM<FragmentSpisBloknotBinding>(FragmentSpisBloknotBinding::inflate) {
@@ -29,42 +27,20 @@ class SpisBloknotFragment : BaseFragmentVM<FragmentSpisBloknotBinding>(FragmentS
 
     var update_item_view: View? = null
 
-    fun toSpisIdea(extras: FragmentNavigator.Extras) { //view_name: View,view_container: View, //, updView: View
-
-        // Exclude the clicked card from the exit transition (e.g. the card will disappear immediately
-        // instead of fading out with the rest to prevent an overlapping animation of fade and move).
-//        (this.exitTransition  as TransitionSet?)?.excludeTarget(itemV, true)
-//        parentFragment?.postponeEnterTransition()
-//        requireActivity().supportFragmentManager.commit {
-////                setCustomAnimations(...)
-//            setReorderingAllowed(false)
-//            tranfun?.invoke(this)
-////            addSharedElement(tv_plan_name, "tv_plan_name")
-////            addSharedElement(cl_stap_plan, "cl_stap_plan_frcl")
-//            replace(R.id.main_fragment, fragment)
-////            replace(R.id.fragment_journal_container, fragment)
-//            addToBackStack(null)
-//        }
-//        update_item_view = updView
-
+    fun toSpisIdea(extras: FragmentNavigator.Extras) {
         exitTransition = MaterialElevationScale(false).apply {
-            duration = 400 //resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            duration = 400
         }
         reenterTransition = MaterialElevationScale(true).apply {
-            duration = 400 //resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            duration = 400
         }
-
         ViewGroupCompat.setTransitionGroup(binding.rvBloknotList, true)
         val directions = SpisBloknotFragmentDirections.actionBloknotToIdea()
         findNavController().navigate(directions, extras)
-//        val host: NavHostFragment = requireActivity().supportFragmentManager
-//            .findFragmentById(R.id.fragment_journal_container) as NavHostFragment? ?: return
-//        var navController = host.navController
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         postponeEnterTransition()
         with(binding) {
             view.doOnPreDraw { startPostponedEnterTransition() }
@@ -100,9 +76,9 @@ class SpisBloknotFragment : BaseFragmentVM<FragmentSpisBloknotBinding>(FragmentS
                             menuPopupBloknot.showMenu(it,name = "${it.name}",)
                         }, funForTransition = ::toSpisIdea)
                     })
-//                startPostponedEnterTransition()
+
                     selItem?.let {
-                        rvmAdapter.setSelectItem(it, BloknotRVItem::class) //DenPlanViewHolder
+                        rvmAdapter.setSelectItem(it, BloknotRVItem::class)
                     }
                 }
                 buttAddBloknot.setOnClickListener {

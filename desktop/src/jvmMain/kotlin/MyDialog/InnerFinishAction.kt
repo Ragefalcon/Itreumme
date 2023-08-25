@@ -29,9 +29,6 @@ sealed class InnerFinishAction(private var autoClear: Boolean) {
     }
 
     fun finishAction(type: InnerFinishTriggerEnum, dialPan: MyDialogLayout? = null): Unit {
-        println("finishActionPriv")
-        println(type)
-        println("dialPan: $dialPan")
         if (type != InnerFinishTriggerEnum.Cancel) finishActionPriv(type, dialPan) else {
             StateVM.innerFinishAction.value = null
         }
@@ -46,13 +43,10 @@ class InnerFinishBirthdayAction() : InnerFinishAction(true) {
     override fun finishActionPriv(type: InnerFinishTriggerEnum, dialPan: MyDialogLayout?) {
         when (type) {
             InnerFinishTriggerEnum.AddBirthday -> {
-                println("InnerFinishTriggerEnum.AddBirthday_0")
                 dialPan?.let {
-                    println("InnerFinishTriggerEnum.AddBirthday_1")
                     val dateBirthday =
                         MainDB.avatarSpis.spisMainParam.getState().value?.find { it.name == "Birthday" }?.stringparam?.toLong()
                             ?.run { Date(this) } ?: Date()
-                    println("InnerFinishTriggerEnum.AddBirthday_2")
                     myDatePicker(dialPan, mutableStateOf(dateBirthday), {
                         if (MainDB.addAvatar.checkEmptyBirthday()) MainDB.addAvatar.addBirthday(Date().time)
                     }) {
@@ -60,11 +54,13 @@ class InnerFinishBirthdayAction() : InnerFinishAction(true) {
                     }
                 }
             }
+
             InnerFinishTriggerEnum.ScipAddBirthday -> {
                 dialPan?.let {
                     if (MainDB.addAvatar.checkEmptyBirthday()) MainDB.addAvatar.addBirthday(Date().time)
                 }
             }
+
             else -> {}
         }
     }
@@ -77,15 +73,14 @@ class InnerFinishVxodAction(val item: ItemVxod) : InnerFinishAction(false) {
         ComItemVxodPlate(item)
     }
 
-    fun deleteVxod(){
-        MainDB.addTime.delVxod(item.id.toLong()){
+    fun deleteVxod() {
+        MainDB.addTime.delVxod(item.id.toLong()) {
             MainDB.complexOpisSpis.spisComplexOpisForVxod.delAllImageForItem(it)
         }
     }
 
     override fun finishActionPriv(type: InnerFinishTriggerEnum, dialPan: MyDialogLayout?) {
         when (type) {
-//            InnerFinishTriggerEnum.AddBirthday -> TODO()
             InnerFinishTriggerEnum.DeleteVxod -> dialPan?.let {
                 PanDeleteItem(it, item = {
                     ComItemVxodPlate(item)
@@ -182,21 +177,22 @@ class InnerFinishVxodAction(val item: ItemVxod) : InnerFinishAction(false) {
             }
 
             InnerFinishTriggerEnum.VxodToDenPlan -> dialPan?.let {
-                PanAddDenPlan(it, ItemDenPlan(
-                    "-25",
-                    item.name,
-                    Date().format("HH:mm:ss"),
-                    Date().add(2, TimeUnits.HOUR).format("HH:mm:ss"),
-                    0.0,
-                    if (item.stat > 0) item.stat - 1 else item.stat,
-                    0.0,
-                    Date().time,
-                    item.opis,
-                    -1L,
-                    -1L,
-                    "",
-                    ""
-                ),
+                PanAddDenPlan(
+                    it, ItemDenPlan(
+                        "-25",
+                        item.name,
+                        Date().format("HH:mm:ss"),
+                        Date().add(2, TimeUnits.HOUR).format("HH:mm:ss"),
+                        0.0,
+                        if (item.stat > 0) item.stat - 1 else item.stat,
+                        0.0,
+                        Date().time,
+                        item.opis,
+                        -1L,
+                        -1L,
+                        "",
+                        ""
+                    ),
                     cancelListener = { StateVM.innerFinishAction.value = null },
                     listOp = MainDB.complexOpisSpis.spisComplexOpisForVxod.getState().value?.get(item.id.toLong())
                         ?.clearSourceList(TableNameForComplexOpis.spisDenPlan)

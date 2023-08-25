@@ -36,17 +36,4 @@ enum class FinSettTabType(
     TYPEDOXOD("Вре234мя", R.color.colorDoxodTheme, R.color.colorDoxodItem),
     VALUTA("Вр234емя", R.color.colorDoxodTheme, R.color.colorDoxodItem);
 
-//        companion object {
-//            fun fromString(nameRazdel: String) : FinanceType {
-//                return when (nameRazdel){
-//                    "Расход" -> RASXOD
-//                    "Доход" -> DOXOD
-//                    "Счета" -> SCHET
-//                    else -> throw IllegalStateException("неизвестный тип раздела: $nameRazdel")
-//                }
-//            }
-//        }
-//    }
-
-
 }

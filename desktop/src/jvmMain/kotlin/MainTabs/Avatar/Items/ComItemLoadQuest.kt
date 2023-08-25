@@ -14,7 +14,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import common.*
+import common.MyButtDropdownMenuStyle1
+import common.MyCardStyle1
+import common.MyTextStyle1
+import common.SingleSelectionType
 import extensions.format
 import ru.ragefalcon.sharedcode.models.data.ItemLoadQuest
 import java.util.*
@@ -33,7 +36,6 @@ class ComItemLoadQuest(
     fun getComposable() {
         MyCardStyle1(selection.isActive(item), 0, {
             selection.selected = item
-//            expandedDropMenu.value = this.buttons.isSecondaryPressed
         }, {
             doubleClick(item)
             expandedOpis.value = !expandedOpis.value
@@ -44,38 +46,12 @@ class ComItemLoadQuest(
                     Modifier.padding(start = 15.dp).padding(vertical = 5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
-//                    Image(
-//                        bitmap = useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
-//                        "statVxod",
-//                        Modifier
-//                            .height(50.dp)
-//                            .width(50.dp),
-//                        colorFilter = ColorFilter.tint(
-//                            when (item.stat.toInt()) {
-//                                0 -> Color(0xFF2FA61D)
-//                                1 -> Color(0xFF7FFAF6)
-//                                2 -> Color(0xFFFFF42B)
-//                                3 -> Color(0xFFFFA825)
-//                                4 -> Color(0xFFFF5858)
-//                                else -> Color(0xFFFFF42B)
-//                            },
-//                            BlendMode.Modulate
-//                        ),
-////                    alpha = 0.5F,
-//                        contentScale = ContentScale.FillBounds,
-//                        filterQuality = FilterQuality.High
-//                    )
-
                     Column(modifier = Modifier.padding(5.dp).padding(end = 10.dp).weight(1f)) {
                         Row {
-
                             Column(Modifier.padding(0.dp).weight(1f)) {
                                 MyTextStyle1(
                                     modifier = Modifier.padding(start = 10.dp),
                                     text = item.name,
-//                                    style = TextStyle(color = Color(0xFFFFF7D9)),
-//                                    fontSize = 15.sp
                                 )
                                 Text(
                                     modifier = Modifier.padding(start = 10.dp),
@@ -86,37 +62,13 @@ class ComItemLoadQuest(
                             }
                         }
                     }
-//                    Spacer(Modifier.weight(1f))
+
                     if (selection.isActive(item)) MyButtDropdownMenuStyle1(
                         Modifier.padding(horizontal = 15.dp).padding(vertical = 5.dp), expandedDropMenu
-                    ) { setDissFun ->
+                    ) { _ ->
                         dropMenu(item, expandedDropMenu)
                     }
-//                    if (item.opis != "") RotationButtStyle1(
-//                        expandedOpis,
-//                        modifier = Modifier
-//                            .padding(horizontal = 10.dp)
-//                            .padding(end = 20.dp)
-//                    ) {
-//                        item.sver = item.sver.not()
-//                    }
                 }
-//                if ((item.opis != "")) { //(selection.selected == item) &&&&(expandedOpis.value)
-//                    BoxExpand(
-//                        expandedOpis,
-//                        Modifier.myModWithBound1(),
-//                        Modifier.fillMaxWidth()
-//                    ) {  //, endModif = Modifier::withMyBound1
-//                        Text(
-//                            modifier = Modifier
-//                                .padding(5.dp)
-//                                .padding(start = 10.dp),
-//                            text = item.opis,
-//                            style = TextStyle(color = Color(0xFFFFF7D9)),
-//                            fontSize = 15.sp
-//                        )
-//                    }
-//                }
             }
         }
     }

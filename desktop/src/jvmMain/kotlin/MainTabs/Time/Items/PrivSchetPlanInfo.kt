@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import common.MyShadowBox
 import common.PlateOrderLayout
@@ -96,9 +95,9 @@ fun privSchetPlanInfo(
                                         )
                                     }
                                 }
-                                MyShadowBox(shadow = shadow){
+                                MyShadowBox(shadow = shadow) {
                                     BoxWithConstraints(
-                                        Modifier//.padding(top = 5.dp)
+                                        Modifier
                                             .background(
                                                 color = if (max_aim > 0) color_b_max_back
                                                 else color_b_min_back,
@@ -112,7 +111,6 @@ fun privSchetPlanInfo(
                                     ) {
                                         if (max_aim > 0 && min_aim < max_aim) Box(
                                             Modifier
-//                            .shadow(5.dp, shape = RoundedCornerShape(5.dp))
                                                 .background(
                                                     color = color_b_min_back,
                                                     shape = shapeBox
@@ -123,7 +121,6 @@ fun privSchetPlanInfo(
                                         Row {
                                             Box(
                                                 Modifier
-//                            .shadow(5.dp, shape = RoundedCornerShape(5.dp))
                                                     .background(
                                                         color = color_b_rasxod,
                                                     )
@@ -146,12 +143,10 @@ fun privSchetPlanInfo(
                                             }
                                             if (proc_aim > 0.0) Box(
                                                 Modifier
-//                            .shadow(5.dp, shape = RoundedCornerShape(5.dp))
                                                     .background(
                                                         color = color_b_doxod,
                                                     )
                                                     .width(this@BoxWithConstraints.maxWidth * proc_aim.toFloat())
-//                                .fillMaxWidth(proc_aim.toFloat())
                                                     .fillMaxHeight()
                                             )
                                         }
@@ -169,7 +164,6 @@ fun privSchetPlanInfo(
                                                 style = textStyleInBox2
                                             )
                                         }
-
                                     }
                                 }
                             } else {
@@ -184,7 +178,7 @@ fun privSchetPlanInfo(
                                 if (ostatok < 0) {
                                     ostatok = 0.0
                                 }
-                                MyShadowBox(shadow = shadow){
+                                MyShadowBox(shadow = shadow) {
                                     BoxWithConstraints(
                                         Modifier
                                             .padding(top = 5.dp)
@@ -201,7 +195,6 @@ fun privSchetPlanInfo(
                                         Row {
                                             Box(
                                                 Modifier
-//                            .shadow(5.dp, shape = RoundedCornerShape(5.dp))
                                                     .background(
                                                         color = color_b_rasxod,
                                                     )
@@ -224,12 +217,10 @@ fun privSchetPlanInfo(
                                             }
                                             if (proc_aim > 0.0) Box(
                                                 Modifier
-//                            .shadow(5.dp, shape = RoundedCornerShape(5.dp))
                                                     .background(
                                                         color = color_b_doxod,
                                                     )
                                                     .width(this@BoxWithConstraints.maxWidth * proc_aim.toFloat())
-//                                .fillMaxWidth(proc_aim.toFloat())
                                                     .fillMaxHeight()
                                             )
                                         }
@@ -253,5 +244,4 @@ fun privSchetPlanInfo(
             }
         }
     }
-
 }

@@ -22,7 +22,6 @@ class AvatarGoalDetailFragment() : BaseFragmentVM<FragmentGoalDetailBinding>(Fra
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementReturnTransition = getMyTransition(end = {
-            Log.d("safsaf", "sharedElementReturnTransition idea")
         })
         sharedElementEnterTransition =  getMyTransition(end = {
                 binding.clGoalDetailFrcl.invalidate()
@@ -32,7 +31,7 @@ class AvatarGoalDetailFragment() : BaseFragmentVM<FragmentGoalDetailBinding>(Fra
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        postponeEnterTransition()
+
         with(binding) {
 
             buttBack.setOnClickListener {
@@ -49,14 +48,12 @@ class AvatarGoalDetailFragment() : BaseFragmentVM<FragmentGoalDetailBinding>(Fra
                 with(viewmodel) {
                     avatarFun.selectGoalForDiagram(it.id.toLong())
                     avatarFun.setListenerStatikHourGoal {
-//                        if (it.count()>0) {
                             rectDiagStatikGoal.setItemsYears(it)
                             rectDiagStatikGoal.layoutParams = LinearLayout.LayoutParams(
                                 rectDiagStatikGoal.getWidthRectDiag(),
                                 LinearLayout.LayoutParams.MATCH_PARENT
                             )
                             hsvStatikDiag.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
-//                        }
                     }
                     avatarFun.setSelectedGoalListenerForStatistik(it.id.toLong())
                     avatarFun.setListenerForStatistikHourGoal{ week, month, year, all, count ->

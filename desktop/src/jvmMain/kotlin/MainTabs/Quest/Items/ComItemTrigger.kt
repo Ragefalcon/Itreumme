@@ -1,12 +1,12 @@
 package MainTabs.Quest.Items
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.mouseClickable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -24,14 +24,15 @@ import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStartObjO
 import viewmodel.QuestVM
 
 
-@OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class,
+@OptIn(
+    androidx.compose.ui.ExperimentalComposeUiApi::class,
     androidx.compose.foundation.ExperimentalFoundationApi::class
 )
 @Composable
 fun ComItemTrigger(item: ItemTrigger, modifier: Modifier = Modifier, editable: Boolean = true) {
     var activeElev by remember { mutableStateOf(false) }
     val expandedDropMenu = remember { mutableStateOf(false) }
-//    val expandedDropMenu = mutableStateOf(false)
+
     Row(
         modifier
             .background(MyColorARGB.colorEffektShkal_Nedel.toColor().copy(alpha = 0.3f), RoundedCornerShape(5.dp))
@@ -39,7 +40,7 @@ fun ComItemTrigger(item: ItemTrigger, modifier: Modifier = Modifier, editable: B
                 width = 0.5.dp,
                 brush = if (activeElev) Brush.horizontalGradient(
                     listOf(Color(0x9FFFF7D9), Color(0x9FFFF7D9))
-                ) else  Brush.horizontalGradient(
+                ) else Brush.horizontalGradient(
                     listOf(Color(0x4FFFF7D9), Color(0x4FFFF7D9))
                 ),
                 shape = RoundedCornerShape(5.dp)
@@ -79,9 +80,7 @@ fun ComItemTrigger(item: ItemTrigger, modifier: Modifier = Modifier, editable: B
             style = MyTextStyleParam.style5
         )
         if (editable) MyDropdownMenuStyle1(expandedDropMenu) { setDissFun ->
-//            println("expandedDropMenu item: ${item.id} - ${item.child_name}")
             MyDeleteDropdownMenuButton(expandedDropMenu) {
-//                println("item: ${item.id} - ${item.child_name}")
                 QuestVM.openQuestDB?.let { questDB ->
                     questDB.addQuest.delTrigger(item.id.toLong())
                 }

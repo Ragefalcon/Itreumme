@@ -344,12 +344,40 @@ data class ItemComplexOpisImageGroup(
     )
 }
 
-fun ItemComplexOpis.myCommonCopy( sort: Long? = null, id: Long? = null,  table_name: String? = null, item_id: Long? = null): ItemComplexOpis = when (this) {
+fun ItemComplexOpis.myCommonCopy(
+    sort: Long? = null,
+    id: Long? = null,
+    table_name: String? = null,
+    item_id: Long? = null
+): ItemComplexOpis = when (this) {
     is ItemComplexOpisTextCommon -> when (this) {
-        is ItemComplexOpisText -> this.copy(sort = sort ?: this.sort, id = id ?: this.id, item_id = item_id ?: this.item_id, table_name = table_name ?: this.table_name)
-        is ItemComplexOpisCheckbox -> this.copy(sort = sort ?: this.sort, id = id ?: this.id, item_id = item_id ?: this.item_id, table_name = table_name ?: this.table_name)
-        is ItemComplexOpisImageGroup -> this.copy(sort = sort ?: this.sort, id = id ?: this.id, item_id = item_id ?: this.item_id, table_name = table_name ?: this.table_name)
-        is ItemComplexOpisLink -> this.copy(sort = sort ?: this.sort, id = id ?: this.id, item_id = item_id ?: this.item_id, table_name = table_name ?: this.table_name)
+        is ItemComplexOpisText -> this.copy(
+            sort = sort ?: this.sort,
+            id = id ?: this.id,
+            item_id = item_id ?: this.item_id,
+            table_name = table_name ?: this.table_name
+        )
+
+        is ItemComplexOpisCheckbox -> this.copy(
+            sort = sort ?: this.sort,
+            id = id ?: this.id,
+            item_id = item_id ?: this.item_id,
+            table_name = table_name ?: this.table_name
+        )
+
+        is ItemComplexOpisImageGroup -> this.copy(
+            sort = sort ?: this.sort,
+            id = id ?: this.id,
+            item_id = item_id ?: this.item_id,
+            table_name = table_name ?: this.table_name
+        )
+
+        is ItemComplexOpisLink -> this.copy(
+            sort = sort ?: this.sort,
+            id = id ?: this.id,
+            item_id = item_id ?: this.item_id,
+            table_name = table_name ?: this.table_name
+        )
     }
 }
 

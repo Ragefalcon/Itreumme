@@ -7,7 +7,12 @@ import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStartObjO
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeTreeSkills
 
 class ParentOfTrigger(val typeParent: TypeParentOfTrig, val parent_id: Long)
-class StartObjOfTrigger(val typeStartObjOfTrigger: TypeStartObjOfTrigger, val start_id: Long, val start_name: String, val act_code: Long = 1L)
+class StartObjOfTrigger(
+    val typeStartObjOfTrigger: TypeStartObjOfTrigger,
+    val start_id: Long,
+    val start_name: String,
+    val act_code: Long = 1L
+)
 
 fun ItemPlanQuest.parentOfTrig() = ParentOfTrigger(TypeParentOfTrig.PLAN, this.id.toLong())
 fun ItemPlanStapQuest.parentOfTrig() = ParentOfTrigger(TypeParentOfTrig.PLANSTAP, this.id.toLong())
@@ -19,25 +24,14 @@ fun ItemPlanQuest.startObjOfTrig() = StartObjOfTrigger(TypeStartObjOfTrigger.STA
 fun ItemPlanStapQuest.startObjOfTrig() = StartObjOfTrigger(TypeStartObjOfTrigger.STARTSTAP, this.id.toLong(), this.name)
 fun ItemDialog.startObjOfTrig() = StartObjOfTrigger(TypeStartObjOfTrigger.STARTDIALOG, this.id.toLong(), this.name)
 
-fun ItemNodeTreeSkillsQuest.startObjOfTrig() = StartObjOfTrigger(TypeStartObjOfTrigger.STARTNODETREE, this.id, this.name)
+fun ItemNodeTreeSkillsQuest.startObjOfTrig() =
+    StartObjOfTrigger(TypeStartObjOfTrigger.STARTNODETREE, this.id, this.name)
+
 fun ItemTreeSkillsQuest.startObjOfTrig() = StartObjOfTrigger(TypeStartObjOfTrigger.STARTTREE, this.id, this.name)
-fun ItemLevelTreeSkillsQuest.startObjOfTrig() = StartObjOfTrigger(TypeStartObjOfTrigger.STARTLEVELTREE, this.id, this.name)
+fun ItemLevelTreeSkillsQuest.startObjOfTrig() =
+    StartObjOfTrigger(TypeStartObjOfTrigger.STARTLEVELTREE, this.id, this.name)
 
 class AddQuestHandler(private var mdb: DatabaseQuest) {
-
-//    fun addTriggerStartPlan(itemParent: ItemPlanQuest, itemStart: ItemPlanQuest) {
-//        addTriggerStartPlan(itemParent.parentTrig(),itemStart.startObjTrig())
-//    }
-//    fun addTriggerStartPlan(itemParent: ItemPlanQuest, itemStart: ItemPlanQuest) {
-//        mdb.commonTriggerQueries.insertOrReplace(
-//            TypeParentTrig.PLAN.code,
-//            itemParent.id.toLong(),
-//            TypeTrigger.STARTPLAN.id,
-//            itemStart.id.toLong(),
-//            itemStart.name,
-//            1L
-//        )
-//    }
 
     fun addTriggerStartPlan(parent: ParentOfTrigger, start: StartObjOfTrigger) {
         addTriggerStartPlan(
@@ -420,13 +414,13 @@ class AddQuestHandler(private var mdb: DatabaseQuest) {
         mustNodeForLevel: Boolean = false
     ) {
         when (typeTree) {
-            TypeTreeSkills.KIT -> {
-            }
+            TypeTreeSkills.KIT -> Unit
             TypeTreeSkills.LEVELS -> {
                 if (mustNodeForLevel) {
                     mdb.spisMustCompleteNodeForLevelQuestQueries.insertOrReplace(id_tree, idNode)
                 }
             }
+
             TypeTreeSkills.TREE -> {
                 if (parents.isNotEmpty()) {
                     mdb.spisBindingNodeTreeSkillsQuestQueries.transaction {
@@ -448,8 +442,7 @@ class AddQuestHandler(private var mdb: DatabaseQuest) {
         mustNodeForLevel: Boolean = false
     ) {
         when (typeTree) {
-            TypeTreeSkills.KIT -> {
-            }
+            TypeTreeSkills.KIT -> Unit
             TypeTreeSkills.LEVELS -> {
                 if (mustNodeForLevel != item.must_node || level != item.level) {
                     if (mustNodeForLevel) {
@@ -462,6 +455,7 @@ class AddQuestHandler(private var mdb: DatabaseQuest) {
                     }
                 }
             }
+
             TypeTreeSkills.TREE -> {
                 mdb.spisBindingNodeTreeSkillsQuestQueries.deleteParentBind(item.id)
                 if (parents.isNotEmpty()) {
@@ -518,7 +512,7 @@ class AddQuestHandler(private var mdb: DatabaseQuest) {
         parents: Array<Long>,
         mustNodeForLevel: Boolean = false
     ) {
-        mdb.spisNodeTreeSkillsQuestQueries.transaction { //WithResult<Long>
+        mdb.spisNodeTreeSkillsQuestQueries.transaction {
             mdb.spisNodeTreeSkillsQuestQueries.update(
                 id = item.id,
                 name = name,
@@ -590,7 +584,7 @@ class AddQuestHandler(private var mdb: DatabaseQuest) {
         parents: Array<Long>,
         mustNodeForLevel: Boolean = false
     ) {
-        mdb.spisNodeTreeSkillsQuestQueries.transaction { //WithResult<Long>
+        mdb.spisNodeTreeSkillsQuestQueries.transaction {
             mdb.spisNodeTreeSkillsQuestQueries.update(
                 id = item.id,
                 name = name,
@@ -650,13 +644,13 @@ class AddQuestHandler(private var mdb: DatabaseQuest) {
                     porog_value = porog_value
                 )
                 when (typeTree) {
-                    TypeTreeSkills.KIT -> {
-                    }
+                    TypeTreeSkills.KIT -> Unit
                     TypeTreeSkills.LEVELS -> {
                         if (mustNodeForLevel) {
                             mdb.spisMustCompleteNodeForLevelQuestQueries.insertOrReplace(id_tree, idNode)
                         }
                     }
+
                     TypeTreeSkills.TREE -> {
                         if (parents.isNotEmpty()) {
                             mdb.spisBindingNodeTreeSkillsQuestQueries.transaction {

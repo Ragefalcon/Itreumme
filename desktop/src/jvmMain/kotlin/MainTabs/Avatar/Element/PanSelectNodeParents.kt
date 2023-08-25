@@ -27,7 +27,7 @@ fun PanSelectNodeParents(
     val dialLayInner = MyDialogLayout()
     val selection = SingleSelectionType<ItemNodeTreeSkills>()
     dialPan.dial = @Composable {
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(Modifier.padding(15.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 MainDB.avatarSpis.spisNodeTreeSkillsForSelection.getState().value?.toList()?.sortedBy { it.first }
                     ?.let { listLevels ->

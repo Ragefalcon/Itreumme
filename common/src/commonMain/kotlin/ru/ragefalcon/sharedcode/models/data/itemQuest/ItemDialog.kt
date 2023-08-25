@@ -13,7 +13,7 @@ class ItemDialog(
     val govorun_id: Long,
     var sver: Boolean = true
 
-    ) : Id_class(id_main = id) {
+) : Id_class(id_main = id) {
 }
 
 @Parcelize

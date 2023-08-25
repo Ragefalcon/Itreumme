@@ -3,21 +3,17 @@ package MainTabs.Quest.Element
 import MainTabs.Quest.Items.ComItemNodeLevelTreeSkillsSelParents
 import MainTabs.Time.Items.ComItemPlanPlate
 import MainTabs.Time.Items.ComItemPlanStapPlate
-import MainTabs.imageFromFile
 import MyDialog.MyDialogLayout
 import MyDialog.MyInfoShow
 import MyListRow
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.loadImageBitmap
-import androidx.compose.ui.res.useResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,25 +30,12 @@ import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeIconBorde
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatNodeTree
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeTreeSkills
 import viewmodel.MainDB
-import java.io.File
 
 fun ShowOpisNodeTreeSkills(
     dialLay: MyDialogLayout,
     typeTree: TypeTreeSkills,
     item: ItemNodeTreeSkills
 ) {
-    val avatarFile = File(
-        File(System.getProperty("user.dir"), "Quests").path,
-        "${item.icon}.jpg"
-//        "${File(QuestVM.openQuestDB?.arg?.path ?: "").nameWithoutExtension}_${item.id}.jpg"
-    )
-    val avatarF =
-        if (avatarFile.exists()) imageFromFile(avatarFile) else useResource(
-            "icon_skill_color_lamp.png",
-            ::loadImageBitmap
-        )
-
-    val shape = RoundedCornerShape(35.dp) //CircleShape
 
     if (typeTree == TypeTreeSkills.TREE) {
         MainDB.avatarFun.updateInfoSpisNode(item)
@@ -62,7 +45,7 @@ fun ShowOpisNodeTreeSkills(
     MyInfoShow(dialLay) {
         Column(
             Modifier.padding(20.dp).width(dialLay.layWidth.value * 0.8f)
-                .fillMaxHeight(0.8f)//.heightIn(0.dp, 500.dp) .fillMaxSize(0.8f)//
+                .fillMaxHeight(0.8f)
         ) {
             Row(
                 Modifier.padding(horizontal = 2.dp).padding(vertical = 2.dp),
@@ -75,7 +58,6 @@ fun ShowOpisNodeTreeSkills(
                     size = 100.dp,
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
-//                ShowIconNodeFromComlete(item, 100.dp)
                 Column(Modifier.weight(1f, false), horizontalAlignment = Alignment.CenterHorizontally) {
                     RowVA {
                         Text(
@@ -115,7 +97,6 @@ fun ShowOpisNodeTreeSkills(
                     ) {
                         MyTextStyle2(
                             when (item) {
-//                                    is ItemCountNodeTreeSkills -> "Счетчик"
                                 is ItemHandNodeTreeSkills -> "После выполнения условий/заданий пользователь сам выставляет выполнение достижения (правая кнопка мышы на достижении и \"Выполнить\")."
                                 is ItemPlanNodeTreeSkills -> "Достижение будет автоматически защитано после того как пользователь выполнит привязанный к достижению проект/этап, который указан ниже."
                                 else -> ""
@@ -151,7 +132,7 @@ fun ShowOpisNodeTreeSkills(
                 MyListRow(
                     MainDB.avatarSpis.spisNodeTreeSkillsForInfo,
                     Modifier.padding(top = 8.dp).heightIn(0.dp, 150.dp)
-                ) { ind, nodeTreeSkills -> //.heightIn(0.dp, 150.dp) .height(150.dp)
+                ) { _, nodeTreeSkills ->
                     ComItemNodeLevelTreeSkillsSelParents(nodeTreeSkills).getComposable()
                 }
             }

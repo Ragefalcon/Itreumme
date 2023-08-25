@@ -1,42 +1,44 @@
 package ru.ragefalcon.sharedcode.extensions
 
 
-
 @Parcelize
 data class MyColorFloatARGB(
-    var A:Float,
-    var R:Float,
-    var G:Float,
-    var B:Float
-): Parcelable {
-    fun toMyIntCol():MyColorARGB{
+    var A: Float,
+    var R: Float,
+    var G: Float,
+    var B: Float
+) : Parcelable {
+    fun toMyIntCol(): MyColorARGB {
 
         return MyColorARGB(
-            (this.A*255).toInt(),
-            (this.R*255).toInt(),
-            (this.G*255).toInt(),
-            (this.B*255).toInt()
+            (this.A * 255).toInt(),
+            (this.R * 255).toInt(),
+            (this.G * 255).toInt(),
+            (this.B * 255).toInt()
         )
     }
-    fun plusWhite():MyColorFloatARGB{
+
+    fun plusWhite(): MyColorFloatARGB {
         return MyColorFloatARGB(
-            R = if ((R + (1.0 - R)/2.0).toFloat()<=1) (R + (1.0 - R)/2.0).toFloat() else 1.0.toFloat(),
-            G = if ((G + (1.0 - G)/2.0).toFloat()<=1) (G + (1.0 - G)/2.0).toFloat() else 1.0.toFloat(),
-            B = if ((B + (1.0 - B)/2.0).toFloat()<=1) (B + (1.0 - B)/2.0).toFloat() else 1.0.toFloat(),
+            R = if ((R + (1.0 - R) / 2.0).toFloat() <= 1) (R + (1.0 - R) / 2.0).toFloat() else 1.0.toFloat(),
+            G = if ((G + (1.0 - G) / 2.0).toFloat() <= 1) (G + (1.0 - G) / 2.0).toFloat() else 1.0.toFloat(),
+            B = if ((B + (1.0 - B) / 2.0).toFloat() <= 1) (B + (1.0 - B) / 2.0).toFloat() else 1.0.toFloat(),
             A = A
         )
     }
 
 }
+
 private fun checkHexaDecimalNumber(hexaDecimalNum: String): Boolean {
     var isHexaDecimalNum = true
 
-    for(charAtPos in hexaDecimalNum) {
-        if(!(
+    for (charAtPos in hexaDecimalNum) {
+        if (!(
                     ((charAtPos >= '0') && (charAtPos <= '9'))
                             || ((charAtPos >= 'A') && (charAtPos <= 'F'))
                             || ((charAtPos >= 'a') && (charAtPos <= 'f'))
-                    )) {
+                    )
+        ) {
             isHexaDecimalNum = false
             break
         }
@@ -46,11 +48,11 @@ private fun checkHexaDecimalNumber(hexaDecimalNum: String): Boolean {
 
 @Parcelize
 data class MyColorARGB(
-    var A:Int,//Range(from = 0, to = 255),
-    var R:Int,
-    var G:Int,
-    var B:Int
-): Parcelable {
+    var A: Int,
+    var R: Int,
+    var G: Int,
+    var B: Int
+) : Parcelable {
     companion object {
         val DOXODDARKGREEN = MyColorARGB("FF237700")
         val MYBEG = MyColorARGB("FFFFF7D9")
@@ -100,7 +102,7 @@ data class MyColorARGB(
         val colorTransparent = MyColorARGB("00000000")
     }
 
-    constructor(fff: String):this(0,0,0,0) {
+    constructor(fff: String) : this(0, 0, 0, 0) {
         if (checkHexaDecimalNumber(fff)) {
 
             fun mapHex(charM: Char): Int {
@@ -130,38 +132,36 @@ data class MyColorARGB(
                     else -> 0
                 }
             }
+
             var ff = fff
-            if (ff.length<6){
-                for (ii in 1..6-ff.length){
+            if (ff.length < 6) {
+                for (ii in 1..6 - ff.length) {
                     ff = "0$ff"
                 }
             }
             val i = ff.length - 1
 
-            this.B = mapHex(ff[i-1])*16+mapHex(ff[i])
-            this.G = mapHex(ff[i-3])*16+mapHex(ff[i-2])
-            this.R = mapHex(ff[i-5])*16+mapHex(ff[i-4])
-            if (i == 7){
-                this.A = mapHex(ff[i-7])*16+mapHex(ff[i-6])
-            }   else  {
+            this.B = mapHex(ff[i - 1]) * 16 + mapHex(ff[i])
+            this.G = mapHex(ff[i - 3]) * 16 + mapHex(ff[i - 2])
+            this.R = mapHex(ff[i - 5]) * 16 + mapHex(ff[i - 4])
+            if (i == 7) {
+                this.A = mapHex(ff[i - 7]) * 16 + mapHex(ff[i - 6])
+            } else {
                 this.A = 255
             }
-//            println("this.A : ${this.A}")
-//            println("this.R : ${this.R}")
-//            println("this.G : ${this.G}")
-//            println("this.B : ${this.B}")
         }
     }
-    fun toFloatCol():MyColorFloatARGB{
+
+    fun toFloatCol(): MyColorFloatARGB {
         return MyColorFloatARGB(
-            this.A/255.0F,
-            this.R/255.0F,
-            this.G/255.0F,
-            this.B/255.0F
+            this.A / 255.0F,
+            this.R / 255.0F,
+            this.G / 255.0F,
+            this.B / 255.0F
         )
     }
 
-    private fun hexOne(int: Int):String = when (int%16) {
+    private fun hexOne(int: Int): String = when (int % 16) {
         0 -> "0"
         1 -> "1"
         2 -> "2"
@@ -180,81 +180,83 @@ data class MyColorARGB(
         15 -> "F"
         else -> "0"
     }
-    fun toHexString(): String  =
-            hexOne(A/16) +
-            hexOne(A%16) +
-            hexOne(R/16) +
-            hexOne(R%16) +
-            hexOne(G/16) +
-            hexOne(G%16) +
-            hexOne(B/16) +
-            hexOne(B%16)
 
-    fun inColor(target: MyColorARGB, percent: Float): MyColorARGB{
+    fun toHexString(): String =
+        hexOne(A / 16) +
+                hexOne(A % 16) +
+                hexOne(R / 16) +
+                hexOne(R % 16) +
+                hexOne(G / 16) +
+                hexOne(G % 16) +
+                hexOne(B / 16) +
+                hexOne(B % 16)
+
+    fun inColor(target: MyColorARGB, percent: Float): MyColorARGB {
         return MyColorARGB(
-            this.A + ((target.A - this.A)*percent).toInt(),
-            this.R + ((target.R - this.R)*percent).toInt(),
-            this.G + ((target.G - this.G)*percent).toInt(),
-            this.B + ((target.B - this.B)*percent).toInt())
+            this.A + ((target.A - this.A) * percent).toInt(),
+            this.R + ((target.R - this.R) * percent).toInt(),
+            this.G + ((target.G - this.G) * percent).toInt(),
+            this.B + ((target.B - this.B) * percent).toInt()
+        )
     }
-    fun plusWhite(koef: Float = 2F):MyColorARGB{
+
+    fun plusWhite(koef: Float = 2F): MyColorARGB {
         return MyColorARGB(
             this.A,
-            this.R + ((255 - this.R)/koef).toInt(),
-            this.G + ((255 - this.G)/koef).toInt(),
-            this.B + ((255 - this.B)/koef).toInt())
-//        R = R + (255 - R)/2
-//        G = G + (255 - G)/2
-//        B = B + (255 - B)/2
-//        return this
+            this.R + ((255 - this.R) / koef).toInt(),
+            this.G + ((255 - this.G) / koef).toInt(),
+            this.B + ((255 - this.B) / koef).toInt()
+        )
     }
-    fun plusDark(koef: Float = 0.95F):MyColorARGB{
+
+    fun plusDark(koef: Float = 0.95F): MyColorARGB {
         return MyColorARGB(
             this.A,
-            (R*koef).toInt(),
-            (G*koef).toInt(),
-            (B*koef).toInt())
-//        R = (R*0.95).toInt()
-//        G = (G*0.95).toInt()
-//        B = (B*0.95).toInt()
-//        return this
+            (R * koef).toInt(),
+            (G * koef).toInt(),
+            (B * koef).toInt()
+        )
     }
 
 }
 
 
-fun myColorRaduga(pos: Int): MyColorARGB
-{
+fun myColorRaduga(pos: Int): MyColorARGB {
     var R: Int
     var G: Int
     var B: Int
-    R=0; G=0; B=0;
-    var col=pos%1024;
-    var sw=col/256;
+    R = 0; G = 0; B = 0;
+    var col = pos % 1024;
+    var sw = col / 256;
     when (sw) {
-         0 -> {
-             R=255
-             G=col%256
-             B=0 }
-         1 -> {
-             R=255-col%256
-             G=0
-             B=255 }
-         2 -> {
-             R=0
-             G=255
-             B=col%256 }
-         3 -> {
-             R=128
-             G=255-col%256
-             B=128 }
+        0 -> {
+            R = 255
+            G = col % 256
+            B = 0
+        }
+
+        1 -> {
+            R = 255 - col % 256
+            G = 0
+            B = 255
+        }
+
+        2 -> {
+            R = 0
+            G = 255
+            B = col % 256
+        }
+
+        3 -> {
+            R = 128
+            G = 255 - col % 256
+            B = 128
+        }
     }
 
-    return MyColorARGB(255,R,G,B)
+    return MyColorARGB(255, R, G, B)
 }
+
 fun myColorRadugaFloat(pos: Int): MyColorFloatARGB {
     return myColorRaduga(pos).toFloatCol()
 }
-
-
-//---------------------------------------------------------------------------

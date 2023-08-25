@@ -1,6 +1,5 @@
 package MainTabs.Time.Elements
 
-import MainTabs.MainTimeTabs
 import MyDialog.MyDialogLayout
 import MyDialog.MyOneVopros
 import MyDialog.buttDatePickerWithButton
@@ -8,8 +7,6 @@ import MyShowMessage
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Checkbox
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -17,18 +14,10 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.isCtrlPressed
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import common.*
 import extensions.*
 import ru.ragefalcon.sharedcode.extensions.TimeUnits
@@ -153,8 +142,8 @@ fun PanAddDenPlan(
                 data = date,
                 time1 = timeSelectSlider.getTimeStart().format("HH:mm"),
                 time2 = timeSelectSlider.getTimeEnd().format("HH:mm"),
-//            time1 = timeStart.value.format("HH:mm"),
-//            time2 = timeEnd.value.format("HH:mm"),
+
+
                 opis = opis,
                 privplan = selParents.selectionPlanParent.selected?.id?.toLong() ?: -1L,
                 stap_prpl = selParents.selectionPlanStapParent.selected?.id?.toLong()
@@ -210,7 +199,7 @@ fun PanAddDenPlan(
     fun buttSaveShablon() {
         MyTextButtStyle3(content = {
             Image(
-                painterResource("ic_baseline_save_24.xml"),//useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                painterResource("ic_baseline_save_24.xml"),
                 "saveShab",
                 Modifier
                     .height(40.dp)
@@ -344,15 +333,14 @@ fun PanAddDenPlan(
             MainDB.timeSpis.spisAllPlanStap.getState().value?.find { itemPlanStap ->
                 itemPlanStap.id.toLong() == nextAction.stap_prpl
             }
-
         expandedPovtor.value = false
     }
 
     @Composable
     fun buttLoadShablon() {
-        MyTextButtStyle3(Modifier.padding(start = 5.dp), content = {//if (change.not())
+        MyTextButtStyle3(Modifier.padding(start = 5.dp), content = {
             Image(
-                painterResource("ic_baseline_cloud_upload_24.xml"),//useResource("ic_stat_00.png", ::loadImageBitmap), //BitmapPainter(
+                painterResource("ic_baseline_cloud_upload_24.xml"),
                 "loadShab",
                 Modifier
                     .height(40.dp)
@@ -384,7 +372,7 @@ fun PanAddDenPlan(
                     repeatSeekBar.show(
                         Modifier.padding(bottom = 5.dp).padding(top = 0.dp),
                         MainDB.styleParam.timeParam.seekBarStyle
-                    )//weight(1f))
+                    )
                     MeasureUnconstrainedViewHeight({
                         MyTextFieldInt(
                             value = povtorN,
@@ -403,11 +391,13 @@ fun PanAddDenPlan(
                                         style = MyTextFieldStyleState(MainDB.styleParam.commonParam.commonTextField),
                                     )
                                 }
+
                                 RepeatTypeEnum.NWeeks -> {
                                     for (check in checkPovtNedel) {
                                         MyCheckbox(check.first, check.second)
                                     }
                                 }
+
                                 RepeatTypeEnum.NMonths -> {
                                     MyTextFieldInt(
                                         value = povtorN,
@@ -434,7 +424,6 @@ fun PanAddDenPlan(
                     }
                 }
             }
-
         }
     }
 
@@ -443,11 +432,10 @@ fun PanAddDenPlan(
     }
 
     dialPan.dial = @Composable {
-        BackgroungPanelStyle1 { //modif ->
+        BackgroungPanelStyle1 {
             Column(
-                Modifier.padding(15.dp).fillMaxWidth(0.8F).fillMaxHeight(0.95f)
-//                    .widthIn(0.dp, dialPan.layWidth.value * 0.8f).animateContentSize().heightIn(0.dp, dialPan.layWidth.value * 0.9f)
-                , horizontalAlignment = Alignment.CenterHorizontally
+                Modifier.padding(15.dp).fillMaxWidth(0.8F).fillMaxHeight(0.95f),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (enabledSleep.value.not()) selParents.getComposable(
                     Modifier.fillMaxWidth(0.8F).padding(bottom = 5.dp)
@@ -467,7 +455,7 @@ fun PanAddDenPlan(
                         }
                     }
                     timeSelectSlider.getComposable(Modifier.fillMaxWidth(0.9F).padding(5.dp))
-//                    timeSelectSlider2.getComposable(Modifier.fillMaxWidth(0.9F).padding(5.dp))
+
                     povtorSettings()
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Spacer(Modifier.weight(1f))
@@ -488,7 +476,7 @@ fun PanAddDenPlan(
                             buttLoadShablon()
                         }
                         Spacer(Modifier.weight(1f))
-//                        val change = item != null && item.id != "-1"
+
                         MyTextButtStyle1(
                             if (change) "Изменить" else "Добавить", Modifier.padding(start = 5.dp)
                                 .alpha(if (text_name.value.text != "") 1f else 0.3f)
@@ -536,7 +524,6 @@ fun PanAddDenPlan(
         }
         dialLayInner.getLay()
     }
-
     dialPan.show()
 }
 

@@ -4,18 +4,13 @@ import MyDialog.MyDialogLayout
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import common.*
 import extensions.addUpdList
-import extensions.getStartListComplexOpis
-import ru.ragefalcon.sharedcode.models.data.ItemComplexOpis
 import ru.ragefalcon.sharedcode.models.data.ItemIdea
 import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TableNameForComplexOpis
 import viewmodel.MainDB
@@ -109,7 +104,6 @@ fun PanAddIdea(
         }
         dialLayInner.getLay()
     }
-
     dialPan.show()
 }
 

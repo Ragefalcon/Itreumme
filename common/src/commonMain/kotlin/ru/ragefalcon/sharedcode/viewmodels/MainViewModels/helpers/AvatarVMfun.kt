@@ -63,83 +63,13 @@ class AvatarVMfun(
         funDateUpd = ff
     }
 
-    /**
-     * Список дат(по месяцам) с затраченными на цель в этом месяце часами для диаграммы работы над целью.
-     * */
-    private val statikHourGoalForDiagram = UniQueryAdapter<SelectStatikHourGoal>().apply {
-        setListner(mDB.statikHourGoalQueries.selectStatikHourGoal(4408L), {})
-    }
 
-    /**
-     * Список дат(по месяцам) с затраченными на мечту в этом месяце часами для диаграммы работы над мечтой.
-     * */
-    private val statikHourDreamForDiagram = UniQueryAdapter<SelectStatikHourGoal>().apply {
-        setListner(mDB.statikHourGoalQueries.selectStatikHourGoal(4408L), {})
-    }
-
-    /**
-     * Запрос для получения статистики по потраченным на цель часам (в неделю, в месяц, в год, всего, количество привязанных проектов)
-     * */
-    private val selectHourForStatistikGoal = UniQueryAdapter<SelectHourGoalDream>().apply {
-        updateQuery(
-            mDB.spisGoalQueries.selectHourGoalDream(
-                -1,
-                (DateTimeTz.nowLocal().minusTime().unOffset()).withOffset().localUnix()
-            )
-        )
-    }
-
-
-    private fun setMapHourToUpdF(
-        list: List<SelectHourGoalDream>,
-        updF: (String, String, String, String, String) -> Unit
-    ) {
-        list.firstOrNull()?.let {
-            updF(
-                it.sum_week.roundToStringProb(1),
-                it.sum_month.roundToStringProb(1),
-                it.sum_year.roundToStringProb(1),
-                it.sum_all.roundToStringProb(1),
-                it.privscount.toString()
-            )
-        }
-    }
-
-    /**
-     * Слушатель для обновления статистики по потраченным на цель часам (в неделю, в месяц, в год, всего, количество привязанных проектов)
-     * */
-    fun setListenerForStatistikHourGoal(updF: (String, String, String, String, String) -> Unit) {
-        selectHourForStatistikGoal.updateFunc {
-            setMapHourToUpdF(it, updF)
-        }
-    }
-
-    /**
-     * Запрос для получения статистики по потраченным на мечту часам (в неделю, в месяц, в год, всего, количество привязанных проектов)
-     * */
-    private val selectHourForStatistikDream = UniQueryAdapter<SelectHourGoalDream>().apply {
-        updateQuery(
-            mDB.spisGoalQueries.selectHourGoalDream(
-                -1,
-                (DateTimeTz.nowLocal().minusTime().unOffset()).withOffset().localUnix()
-            )
-        )
-    }
-
-    /**
-     * Слушатель для обновления статистики по потраченным на мечту часам (в неделю, в месяц, в год, всего, количество привязанных проектов)
-     * */
-    fun setListenerHourForStatistikDream(updF: (String, String, String, String, String) -> Unit) {
-        selectHourForStatistikDream.updateFunc {
-            setMapHourToUpdF(it, updF)
-        }
-    }
 
     /**
      * Устанавливает цель для слушателя обновления статистики по потраченным на цель часам (в неделю, в месяц, в год, всего, количество привязанных проектов)
      * */
     fun setSelectedGoalListenerForStatistik(idGoal: Long) {
-        selectHourForStatistikGoal.updateQuery(
+        spisVM.selectHourForStatistikGoal.updateQuery(
             mDB.spisGoalQueries.selectHourGoalDream(
                 idGoal,
                 (DateTimeTz.nowLocal().minusTime().unOffset()).withOffset().localUnix()
@@ -151,7 +81,7 @@ class AvatarVMfun(
      * Устанавливает цель для слушателя обновления статистики по потраченным на мечту часам (в неделю, в месяц, в год, всего, количество привязанных проектов)
      * */
     fun setSelectedDreamListenerForStatistik(idGoal: Long) {
-        selectHourForStatistikDream.updateQuery(
+        spisVM.selectHourForStatistikDream.updateQuery(
             mDB.spisGoalQueries.selectHourGoalDream(
                 idGoal,
                 (DateTimeTz.nowLocal().minusTime().unOffset()).withOffset().localUnix()
@@ -188,102 +118,14 @@ class AvatarVMfun(
      * Устанавливает цель для списка дат(по месяцам) с затраченными на цель в этом месяце часами для диаграммы работы над целью.
      * */
     fun selectGoalForDiagram(idGoal: Long) {
-        statikHourGoalForDiagram.updateQuery(mDB.statikHourGoalQueries.selectStatikHourGoal(idGoal))
+        spisVM.statikHourGoalForDiagram.updateQuery(mDB.statikHourGoalQueries.selectStatikHourGoal(idGoal))
     }
 
     /**
      * Устанавливает цель для списка дат(по месяцам) с затраченными на мечту в этом месяце часами для диаграммы работы над мечтой.
      * */
     fun selectDreamForDiagram(idGoal: Long) {
-        statikHourDreamForDiagram.updateQuery(mDB.statikHourGoalQueries.selectStatikHourGoal(idGoal))
-    }
-
-    /**
-     * Устанавливает слушатель для списка дат(по месяцам) с затраченными на цель в этом месяце часами для диаграммы работы над целью,
-     * который предварительно конвертирует список в список годовых айтемов.
-     * */
-    fun setListenerStatikHourGoal(updF: (List<ItemYearGraf>) -> Unit) {
-        statikHourGoalForDiagram.updateFunc { statik ->
-            setMapStatikToItemYearGraf(statik, updF)
-        }
-    }
-
-    /**
-     * Устанавливает слушатель для списка дат(по месяцам) с затраченными на мечту в этом месяце часами для диаграммы работы над мечтой,
-     * который предварительно конвертирует список в список годовых айтемов.
-     * */
-    fun setListenerStatikHourDream(updF: (List<ItemYearGraf>) -> Unit) {
-        statikHourDreamForDiagram.updateFunc { statik ->
-            setMapStatikToItemYearGraf(statik, updF)
-        }
-    }
-
-    private fun setMapStatikToItemYearGraf(statik: List<SelectStatikHourGoal>, updF: (List<ItemYearGraf>) -> Unit) {
-        if (statik.isNotEmpty()) {
-            val dateStart: Int = DateTimeTz.fromUnixLocal(statik.firstOrNull()?.data1 ?: 0L).year.year
-            val dateEnd = DateTimeTz.fromUnixLocal(statik.lastOrNull()?.data1 ?: 0L).year.year
-            val max = statik.maxOf { it.hour ?: 0.0 }
-            val listRez: MutableList<ItemYearGraf> = mutableListOf()
-            var aa = 10.0
-            for (year in dateStart..dateEnd) {
-                listRez.add(
-                    ItemYearGraf(
-                        year,
-                        statik.filter {
-                            DateTimeTz.fromUnixLocal(it.data1).year.year == year
-                        }.map {
-                            aa = statik.filter {
-                                DateTimeTz.fromUnixLocal(it.data1).year.year == year
-                            }.sumOf { it.hour ?: 0.0 }
-                            ItemRectDiag(
-                                year.toString(),
-                                DateTimeTz.fromUnixLocal(it.data1).month1.toString(),
-                                it.hour ?: 0.0,
-                                aa,
-                                (it.hour ?: 0.0) / max
-                            )
-                        }.toMutableList().apply {
-                            for (i in 1..12) {
-                                if (this.find { it.month.toInt() == i } == null) {
-                                    this.add(
-                                        ItemRectDiag(
-                                            year.toString(),
-                                            i.toString(),
-                                            0.0,
-                                            aa,
-                                            0.0
-                                        )
-                                    )
-                                }
-                            }
-                        }.sortedByDescending { it.month.toInt() }
-                    )
-                )
-            }
-            updF(listRez)
-        } else {
-            val year = DateTimeTz.nowLocal().year.year.toString()
-            updF(
-                mutableListOf(
-                    ItemYearGraf(
-                        year.toInt(), listOf(
-                            ItemRectDiag(year, "1", 0.0, 0.0, 0.0),
-                            ItemRectDiag(year, "2", 0.0, 0.0, 0.0),
-                            ItemRectDiag(year, "3", 0.0, 0.0, 0.0),
-                            ItemRectDiag(year, "4", 0.0, 0.0, 0.0),
-                            ItemRectDiag(year, "5", 0.0, 0.0, 0.0),
-                            ItemRectDiag(year, "6", 0.0, 0.0, 0.0),
-                            ItemRectDiag(year, "7", 0.0, 0.0, 0.0),
-                            ItemRectDiag(year, "8", 0.0, 0.0, 0.0),
-                            ItemRectDiag(year, "9", 0.0, 0.0, 0.0),
-                            ItemRectDiag(year, "10", 0.0, 0.0, 0.0),
-                            ItemRectDiag(year, "11", 0.0, 0.0, 0.0),
-                            ItemRectDiag(year, "12", 0.0, 0.0, 0.0)
-                        )
-                    )
-                )
-            )
-        }
+        spisVM.statikHourDreamForDiagram.updateQuery(mDB.statikHourGoalQueries.selectStatikHourGoal(idGoal))
     }
 
 

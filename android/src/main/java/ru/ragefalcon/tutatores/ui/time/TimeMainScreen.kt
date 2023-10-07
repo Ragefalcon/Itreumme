@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.transition.TransitionInflater
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.MaterialElevationScale
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.tutatores.R
@@ -14,6 +15,7 @@ import ru.ragefalcon.tutatores.databinding.FragmentTimeBinding
 import ru.ragefalcon.tutatores.extensions.collapse
 import ru.ragefalcon.tutatores.extensions.setMargins
 import ru.ragefalcon.tutatores.extensions.showMyFragDial
+import ru.ragefalcon.tutatores.ui.avatar.AvatarTabType
 
 class TimeMainScreen : BaseFragmentVM<FragmentTimeBinding>(FragmentTimeBinding::inflate) {
 
@@ -35,7 +37,6 @@ class TimeMainScreen : BaseFragmentVM<FragmentTimeBinding>(FragmentTimeBinding::
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Activity) myActivity = context
-        timePageAdapter = TimePageAdapter(childFragmentManager)
     }
 
     override fun onResume() {
@@ -51,6 +52,7 @@ class TimeMainScreen : BaseFragmentVM<FragmentTimeBinding>(FragmentTimeBinding::
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        timePageAdapter = TimePageAdapter(childFragmentManager,viewLifecycleOwner.lifecycle)
         with(binding) {
             stateViewModel.statusBarSize.observe(viewLifecycleOwner) {
                 setMargins(
@@ -63,6 +65,9 @@ class TimeMainScreen : BaseFragmentVM<FragmentTimeBinding>(FragmentTimeBinding::
             }
 
             vpTime.adapter = timePageAdapter
+            TabLayoutMediator(tabTime, vpTime) { tab, position ->
+                tab.text = TimeTypePanel.values()[position].nameRazdel
+            }.attach()
 
             with(viewmodel) {
                 timeSpis.spisEffekt.observe(viewLifecycleOwner) {
@@ -85,9 +90,9 @@ class TimeMainScreen : BaseFragmentVM<FragmentTimeBinding>(FragmentTimeBinding::
                 showMyFragDial(EffektSpisFragDial())
             }
 
-            with(tabTime) {
-                setupWithViewPager(vpTime)
-            }
+//            with(tabTime) {
+//                setupWithViewPager(vpTime)
+//            }
         }
     }
 

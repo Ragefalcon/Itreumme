@@ -2,10 +2,13 @@ package ru.ragefalcon.tutatores.ui.finance
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.ragefalcon.sharedcode.extensions.roundToStringProb
 import ru.ragefalcon.sharedcode.models.data.ItemRasxod
+import ru.ragefalcon.sharedcode.myGoogleLib.KtorGoogleOAuth
+import ru.ragefalcon.tutatores.ItreummeApplication
 import ru.ragefalcon.tutatores.R
 import ru.ragefalcon.tutatores.adapter.TypeRasxodAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
@@ -19,15 +22,29 @@ import ru.ragefalcon.tutatores.extensions.pxF
 import ru.ragefalcon.tutatores.extensions.setOnItemSelectedListener
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
 import ru.ragefalcon.tutatores.extensions.showMyMessage
+import java.lang.ref.WeakReference
+import javax.inject.Inject
 
 class RasxodFragment() : BaseFragmentVM<FragmentFinanceBinding>(FragmentFinanceBinding::inflate) {
 
     private var rvmAdapter = UniRVAdapter()
 
+    @Inject
+    lateinit var ktorGOA: KtorGoogleOAuth
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ItreummeApplication.appComponent.inject(this)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
-            val menuPopupRasxod = MyPopupMenuItem<ItemRasxod>(this@RasxodFragment, "RasxodDelChange").apply {
+            ktorGOA.gFiles.observe(viewLifecycleOwner){
+                Log.d("MyTag", "it = ${it}")
+            }
+            Log.d("MyTag", "ktorGOA = $ktorGOA")
+            val menuPopupRasxod = MyPopupMenuItem<ItemRasxod>(WeakReference(this@RasxodFragment), "RasxodDelChange").apply {
                 addButton(MenuPopupButton.DELETE) {
                     viewmodel.addFin.delRasxod(it)
                 }

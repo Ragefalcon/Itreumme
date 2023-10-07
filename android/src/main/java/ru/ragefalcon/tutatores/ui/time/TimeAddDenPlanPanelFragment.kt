@@ -7,9 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import ru.ragefalcon.sharedcode.extensions.unOffset
+import ru.ragefalcon.sharedcode.models.data.ItemComplexOpisText
 import ru.ragefalcon.sharedcode.models.data.ItemDenPlan
 import ru.ragefalcon.sharedcode.models.data.ItemPlan
 import ru.ragefalcon.sharedcode.models.data.ItemPlanStap
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TableNameForComplexOpis
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeOpisBlock
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlanStap
 import ru.ragefalcon.tutatores.commonfragments.*
 import ru.ragefalcon.tutatores.databinding.FragmentTimeAddDenPlanPanelBinding
 import ru.ragefalcon.tutatores.extensions.*
@@ -56,7 +62,20 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
                 data = date,
                 time1 = timeStartPlan.timeStrHHmm,
                 time2 = timeEndPlan.timeStrHHmm,
-                opis = editOpisDenPlanText.text.toString(),
+                opis = listOf(
+                    ItemComplexOpisText(
+                        -1L,
+                        TableNameForComplexOpis.spisDenPlan.nameTable,
+                        -1L,
+                        TypeOpisBlock.simpleText,
+                        1L,
+                        text = editOpisDenPlanText.text.toString(),
+                        color = 1,
+                        fontSize = 3,
+                        cursiv = false,
+                        bold = 4
+                    )
+                ),
                 privplan = privPlan?.id?.toLong() ?: -1,
                 stap_prpl = privPlanStap?.id?.toLong() ?: -1,
             )
@@ -86,6 +105,7 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
                             listener(cal.time)
                             cal.add(Calendar.DATE, n)
                         }
+
                         rbNedelPovtor.id -> {
                             val dn: Int = cal.get(Calendar.DAY_OF_WEEK).let {
                                 if (it - 1 == 0) 7 else it - 1
@@ -105,6 +125,7 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
                             }
                             cal.add(Calendar.DATE, 7)
                         }
+
                         rbMonthPovtor.id -> {
                             listener(cal.time)
                             cal.add(Calendar.MONTH, n)
@@ -137,9 +158,23 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
                     data = dateDenPlan.dateLong,
                     time1 = timeStartPlan.timeStrHHmm,
                     time2 = timeEndPlan.timeStrHHmm,
-                    opis = editOpisDenPlanText.text.toString(),
+                    opis = listOf(
+                        ItemComplexOpisText(
+                            -1L,
+                            TableNameForComplexOpis.spisDenPlan.nameTable,
+                            it.id.toLong(),
+                            TypeOpisBlock.simpleText,
+                            1L,
+                            text = editOpisDenPlanText.text.toString(),
+                            color = 1,
+                            fontSize = 3,
+                            cursiv = false,
+                            bold = 4
+                        )
+                    ),
                     privplan = privPlan?.id?.toLong() ?: -1,
-                    stap_prpl = privPlanStap?.id?.toLong() ?: -1
+                    stap_prpl = privPlanStap?.id?.toLong() ?: -1,
+                    exp = it.getExp(it.gotov, timeStartPlan.timeStrHHmm, timeEndPlan.timeStrHHmm)
                 )
             }
         }
@@ -240,7 +275,21 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
             if (firstStart) {
                 item?.let {
                     if ((it.privplan != -1L) && (it.nameprpl != "")) {
-                        privPlan = ItemPlan(it.privplan.toString(), it.nameprpl, 0, 0.0, 0L, 0L, "", 0, 0.0, 1)
+                        privPlan = ItemPlan(
+                            it.privplan.toString(),
+                            it.nameprpl,
+                            0,
+                            0.0,
+                            0L,
+                            0L,
+                            "",
+                            TypeStatPlan.VISIB,
+                            0.0,
+                            1L,
+                            0L,
+                            false,
+                            0L
+                        )
                         if ((it.stap_prpl != -1L) && (it.namestap != "")) {
                             privPlanStap = ItemPlanStap(
                                 1,
@@ -252,9 +301,12 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
                                 0L,
                                 "",
                                 false,
-                                0,
+                                TypeStatPlanStap.VISIB,
                                 0.0,
-                                1
+                                1L,
+                                0L,
+                                "",
+                                0L
                             )
                         } else {
                             privPlanStap = null
@@ -315,9 +367,12 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
                         0L,
                         0L,
                         "",
-                        0,
+                        TypeStatPlan.VISIB,
                         0.0,
-                        1
+                        1L,
+                        0L,
+                        false,
+                        0L
                     )
                     if ((itemShab.stap_prpl != -1L) && (itemShab.namestap != "")) {
                         privPlanStap = ItemPlanStap(
@@ -330,9 +385,12 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
                             0L,
                             "",
                             false,
-                            0,
+                            TypeStatPlanStap.VISIB,
                             0.0,
-                            1
+                            1,
+                            0L,
+                            "",
+                            0L
                         )
                     } else {
                         privPlanStap = null
@@ -376,57 +434,73 @@ class TimeAddDenPlanPanelFragment(item: ItemDenPlan? = null) :
             }
             FragmentOneVoprosStr.setRezListener(
                 this@TimeAddDenPlanPanelFragment,
-                callbackKeySaveShab)
-                {
-                    with(binding) {
-                        var povt = ""
-                        val count = etCountPovtor.text.toString().toInt()
-                        if ((count > 0) && (cbPovtorDenPlan.isChecked)) {
-                            povt = "$count;${etNPovtor.text};"
-                            var rbnum = 0
-                            val ch: Array<Boolean> = arrayOf(
-                                cbPn.isChecked,
-                                cbVt.isChecked,
-                                cbSr.isChecked,
-                                cbCht.isChecked,
-                                cbPt.isChecked,
-                                cbSb.isChecked,
-                                cbVs.isChecked
-                            )
-                            for (i in 0..6) {
-                                povt = "$povt${if (ch[i]) "true" else "false"};"
-                            }
-                            when (rgSelectPovtorType.checkedRadioButtonId) {
-                                rbDenPovtor.id -> {
-                                    rbnum = 0
-                                }
-                                rbNedelPovtor.id -> {
-                                    rbnum = 1
-                                }
-                                rbMonthPovtor.id -> {
-                                    rbnum = 2
-                                }
-                            }
-                            povt = "$povt$rbnum"
-                        } else {
-                            povt = "0"
-                        }
-
-
-
-                        viewmodel.addTime.addShablonDenPlan(
-                            name = it,
-                            namepl = editNameDenPlanText.text.toString(),
-                            opis = editOpisDenPlanText.text.toString(),
-                            vajn = vybStatDenPlan.selStat.toLong(),
-                            time1 = timeStartPlan.timeStrHHmm,
-                            time2 = timeEndPlan.timeStrHHmm,
-                            privplan = privPlan?.id?.toLong() ?: -1,
-                            stap_prpl = privPlanStap?.id?.toLong() ?: -1,
-                            povtor = povt
+                callbackKeySaveShab
+            )
+            {
+                with(binding) {
+                    var povt = ""
+                    val count = etCountPovtor.text.toString().toInt()
+                    if ((count > 0) && (cbPovtorDenPlan.isChecked)) {
+                        povt = "$count;${etNPovtor.text};"
+                        var rbnum = 0
+                        val ch: Array<Boolean> = arrayOf(
+                            cbPn.isChecked,
+                            cbVt.isChecked,
+                            cbSr.isChecked,
+                            cbCht.isChecked,
+                            cbPt.isChecked,
+                            cbSb.isChecked,
+                            cbVs.isChecked
                         )
+                        for (i in 0..6) {
+                            povt = "$povt${if (ch[i]) "true" else "false"};"
+                        }
+                        when (rgSelectPovtorType.checkedRadioButtonId) {
+                            rbDenPovtor.id -> {
+                                rbnum = 0
+                            }
+
+                            rbNedelPovtor.id -> {
+                                rbnum = 1
+                            }
+
+                            rbMonthPovtor.id -> {
+                                rbnum = 2
+                            }
+                        }
+                        povt = "$povt$rbnum"
+                    } else {
+                        povt = "0"
                     }
+
+
+
+                    viewmodel.addTime.addShablonDenPlan(
+                        name = it,
+                        namepl = editNameDenPlanText.text.toString(),
+                        opis = listOf(
+                            ItemComplexOpisText(
+                                -1L,
+                                TableNameForComplexOpis.spisShabDenPlan.nameTable,
+                                -1L,
+                                TypeOpisBlock.simpleText,
+                                1L,
+                                text = editOpisDenPlanText.text.toString(),
+                                color = 1,
+                                fontSize = 3,
+                                cursiv = false,
+                                bold = 4
+                            )
+                        ),
+                        vajn = vybStatDenPlan.selStat.toLong(),
+                        time1 = timeStartPlan.timeStrHHmm,
+                        time2 = timeEndPlan.timeStrHHmm,
+                        privplan = privPlan?.id?.toLong() ?: -1,
+                        stap_prpl = privPlanStap?.id?.toLong() ?: -1,
+                        povtor = povt
+                    )
                 }
+            }
 
             buttSaveShablon.setOnClickListener {
                 if (editNameDenPlanText.text.toString() != "") {

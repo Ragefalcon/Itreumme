@@ -54,19 +54,22 @@ android {
             )
         }
     }
-
 }
 
 dependencies {
     val sqldelight_version = "1.5.1"
     val kotlin_version = "1.6.10"
+    val dagger_version = "2.48"
 
-    val nav_version = "2.3.5"
+    val nav_version = "2.4.0"
 
     implementation(project(":common"))
     implementation("androidx.activity:activity-compose:1.3.1")
 
+    kapt("com.google.dagger:dagger-compiler:$dagger_version")
+    implementation("com.google.dagger:dagger:$dagger_version")
 
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")
 
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
@@ -93,6 +96,7 @@ dependencies {
     implementation("com.squareup.sqldelight:android-driver:$sqldelight_version")
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
     implementation("androidx.viewpager:viewpager:1.0.0")
     testImplementation("junit:junit:4.12")
 

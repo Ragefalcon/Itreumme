@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.databinding.FragmentTutDialogBinding
 import ru.ragefalcon.tutatores.story.VoiceOver
+import java.lang.ref.WeakReference
 
 class FragmentTutDialog(body: Int? = null) :
     MyFragmentForDialogVM<FragmentTutDialogBinding>(FragmentTutDialogBinding::inflate) {
@@ -21,7 +22,7 @@ class FragmentTutDialog(body: Int? = null) :
                 adapter = rvmAdapter
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             }
-            BodyTutDialog(this@FragmentTutDialog).apply {
+            BodyTutDialog(WeakReference(this@FragmentTutDialog)).apply {
                 VoiceOver.getFunBody(body ?: -1).invoke(this)
             }.observe {
                 rvmAdapter.updateData(it)

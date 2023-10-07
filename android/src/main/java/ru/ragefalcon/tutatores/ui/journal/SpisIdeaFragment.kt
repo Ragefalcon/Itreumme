@@ -25,11 +25,11 @@ import ru.ragefalcon.tutatores.extensions.KurokOneShot
 import ru.ragefalcon.tutatores.extensions.getMyTransition
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
 import ru.ragefalcon.tutatores.ui.viewmodels.MyStateViewModel
+import java.lang.ref.WeakReference
 
 
 class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisIdeaBinding::inflate) {
 
-    private var rvmAdapter = UniRVAdapter()
     private var selItem: ItemIdea? by instanceState()
 
     var freshFun = KurokOneShot()
@@ -69,6 +69,9 @@ class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisI
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val rvmAdapter = UniRVAdapter()
+
         postponeEnterTransition()
         with(binding) {
         rvIdeaList.doOnPreDraw { startPostponedEnterTransition() }
@@ -83,7 +86,7 @@ class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisI
                 adapter = rvmAdapter
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             }
-            val panelAddChangeIdea = CommonAddChangeObj<ItemIdea>(this@SpisIdeaFragment, "callAddIdea") {
+            val panelAddChangeIdea = CommonAddChangeObj<ItemIdea>(WeakReference(this@SpisIdeaFragment), "callAddIdea") {
                 freshFun.setFire {
                     rvmAdapter.removeInsertItem(
                         it,
@@ -91,9 +94,14 @@ class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisI
                     )
                 }
             }
-            val menuPopupIdea = MyPopupMenuItem<ItemIdea>(this@SpisIdeaFragment, "IdeaDelChange").apply {
+            val menuPopupIdea = MyPopupMenuItem<ItemIdea>(WeakReference(this@SpisIdeaFragment), "IdeaDelChange").apply {
                 addButton(MenuPopupButton.DELETE) {
-                        viewmodel.addJournal.delIdea(it.id.toLong())
+                        viewmodel.addJournal.delIdea(it.id.toLong()){
+                            /*
+                            * TODO здесь необходимо реализовать функцию удаления изображений из памяти устройства
+                            * пример в Desctop версии: MainDB.complexOpisSpis.spisComplexOpisForBloknot.delAllImageForItem(it)
+                            * */
+                        }
                 }
                 addButton(MenuPopupButton.CHANGE) {
                     panelAddChangeIdea.showDial(dial = { callbkKey ->
@@ -120,7 +128,7 @@ class SpisIdeaFragment() : BaseFragmentVM<FragmentSpisIdeaBinding>(FragmentSpisI
                             stateViewModel.selectItemIdea.value = item
                         }, longTapListener = {
                             menuPopupIdea.showMenu(it,name = "${it.name}",)
-                        }, funForTransition = ::toSpisStapIdea)
+                        }, funForTransition = ::toSpisStapIdea, recyclerView = rvIdeaList)
                     })
                     selItem?.let {
                         rvmAdapter.setSelectItem(it, IdeaRVItem::class)

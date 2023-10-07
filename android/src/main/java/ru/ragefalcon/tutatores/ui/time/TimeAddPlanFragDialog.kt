@@ -3,7 +3,11 @@ package ru.ragefalcon.tutatores.ui.time
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnPreDraw
+import ru.ragefalcon.sharedcode.models.data.ItemComplexOpisText
 import ru.ragefalcon.sharedcode.models.data.ItemPlan
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TableNameForComplexOpis
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeOpisBlock
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan
 import ru.ragefalcon.tutatores.commonfragments.FragAddChangeDialHelper
 import ru.ragefalcon.tutatores.databinding.FragmentTimeAddPlanPanelBinding
 import ru.ragefalcon.tutatores.extensions.collapse
@@ -19,8 +23,22 @@ class TimeAddPlanFragDialog(item: ItemPlan? = null) : FragAddChangeDialHelper<It
                 gotov = 0.0,
                 data1 = if (cbSrokPlan.isChecked) dateStartPlan.dateLong else 0,
                 data2 = if (cbSrokPlan.isChecked) dateEndPlan.dateLong else 1,
-                opis = editOpisPlanText.text.toString(),
-                stat = 0
+                opis = listOf(
+                    ItemComplexOpisText(
+                        -1L,
+                        TableNameForComplexOpis.spisPlan.nameTable,
+                        -1L,
+                        TypeOpisBlock.simpleText,
+                        1L,
+                        text = editOpisPlanText.text.toString(),
+                        color = 1,
+                        fontSize = 3,
+                        cursiv = false,
+                        bold = 4
+                    )
+                ),
+                stat = TypeStatPlan.VISIB,
+                false
             )
         }
     }
@@ -34,7 +52,21 @@ class TimeAddPlanFragDialog(item: ItemPlan? = null) : FragAddChangeDialHelper<It
                     name = editNamePlanText.text.toString(),
                     data1 = if (cbSrokPlan.isChecked) dateStartPlan.dateLong else 0,
                     data2 = if (cbSrokPlan.isChecked) dateEndPlan.dateLong else 1,
-                    opis = editOpisPlanText.text.toString()
+                    opis = listOf(
+                        ItemComplexOpisText(
+                            -1L,
+                            TableNameForComplexOpis.spisPlan.nameTable,
+                            it.id.toLong(),
+                            TypeOpisBlock.simpleText,
+                            1L,
+                            text = editOpisPlanText.text.toString(),
+                            color = 1,
+                            fontSize = 3,
+                            cursiv = false,
+                            bold = 4
+                        )
+                    ),
+                    direction = false
                 )
             }
         }

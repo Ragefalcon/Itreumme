@@ -1,11 +1,13 @@
 package ru.ragefalcon.tutatores.ui.avatar.dream
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.tutatores.commonfragments.BaseFragmentVM
 import ru.ragefalcon.tutatores.databinding.FragmentDreamDetailBinding
@@ -15,7 +17,7 @@ import ru.ragefalcon.tutatores.extensions.showMyFragDial
 import ru.ragefalcon.tutatores.ui.avatar.PrivsGoalDial
 
 class AvatarDreamDetailFragment() : BaseFragmentVM<FragmentDreamDetailBinding>(FragmentDreamDetailBinding::inflate) {
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedElementReturnTransition = getMyTransition(end = {})
@@ -42,7 +44,8 @@ class AvatarDreamDetailFragment() : BaseFragmentVM<FragmentDreamDetailBinding>(F
                 if (it.opis!="") tvOpisDream.text = it.opis  else collapse(tvOpisDream,duration = 0)
                 with(viewmodel) {
                     avatarFun.selectDreamForDiagram(it.id.toLong())
-                    avatarFun.setListenerStatikHourDream {
+                    avatarSpis.diagramStatikHourDream.observe(viewLifecycleOwner){
+//                    avatarFun.setListenerStatikHourDream {
                         rectDiagStatikDream.setItemsYears(it)
                         rectDiagStatikDream.layoutParams = LinearLayout.LayoutParams(
                             rectDiagStatikDream.getWidthRectDiag(),
@@ -51,12 +54,14 @@ class AvatarDreamDetailFragment() : BaseFragmentVM<FragmentDreamDetailBinding>(F
                         hsvStatikDiag.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
                     }
                     avatarFun.setSelectedDreamListenerForStatistik(it.id.toLong())
-                    avatarFun.setListenerHourForStatistikDream{ week, month, year, all, count ->
-                        tvValueDreamStat4.text = week
-                        tvValueDreamStat3.text = month
-                        tvValueDreamStat2.text = year
-                        tvDreamHourFrcl.text = all
-                        tvPrivsDreamCount.text = count
+                    avatarSpis.dreamStat.observe(viewLifecycleOwner){ dreamStat ->
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                            tvValueDreamStat4.text = dreamStat.week
+                            tvValueDreamStat3.text = dreamStat.month
+                            tvValueDreamStat2.text = dreamStat.year
+                            tvDreamHourFrcl.text = dreamStat.all
+                            tvPrivsDreamCount.text = dreamStat.count
+                        }
                     }
                 }
             }

@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import ru.ragefalcon.sharedcode.models.data.ItemComplexOpisText
 import ru.ragefalcon.sharedcode.models.data.ItemNapom
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TableNameForComplexOpis
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeOpisBlock
 import ru.ragefalcon.tutatores.commonfragments.FragAddChangeDialHelper
 import ru.ragefalcon.tutatores.databinding.FragmentTimeAddNapomBinding
 import ru.ragefalcon.tutatores.ui.viewmodels.AndroidFinanceViewModel
@@ -19,7 +22,20 @@ class TimeAddNapomFragDialog(item: ItemNapom? = null, val callback: ((ItemNapom?
                 idstap = -1,
                 name = editNameNapomText.text.toString(),
                 data = dateNapom.dateLong,
-                opis = editOpisNapomText.text.toString(),
+                opis = listOf(
+                    ItemComplexOpisText(
+                        -1L,
+                        TableNameForComplexOpis.spisNapom.nameTable,
+                        -1L,
+                        TypeOpisBlock.simpleText,
+                        1L,
+                        text = editOpisNapomText.text.toString(),
+                        color = 1,
+                        fontSize = 3,
+                        cursiv = false,
+                        bold = 4
+                    )
+                ),
                 time = timeNapom.timeStrHHmm,
                 gotov = false
             )
@@ -34,7 +50,20 @@ class TimeAddNapomFragDialog(item: ItemNapom? = null, val callback: ((ItemNapom?
                     id = it.id.toLong(),
                     name = editNameNapomText.text.toString(),
                     data = dateNapom.dateLong,
-                    opis = editOpisNapomText.text.toString(),
+                    opis = listOf(
+                        ItemComplexOpisText(
+                            -1L,
+                            TableNameForComplexOpis.spisNapom.nameTable,
+                            it.id.toLong(),
+                            TypeOpisBlock.simpleText,
+                            1L,
+                            text = editOpisNapomText.text.toString(),
+                            color = 1,
+                            fontSize = 3,
+                            cursiv = false,
+                            bold = 4
+                        )
+                    ),
                     time = timeNapom.timeStrHHmm
                 )
                 callback?.invoke(item)

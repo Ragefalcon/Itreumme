@@ -3,7 +3,6 @@ package ru.ragefalcon.tutatores.ui.viewmodels
 import android.app.Application
 import android.util.SparseArray
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -11,9 +10,9 @@ import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.Scope
 import ru.ragefalcon.sharedcode.models.data.*
 import ru.ragefalcon.sharedcode.myGoogleLib.ItemKtorGoogleParams
-import ru.ragefalcon.sharedcode.myGoogleLib.KtorGoogleOAuth
-import ru.ragefalcon.sharedcode.source.disk.DbArgs
 import ru.ragefalcon.tutatores.adapter.FinanceType
+import ru.ragefalcon.tutatores.private_settings.private_clientID
+import ru.ragefalcon.tutatores.private_settings.private_clientSecret
 
 class MyStateViewModel(application: Application, private val savedStateHandle: SavedStateHandle) :
     AndroidViewModel(application) {
@@ -23,23 +22,22 @@ class MyStateViewModel(application: Application, private val savedStateHandle: S
     var statusBarSize = savedStateHandle.getLiveData<Int>("statusBarSize", 0)
     var navigationBarSize = savedStateHandle.getLiveData<Int>("navigationBarSize", 0)
 
-    val clientID = "your_client_id_from_google_console_project"
-    val clientSecret = "your_clientSecret_from_google_console_project"
+    val clientID = private_clientID
+    val clientSecret = private_clientSecret
 
     val RC_SIGN_IN = 9001
     var gso: GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
-        .requestScopes(Scope(Scopes.DRIVE_APPFOLDER))
+        .requestScopes(Scope(Scopes.DRIVE_APPFOLDER))//,Scope(Scopes.DRIVE_FILE))
         .requestServerAuthCode(clientID)
         .build()
 
     val params = savedStateHandle.getLiveData<ItemKtorGoogleParams>("params", ItemKtorGoogleParams())
     val authCode = savedStateHandle.getLiveData<String>("authCode", "")
-    val ktorGOA = KtorGoogleOAuth(DbArgs(application), params.value ?: ItemKtorGoogleParams()) { params.value = it }
 
     var currentFinType: FinanceType = FinanceType.RASXOD
     var changeItemCommonFinOper: ItemCommonFinOper? = savedStateHandle.get<ItemCommonFinOper?>("changeItemRasxod")
-    val selectItemPlan: LiveData<ItemPlan?> = savedStateHandle.getLiveData<ItemPlan?>("selectItemPlan", null)
+    val selectItemPlan = savedStateHandle.getLiveData<ItemPlan?>("selectItemPlan", null)
     val selectItemBloknot = savedStateHandle.getLiveData<ItemBloknot?>("selectItemBloknot", null)
     val selectItemGoal = savedStateHandle.getLiveData<ItemGoal?>("selectItemGoal", null)
     val selectItemDream = savedStateHandle.getLiveData<ItemDream?>("selectItemDream", null)

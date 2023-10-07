@@ -71,8 +71,7 @@ class ShablonDenPlanRVItem(
             }
             sverItemOpis(item.sver, false)
             (binding as ItemDenShablonBinding).ivExpandOpis.setOnClickListener {
-                item.sver = item.sver.not()
-                sverItemOpis(item.sver, true)
+                sverItemOpis(item.sver.not(), true)
                 if (vh.itemView.isSelected) {
                     vh.bindItem?.let { rvset.selFunc(it) }
                 }

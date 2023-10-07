@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.doOnPreDraw
 import ru.ragefalcon.sharedcode.models.data.ItemBloknot
+import ru.ragefalcon.sharedcode.models.data.ItemComplexOpisText
 import ru.ragefalcon.sharedcode.models.data.ItemPlan
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.*
 import ru.ragefalcon.tutatores.commonfragments.FragAddChangeDialHelper
 import ru.ragefalcon.tutatores.databinding.FragmentAddBloknotPanelBinding
 import ru.ragefalcon.tutatores.databinding.FragmentTimeAddPlanPanelBinding
@@ -21,7 +23,20 @@ class JournalAddBloknotPanelFragment(item: ItemBloknot? = null) :
         with(binding) {
             viewmodel.addJournal.addBloknot(
                 name = editNameBloknotText.text.toString(),
-                opis = editOpisBloknotText.text.toString()
+                opis = listOf(
+                    ItemComplexOpisText(
+                        -1L,
+                        TableNameForComplexOpis.spisBloknot.nameTable,
+                        -1L,
+                        TypeOpisBlock.simpleText,
+                        1L,
+                        text = editOpisBloknotText.text.toString(),
+                        color = 1,
+                        fontSize = 3,
+                        cursiv = false,
+                        bold = 4
+                    )
+                )
             )
         }
     }
@@ -32,7 +47,20 @@ class JournalAddBloknotPanelFragment(item: ItemBloknot? = null) :
                 viewmodel.addJournal.updBloknot(
                     id = it.id.toLong(),
                     name = editNameBloknotText.text.toString(),
-                    opis = editOpisBloknotText.text.toString()
+                    opis = listOf(
+                        ItemComplexOpisText(
+                            -1L,
+                            TableNameForComplexOpis.spisBloknot.nameTable,
+                            it.id.toLong(),
+                            TypeOpisBlock.simpleText,
+                            1L,
+                            text = editOpisBloknotText.text.toString(),
+                            color = 1,
+                            fontSize = 3,
+                            cursiv = false,
+                            bold = 4
+                        )
+                    )
                 )
             }
         }

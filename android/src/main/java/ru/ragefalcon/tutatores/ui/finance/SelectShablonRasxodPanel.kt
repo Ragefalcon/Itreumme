@@ -19,6 +19,7 @@ import ru.ragefalcon.tutatores.extensions.getMyTransition
 import ru.ragefalcon.tutatores.extensions.getSFM
 import ru.ragefalcon.tutatores.extensions.setSFMResultListener
 import ru.ragefalcon.tutatores.extensions.showMyFragDial
+import java.lang.ref.WeakReference
 
 class SelectShablonRasxodPanel(
     private val fragment: Fragment,
@@ -71,7 +72,7 @@ class SelectShablonRasxodPanelFragment(
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             }
             with(viewmodel) {
-                val menuPopup = MyPopupMenuItem<ItemShabRasxod>(this@SelectShablonRasxodPanelFragment, "ShabRasxDelChange").apply {
+                val menuPopup = MyPopupMenuItem<ItemShabRasxod>(WeakReference(this@SelectShablonRasxodPanelFragment), "ShabRasxDelChange").apply {
                     addButton(MenuPopupButton.DELETE) {
                             viewmodel.addFin.delShabRasxod(it.id.toLong())
                     }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.ragefalcon.sharedcode.extensions.MyColorARGB
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemPlanStap
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlanStap
 import ru.ragefalcon.tutatores.R
 import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
 import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
@@ -61,12 +62,12 @@ class PlanStapRVItem(
 
             if (vh.itemView.isSelected) {
                 getProgBar?.invoke(progbarGotov) {
-                    item.gotov = it
+//                    item.gotov = it
                 }
                 funSelItem?.invoke(item, progbarGotov.progress)
             }
 
-            if (item.stat != 10L) {
+            if (item.stat != TypeStatPlanStap.COMPLETE) {
                 cardViewItem.setCardBackgroundColor(
                     ContextCompat.getColor(
                         vh.itemView.context,
@@ -108,8 +109,7 @@ class PlanStapRVItem(
                 }
             }
             ivExpandOpis.setOnClickListener {
-                item.sver = item.sver.not()
-                sverItemOpis(item.sver, true)
+                sverItemOpis(item.sver.not(), true)
                 if (vh.itemView.isSelected) {
                     vh.bindItem?.let { rvset.selFunc(it) }
                 }

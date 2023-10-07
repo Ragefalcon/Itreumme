@@ -8,8 +8,12 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import ru.ragefalcon.sharedcode.models.data.ItemComplexOpisText
 import ru.ragefalcon.sharedcode.models.data.ItemPlan
 import ru.ragefalcon.sharedcode.models.data.ItemPlanStap
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TableNameForComplexOpis
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeOpisBlock
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlanStap
 import ru.ragefalcon.tutatores.commonfragments.FragAddChangeDialHelper
 import ru.ragefalcon.tutatores.commonfragments.MyFragDial
 import ru.ragefalcon.tutatores.databinding.FragmentTimeAddPlanStapPanelBinding
@@ -50,10 +54,24 @@ class TimeAddPlanStapPanelFragment(
                 gotov = 0.0,
                 data1 = if (cbSrokPlanStap.isChecked) dateStartPlanStap.dateLong else 0,
                 data2 = if (cbSrokPlanStap.isChecked) dateEndPlanStap.dateLong else 1,
-                opis = editOpisPlanStapText.text.toString(),
-                stat = 0,
+                opis = listOf(
+                    ItemComplexOpisText(
+                        -1L,
+                        TableNameForComplexOpis.spisPlanStap.nameTable,
+                        -1L,
+                        TypeOpisBlock.simpleText,
+                        1L,
+                        text = editOpisPlanStapText.text.toString(),
+                        color = 1,
+                        fontSize = 3,
+                        cursiv = false,
+                        bold = 4
+                    )
+                ),
+                stat = TypeStatPlanStap.VISIB,
                 svernut = "false",
-                idplan = parentPlan?.id?.toLong() ?: -1
+                idplan = parentPlan?.id?.toLong() ?: -1L,
+                0L
             )
 
         }
@@ -68,8 +86,22 @@ class TimeAddPlanStapPanelFragment(
                     name = editNamePlanStapText.text.toString(),
                     data1 = if (cbSrokPlanStap.isChecked) dateStartPlanStap.dateLong else 0,
                     data2 = if (cbSrokPlanStap.isChecked) dateEndPlanStap.dateLong else 1,
-                    opis = editOpisPlanStapText.text.toString(),
-                    idplan = parentPlan?.id?.toLong() ?: -1
+                    opis = listOf(
+                        ItemComplexOpisText(
+                            -1L,
+                            TableNameForComplexOpis.spisPlanStap.nameTable,
+                            it.id.toLong(),
+                            TypeOpisBlock.simpleText,
+                            1L,
+                            text = editOpisPlanStapText.text.toString(),
+                            color = 1,
+                            fontSize = 3,
+                            cursiv = false,
+                            bold = 4
+                        )
+                    ),
+                    idplan = parentPlan?.id?.toLong() ?: -1L,
+                    marker = 0L
                 )
             }
 

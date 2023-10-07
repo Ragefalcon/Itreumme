@@ -8,6 +8,7 @@ import ru.ragefalcon.sharedcode.models.data.ItemGoal
 import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
 import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
 import ru.ragefalcon.tutatores.databinding.ItemGoalBinding
+import java.lang.ref.WeakReference
 
 class GoalRVItem(
     data: ItemGoal,

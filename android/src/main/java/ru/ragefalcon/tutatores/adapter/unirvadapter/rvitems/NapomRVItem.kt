@@ -53,8 +53,7 @@ class NapomRVItem(
             textData.text = Date(dataIn.data).format("dd MMM yyyy")
             sverItemOpis(dataIn.sver, false)
             ivExpandOpis.setOnClickListener {
-                dataIn.sver = dataIn.sver.not()
-                sverItemOpis(dataIn.sver, true)
+                sverItemOpis(dataIn.sver.not(), true)
                 if (vh.itemView.isSelected) {
                     vh.bindItem?.let { rvset.selFunc(it) }
                 }

@@ -73,7 +73,7 @@ class SelectedIdeaPanelFragment(parBloknot: ItemBloknot? = null, selItem: ItemId
                 var firstLoad = true
                 journalSpis.spisIdeaForSelect.observe(viewLifecycleOwner) {
                     rvmAdapter.updateData(formUniRVItemList(it) { item ->
-                        IdeaRVItem(item)
+                        IdeaRVItem(item,rvPlanStapList)
                     })
                     if (firstLoad) {
                         selItem?.let {

@@ -84,13 +84,12 @@ class DenPlanRVItem(
             }
             sverItemOpis(item.sver, false)
             ivStatDp.setOnClickListener {
-                item.sver = item.sver.not()
-                sverItemOpis(item.sver, true)
+                sverItemOpis(item.sver.not(), true)
                 if (vh.itemView.isSelected) {
                     vh.bindItem?.let { rvset.selFunc(it) }
                 }
             }
-            vh.itemView.setOnClickListener { // } .setOnClickListener {
+            vh.itemView.setOnClickListener {
                 vh.bindItem?.let { rvset.selFunc(it) }
             }
             vh.itemView.setOnLongClickListener {

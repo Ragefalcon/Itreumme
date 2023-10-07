@@ -4,11 +4,12 @@ import androidx.fragment.app.Fragment
 import ru.ragefalcon.tutatores.commonfragments.BodyTutDialog
 import ru.ragefalcon.tutatores.commonfragments.FragmentTutDialog
 import ru.ragefalcon.tutatores.extensions.*
+import java.lang.ref.WeakReference
 
-class VoiceOver(val fragment: Fragment) {
+class VoiceOver(val fragment: WeakReference<Fragment>) {
 
     fun showDialog(body: SpisVODialog) {
-        fragment.showMyFragDial(FragmentTutDialog(body.ordinal), cancelable = false)
+        fragment.get()?.showMyFragDial(FragmentTutDialog(body.ordinal), cancelable = false)
     }
 
     companion object {
@@ -40,59 +41,64 @@ class VoiceOver(val fragment: Fragment) {
                     date = it
                 }
                 addButton("Далее") {
-                    frag.getVM().addAvatar.addBirthday(date)
-                    frag.dismissDial {
-                        frag.getSFM().setFragmentResult("FinalStartDialog", androidx.core.os.bundleOf())
+                    frag.get()?.getVM()?.addAvatar?.addBirthday(date)
+                    frag.get()?.dismissDial {
+                        frag.get()?.getSFM()?.setFragmentResult("FinalStartDialog", androidx.core.os.bundleOf())
                     }
                 }
             }),
             VO_BIRTHDAY_UPDATE({
-                addText(
-                    "Решил, что готов указать реальную дату или понял, что ошибся? Можешь ввести новую дату.\n(Укажи дату своего рождения):"
-                )
-                addDateEdit(frag.getVM().avatarSpis.spisMainParam.getLiveData().value?.let { it.find { it.name == "Birthday" }?.stringparam }
-                    ?: java.util.Date().time.toString()) {
-                    date = it
-                }
-                addButton("Далее") {
-                    frag.getVM().addAvatar.addBirthday(date)
-                    frag.dismissDial {
-                        frag.getSFM().setFragmentResult("FinalStartDialog", androidx.core.os.bundleOf())
+                frag.get()?.let { frag ->
+                    addText(
+                        "Решил, что готов указать реальную дату или понял, что ошибся? Можешь ввести новую дату.\n(Укажи дату своего рождения):"
+                    )
+                    addDateEdit(
+                        frag.getVM().avatarSpis.spisMainParam.getLiveData().value?.let { it.find { it.name == "Birthday" }?.stringparam }
+                            ?: java.util.Date().time.toString()) {
+                        date = it
+                    }
+                    addButton("Далее") {
+                        frag.getVM().addAvatar.addBirthday(date)
+                        frag.dismissDial {
+                            frag.getSFM().setFragmentResult("FinalStartDialog", androidx.core.os.bundleOf())
+                        }
                     }
                 }
             }),
             VO_SELECT_RAZDEL({
-                addText("Куда дальше?")
-                addButton("Аватар") {
-                    frag.dismissDial {
-                        frag.getSFM().setFragmentResult(
-                            "actionStartToAvatar",
-                            androidx.core.os.bundleOf()
-                        )
+                frag.get()?.let { frag ->
+                    addText("Куда дальше?")
+                    addButton("Аватар") {
+                        frag.dismissDial {
+                            frag.getSFM().setFragmentResult(
+                                "actionStartToAvatar",
+                                androidx.core.os.bundleOf()
+                            )
+                        }
                     }
-                }
-                addButton("Журнал") {
-                    frag.dismissDial {
-                        frag.getSFM().setFragmentResult(
-                            "actionStartToJournal",
-                            androidx.core.os.bundleOf()
-                        )
+                    addButton("Журнал") {
+                        frag.dismissDial {
+                            frag.getSFM().setFragmentResult(
+                                "actionStartToJournal",
+                                androidx.core.os.bundleOf()
+                            )
+                        }
                     }
-                }
-                addButton("Время") {
-                    frag.dismissDial {
-                        frag.getSFM().setFragmentResult(
-                            "actionStartToTime",
-                            androidx.core.os.bundleOf()
-                        )
+                    addButton("Время") {
+                        frag.dismissDial {
+                            frag.getSFM().setFragmentResult(
+                                "actionStartToTime",
+                                androidx.core.os.bundleOf()
+                            )
+                        }
                     }
-                }
-                addButton("Финансы") {
-                    frag.dismissDial {
-                        frag.getSFM().setFragmentResult(
-                            "actionStartToFinance",
-                            androidx.core.os.bundleOf()
-                        )
+                    addButton("Финансы") {
+                        frag.dismissDial {
+                            frag.getSFM().setFragmentResult(
+                                "actionStartToFinance",
+                                androidx.core.os.bundleOf()
+                            )
+                        }
                     }
                 }
             });

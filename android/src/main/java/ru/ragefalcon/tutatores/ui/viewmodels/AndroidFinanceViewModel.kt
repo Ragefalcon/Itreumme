@@ -73,6 +73,13 @@ class AndroidFinanceViewModel(application: Application) : AndroidViewModel(appli
     val addJournal = ObserFM.addJournal
     val journalFun = ObserFM.journalFun
 
+    /*******************************************************/
+
+    val complexOpisSpis = ObserFM.complexOpisSpis
+    val addComplexOpis = ObserFM.addComplexOpis
+
+    /*******************************************************/
+
     /**********************************************************/
     /**********************************************************/
     /****-------------------  Время  ----------------------****/

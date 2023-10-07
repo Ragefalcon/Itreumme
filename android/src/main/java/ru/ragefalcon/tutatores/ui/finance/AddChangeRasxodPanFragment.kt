@@ -10,6 +10,7 @@ import ru.ragefalcon.tutatores.commonfragments.MyFragDial
 import ru.ragefalcon.tutatores.commonfragments.OneVoprosStrDial
 import ru.ragefalcon.tutatores.databinding.FragmentAddChangeFinBinding
 import ru.ragefalcon.tutatores.extensions.*
+import java.lang.ref.WeakReference
 
 class AddChangeRasxodPanFragment(item: ItemRasxod? = null) :
     FragAddChangeDialHelper<ItemRasxod, FragmentAddChangeFinBinding>(
@@ -126,7 +127,8 @@ class AddChangeRasxodPanFragment(item: ItemRasxod? = null) :
                 change = false
             }
 
-            val addFinShablon = OneVoprosStrDial(this@AddChangeRasxodPanFragment, "voprosNameFinShablon", listener = {
+            val addFinShablon = OneVoprosStrDial(
+                WeakReference(this@AddChangeRasxodPanFragment), "voprosNameFinShablon", listener = {
                 val sd = spinner.selectedItem as Pair<String, String>
                 val ssch = srSchetAdd.selectedItem as Pair<String, String>
                 viewmodel.addFin.addShabRasxod(

@@ -16,7 +16,6 @@ class AvatarAddDreamFragDial(item: ItemDream? = null) :
     override fun addNote() {
         with(binding) {
             viewmodel.addAvatar.addDream(
-                lvl = vybStatDream.selStat.toLong(),
                 name = editNameDreamText.text.toString(),
                 data1 = if (cbSrokDream.isChecked) dateEndDream.dateLong else 1,
                 opis = editOpisDreamText.text.toString(),
@@ -31,7 +30,6 @@ class AvatarAddDreamFragDial(item: ItemDream? = null) :
             item?.let {
                 viewmodel.addAvatar.updDream(
                     id = it.id.toLong(),
-                    lvl = vybStatDream.selStat.toLong(),
                     name = editNameDreamText.text.toString(),
                     data1 = if (cbSrokDream.isChecked) dateEndDream.dateLong else 0L,
                     opis = editOpisDreamText.text.toString(),

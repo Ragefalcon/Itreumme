@@ -1,6 +1,9 @@
 package ru.ragefalcon.tutatores.ui.settings
 
+import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
@@ -12,15 +15,25 @@ import android.util.Log
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.SignInButton
-import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.ragefalcon.sharedcode.myGoogleLib.ItemGDriveFile
+import ru.ragefalcon.sharedcode.myGoogleLib.KtorGoogleOAuth
+import ru.ragefalcon.sharedcode.source.disk.CommonName
 import ru.ragefalcon.tutatores.BuildConfig.APPLICATION_ID
+import ru.ragefalcon.tutatores.ItreummeApplication
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.GDriveFileRVItem
@@ -30,27 +43,113 @@ import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.commonfragments.OneVoprosStrDial
 import ru.ragefalcon.tutatores.databinding.FragmentSincSettBinding
 import ru.ragefalcon.tutatores.extensions.showMyMessage
+import ru.ragefalcon.tutatores.services.UploadFileBD
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.lang.ref.WeakReference
 import java.util.*
+import javax.inject.Inject
 
+/**
+ *
+ *   Вот по этим сслыкам можно найти почти все необходимое по части авторизации в Google Api:
+ *
+ *   https://developers.google.com/identity/sign-in/android/sign-in
+ *   https://developers.google.com/identity/sign-in/android/offline-access
+ *
+ * */
 
 class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentSincSettBinding::inflate) {
 
+    @Inject
+    lateinit var ktorGOA: KtorGoogleOAuth
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ItreummeApplication.appComponent.inject(this)
+    }
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d("MyTag", "!!!!!________________________--------------________SettingsSincFragment onAttach")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("MyTag", "!!!!!________________________--------------________SettingsSincFragment onDetach")
+    }
     private var rvmAdapter = UniRVAdapter()
 
-    /**
-     *
-     *   Вот по этим сслыкам можно найти почти все необходимое по части авторизации в Google Api:
-     *
-     *   https://developers.google.com/identity/sign-in/android/sign-in
-     *   https://developers.google.com/identity/sign-in/android/offline-access
-     *
-     * */
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == AppCompatActivity.RESULT_OK) {
+            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            if (task.isSuccessful) {
+                val signInAccount = task.result
+                this.view?.let {
+                    Snackbar
+                        .make(it, "Вход в Google drive успешно выполнен", Snackbar.LENGTH_LONG)
+                        .show()
+                }
+                Log.d("MyTag", "authCode === ${signInAccount?.serverAuthCode}")
+                stateViewModel.authCode.value = signInAccount?.serverAuthCode
+            } else {
+                task.addOnCompleteListener { task ->
+                    try {
+                        val signInAccount = task.getResult(ApiException::class.java)
+                        this.view?.let {
+                            Snackbar
+                                .make(it, "Вход в Google drive успешно выполнен", Snackbar.LENGTH_LONG)
+                                .show()
+                        }
+                        Log.d("MyTag", "authCode2 === ${signInAccount?.serverAuthCode}")
+                        stateViewModel.authCode.value = signInAccount?.serverAuthCode
+                    } catch (apiException: ApiException) {
+                        Log.wtf("MyTag", "Unexpected error parsing sign-in result")
+                    }
+                }
+            }
+        } else {
+            Log.d(
+                "MyTag",
+                "${result.resultCode} == ${AppCompatActivity.RESULT_OK}",
+            )
+        }
+    }
 
+    // setup permission callback
+    val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                // success
+                Log.d("MyTag", "registerForActivityResult success")
+            } else {
+                Log.d("MyTag", "registerForActivityResult failure")
+                // failure
+            }
+        }
+
+    private fun checkVisibleOnlineButt(value: Boolean) {
+        with(binding){
+            if (value) {
+                signInButton.visibility = INVISIBLE
+                buttExit.visibility = VISIBLE
+                buttGetFiles.visibility = VISIBLE
+                buttUploadMyBase.visibility = VISIBLE
+                buttNetworkMyBase.visibility = VISIBLE
+            } else {
+                signInButton.visibility = VISIBLE
+//                buttExit.visibility = INVISIBLE
+                buttGetFiles.visibility = INVISIBLE
+                buttUploadMyBase.visibility = INVISIBLE
+                buttNetworkMyBase.visibility = INVISIBLE
+            }
+        }
+    }
+
+    private val gFiles:  MutableLiveData<List<ItemGDriveFile>> = MutableLiveData<List<ItemGDriveFile>>(listOf())
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
@@ -59,51 +158,92 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
                 (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
             }
-            val menuPopupGFile = MyPopupMenuItem<ItemGDriveFile>(this@SettingsSincFragment, "GFilePopup").apply {
+
+            val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), stateViewModel.gso);
+
+            val menuPopupGFile = MyPopupMenuItem<ItemGDriveFile>(WeakReference(this@SettingsSincFragment), "GFilePopup").apply {
                 addButton(MenuPopupButton.DELETE) { itemGFile ->
-                    lifecycleScope.launch {
-                        stateViewModel.ktorGOA.deleteFile(itemGFile.id)
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        ktorGOA.deleteFile(itemGFile.id)
                         getGFileList()
                     }
                 }
                 addButton(MenuPopupButton.LOAD) { itemGFile ->
-                    stateViewModel.ktorGOA.downloadFile(itemGFile.id) { progress ->
-                        progLoad.progress = (progress * 100).toInt()
+                    ktorGOA.downloadFile(itemGFile.id) { progress ->
+                        binding.progLoad.progress = (progress * 100).toInt()
                     }
                 }
                 addButton(MenuPopupButton.OVERWRITE) { itemGFile ->
-                    lifecycleScope.launch {
-                        stateViewModel.ktorGOA.overwriteFile("databasefff.db", itemGFile.id) { progress ->
-                            progLoad.progress = (progress * 100).toInt()
-                            if (progress == 1F) progLoad.progress = 0
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        ktorGOA.overwriteFile("databasefff.db", itemGFile.id) { progress ->
+                            binding.progLoad.progress = (progress * 100).toInt()
+                            if (progress == 1F) binding.progLoad.progress = 0
                         }
                     }
                 }
             }
-            stateViewModel.ktorGOA.pushListDriveFile = { listGFile ->
-                rvmAdapter.updateData(formUniRVItemList(listGFile) { item ->
-                    GDriveFileRVItem(item, longTapListener = { itemGFile ->
-                        menuPopupGFile.showMenu(itemGFile, name = itemGFile.name)
-                    })
-                })
-            }
-
-            val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), stateViewModel.gso);
-            fun checkVisibleOnlineButt(value: Boolean) {
-                if (value) {
-                    signInButton.visibility = INVISIBLE
-                    buttExit.visibility = VISIBLE
-                    buttGetFiles.visibility = VISIBLE
-                    buttUploadMyBase.visibility = VISIBLE
-                    buttNetworkMyBase.visibility = VISIBLE
-                } else {
-                    signInButton.visibility = VISIBLE
-                    buttExit.visibility = INVISIBLE
-                    buttGetFiles.visibility = INVISIBLE
-                    buttUploadMyBase.visibility = INVISIBLE
-                    buttNetworkMyBase.visibility = INVISIBLE
+            val vopName = OneVoprosStrDial(WeakReference(this@SettingsSincFragment), "voprosNameGnewFile") {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    val intentUploadService = Intent(requireActivity().applicationContext, UploadFileBD::class.java)
+                    intentUploadService.putExtra(UploadFileBD.nameExtra.nameBDonDevice.value,"databasefff.db")
+                    intentUploadService.putExtra(UploadFileBD.nameExtra.nameNewBDonGoogle.value,it)
+                    when {
+                        ContextCompat.checkSelfPermission(
+                            requireActivity(),
+                            Manifest.permission.ACCESS_NOTIFICATION_POLICY
+                        ) == PackageManager.PERMISSION_GRANTED -> {
+                            // You can use the API that requires the permission.
+                        }
+                        shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_NOTIFICATION_POLICY) -> {
+                        // In an educational UI, explain to the user why your app requires this
+                        // permission for a specific feature to behave as expected, and what
+                        // features are disabled if it's declined. In this UI, include a
+                        // "cancel" or "no thanks" button that lets the user continue
+                        // using your app without granting the permission.
+//                        showInContextUI(...)
+                    }
+                        else -> {
+                            // You can directly ask for the permission.
+                            // The registered ActivityResultCallback gets the result of this request.
+                            requestPermissionLauncher.launch(
+                                Manifest.permission.ACCESS_NOTIFICATION_POLICY)
+                        }
+                    }
+                    requireActivity().startService(intentUploadService)
+//                    ktorGOA.uploadFileResumable("databasefff.db", it,{ messageFromUploadFile ->
+//                        Log.d("MyTag", "messageFromUploadFile = ${messageFromUploadFile}")
+//                    }) { progress ->
+//                        binding.progLoad.progress = (progress * 100).toInt()
+//                    }
+//                    getGFileList()
                 }
             }
+            val vopNameFolder = OneVoprosStrDial(WeakReference(this@SettingsSincFragment), "voprosNameGnewFolder") { nameFolder ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    ktorGOA.createFolder(nameFolder)
+                    getGFileList()
+                }
+            }
+
+/*
+            ktorGOA.pushListDriveFile = { listGFile ->
+//                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main){
+                    gFiles.value = listGFile
+//                }
+            }
+*/
+
+            ktorGOA.gFiles.observe(viewLifecycleOwner){listGFile ->
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main){
+                    Log.d("MyTag", "############################    ktorGOA.gFiles.observe work")
+                    rvmAdapter.updateData(formUniRVItemList(listGFile) { item ->
+                        GDriveFileRVItem(item, longTapListener = { itemGFile ->
+                            menuPopupGFile.showMenu(itemGFile, name = itemGFile.name)
+                        })
+                    })
+                }
+            }
+
             buttNewFolder.visibility = INVISIBLE
             buttOldMyBase.visibility = INVISIBLE
             checkVisibleOnlineButt(stateViewModel.authCode.value != "")
@@ -111,8 +251,8 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
 
                 checkVisibleOnlineButt(it != "")
                 if (it != "") {
-                    stateViewModel.ktorGOA.getToken(it, stateViewModel.clientID, stateViewModel.clientSecret) { token ->
-                        lifecycleScope.launch(Dispatchers.Main) {
+                    ktorGOA.getToken(it, stateViewModel.clientID, stateViewModel.clientSecret) { token ->
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                             tvAuthCode.text = token
                         }
                     }
@@ -121,45 +261,19 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
             signInButton.setSize(SignInButton.SIZE_STANDARD)
             signInButton.setOnClickListener {
                 val signInIntent = mGoogleSignInClient.signInIntent
-                startActivityForResult(signInIntent, stateViewModel.RC_SIGN_IN)
+                launcher.launch(signInIntent)
             }
             signInButton.visibility = VISIBLE
-            buttExit.visibility = INVISIBLE
+//            buttExit.visibility = INVISIBLE
             buttExit.setOnClickListener {
                 mGoogleSignInClient.revokeAccess()
                 mGoogleSignInClient.signOut()
-                    .addOnCompleteListener(requireActivity(), OnCompleteListener<Void?> {
+                    .addOnCompleteListener(requireActivity()) {
                         stateViewModel.authCode.value = ""
-
-                    })
-
+                    }
             }
             buttBdToDevice.setOnClickListener {
-                if (SDK_INT >= 30) {
-                    if (!Environment.isExternalStorageManager()) {
-                        try {
-                            val uri = Uri.parse("package:" + APPLICATION_ID);
-                            var intent = Intent(
-                                Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-                                uri
-                            )
-                            startActivity(intent);
-                        } catch (ex: Exception) {
-                            val intent = Intent();
-                            intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION;
-                            startActivity(intent);
-                        }
-                        /**
-                         * https://stackoverflow.com/questions/62782648/android-11-scoped-storage-permissions/67140033
-                         * Т.к. я стартую активити без возвращения результата, то для копии БД кнопку будет нужно нажать еще раз.
-                         * */
-                    } else {
-                        copyFileDBToDevice()
-                    }
-                }   else    {
-
-                    copyFileDBToDevice()
-                }
+                copyBdToDevice()
             }
             buttGetFiles.setOnClickListener {
                 getGFileList()
@@ -170,22 +284,8 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
             buttNetworkMyBase.setOnClickListener {
                 loadBaseNetworkFileDB()
             }
-            val vopName = OneVoprosStrDial(this@SettingsSincFragment, "voprosNameGnewFile") {
-                lifecycleScope.launch {
-                    stateViewModel.ktorGOA.uploadFile("databasefff.db", it) { progress ->
-                        progLoad.progress = (progress * 100).toInt()
-                    }
-                    getGFileList()
-                }
-            }
             buttUploadMyBase.setOnClickListener {
                 vopName.showVopros("Напишите имя нового файла в облаке.", "Имя:", "Загрузить", "MyMainDB_NB_")
-            }
-            val vopNameFolder = OneVoprosStrDial(this@SettingsSincFragment, "voprosNameGnewFolder") { nameFolder ->
-                lifecycleScope.launch {
-                    stateViewModel.ktorGOA.createFolder(nameFolder)
-                    getGFileList()
-                }
             }
             buttNewFolder.setOnClickListener {
                 vopNameFolder.showVopros(
@@ -198,9 +298,39 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
         }
     }
 
+
+
+    private fun copyBdToDevice() {
+        if (SDK_INT >= 30) {
+            if (!Environment.isExternalStorageManager()) {
+                try {
+                    val uri = Uri.parse("package:" + APPLICATION_ID);
+                    var intent = Intent(
+                        Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                        uri
+                    )
+                    startActivity(intent);
+                } catch (ex: Exception) {
+                    val intent = Intent();
+                    intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION;
+                    startActivity(intent);
+                }
+/**
+                 * https://stackoverflow.com/questions/62782648/android-11-scoped-storage-permissions/67140033
+                 * Т.к. я стартую активити без возвращения результата, то для копии БД кнопку будет нужно нажать еще раз.
+                 * */
+
+            } else {
+                copyFileDBToDevice()
+            }
+        } else {
+
+            copyFileDBToDevice()
+        }
+    }
     private fun getGFileList() {
-        stateViewModel.ktorGOA.GetAppFilesList {
-            lifecycleScope.launch(Dispatchers.Main) {
+        ktorGOA.GetAppFilesList {
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 binding.tvAuthCode.text = it
                 binding.tvAuthCode.requestLayout()
                 binding.tvAuthCode.movementMethod = ScrollingMovementMethod()
@@ -218,8 +348,8 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
 
     private fun loadBaseNetworkFileDB() {
         loadBaseFileDB(
-            FileInputStream(File(requireContext().getDatabasePath("testNetwork.db").path)),
-            requireContext().getDatabasePath("testNetwork.db").path
+            FileInputStream(File(requireContext().getDatabasePath(CommonName.nameFromNetworkDBfile).path)),
+            requireContext().getDatabasePath(CommonName.nameFromNetworkDBfile).path
         )
     }
 
@@ -245,11 +375,14 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
 
             var dirFile = getExternalStorageDirectory()
 
-            val fileTmp = File(File(dirFile.path, "Itreumme"),"backupDB")
+            val fileTmp = File(File(dirFile.path, "Itreumme"), "backupDB")
             fileTmp.mkdirs()
             var mkdirr = fileTmp.exists()
-            mkdirr=true
-            val outputFile = if (mkdirr) File(fileTmp,"database_${Date().time}.db") else File(context?.getExternalFilesDir("")?.absolutePath ?: "","database_${Date().time}.db")
+            mkdirr = true
+            val outputFile = if (mkdirr) File(
+                fileTmp,
+                "database_${Date().time}.db"
+            ) else File(context?.getExternalFilesDir("")?.absolutePath ?: "", "database_${Date().time}.db")
             val outputStream = FileOutputStream(outputFile)
 
             val sizeCopy = inputStream.copyTo(outputStream)
@@ -257,7 +390,7 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
 
             outputStream.flush()
             outputStream.close()
-            if (sizeCopy>0) showMyMessage("Файл базы данных успешно скопирован. \n ${outputFile.path}")
+            if (sizeCopy > 0) showMyMessage("Файл базы данных успешно скопирован. \n ${outputFile.path}")
         } catch (exception: Throwable) {
             throw RuntimeException("The pathFile database couldn't be installed.", exception)
         }

@@ -153,10 +153,10 @@ object StateVM {
                     }
                 }
             }
-            pushListDriveFile = {
-                listGFile.clear()
-                listGFile.addAll(it)
-            }
+//            pushListDriveFile = {
+//                listGFile.clear()
+//                listGFile.addAll(it)
+//            }
         }
     }
 

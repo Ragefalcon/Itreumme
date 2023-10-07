@@ -70,7 +70,7 @@ class SelectedPlanPanelFragment(selItem: ItemPlan? = null, callbackKey: String? 
                 timeFun.setOpenSpisPlanIn(false, arrayIskl ?: listOf())
                 timeSpis.spisPlanIn.observe(viewLifecycleOwner) {
                     rvmAdapter.updateData(formUniRVItemList(it) { item ->
-                        PlanRVItem(item)
+                        PlanRVItem(item,rvPlanList)
                     })
                     if (firstLoad) {
                         selItem?.let {

@@ -19,10 +19,10 @@ import ru.ragefalcon.tutatores.databinding.FragmentSpisBloknotBinding
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
 import ru.ragefalcon.tutatores.extensions.showMyMessage
 import ru.ragefalcon.tutatores.ui.viewmodels.MyStateViewModel
+import java.lang.ref.WeakReference
 
 class SpisBloknotFragment : BaseFragmentVM<FragmentSpisBloknotBinding>(FragmentSpisBloknotBinding::inflate) {
 
-    private var rvmAdapter = UniRVAdapter()
     private var selItem: ItemBloknot? by instanceState()
 
     var update_item_view: View? = null
@@ -41,6 +41,7 @@ class SpisBloknotFragment : BaseFragmentVM<FragmentSpisBloknotBinding>(FragmentS
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val rvmAdapter = UniRVAdapter()
         postponeEnterTransition()
         with(binding) {
             view.doOnPreDraw { startPostponedEnterTransition() }
@@ -52,10 +53,15 @@ class SpisBloknotFragment : BaseFragmentVM<FragmentSpisBloknotBinding>(FragmentS
                 adapter = rvmAdapter
             }
 
-            val menuPopupBloknot = MyPopupMenuItem<ItemBloknot>(this@SpisBloknotFragment, "BloknotDelChange").apply {
+            val menuPopupBloknot = MyPopupMenuItem<ItemBloknot>(WeakReference(this@SpisBloknotFragment), "BloknotDelChange").apply {
                 addButton(MenuPopupButton.DELETE) {
                     if (it.countidea==0L) {
-                        viewmodel.addJournal.delBloknot(it.id.toLong())
+                        viewmodel.addJournal.delBloknot(it.id.toLong()){
+                            /*
+                            * TODO здесь необходимо реализовать функцию удаления изображений из памяти устройства
+                            * в Desctop версии: MainDB.complexOpisSpis.spisComplexOpisForBloknot.delAllImageForItem(it)
+                            * */
+                        }
                     }   else    {
                         showMyMessage("Удалите вначале все заметки из этого блокнота")
                     }
@@ -74,7 +80,7 @@ class SpisBloknotFragment : BaseFragmentVM<FragmentSpisBloknotBinding>(FragmentS
                             stateViewModel.selectItemBloknot.value = item
                         }, longTapListener = {
                             menuPopupBloknot.showMenu(it,name = "${it.name}",)
-                        }, funForTransition = ::toSpisIdea)
+                        }, funForTransition = ::toSpisIdea, recyclerView = rvBloknotList)
                     })
 
                     selItem?.let {

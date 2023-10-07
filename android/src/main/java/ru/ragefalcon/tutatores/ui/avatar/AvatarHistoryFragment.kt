@@ -17,6 +17,7 @@ import ru.ragefalcon.tutatores.databinding.FragmentHistoryBinding
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
 import ru.ragefalcon.tutatores.extensions.showMyFragDial
 import ru.ragefalcon.tutatores.ui.avatar.dream.AvatarAddDreamFragDial
+import java.lang.ref.WeakReference
 
 class AvatarHistoryFragment() : BaseFragmentVM<FragmentHistoryBinding>(FragmentHistoryBinding::inflate) {
 
@@ -30,7 +31,7 @@ class AvatarHistoryFragment() : BaseFragmentVM<FragmentHistoryBinding>(FragmentH
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             }
             with(viewmodel) {
-                val menuPopupBestDay = MyPopupMenuItem<ItemBestDays>(this@AvatarHistoryFragment, "BestDayDel").apply {
+                val menuPopupBestDay = MyPopupMenuItem<ItemBestDays>(WeakReference(this@AvatarHistoryFragment), "BestDayDel").apply {
                     addButton(MenuPopupButton.DELETE) {
                         viewmodel.addAvatar.delBestDay(it.id.toLong())
                     }

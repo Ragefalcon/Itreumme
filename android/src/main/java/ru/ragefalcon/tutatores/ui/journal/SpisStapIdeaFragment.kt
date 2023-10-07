@@ -1,7 +1,6 @@
 package ru.ragefalcon.tutatores.ui.journal
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.findNavController
@@ -17,10 +16,10 @@ import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentSpisStapIdeaBinding
 import ru.ragefalcon.tutatores.extensions.getMyTransition
 import ru.ragefalcon.tutatores.ui.viewmodels.MyStateViewModel
+import java.lang.ref.WeakReference
 
 class SpisStapIdeaFragment : BaseFragmentVM<FragmentSpisStapIdeaBinding>(FragmentSpisStapIdeaBinding::inflate) {
 
-    private var rvmAdapter = UniRVAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,17 +35,23 @@ class SpisStapIdeaFragment : BaseFragmentVM<FragmentSpisStapIdeaBinding>(Fragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val rvmAdapter = UniRVAdapter()
         postponeEnterTransition()
         with(binding) {
             rvIdeaStapList.doOnPreDraw { startPostponedEnterTransition() }
 
             val panelAddChangeStapIdea =
-                CommonAddChangeObj<ItemIdeaStap>(this@SpisStapIdeaFragment, "callAddStapIdea") {
+                CommonAddChangeObj<ItemIdeaStap>(WeakReference(this@SpisStapIdeaFragment), "callAddStapIdea") {
                 }
             val menuPopupStapIdea =
-                MyPopupMenuItem<ItemIdeaStap>(this@SpisStapIdeaFragment, "StapIdeaDelChange").apply {
+                MyPopupMenuItem<ItemIdeaStap>(WeakReference(this@SpisStapIdeaFragment), "StapIdeaDelChange").apply {
                     addButton(MenuPopupButton.DELETE) {
-                        viewmodel.addJournal.delStapIdea(it.id.toLong())
+                        viewmodel.addJournal.delStapIdea(it.id.toLong()){
+                            /*
+                            * TODO здесь необходимо реализовать функцию удаления изображений из памяти устройства
+                            * пример в Desctop версии: MainDB.complexOpisSpis.spisComplexOpisForBloknot.delAllImageForItem(it)
+                            * */
+                        }
                     }
                     addButton(MenuPopupButton.CHANGE) {
                         panelAddChangeStapIdea.showDial(dial = { callbkKey ->
@@ -77,7 +82,7 @@ class SpisStapIdeaFragment : BaseFragmentVM<FragmentSpisStapIdeaBinding>(Fragmen
                         }, tapListener = {
                         }, longTapListener = {
                             menuPopupStapIdea.showMenu(it, name = "${it.name}")
-                        })
+                        }, recyclerView = rvIdeaStapList)
                     })
                 }
                 buttAddStapIdea.setOnClickListener {

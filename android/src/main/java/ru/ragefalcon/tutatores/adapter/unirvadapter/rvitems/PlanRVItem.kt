@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.sharedcode.models.data.ItemPlan
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan
 import ru.ragefalcon.tutatores.R
 import ru.ragefalcon.tutatores.adapter.unirvadapter.BaseUniRVItem
 import ru.ragefalcon.tutatores.adapter.unirvadapter.getUniRVViewHolder
@@ -42,7 +43,7 @@ class PlanRVItem(
 
             val item = item
 
-            if (item.stat != 10L) {
+            if (item.stat != TypeStatPlan.COMPLETE) {
                 cardViewItem.setCardBackgroundColor(
                     ContextCompat.getColor(
                         vh.itemView.context,
@@ -65,7 +66,7 @@ class PlanRVItem(
             textOpis.text = item.opis
             if (vh.itemView.isSelected) {
                 getProgBar?.invoke(progbarGotov) {
-                    item.gotov = it
+//                    item.gotov = it
                 }
                 funSelItem?.invoke(item, progbarGotov.progress)
 
@@ -101,8 +102,7 @@ class PlanRVItem(
             }
             sverItemOpis(item.sver, false)
             ivStatDp.setOnClickListener {
-                item.sver = item.sver.not()
-                sverItemOpis(item.sver, true)
+                sverItemOpis(item.sver.not(), true)
                 if (vh.itemView.isSelected) {
                     vh.bindItem?.let { rvset.selFunc(it) }
                 }

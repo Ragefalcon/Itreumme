@@ -19,13 +19,12 @@ import ru.ragefalcon.tutatores.databinding.FragmentSpisEffektBinding
 import ru.ragefalcon.tutatores.extensions.getSFM
 import ru.ragefalcon.tutatores.extensions.setSFMResultListener
 import ru.ragefalcon.tutatores.extensions.showMyFragDial
+import java.lang.ref.WeakReference
 
 
 @Parcelize
 class MyPopupItem(
-    val resId: Int,
-    val name: String,
-    val podkey: String
+    val resId: Int, val name: String, val podkey: String
 ) : Id_class(resId.toString()), Parcelable
 
 @Parcelize
@@ -41,12 +40,17 @@ class MyPopupNabor(
  * при повороте экрана или другом пересоздании экрана не пересоздадутся
  * слушатели для этого меню.
  * */
-class MyPopupMenuItem<T : Id_class>(private val fragment: Fragment, val callbackKey: String) {
+class MyPopupMenuItem<T : Id_class>(
+    private val fragment: WeakReference<Fragment>,
+    val callbackKey: String
+) {
     private val menuPopupPlan = mutableListOf<MenuPopupButton>()
     fun getListMenu() = menuPopupPlan.toList()
     fun addButton(butt: MenuPopupButton, listener: ((item: T) -> Unit)) {
-        FragMyPopupMenuDial.addRezListener<T>(menuPopupPlan, butt, fragment, callbackKey) {
-            listener(it)
+        fragment.get()?.let {
+            FragMyPopupMenuDial.addRezListener<T>(menuPopupPlan, butt, it, callbackKey) {
+                listener(it)
+            }
         }
     }
 
@@ -54,87 +58,66 @@ class MyPopupMenuItem<T : Id_class>(private val fragment: Fragment, val callback
         item: T,
         name: String? = null,
         predicate: (MenuPopupButton) -> Boolean = { true },
-        manager: FragmentManager = fragment.getSFM(),
+        manager: FragmentManager? = fragment.get()?.getSFM(),
         tag: String = "tegMyFragDial",
         bound: MyFragDial.BoundSlide = MyFragDial.BoundSlide.right
     ) {
-        fragment.showMyFragDial(
-            FragMyPopupMenuDial(
-                item,
-                name = name,
-                this.getListMenu().filter { predicate(it) },
-                callbackKey
-            ), manager, tag, bound
-        )
+        manager?.let {
+            fragment.get()?.showMyFragDial(
+                FragMyPopupMenuDial(
+                    item, name = name, this.getListMenu().filter { predicate(it) }, callbackKey
+                ), it, tag, bound
+            )
+        }
     }
 }
 
 enum class MenuPopupButton(val butt: MyPopupItem) {
     DELETE(
         MyPopupItem(
-            R.drawable.ic_delete,
-            "Удалить",
-            "delete"
+            R.drawable.ic_delete, "Удалить", "delete"
         )
     ),
     CHANGE(
         MyPopupItem(
-            R.drawable.ic_change,
-            "Изменить",
-            "change"
+            R.drawable.ic_change, "Изменить", "change"
         )
     ),
     UNOPEN(
         MyPopupItem(
-            R.drawable.ic_baseline_archive_24,
-            "Закрыть",
-            "unopen"
+            R.drawable.ic_baseline_archive_24, "Закрыть", "unopen"
         )
     ),
     OPEN(
         MyPopupItem(
-            R.drawable.ic_baseline_unarchive_24,
-            "Открыть",
-            "open"
+            R.drawable.ic_baseline_unarchive_24, "Открыть", "open"
         )
     ),
     LOAD(
         MyPopupItem(
-            R.drawable.ic_baseline_cloud_download_24,
-            "Загрузить",
-            "load"
+            R.drawable.ic_baseline_cloud_download_24, "Загрузить", "load"
         )
     ),
     OVERWRITE(
         MyPopupItem(
-            R.drawable.ic_baseline_published_with_changes_24,
-            "Перезаписать",
-            "overwrite"
+            R.drawable.ic_baseline_published_with_changes_24, "Перезаписать", "overwrite"
         )
     ),
     UNEXECUTE(
         MyPopupItem(
-            R.drawable.ic_round_check_circle_outline_24,
-            "Развыполнить",
-            "unexecute"
+            R.drawable.ic_round_check_circle_outline_24, "Развыполнить", "unexecute"
         )
     ),
     EXECUTE(
         MyPopupItem(
-            R.drawable.ic_round_check_circle_24,
-            "Выполнить",
-            "execute"
+            R.drawable.ic_round_check_circle_24, "Выполнить", "execute"
         )
     );
 }
 
 class FragMyPopupMenuDial<T : Id_class>(
-    itemPop: T? = null,
-    name: String? = null,
-    nabor: List<MenuPopupButton>? = null,
-    callbackKey: String? = null
-) :
-    MyFragmentForDialogVM<FragmentSpisEffektBinding>(FragmentSpisEffektBinding::inflate) {
+    itemPop: T? = null, name: String? = null, nabor: List<MenuPopupButton>? = null, callbackKey: String? = null
+) : MyFragmentForDialogVM<FragmentSpisEffektBinding>(FragmentSpisEffektBinding::inflate) {
 
     var name: String by instanceStateDef("", name)
     var itemPop: T? by instanceState(itemPop)
@@ -148,8 +131,7 @@ class FragMyPopupMenuDial<T : Id_class>(
         itemPop?.let { item ->
             callbackKey?.let { key ->
                 getSFM().setFragmentResult(
-                    "${key}_${type}",
-                    bundleOf(
+                    "${key}_${type}", bundleOf(
                         "item" to item
                     )
                 )
@@ -179,14 +161,12 @@ class FragMyPopupMenuDial<T : Id_class>(
             with(viewmodel) {
                 nabor?.list?.let { items ->
                     rvmAdapter.updateData(formUniRVItemList(items) {
-                        if (it.podkey == "delete")
-                            MyPopupDeleteRVItem(it) { podkey ->
-                                setRezList(podkey)
-                            }
-                        else
-                            MyPopupRVItem(it) { podkey ->
-                                setRezList(podkey)
-                            }
+                        if (it.podkey == "delete") MyPopupDeleteRVItem(it) { podkey ->
+                            setRezList(podkey)
+                        }
+                        else MyPopupRVItem(it) { podkey ->
+                            setRezList(podkey)
+                        }
                     })
                 }
             }

@@ -2,32 +2,21 @@ package ru.ragefalcon.tutatores.ui.time
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.PagerAdapter
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class TimePageAdapter(fm: FragmentManager) :
-    FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class TimePageAdapter(fm: FragmentManager, ls: Lifecycle) : FragmentStateAdapter(fm,ls) {
 
 
-    override fun getItem(position: Int): Fragment {
-        when(TimeTypePanel.values()[position]){
-            TimeTypePanel.DENPLAN -> return DenPlanFragment.newInstance()
-            TimeTypePanel.GLOBALPLAN -> return PlanTabFragment.newInstance()
-            TimeTypePanel.VXOD -> return VxodTabFragment.newInstance()
+    override fun createFragment(position: Int): Fragment {
+        return when(TimeTypePanel.values()[position]){
+            TimeTypePanel.DENPLAN -> DenPlanFragment.newInstance()
+            TimeTypePanel.GLOBALPLAN -> PlanTabFragment.newInstance()
+            TimeTypePanel.VXOD -> VxodTabFragment.newInstance()
         }
     }
 
-    override fun getItemPosition(`object`: Any): Int {
-
-        return PagerAdapter.POSITION_NONE
-    }
-
-    override fun getPageTitle(position: Int): CharSequence? {
-        return TimeTypePanel.values()[position].nameRazdel
-    }
-
-    override fun getCount(): Int {
+    override fun getItemCount(): Int {
         return TimeTypePanel.values().size
     }
-
 }

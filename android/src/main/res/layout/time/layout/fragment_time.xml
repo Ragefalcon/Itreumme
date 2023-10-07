@@ -92,14 +92,13 @@
                     android:layout_height="wrap_content"
                     android:text="Wednesday"/>
         </com.google.android.material.tabs.TabLayout>
-        <androidx.viewpager.widget.ViewPager
+        <androidx.viewpager2.widget.ViewPager2
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tab_time"
-                android:id="@+id/vp_time">
-        </androidx.viewpager.widget.ViewPager>
+                android:id="@+id/vp_time"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

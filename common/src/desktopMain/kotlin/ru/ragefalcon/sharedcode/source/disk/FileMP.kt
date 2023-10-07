@@ -21,6 +21,7 @@ actual class FileMP {
         }
     }
 
+    actual fun length(): Long? = myfile?.length()
     actual fun openFileOutput(path: String) {
         val fileName = path
         myfile = File(fileName)

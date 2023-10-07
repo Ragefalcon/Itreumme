@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.ragefalcon.sharedcode.models.data.ItemPlanStap
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlanStap
 import ru.ragefalcon.tutatores.R
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
@@ -22,6 +23,7 @@ import ru.ragefalcon.tutatores.adapter.unirvadapter.sravItemIdType
 import ru.ragefalcon.tutatores.commonfragments.*
 import ru.ragefalcon.tutatores.databinding.FragmentPlanStapBinding
 import ru.ragefalcon.tutatores.extensions.*
+import java.lang.ref.WeakReference
 
 class PlanStapFragment() : BaseFragmentVM<FragmentPlanStapBinding>(FragmentPlanStapBinding::inflate) {
 
@@ -45,18 +47,23 @@ class PlanStapFragment() : BaseFragmentVM<FragmentPlanStapBinding>(FragmentPlanS
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         postponeEnterTransition()
-        val menuPopupPlanStap = MyPopupMenuItem<ItemPlanStap>(this, "PlanStapDelChange").apply {
+        val menuPopupPlanStap = MyPopupMenuItem<ItemPlanStap>(WeakReference(this), "PlanStapDelChange").apply {
             addButton(MenuPopupButton.UNEXECUTE) {
-                viewmodel.addTime.updStatPlanStap(item = it, stat = 0)
+                viewmodel.addTime.updStatPlanStap(item = it, stat = TypeStatPlanStap.VISIB)
             }
             addButton(MenuPopupButton.EXECUTE) {
-                viewmodel.addTime.updStatPlanStap(item = it, stat = 10)
+                viewmodel.addTime.updStatPlanStap(item = it, stat = TypeStatPlanStap.COMPLETE)
             }
             addButton(MenuPopupButton.DELETE) {
                 if (it.podstapcount > 0) {
                     showMyMessage("Вначале удалите подэтапы этого этапа")
                 } else {
-                    viewmodel.addTime.delPlanStap(it.id.toLong())
+                    viewmodel.addTime.delPlanStap(it.id.toLong()){
+                        /*
+                        * TODO здесь необходимо реализовать функцию удаления изображений из памяти устройства
+                        * в Desctop версии: MainDB.complexOpisSpis.spisComplexOpisForBloknot.delAllImageForItem(it)
+                        * */
+                    }
                 }
             }
             addButton(MenuPopupButton.CHANGE) {
@@ -154,7 +161,7 @@ class PlanStapFragment() : BaseFragmentVM<FragmentPlanStapBinding>(FragmentPlanS
                                     stateViewModel.gotovSelPlanStap.value = progress
                                 },
                                 listener = {
-                                    menuPopupPlanStap.showMenu(item,name = "${item.name}",{ if (item.stat == 10L) it != MenuPopupButton.EXECUTE else it != MenuPopupButton.UNEXECUTE})
+                                    menuPopupPlanStap.showMenu(item,name = "${item.name}",{ if (item.stat == TypeStatPlanStap.COMPLETE) it != MenuPopupButton.EXECUTE else it != MenuPopupButton.UNEXECUTE})
                                 },
                                 getProgBar = { progBar, changeItemGot ->
                                     selProgressBar = progBar
@@ -176,7 +183,8 @@ class PlanStapFragment() : BaseFragmentVM<FragmentPlanStapBinding>(FragmentPlanS
                     }
 
                 }
-                timeFun.setListenerCountStapPlan {  count ->
+                viewmodel.timeSpis.countStapPlan.observe(viewLifecycleOwner){ count ->
+//                timeFun.setListenerCountStapPlan {  count ->
                     stateViewModel.selectItemPlan.value?.let {
                         tvPlanNameFrsp.text = "${it.name}. Этапов: $count"
                     }

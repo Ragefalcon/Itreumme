@@ -17,14 +17,13 @@ import ru.ragefalcon.tutatores.commonfragments.MenuPopupButton
 import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentDreamBinding
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
+import java.lang.ref.WeakReference
 
 class AvatarDreamsFragment() : BaseFragmentVM<FragmentDreamBinding>(FragmentDreamBinding::inflate) {
 
-    private var rvmAdapter = UniRVAdapter()
-
     private var selItem: ItemDream? by instanceState()
 
-    fun toDreamDetail(extras: FragmentNavigator.Extras) { //view_name: View,view_container: View,
+    fun toDreamDetail(extras: FragmentNavigator.Extras) {
         exitTransition = MaterialElevationScale(false).apply {
             duration = 400
         }
@@ -35,6 +34,7 @@ class AvatarDreamsFragment() : BaseFragmentVM<FragmentDreamBinding>(FragmentDrea
         val directions = AvatarDreamsFragmentDirections.actionDreamToDetail()
         findNavController().navigate(directions, extras)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -49,7 +49,7 @@ class AvatarDreamsFragment() : BaseFragmentVM<FragmentDreamBinding>(FragmentDrea
                 showAddChangeFragDial(AvatarAddDreamFragDial())
             }
             val menuPopupDream = MyPopupMenuItem<ItemDream>(
-                this@AvatarDreamsFragment,
+                WeakReference(this@AvatarDreamsFragment),
                 "DreamDelChange"
             ).apply {
                 addButton(MenuPopupButton.DELETE) {
@@ -65,6 +65,7 @@ class AvatarDreamsFragment() : BaseFragmentVM<FragmentDreamBinding>(FragmentDrea
                     showAddChangeFragDial(AvatarAddDreamFragDial(it))
                 }
             }
+            val rvmAdapter = UniRVAdapter()
             with(rvDreams) {
                 adapter = rvmAdapter
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
@@ -88,7 +89,7 @@ class AvatarDreamsFragment() : BaseFragmentVM<FragmentDreamBinding>(FragmentDrea
                             })
                     })
                     selItem?.let {
-                        rvmAdapter.setSelectItem(it, DreamRVItem::class) //DenPlanViewHolder
+                        rvmAdapter.setSelectItem(it, DreamRVItem::class)
                     }
                 }
             }

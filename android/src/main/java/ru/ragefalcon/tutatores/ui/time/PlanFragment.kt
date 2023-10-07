@@ -3,7 +3,6 @@ package ru.ragefalcon.tutatores.ui.time
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
@@ -20,22 +19,25 @@ import androidx.transition.TransitionSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.ragefalcon.sharedcode.models.data.ItemPlan
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeStatPlan
 import ru.ragefalcon.tutatores.R
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.PlanRVItem
-import ru.ragefalcon.tutatores.commonfragments.*
+import ru.ragefalcon.tutatores.commonfragments.BaseFragmentVM
+import ru.ragefalcon.tutatores.commonfragments.MenuPopupButton
+import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentPlanBinding
 import ru.ragefalcon.tutatores.extensions.dpToPx
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
 import ru.ragefalcon.tutatores.extensions.showMyFragDial
 import ru.ragefalcon.tutatores.extensions.showMyMessage
+import java.lang.ref.WeakReference
 import java.util.*
 
 
 class PlanFragment : BaseFragmentVM<FragmentPlanBinding>(FragmentPlanBinding::inflate) {
 
-    private var rvmAdapter = UniRVAdapter()
 
     var selProgressBar: ProgressBar? = null
     var changeItemGotov: ((Double) -> Unit)? = null
@@ -59,12 +61,14 @@ class PlanFragment : BaseFragmentVM<FragmentPlanBinding>(FragmentPlanBinding::in
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val menuPopupPlan = MyPopupMenuItem<ItemPlan>(this, "PlanDelChange").apply {
+
+        val rvmAdapter = UniRVAdapter()
+        val menuPopupPlan = MyPopupMenuItem<ItemPlan>(WeakReference(this), "PlanDelChange").apply {
             addButton(MenuPopupButton.UNEXECUTE) {
-                viewmodel.addTime.updStatPlan(item = it, stat = 0)
+                viewmodel.addTime.updStatPlan(item = it, stat = TypeStatPlan.VISIB )
             }
             addButton(MenuPopupButton.EXECUTE) {
-                viewmodel.addTime.updStatPlan(item = it, stat = 10)
+                viewmodel.addTime.updStatPlan(item = it, stat = TypeStatPlan.COMPLETE)
             }
             addButton(MenuPopupButton.DELETE) {
                 if (it.countstap > 0) {
@@ -87,6 +91,7 @@ class PlanFragment : BaseFragmentVM<FragmentPlanBinding>(FragmentPlanBinding::in
 
             val callbackAddEff = "timeAddEffCallback"
             TimeAddEffektDial.setRezListener(this@PlanFragment, callbackAddEff) {
+                TODO()
                 buttAddEffekt.isChecked = it
             }
             buttAddEffekt.setOnClickListener {
@@ -165,11 +170,11 @@ class PlanFragment : BaseFragmentVM<FragmentPlanBinding>(FragmentPlanBinding::in
                                     buttAddEffekt.isChecked = true
                                 } ?: run { buttAddEffekt.isChecked = false }
                             }, listener = { item, viewItem ->
-                                menuPopupPlan.showMenu(item,name = "${item.name}",{ if (item.stat == 10L) it != MenuPopupButton.EXECUTE else it != MenuPopupButton.UNEXECUTE})
+                                menuPopupPlan.showMenu(item,name = "${item.name}",{ if (item.stat == TypeStatPlan.COMPLETE) it != MenuPopupButton.EXECUTE else it != MenuPopupButton.UNEXECUTE})
                             }, getProgBar = { progBar, changeItemGot ->
                                 selProgressBar = progBar
                                 changeItemGotov = changeItemGot
-                            })
+                            }, recyclerView = rvPlanList)
                         })
                         stateViewModel.selectItemPlan.value?.let {
                             rvmAdapter.setSelectItem(it, PlanRVItem::class) //PlanViewHolder
@@ -190,7 +195,10 @@ class PlanFragment : BaseFragmentVM<FragmentPlanBinding>(FragmentPlanBinding::in
                     viewmodel.timeFun.setPlanForCountStapPlan(it.id.toLong())
                 }
             }
-            viewmodel.timeFun.setListenerCountStapPlan { count ->
+            viewmodel.timeSpis.countStapPlan.observe(viewLifecycleOwner){ count ->
+
+//            }
+//            viewmodel.timeFun.setListenerCountStapPlan { count ->
                 stateViewModel.selectItemPlan.value?.let {
                     /**
                      * Без lifecycleScope.launch(Dispatchers.Main) и именно с (Dispatchers.Main)
@@ -200,7 +208,8 @@ class PlanFragment : BaseFragmentVM<FragmentPlanBinding>(FragmentPlanBinding::in
                      * с запозданием ровно в одно выделение...
                      * а этот вариант работает даже без вызова requestLayout()
                      * */
-                    lifecycleScope.launch(Dispatchers.Main) {
+                    Log.d("MyTag", "count StapPlan = ${count}")
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                         tvPlanName.text = "${it.name}. Этапов: $count(${it.countstap})"
                     }
                 }

@@ -184,25 +184,29 @@ object MainDB {
     private var setAvatarListener = false
     fun setAvatarDreamGoalListener() {
         if (!setAvatarListener) {
-            avatarFun.setListenerStatikHourGoal {
+            avatarSpis.diagramStatikHourGoal.getState()?.value?.let{
+//            avatarFun.setListenerStatikHourGoal {
                 goalYearStatistik.value = it
             }
-            avatarFun.setListenerStatikHourDream {
+            avatarSpis.diagramStatikHourDream.getState()?.value?.let{
+//            avatarFun.setListenerStatikHourDream {
                 dreamYearStatistik.value = it
             }
-            avatarFun.setListenerForStatistikHourGoal { week, month, year, all, countPlan ->
-                goalHourWeek.value = week
-                goalHourMonth.value = month
-                goalHourYear.value = year
-                goalHourAll.value = all
-                goalCountPlan.value = countPlan
+            avatarSpis.goalStat.getState()?.value?.let{ goalStat ->
+//            avatarFun.setListenerForStatistikHourGoal { week, month, year, all, countPlan ->
+                goalHourWeek.value = goalStat.week
+                goalHourMonth.value = goalStat.month
+                goalHourYear.value = goalStat.year
+                goalHourAll.value = goalStat.all
+                goalCountPlan.value = goalStat.countPlan
             }
-            avatarFun.setListenerHourForStatistikDream { week, month, year, all, countPlan ->
-                dreamHourWeek.value = week
-                dreamHourMonth.value = month
-                dreamHourYear.value = year
-                dreamHourAll.value = all
-                dreamCountPlan.value = countPlan
+            avatarSpis.dreamStat.getState()?.value?.let{
+//            avatarFun.setListenerHourForStatistikDream { week, month, year, all, countPlan ->
+                dreamHourWeek.value = it.week
+                dreamHourMonth.value = it.month
+                dreamHourYear.value = it.year
+                dreamHourAll.value = it.all
+                dreamCountPlan.value = it.countPlan
             }
             setAvatarListener = true
         }

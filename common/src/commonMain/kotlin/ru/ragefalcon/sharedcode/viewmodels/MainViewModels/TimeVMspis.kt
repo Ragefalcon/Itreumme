@@ -25,6 +25,7 @@ class TimeVMspis(private val objForSpis: TimeVMobjForSpis) {
             setMapStatikToItemYearGraf(it) { ff(it) }
         }
     })
+
     val spisShablonDenPlan =
         ItrCommListWithOpisObserveObj(objForSpis.spisShablonDenPlan.getMyObserveObj(), objForSpis.sverShablonDenPlan)
     val spisNextAction =

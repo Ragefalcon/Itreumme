@@ -17,6 +17,7 @@ import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentFinanceBinding
 import ru.ragefalcon.tutatores.extensions.setOnItemSelectedListener
 import ru.ragefalcon.tutatores.extensions.showMyMessage
+import java.lang.ref.WeakReference
 
 class SchetFragment() : BaseFragmentVM<FragmentFinanceBinding>(FragmentFinanceBinding::inflate) {
 
@@ -25,7 +26,7 @@ class SchetFragment() : BaseFragmentVM<FragmentFinanceBinding>(FragmentFinanceBi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
-            val menuPopupSchet = MyPopupMenuItem<ItemCommonFinOper>(this@SchetFragment, "SchetDelChange").apply {
+            val menuPopupSchet = MyPopupMenuItem<ItemCommonFinOper>(WeakReference(this@SchetFragment), "SchetDelChange").apply {
                 addButton(MenuPopupButton.DELETE) {
                     viewmodel.addFin.delPerevod(it)
                 }

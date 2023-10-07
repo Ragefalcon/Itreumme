@@ -5,8 +5,10 @@ import android.util.Log
 import android.view.View
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
-import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.ragefalcon.sharedcode.extensions.roundToString
 import ru.ragefalcon.tutatores.commonfragments.*
 import ru.ragefalcon.tutatores.databinding.FragmentGoalDetailBinding
@@ -47,7 +49,8 @@ class AvatarGoalDetailFragment() : BaseFragmentVM<FragmentGoalDetailBinding>(Fra
                 if (it.opis!="") tvOpisGoal.text = it.opis  else collapse(tvOpisGoal,duration = 0)
                 with(viewmodel) {
                     avatarFun.selectGoalForDiagram(it.id.toLong())
-                    avatarFun.setListenerStatikHourGoal {
+                    avatarSpis.diagramStatikHourGoal.observe(viewLifecycleOwner){
+//                    avatarFun.setListenerStatikHourGoal {
                             rectDiagStatikGoal.setItemsYears(it)
                             rectDiagStatikGoal.layoutParams = LinearLayout.LayoutParams(
                                 rectDiagStatikGoal.getWidthRectDiag(),
@@ -56,12 +59,16 @@ class AvatarGoalDetailFragment() : BaseFragmentVM<FragmentGoalDetailBinding>(Fra
                             hsvStatikDiag.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
                     }
                     avatarFun.setSelectedGoalListenerForStatistik(it.id.toLong())
-                    avatarFun.setListenerForStatistikHourGoal{ week, month, year, all, count ->
-                        tvValueGoalStat4.text = week
-                        tvValueGoalStat3.text = month
-                        tvValueGoalStat2.text = year
-                        tvGoalHourFrcl.text = all
-                        tvPrivsGoalCount.text = count
+                    avatarSpis.goalStat.observe(viewLifecycleOwner){ goalStat ->
+                        Log.d("MyTag", "avatarSpis.goalStat.observe(viewLifecycleOwner)")
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                            Log.d("MyTag", "avatarSpis Scope(viewLifecycleOwner)")
+                            tvValueGoalStat4.text = goalStat.week
+                            tvValueGoalStat3.text = goalStat.month
+                            tvValueGoalStat2.text = goalStat.year
+                            tvGoalHourFrcl.text = goalStat.all
+                            tvPrivsGoalCount.text = goalStat.count
+                        }
                     }
                 }
             }

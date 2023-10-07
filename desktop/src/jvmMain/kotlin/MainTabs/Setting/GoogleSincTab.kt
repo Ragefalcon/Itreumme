@@ -134,7 +134,8 @@ class GoogleSincTab(val dialLay: MyDialogLayout) {
                     }
                     LinearProgressIndicator(progressSett.value, modifier = Modifier.padding(top = 5.dp))
                     CircularProgressIndicator(progressSett.value, modifier = Modifier.padding(bottom = 5.dp))
-                    MyList(StateVM.listGFile) { _, item ->
+                    MyList(StateVM.ktorGOA.gFiles) { _, item ->
+//                    MyList(StateVM.listGFile) { _, item ->
                         ComItemGFile(item) { item, expanded ->
                             DropdownMenuItem(onClick = {
                                 StateVM.ktorGOA.downloadFile(item.id) { progress ->

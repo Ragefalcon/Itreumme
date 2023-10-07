@@ -12,6 +12,6 @@ enum class SettingsTabType(
     ) {
     SINC("Синхронизация", R.color.colorSchetTheme, R.color.colorSchetItem),
     FINANCE("Финансы", R.color.colorRasxodTheme, R.color.colorRasxodItem),
-    TIME("Время", R.color.colorDoxodTheme, R.color.colorDoxodItem);
+//    TIME("Время", R.color.colorDoxodTheme, R.color.colorDoxodItem);
 
 }

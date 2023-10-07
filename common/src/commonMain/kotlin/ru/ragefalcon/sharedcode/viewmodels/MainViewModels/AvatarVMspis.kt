@@ -4,6 +4,11 @@ import ru.ragefalcon.sharedcode.source.disk.ItrCommObserveObj
 
 class AvatarVMspis (private val objForSpis: AvatarVMobjForSpis) {
     val spisAvatarStat = ItrCommObserveObj(objForSpis.spisAvatarStat)
+    val dreamStat = ItrCommObserveObj(objForSpis.dreamStat)
+    val goalStat = ItrCommObserveObj(objForSpis.goalStat)
+    val diagramStatikHourDream = ItrCommObserveObj(objForSpis.diagramStatikHourDream)
+    val diagramStatikHourGoal = ItrCommObserveObj(objForSpis.diagramStatikHourGoal)
+
     val spisTreeSkills = ItrCommObserveObj(objForSpis.spisTreeSkills.getMyObserveObj())
     val spisBestDays = ItrCommObserveObj(objForSpis.spisBestDays.getMyObserveObj())
 

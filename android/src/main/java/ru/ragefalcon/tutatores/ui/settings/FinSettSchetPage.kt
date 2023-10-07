@@ -12,6 +12,7 @@ import ru.ragefalcon.tutatores.commonfragments.MenuPopupButton
 import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentTabFinSettBinding
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
+import java.lang.ref.WeakReference
 
 class FinSettSchetPage() : BaseFragmentVM<FragmentTabFinSettBinding>(FragmentTabFinSettBinding::inflate) {
 
@@ -26,7 +27,7 @@ class FinSettSchetPage() : BaseFragmentVM<FragmentTabFinSettBinding>(FragmentTab
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             }
             with(viewmodel) {
-                val menuPopupSettSchet = MyPopupMenuItem<ItemSettSchet>(this@FinSettSchetPage, "SchetDelChange").apply {
+                val menuPopupSettSchet = MyPopupMenuItem<ItemSettSchet>(WeakReference(this@FinSettSchetPage), "SchetDelChange").apply {
                     addButton(MenuPopupButton.UNOPEN) {
                         addFin.updSchetOpen(id = it.id.toLong(), false)
                     }

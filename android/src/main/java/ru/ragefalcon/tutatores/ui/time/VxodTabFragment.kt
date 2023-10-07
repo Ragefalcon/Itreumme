@@ -12,11 +12,11 @@ import ru.ragefalcon.tutatores.commonfragments.*
 import ru.ragefalcon.tutatores.databinding.FragmentVxodTabBinding
 import ru.ragefalcon.tutatores.extensions.getSFM
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
+import java.lang.ref.WeakReference
 import java.util.*
 
 class VxodTabFragment : BaseFragmentVM<FragmentVxodTabBinding>(FragmentVxodTabBinding::inflate) {
 
-    private var rvmAdapter = UniRVAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +26,8 @@ class VxodTabFragment : BaseFragmentVM<FragmentVxodTabBinding>(FragmentVxodTabBi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val menuPopup = MyPopupMenuItem<ItemVxod>(this, "VxodDelChange").apply {
+        val rvmAdapter = UniRVAdapter()
+        val menuPopup = MyPopupMenuItem<ItemVxod>(WeakReference(this), "VxodDelChange").apply {
             addButton(MenuPopupButton.DELETE) {
                 viewmodel.addTime.delVxod(it.id.toLong()){}
             }

@@ -14,6 +14,7 @@ import ru.ragefalcon.tutatores.commonfragments.*
 import ru.ragefalcon.tutatores.databinding.FragmentSelectDenShablonBinding
 import ru.ragefalcon.tutatores.extensions.getMyTransition
 import ru.ragefalcon.tutatores.extensions.getSFM
+import java.lang.ref.WeakReference
 
 class SelectDenPlanShablonPanelDial(callbackKey: String? = null) : MyFragmentForDialogVM<FragmentSelectDenShablonBinding>(FragmentSelectDenShablonBinding::inflate) {
 
@@ -36,9 +37,14 @@ class SelectDenPlanShablonPanelDial(callbackKey: String? = null) : MyFragmentFor
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             }
 
-            val menuPopup = MyPopupMenuItem<ItemShablonDenPlan>(this@SelectDenPlanShablonPanelDial, "ShablonDenPlanDelChange").apply {
+            val menuPopup = MyPopupMenuItem<ItemShablonDenPlan>(WeakReference(this@SelectDenPlanShablonPanelDial), "ShablonDenPlanDelChange").apply {
                 addButton(MenuPopupButton.DELETE) {
-                    viewmodel.addTime.delShablonDenPlan(it.id.toLong())
+                    viewmodel.addTime.delShablonDenPlan(it.id.toLong()){
+                        /*
+                        * TODO здесь необходимо реализовать функцию удаления изображений из памяти устройства
+                        * пример в Desctop версии: MainDB.complexOpisSpis.spisComplexOpisForBloknot.delAllImageForItem(it)
+                        * */
+                    }
                 }
             }
 

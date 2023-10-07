@@ -13,6 +13,7 @@ import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.ShabDoxodRVItem
 import ru.ragefalcon.tutatores.commonfragments.*
 import ru.ragefalcon.tutatores.databinding.FragmentSelectPlanPanelBinding
 import ru.ragefalcon.tutatores.extensions.*
+import java.lang.ref.WeakReference
 
 class SelectShablonDoxodPanel(
     private val fragment: Fragment,
@@ -65,7 +66,7 @@ class SelectShablonDoxodPanelFragment(
                 layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             }
             with(viewmodel) {
-                val menuPopup = MyPopupMenuItem<ItemShabDoxod>(this@SelectShablonDoxodPanelFragment, "ShabDoxDelChange").apply {
+                val menuPopup = MyPopupMenuItem<ItemShabDoxod>(WeakReference(this@SelectShablonDoxodPanelFragment), "ShabDoxDelChange").apply {
                     addButton(MenuPopupButton.DELETE) {
                         viewmodel.addFin.delShabDoxod(it.id.toLong())
                     }

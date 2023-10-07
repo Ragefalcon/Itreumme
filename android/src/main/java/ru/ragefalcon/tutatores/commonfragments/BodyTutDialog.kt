@@ -8,8 +8,9 @@ import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.bodydialogitem.BDBut
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.bodydialogitem.BDDateRVItem
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.bodydialogitem.BDTextRVItem
 import ru.ragefalcon.tutatores.databinding.FragmentTutDialogBinding
+import java.lang.ref.WeakReference
 
-class BodyTutDialog(val frag: MyFragmentForDialogVM<FragmentTutDialogBinding>) {
+class BodyTutDialog(val frag: WeakReference<MyFragmentForDialogVM<FragmentTutDialogBinding>>) {
     private val items: MutableLiveData<MutableList<UniRVItem>> = MutableLiveData(mutableListOf())
     fun getDialBody(): List<UniRVItem> = items.value!!
     var count = 0
@@ -19,8 +20,10 @@ class BodyTutDialog(val frag: MyFragmentForDialogVM<FragmentTutDialogBinding>) {
     var date: Long = 0
 
     fun observe(funobs: (List<UniRVItem>) -> Unit) {
-        countLD.observe(frag.viewLifecycleOwner) {
-            funobs(items.value!!)
+        frag.get()?.viewLifecycleOwner?.let {
+            countLD.observe(it) {
+                funobs(items.value!!)
+            }
         }
     }
 
@@ -44,14 +47,16 @@ class BodyTutDialog(val frag: MyFragmentForDialogVM<FragmentTutDialogBinding>) {
 
     fun addDateEdit(text: String, listener: (Long) -> Unit) {
 //        count++
-        items.value?.add(
-            UniRVItem(
-                BDDateRVItem(
-                    ItemBodyDialog(count.toString(), text),
-                    frag.viewLifecycleOwner,
-                    { listener.invoke(it) })
+        frag.get()?.viewLifecycleOwner?.let { fr ->
+            items.value?.add(
+                UniRVItem(
+                    BDDateRVItem(
+                        ItemBodyDialog(count.toString(), text),
+                        fr,
+                        { listener.invoke(it) })
+                )
             )
-        )
+        }
         countLD.value = count
     }
 }

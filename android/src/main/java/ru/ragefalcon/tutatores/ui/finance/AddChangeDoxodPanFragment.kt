@@ -11,6 +11,7 @@ import ru.ragefalcon.tutatores.commonfragments.OneVoprosStrDial
 import ru.ragefalcon.tutatores.databinding.FragmentAddChangeFinBinding
 import ru.ragefalcon.tutatores.extensions.getSFM
 import ru.ragefalcon.tutatores.extensions.showMyMessage
+import java.lang.ref.WeakReference
 
 class AddChangeDoxodPanFragment(item: ItemDoxod? = null) :
     FragAddChangeDialHelper<ItemDoxod, FragmentAddChangeFinBinding>(
@@ -129,7 +130,8 @@ class AddChangeDoxodPanFragment(item: ItemDoxod? = null) :
                 change = false
             }
 
-            val addFinShablon = OneVoprosStrDial(this@AddChangeDoxodPanFragment, "voprosNameFinShablon", listener = {
+            val addFinShablon = OneVoprosStrDial(
+                WeakReference(this@AddChangeDoxodPanFragment), "voprosNameFinShablon", listener = {
                 val sd = spinner.selectedItem as Pair<String, String>
                 val ssch = srSchetAdd.selectedItem as Pair<String, String>
                 viewmodel.addFin.addShabDoxod(

@@ -14,6 +14,7 @@ import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentPrivPlanAndStapBinding
 import ru.ragefalcon.tutatores.ui.time.SelectedPlanPanel
 import ru.ragefalcon.tutatores.ui.time.SelectedPlanStapPanel
+import java.lang.ref.WeakReference
 import java.util.*
 
 class PrivsGoalDial(idGoalDream: Long? = null) :
@@ -39,7 +40,7 @@ class PrivsGoalDial(idGoalDream: Long? = null) :
             with(viewmodel) {
                 avatarFun.setSelectedIdForPrivsGoal(idGoalDream ?: -1)
                 val menuPopupPrivsGoal =
-                    MyPopupMenuItem<ItemPrivsGoal>(this@PrivsGoalDial, "menuPopupPrivsGoal").apply {
+                    MyPopupMenuItem<ItemPrivsGoal>(WeakReference(this@PrivsGoalDial), "menuPopupPrivsGoal").apply {
                         addButton(MenuPopupButton.DELETE) {
                             addAvatar.delPrivsGoal(it.id.toLong())
                         }

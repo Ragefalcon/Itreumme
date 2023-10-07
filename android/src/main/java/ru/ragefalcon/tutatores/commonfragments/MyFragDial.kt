@@ -12,6 +12,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import ru.ragefalcon.tutatores.R
 import ru.ragefalcon.tutatores.databinding.FragmentMyDialogBinding
 import ru.ragefalcon.tutatores.extensions.getCFM

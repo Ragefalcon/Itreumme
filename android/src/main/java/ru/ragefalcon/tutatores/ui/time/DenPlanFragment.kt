@@ -25,12 +25,12 @@ import ru.ragefalcon.tutatores.databinding.FragmentDenPlanBinding
 import ru.ragefalcon.tutatores.extensions.*
 import ru.ragefalcon.tutatores.ui.viewmodels.AndroidFinanceViewModel
 import ru.ragefalcon.tutatores.ui.viewmodels.MyStateViewModel
+import java.lang.ref.WeakReference
 import java.util.*
 
 
 class DenPlanFragment : FragSaveInstanseDelegate() {
 
-    private var rvmAdapter = UniRVAdapter()
 
     var denPlans = UniRVItemList()
     var napoms = UniRVItemList()
@@ -85,17 +85,28 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val menuPopupDP = MyPopupMenuItem<ItemDenPlan>(this, "DenPlanDelChange").apply {
+        val rvmAdapter = UniRVAdapter()
+        val menuPopupDP = MyPopupMenuItem<ItemDenPlan>(WeakReference(this), "DenPlanDelChange").apply {
             addButton(MenuPopupButton.DELETE) {
-                viewmodel.addTime.delDenPlan(it.id.toLong())
+                viewmodel.addTime.delDenPlan(it.id.toLong()){
+                    /*
+                    * TODO здесь необходимо реализовать функцию удаления изображений из памяти устройства
+                    * пример в Desctop версии: MainDB.complexOpisSpis.spisComplexOpisForBloknot.delAllImageForItem(it)
+                    * */
+                }
             }
             addButton(MenuPopupButton.CHANGE) {
                 showAddChangeFragDial(TimeAddDenPlanPanelFragment(it), getSFM())
             }
         }
-        val menuPopupN = MyPopupMenuItem<ItemNapom>(this, "NapomDelChange").apply {
+        val menuPopupN = MyPopupMenuItem<ItemNapom>(WeakReference(this), "NapomDelChange").apply {
             addButton(MenuPopupButton.DELETE) {
-                viewmodel.addTime.delNapom(it.id.toLong())
+                viewmodel.addTime.delNapom(it.id.toLong()){
+                    /*
+                    * TODO здесь необходимо реализовать функцию удаления изображений из памяти устройства
+                    * пример в Desctop версии: MainDB.complexOpisSpis.spisComplexOpisForBloknot.delAllImageForItem(it)
+                    * */
+                }
             }
             addButton(MenuPopupButton.CHANGE) {
                 showAddChangeFragDial(TimeAddNapomFragDialog(item = it), getSFM())
@@ -111,7 +122,7 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
 
             with(viewmodel) {
 
-                val addBestDays = OneVoprosStrDial(this@DenPlanFragment, "voprosNameBestDay", listener = {
+                val addBestDays = OneVoprosStrDial(WeakReference(this@DenPlanFragment), "voprosNameBestDay", listener = {
                     addAvatar.addBestDay(it, dateOporDp.value?.time ?: 0)
                 }, listener_cancel = {
                     buttToggleBestday.isChecked = false
@@ -268,8 +279,8 @@ class DenPlanFragment : FragSaveInstanseDelegate() {
                             3L -> hour * 0.25
                             else -> 0.0
                         }
-                        it.gotov = prog.toDouble()
-                        it.sum_hour = hour
+//                        it.gotov = prog.toDouble()
+//                        it.sum_hour = hour
                         selTextView?.text = Date().fromHourFloat(it.sum_hour.toFloat())
                             .humanizeTime()
 

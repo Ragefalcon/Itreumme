@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock.sleep
 import android.util.AttributeSet
-import android.view.Gravity
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.SavedStateViewModelFactory
@@ -59,20 +60,25 @@ class MainActivity : AppCompatActivity(), Postman {
 
     private lateinit var binding: ActivityMainBinding
 
-
     private fun googleSilentSignIn() {
         if (stateViewModel.authCode.value == "") {
             val googleSignInClient = GoogleSignIn.getClient(this, stateViewModel.gso);
+            Log.d("MyTag", "googleSignInClient = ${googleSignInClient}")
             val task: Task<GoogleSignInAccount> = googleSignInClient.silentSignIn()
+            Log.d("MyTag", "task = ${task}")
             if (task.isSuccessful) {
+                Log.d("MyTag", "task.isSuccessful = ${task.isSuccessful}")
                 val signInAccount = task.result
                 stateViewModel.authCode.value = signInAccount?.serverAuthCode
             } else {
+                Log.d("MyTag", "task else")
                 task.addOnCompleteListener { task ->
                     try {
                         val signInAccount = task.getResult(ApiException::class.java)
                         stateViewModel.authCode.value = signInAccount?.serverAuthCode
+                        Log.d("MyTag", "signInAccount?.serverAuthCode = ${signInAccount?.serverAuthCode}")
                     } catch (apiException: ApiException) {
+                        Log.d("MyTag", "google silent signIn exception: ${apiException.message}")
                     }
                 }
             }
@@ -85,20 +91,6 @@ class MainActivity : AppCompatActivity(), Postman {
         val view = binding.root
         
         setContentView(view)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         container = findViewById(R.id.main_fragment)
         drawer = findViewById(R.id.drawer_layout)
@@ -119,8 +111,6 @@ class MainActivity : AppCompatActivity(), Postman {
 
         }
 
-
-
         viewmodel.addDateOwner(this)
 
         val tvTitleHeader = sideBar?.getHeaderView(0)?.findViewById<TextView>(R.id.title_my_header)
@@ -130,12 +120,6 @@ class MainActivity : AppCompatActivity(), Postman {
 
             if (it != "") {
                 sideBar?.getHeaderView(0)?.findViewById<ToggleButton>(R.id.tb_google_online)?.isChecked = true
-
-
-
-
-
-
             }   else    {
                 sideBar?.getHeaderView(0)?.findViewById<ToggleButton>(R.id.tb_google_online)?.isChecked = false
             }
@@ -143,8 +127,6 @@ class MainActivity : AppCompatActivity(), Postman {
         CoroutineScope(Dispatchers.Default).launch {
             googleSilentSignIn()
         }
-
-
 
         ViewCompat.animate(binding.imgVerxPaper)
             .alpha(finAlpha)
@@ -171,35 +153,17 @@ class MainActivity : AppCompatActivity(), Postman {
     override fun onResume() {
         super.onResume()
         setWindowTransparency { statusBarSize, navigationBarSize ->
-
             if (stateViewModel.firstStart) {
                 stateViewModel.statusBarSize.value = statusBarSize
                 stateViewModel.navigationBarSize.value = navigationBarSize
                 stateViewModel.firstStart = false
             }
             setMargins(container, container.paddingLeft, 0, container.paddingRight, 0)
-
-
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     override fun onBackPressed() {
-        drawer.openDrawer(Gravity.START)
-
+        drawer.openDrawer(GravityCompat.START)
     }
 
     companion object {
@@ -210,48 +174,9 @@ class MainActivity : AppCompatActivity(), Postman {
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 
-        
         const val ANIMATION_FAST_MILLIS = 50L
         const val ANIMATION_SLOW_MILLIS = 100L
         private const val IMMERSIVE_FLAG_TIMEOUT = 500L
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-
-
-
-        Snackbar.make(
-            container,
-            "$requestCode == ${stateViewModel.RC_SIGN_IN}\n resultCode = $data -- $RESULT_OK -- $RESULT_CANCELED",
-            Snackbar.LENGTH_LONG
-        )
-            .show()
-
-        Snackbar.make(container, "requestCode === stateViewModel.RC_SIGN_IN", Snackbar.LENGTH_LONG)
-            .show()
-
-
-        val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
-        try {
-            val account: GoogleSignInAccount? = task.getResult(ApiException::class.java)
-            Snackbar.make(container, "authCode === ${account?.serverAuthCode}", Snackbar.LENGTH_LONG)
-                .show()
-            stateViewModel.authCode.value = account?.serverAuthCode
-
-
-
-
-
-
-        } catch (e: ApiException) {
-
-
-        }
-
-
-
     }
 
     override fun setKeyUpVol(keyUV: () -> Unit) {
@@ -260,33 +185,14 @@ class MainActivity : AppCompatActivity(), Postman {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         when (keyCode) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             KeyEvent.KEYCODE_VOLUME_UP -> {
                 keyUpVol?.invoke()
-
-
-
                 return true
             }
             KeyEvent.KEYCODE_VOLUME_DOWN -> {
                 keyUpVol?.invoke()
                 Snackbar.make(container, "Нажата кнопка громкости DOWN", Snackbar.LENGTH_LONG)
                     .show()
-
-
                 return true
             }
         }
@@ -303,9 +209,7 @@ private fun loadBaseFileDB(context: Context) {
 }
 
 private fun loadBaseFileDB(context: Context, inputStream: InputStream, pathFile: String = "") {
-
     try {
-
         val outputFile = File(context.getDatabasePath("databasefff.db").path)
         val outputStream = FileOutputStream(outputFile)
 

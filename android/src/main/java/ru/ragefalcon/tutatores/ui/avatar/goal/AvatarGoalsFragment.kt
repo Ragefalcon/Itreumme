@@ -17,10 +17,10 @@ import ru.ragefalcon.tutatores.commonfragments.MenuPopupButton
 import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentGoalBinding
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
+import java.lang.ref.WeakReference
 
 class AvatarGoalsFragment() : BaseFragmentVM<FragmentGoalBinding>(FragmentGoalBinding::inflate) {
 
-    private var rvmAdapter = UniRVAdapter()
 
     private var selItem: ItemGoal? by instanceState()
 
@@ -38,6 +38,7 @@ class AvatarGoalsFragment() : BaseFragmentVM<FragmentGoalBinding>(FragmentGoalBi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val rvmAdapter = UniRVAdapter()
         postponeEnterTransition()
         /**без этого и  view.doOnPreDraw { startPostponedEnterTransition() } не будет срабатывать обратная анимация*/
         with(binding) {
@@ -49,7 +50,7 @@ class AvatarGoalsFragment() : BaseFragmentVM<FragmentGoalBinding>(FragmentGoalBi
             buttAddGoal.setOnClickListener {
                 showAddChangeFragDial(AvatarAddGoalFragDial())
             }
-            val menuPopupGoal = MyPopupMenuItem<ItemGoal>(this@AvatarGoalsFragment, "GoalDelChange").apply {
+            val menuPopupGoal = MyPopupMenuItem<ItemGoal>(WeakReference(this@AvatarGoalsFragment), "GoalDelChange").apply {
                 addButton(MenuPopupButton.DELETE) {
                     viewmodel.addAvatar.delGoal(it.id.toLong())
                 }

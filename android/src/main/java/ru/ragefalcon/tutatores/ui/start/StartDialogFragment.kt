@@ -8,6 +8,7 @@ import ru.ragefalcon.tutatores.commonfragments.BaseFragmentVM
 import ru.ragefalcon.tutatores.databinding.FragmentStartDialogBinding
 import ru.ragefalcon.tutatores.extensions.setSFMResultListener
 import ru.ragefalcon.tutatores.story.VoiceOver
+import java.lang.ref.WeakReference
 
 class StartDialogFragment : BaseFragmentVM<FragmentStartDialogBinding>(FragmentStartDialogBinding::inflate) {
 
@@ -16,7 +17,7 @@ class StartDialogFragment : BaseFragmentVM<FragmentStartDialogBinding>(FragmentS
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setSFMResultListener("FinalStartDialog") { _, _ ->
-            VoiceOver(this@StartDialogFragment).showDialog(VoiceOver.Companion.SpisVODialog.VO_SELECT_RAZDEL)
+            VoiceOver(WeakReference(this@StartDialogFragment)).showDialog(VoiceOver.Companion.SpisVODialog.VO_SELECT_RAZDEL)
         }
         setSFMResultListener("actionStartToTime") { _, _ ->
             findNavController().navigate(
@@ -43,9 +44,9 @@ class StartDialogFragment : BaseFragmentVM<FragmentStartDialogBinding>(FragmentS
                 if (!firstStart) {
                     firstStart = true
                     if (it.find { it.name == "Birthday" } == null) {
-                        VoiceOver(this@StartDialogFragment).showDialog(VoiceOver.Companion.SpisVODialog.VO_FIRST)
+                        VoiceOver(WeakReference(this@StartDialogFragment)).showDialog(VoiceOver.Companion.SpisVODialog.VO_FIRST)
                     } else {
-                        VoiceOver(this@StartDialogFragment).showDialog(VoiceOver.Companion.SpisVODialog.VO_SELECT_RAZDEL)
+                        VoiceOver(WeakReference(this@StartDialogFragment)).showDialog(VoiceOver.Companion.SpisVODialog.VO_SELECT_RAZDEL)
                     }
                 }
             }

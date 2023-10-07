@@ -9,10 +9,12 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.widget.DatePicker
+import androidx.annotation.RequiresApi
 import androidx.core.animation.doOnEnd
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
@@ -20,6 +22,7 @@ import androidx.core.graphics.red
 import androidx.core.view.*
 import androidx.transition.TransitionInflater
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import ru.ragefalcon.tutatores.R
 import ru.ragefalcon.tutatores.adapter.FinanceType
 import ru.ragefalcon.tutatores.commonfragments.BaseFragmentVM
@@ -27,6 +30,7 @@ import ru.ragefalcon.tutatores.databinding.FragmentMainFinscreenBinding
 import ru.ragefalcon.tutatores.extensions.format
 import ru.ragefalcon.tutatores.extensions.setMargins
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
+import ru.ragefalcon.tutatores.ui.avatar.AvatarTabType
 import java.util.*
 import kotlin.math.hypot
 import kotlin.math.max
@@ -49,11 +53,10 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
 
     var monthBool = false
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Activity) myActivity = context
-        financeAnalizPageAdapter = FinancePageAdapter(true, childFragmentManager)
-        financePageAdapter = FinancePageAdapter(false, childFragmentManager)
         colorMain = requireContext().run {
             arrayOf(
                 getColor(R.color.colorRasxodTheme),
@@ -72,18 +75,24 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        financeAnalizPageAdapter = FinancePageAdapter(true, childFragmentManager, viewLifecycleOwner.lifecycle)
+        financePageAdapter = FinancePageAdapter(true, childFragmentManager, viewLifecycleOwner.lifecycle)
         with(binding) {
             stateViewModel.statusBarSize.observe(viewLifecycleOwner) {
                 setMargins(tvAllCapital, 0, stateViewModel.statusBarSize.value!!, 0, 0)
                 setMargins(buttFilter, buttFilter.marginStart, buttFilter.marginTop, buttFilter.marginEnd, stateViewModel.navigationBarSize.value!!)
             }
             vpFinance.adapter = financePageAdapter
+            TabLayoutMediator(tabLay, vpFinance) { tab, position ->
+                tab.text = FinanceType.values()[position].nameRazdel
+            }.attach()
             buttAnaliz.setOnCheckedChangeListener { buttonView, isChecked ->
                 colorNumberShift = tabLay.selectedTabPosition
-                financePageAdapter.analiz = isChecked
-                financePageAdapter.notifyDataSetChanged()
+                financePageAdapter.toggleAnaliz()// .analiz = isChecked
+//                financePageAdapter.notifyDataSetChanged()
                 if (isChecked) {
                     buttFilter.isChecked = false
                     buttFilter.isEnabled = false
@@ -151,7 +160,7 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
                 }
             }
             with(tabLay) {
-                setupWithViewPager(vpFinance)
+//                setupWithViewPager(vpFinance)
                 addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                     override fun onTabReselected(tab: TabLayout.Tab?) {
                     }
@@ -318,7 +327,7 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
         /**
          *  https://stackoverflow.com/questions/26819429/cannot-start-this-animator-on-a-detached-view-reveal-effect
          * */
-        view!!.post {
+        requireView().post {
             ViewAnimationUtils.createCircularReveal(
                 binding.vBackgr,
                 centerX,

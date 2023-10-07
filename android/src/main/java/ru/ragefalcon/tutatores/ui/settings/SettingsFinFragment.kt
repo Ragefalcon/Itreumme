@@ -2,6 +2,7 @@ package ru.ragefalcon.tutatores.ui.settings
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,12 +19,18 @@ class SettingsFinFragment  : BaseFragmentVM<FragmentFinSettBinding>(FragmentFinS
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        Log.d("MyTag", "!!!!!________________________--------------SettingsFinFragment onAttach")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("MyTag", "!!!!!________________________--------------SettingsFinFragment onDetach")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(binding){
-            vpFinSett.adapter = FinSettPageAdapter(requireActivity())
+            vpFinSett.adapter = FinSettPageAdapter(childFragmentManager,viewLifecycleOwner.lifecycle)
             tbScheta.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
                     vpFinSett.currentItem = FinSettTabType.SCHETA.ordinal

@@ -2,8 +2,11 @@ package ru.ragefalcon.tutatores.ui.journal;
 
 import android.os.Bundle
 import android.view.View
+import ru.ragefalcon.sharedcode.models.data.ItemComplexOpisText
 import ru.ragefalcon.sharedcode.models.data.ItemIdea
 import ru.ragefalcon.sharedcode.models.data.ItemIdeaStap
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TableNameForComplexOpis
+import ru.ragefalcon.sharedcode.viewmodels.MainViewModels.EnumData.TypeOpisBlock
 import ru.ragefalcon.tutatores.commonfragments.FragAddChangeDialHelper
 import ru.ragefalcon.tutatores.databinding.FragmentAddIdeaStapPanelBinding
 import java.util.*
@@ -27,7 +30,20 @@ class JournalAddStapIdeaPanelFragment(
         with(binding) {
             viewmodel.addJournal.addStapIdea(
                 name = editNameIdeaText.text.toString(),
-                opis = editOpisIdeaText.text.toString(),
+                opis = listOf(
+                    ItemComplexOpisText(
+                        -1L,
+                        TableNameForComplexOpis.spisIdea.nameTable,
+                        -1L,
+                        TypeOpisBlock.simpleText,
+                        1L,
+                        text = editOpisIdeaText.text.toString(),
+                        color = 1,
+                        fontSize = 3,
+                        cursiv = false,
+                        bold = 4
+                    )
+                ),
                 data = Date().time,
                 stat = vybStatIdea.selStat.toLong(),
                 idea_id = parentIdea?.id?.toLong() ?: -1L
@@ -41,7 +57,20 @@ class JournalAddStapIdeaPanelFragment(
                 viewmodel.addJournal.updStapIdea(
                     id = it.id.toLong(),
                     name = editNameIdeaText.text.toString(),
-                    opis = editOpisIdeaText.text.toString(),
+                    opis = listOf(
+                        ItemComplexOpisText(
+                            -1L,
+                            TableNameForComplexOpis.spisIdea.nameTable,
+                            it.id.toLong(),
+                            TypeOpisBlock.simpleText,
+                            1L,
+                            text = editOpisIdeaText.text.toString(),
+                            color = 1,
+                            fontSize = 3,
+                            cursiv = false,
+                            bold = 4
+                        )
+                    ),
                     data = Date().time,
                     stat = vybStatIdea.selStat.toLong(),
                     idea_id = parentIdea?.id?.toLong() ?: -1L

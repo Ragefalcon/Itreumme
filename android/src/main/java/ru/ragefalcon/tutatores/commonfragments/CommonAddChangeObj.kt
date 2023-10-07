@@ -5,9 +5,10 @@ import androidx.fragment.app.FragmentManager
 import ru.ragefalcon.sharedcode.models.data.Id_class
 import ru.ragefalcon.tutatores.extensions.getSFM
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
+import java.lang.ref.WeakReference
 
 class CommonAddChangeObj<T : Id_class> (
-    private val fragment: Fragment,
+    private val fragment: WeakReference<Fragment>,
     val callbackKey: String,
     listenerAdd: (() -> Unit)? = null,
     listenerChange: ((item: T) -> Unit)? = null
@@ -15,19 +16,19 @@ class CommonAddChangeObj<T : Id_class> (
 
     init {
         listenerAdd?.let { listener ->
-            FragAddChangeDialHelper.setRezListenerAdd(fragment, "${callbackKey}_add", listener)
+            fragment.get()?.let { FragAddChangeDialHelper.setRezListenerAdd(it, "${callbackKey}_add", listener) }
         }
         listenerChange?.let { listener ->
-            FragAddChangeDialHelper.setRezListenerChange(fragment, "${callbackKey}_change", listener)
+            fragment.get()?.let { FragAddChangeDialHelper.setRezListenerChange(it, "${callbackKey}_change", listener) }
         }
     }
 
     fun showDial(
         dial: (String)->FragAddChangeDialHelper<T , *>,
-        manager: FragmentManager = fragment.getSFM(),
+//        manager: FragmentManager? = fragment?.get()?.getSFM(),
         bound: MyFragDial.BoundSlide = MyFragDial.BoundSlide.top
     ) {
-        fragment.showAddChangeFragDial(dial(callbackKey), manager, callbackKey, bound)
+        fragment.get()?.let {  it.showAddChangeFragDial(dial(callbackKey), it.getSFM(), callbackKey, bound) }
     }
 
 }

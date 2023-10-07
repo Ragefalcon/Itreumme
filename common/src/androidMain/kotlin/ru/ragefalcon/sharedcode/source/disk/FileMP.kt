@@ -23,6 +23,8 @@ actual class FileMP {
         }
     }
 
+    actual fun length(): Long? = outputFile?.length()
+
     actual fun openFileOutput(path: String) {
         try {
             outputFile = File(path)

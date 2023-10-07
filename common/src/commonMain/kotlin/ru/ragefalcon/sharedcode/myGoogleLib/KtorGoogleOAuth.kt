@@ -11,20 +11,17 @@ import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
+import io.ktor.content.*
 import io.ktor.http.*
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.serialization.json.*
 import ru.ragefalcon.sharedcode.extensions.Parcelize
 import ru.ragefalcon.sharedcode.extensions.localUnix
 import ru.ragefalcon.sharedcode.models.data.Id_class
-import ru.ragefalcon.sharedcode.source.disk.CommonName
-import ru.ragefalcon.sharedcode.source.disk.DbArgs
-import ru.ragefalcon.sharedcode.source.disk.FileMP
-import ru.ragefalcon.sharedcode.source.disk.getCorDisp
+import ru.ragefalcon.sharedcode.source.disk.*
+import ru.ragefalcon.sharedcode.viewmodels.UniAdapters.MyObserveObj
 
 @Parcelize
 class ItemKtorGoogleParams(
@@ -54,7 +51,15 @@ class KtorGoogleOAuth(
     val networkFilesDir: DbArgs? = null,
     private val pushParams: (ItemKtorGoogleParams) -> Unit = {}
 ) {
-    var pushListDriveFile: (List<ItemGDriveFile>) -> Unit = {}
+    private var pushListDriveFile: (List<ItemGDriveFile>) -> Unit = {}
+
+    private val gFilesObserveObj = MyObserveObj<List<ItemGDriveFile>> { funForList ->
+        pushListDriveFile = { list ->
+            funForList(list)
+        }
+    }
+
+    val gFiles = ItrCommObserveObj<List<ItemGDriveFile>>(gFilesObserveObj)
 
     /**
      * Если оставить движок по умолчанию, а не выбрать CIO, то при загрузке файлов
@@ -64,6 +69,7 @@ class KtorGoogleOAuth(
      * */
     val client = HttpClient(CIO) {
 
+        expectSuccess = false
         install(JsonFeature) {
             serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
                 isLenient = false
@@ -85,13 +91,14 @@ class KtorGoogleOAuth(
             validateResponse { response ->
                 val statusCode = response.status.value
                 when (statusCode) {
-                    in 300..399 -> throw RedirectResponseException(response)
-                    in 400..499 -> throw ClientRequestException(response)
-                    in 500..599 -> throw ServerResponseException(response)
+                    in 300..307 -> throw RedirectResponseException(response, "RedirectResponseException")
+                    in 309..399 -> throw RedirectResponseException(response, "RedirectResponseException")
+                    in 400..499 -> throw ClientRequestException(response, "ClientRequestException")
+                    in 500..599 -> throw ServerResponseException(response, "ServerResponseException")
                 }
 
                 if (statusCode >= 600) {
-                    throw ResponseException(response)
+                    throw ResponseException(response, "ResponseException")
                 }
             }
         }
@@ -304,6 +311,89 @@ class KtorGoogleOAuth(
         }
     }
 
+    /**
+     * Про загрузку файлов на гугл диск
+     * https://developers.google.com/drive/api/guides/manage-uploads?hl=ru
+     * */
+    suspend fun uploadFileResumable(
+        pathSource: String,
+        nameUpF: String,
+        logF: (String) -> Unit,
+        prog: (Float) -> Unit = {}
+    ) {
+        coroutineScope {
+            val fileLoad = FileMP()
+            try {
+                fileLoad.openFileInput(dbArgs, pathSource)
+                fileLoad.getFileStream()?.let { inputF ->
+                    val chunkSize: Int = 4 * 262144 // Размер части файла
+                    val body1 = """
+                                {
+                                    "name": "$nameUpF.db",
+                                    "parents": ["appDataFolder"],
+                                    "supportsTeamDrives": true
+                                }
+                            """.trimIndent()
+                    val response0: HttpResponse =
+                        client.post("https://www.googleapis.com/upload/drive/v3/files") { //?uploadType=resumable
+                            parameter("uploadType", "resumable")
+                            headers {
+                                this[HttpHeaders.Authorization] = "Bearer ${params.access_token}"
+                                this["X-Upload-Content-Length"] = "${fileLoad.length()}"
+                                this["X-Upload-Content-Type"] = "application/octet-stream"
+                            }
+                            this.body = TextContent(body1, ContentType.Application.Json)
+                        }
+                    val uploadUrl = response0.headers[HttpHeaders.Location] ?: ""
+                    if (uploadUrl == "") cancel()
+                    logF(uploadUrl)
+
+                    var bytesUploaded = 0
+                    val fileLength = fileLoad.length() ?: 0L
+                    var lastByte = fileLength
+                    while (bytesUploaded < (fileLoad.length() ?: 0L)) {
+
+                        val bytesRead = if (lastByte - chunkSize > 0) chunkSize else lastByte.toInt()
+                        val chunk = inputF.copyOfRange(bytesUploaded, bytesUploaded + bytesRead.toInt())
+                        if (bytesRead > 0) {
+                            logF("log progress = ${bytesUploaded / (fileLoad.length() ?: 1L).toFloat()}")
+//                            prog()
+                            val contentRange =
+                                "bytes $bytesUploaded-${bytesUploaded + bytesRead - 1}/${(fileLoad.length() ?: 0L)}"
+
+                            val resp = client.post<HttpResponse>(uploadUrl) {
+                                headers.append(HttpHeaders.ContentType, ContentType.Application.OctetStream.toString())
+                                headers.append(HttpHeaders.ContentRange, contentRange)
+                                body = (chunk.copyOfRange(0, bytesRead))
+                                onUpload { bytesSentTotal, contentLength ->
+                                    prog((bytesUploaded + bytesSentTotal) / (fileLoad.length() ?: 1L).toFloat())
+                                }
+                            }
+
+                            val uploadByteRes = resp.headers[HttpHeaders.Range]?.substringAfter("-")?.toInt()
+                            bytesUploaded += bytesRead
+                            if (resp.status.value == 308) {
+                                uploadByteRes?.let {
+                                    if (it + 1 != bytesUploaded) {
+                                        bytesUploaded = it - 1
+                                    }
+                                } ?: run {
+                                    bytesUploaded = 0
+                                }
+                            }
+                            lastByte -= bytesRead
+                            println("bytesUploaded = ${bytesUploaded} :: fileLoad.length() =${fileLoad.length()}")
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                println("Exception: ${e.toString()}")
+            } finally {
+                fileLoad.closeFile()
+            }
+        }
+    }
+
     suspend fun overwriteFile(pathSource: String, id: String, prog: (Float) -> Unit = {}) {
         try {
             val fileLoad = FileMP()
@@ -392,7 +482,9 @@ class KtorGoogleOAuth(
                     }
                     var rez = ""
                     for (i in listFile) rez += i.name + "\n"
-                    pushListDriveFile(listFile)
+                    withContext(Dispatchers.Main){
+                        pushListDriveFile(listFile)
+                    }
                     ff(rez)
                 }
             } catch (exception: Exception) {

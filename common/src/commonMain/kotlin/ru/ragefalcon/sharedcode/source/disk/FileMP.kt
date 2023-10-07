@@ -9,6 +9,8 @@ expect class FileMP() {
         fun deleteDirectory(path: String)
     }
 
+    fun length(): Long?
+
     fun openFileOutput(path: String)
     fun openFileInput(path: String)
 

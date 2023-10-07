@@ -8,16 +8,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import ru.ragefalcon.tutatores.databinding.FragmentVoprosStringBinding
 import ru.ragefalcon.tutatores.extensions.*
+import java.lang.ref.WeakReference
 
 class OneVoprosStrDial(
-    private val fragment: Fragment,
+    private val fragment: WeakReference<Fragment>,
     val callbackKey: String,
     listener_cancel: (()->Unit)? = null,
     listener: ((answer: String) -> Unit)
 ) {
 
     init {
-        FragmentOneVoprosStr.setRezListener(fragment, callbackKey,listener_cancel, listener)
+        fragment.get()?.let { FragmentOneVoprosStr.setRezListener(it, callbackKey,listener_cancel, listener) }
     }
 
     fun showVopros(
@@ -25,14 +26,16 @@ class OneVoprosStrDial(
         namePole: String? = null,
         nameButt: String? = null,
         answerDefault: String? = null,
-        manager: FragmentManager = fragment.getSFM(),
+        manager: FragmentManager? = fragment.get()?.getSFM(),
         tag: String = "tegOneVoprosStrDial",
         bound: MyFragDial.BoundSlide = MyFragDial.BoundSlide.top
     ) {
-        fragment.showMyFragDial(FragmentOneVoprosStr( vopros,
+        if (manager != null) {
+            fragment.get()?.showMyFragDial(FragmentOneVoprosStr( vopros,
                 namePole,
                 nameButt,
                 answerDefault, callbackKey), manager, tag, bound)
+        }
     }
 
 }

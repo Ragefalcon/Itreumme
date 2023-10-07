@@ -34,9 +34,10 @@
             app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" android:id="@+id/rv_avatar_stat" android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp" android:layout_marginStart="16dp"/>
-    <ru.ragefalcon.tutatores.ui.drawclasses.MyTimerDraw
+            <ru.ragefalcon.tutatores.ui.drawclasses.MyTimerDraw
             android:layout_width="wrap_content"
-            android:layout_height="50dp" android:id="@+id/avatar_birthday"
+            android:layout_height="50dp"
+            android:id="@+id/avatar_birthday"
             app:layout_constraintTop_toBottomOf="@+id/tv_name_avatar_stat2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

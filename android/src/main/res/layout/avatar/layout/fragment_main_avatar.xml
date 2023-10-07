@@ -6,7 +6,7 @@
         android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.settings.SettingsMainScreen"
+        tools:context=".ui.avatar.AvatarMainScreen"
         android:id="@+id/cl_backgr22"
         android:background="@color/colorRasxodTheme"
 >

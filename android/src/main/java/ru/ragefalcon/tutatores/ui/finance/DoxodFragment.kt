@@ -19,6 +19,7 @@ import ru.ragefalcon.tutatores.extensions.pxF
 import ru.ragefalcon.tutatores.extensions.setOnItemSelectedListener
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
 import ru.ragefalcon.tutatores.extensions.showMyMessage
+import java.lang.ref.WeakReference
 
 class DoxodFragment() : BaseFragmentVM<FragmentFinanceBinding>(FragmentFinanceBinding::inflate) {
 
@@ -27,7 +28,7 @@ class DoxodFragment() : BaseFragmentVM<FragmentFinanceBinding>(FragmentFinanceBi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
-            val menuPopupDoxod = MyPopupMenuItem<ItemDoxod>(this@DoxodFragment, "DoxodDelChange").apply {
+            val menuPopupDoxod = MyPopupMenuItem<ItemDoxod>(WeakReference(this@DoxodFragment), "DoxodDelChange").apply {
                 addButton(MenuPopupButton.DELETE) {
                     viewmodel.addFin.delDoxod(it)
                 }

@@ -3,10 +3,12 @@ package ru.ragefalcon.tutatores.ui.settings
 import androidx.annotation.ColorRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import ru.ragefalcon.tutatores.R
 
-class FinSettPageAdapter(fm: FragmentActivity): FragmentStateAdapter(fm) {
+class FinSettPageAdapter(fm: FragmentManager, ls: Lifecycle) : FragmentStateAdapter(fm,ls) {
 
     override fun createFragment(position: Int): Fragment {
         return when(FinSettTabType.values()[position]){

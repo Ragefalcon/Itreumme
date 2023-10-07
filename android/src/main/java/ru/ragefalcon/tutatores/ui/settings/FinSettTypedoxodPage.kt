@@ -12,6 +12,7 @@ import ru.ragefalcon.tutatores.commonfragments.MenuPopupButton
 import ru.ragefalcon.tutatores.commonfragments.MyPopupMenuItem
 import ru.ragefalcon.tutatores.databinding.FragmentTabFinSettBinding
 import ru.ragefalcon.tutatores.extensions.showAddChangeFragDial
+import java.lang.ref.WeakReference
 
 class FinSettTypedoxodPage() : BaseFragmentVM<FragmentTabFinSettBinding>(FragmentTabFinSettBinding::inflate) {
 
@@ -27,7 +28,7 @@ class FinSettTypedoxodPage() : BaseFragmentVM<FragmentTabFinSettBinding>(Fragmen
             }
             with(viewmodel) {
                 val menuPopupSettTypedoxod =
-                    MyPopupMenuItem<ItemSettTypedoxod>(this@FinSettTypedoxodPage, "TypedoxodDelChange").apply {
+                    MyPopupMenuItem<ItemSettTypedoxod>(WeakReference(this@FinSettTypedoxodPage), "TypedoxodDelChange").apply {
                         addButton(MenuPopupButton.UNOPEN) {
                             addFin.updTypedoxodOpen(id = it.id.toLong(), false)
                         }

@@ -13,3 +13,4 @@ build/
 /captures
 .externalNativeBuild
 .cxx
+/android/src/main/java/ru/ragefalcon/tutatores/private_settings/

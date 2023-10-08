@@ -72,18 +72,26 @@ kotlin {
             }
         }
     }
+    jvmToolchain(17)
+
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 34
     defaultConfig {
-        minSdk = 21
-        targetSdk = 31
+        minSdk = 23
+        targetSdk = 34
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+//        sourceCompatibility = JavaVersion.VERSION_1_8
+//        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     sourceSets {
@@ -97,6 +105,7 @@ android {
             res.srcDirs("src/androidTest/res")
         }
     }
+    namespace = "ru.ragefalcon.sharedcode"
 }
 
 sqldelight {
@@ -120,6 +129,11 @@ sqldelight {
         sourceFolders = listOf("sqldelightQuest")
     }
 
+//    databases {
+//        create("Database") {
+//            packageName.set("com.example")
+//        }
+//    }
     database("DatabaseStyle") {
         packageName = "ru.ragefalcon.sharedcode"
         sourceFolders = listOf("sqldelightStyle")

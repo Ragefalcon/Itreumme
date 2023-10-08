@@ -7,34 +7,44 @@ plugins {
     alias(libs.plugins.androidx.navigation.safeargs)
     alias(libs.plugins.squareup.sqldelight)
 }
-
+kotlin{
+    jvmToolchain(17)
+}
 android {
 
-    compileSdk = 31
-    buildToolsVersion = "33-rc1"
+    namespace = "ru.ragefalcon.tutatores"
+
+    compileSdk = 34
+    buildToolsVersion = "34"
 
     defaultConfig {
 
 
-        minSdk = 21
-        targetSdk = 31
+        minSdk = 23
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
     }
     buildFeatures {
+//            compose = true
         viewBinding = true
     }
     buildTypes {
+    }
 
-
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+//        sourceCompatibility = JavaVersion.VERSION_1_8
+//        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
+//        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     sourceSets {
@@ -56,7 +66,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":common"))
+    implementation(projects.common)
 
     implementation(libs.androidx.activity.compose)
 

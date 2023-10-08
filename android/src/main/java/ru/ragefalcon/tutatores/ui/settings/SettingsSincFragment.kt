@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Environment
@@ -16,6 +17,7 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
@@ -34,6 +36,7 @@ import ru.ragefalcon.sharedcode.myGoogleLib.KtorGoogleOAuth
 import ru.ragefalcon.sharedcode.source.disk.CommonName
 import ru.ragefalcon.tutatores.BuildConfig.APPLICATION_ID
 import ru.ragefalcon.tutatores.ItreummeApplication
+import ru.ragefalcon.tutatores.ShowReasonsPermissions
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
 import ru.ragefalcon.tutatores.adapter.unirvadapter.rvitems.GDriveFileRVItem
@@ -81,6 +84,7 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
         super.onDetach()
         Log.d("MyTag", "!!!!!________________________--------------________SettingsSincFragment onDetach")
     }
+
     private var rvmAdapter = UniRVAdapter()
 
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -132,7 +136,7 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
         }
 
     private fun checkVisibleOnlineButt(value: Boolean) {
-        with(binding){
+        with(binding) {
             if (value) {
                 signInButton.visibility = INVISIBLE
                 buttExit.visibility = VISIBLE
@@ -149,7 +153,8 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
         }
     }
 
-    private val gFiles:  MutableLiveData<List<ItemGDriveFile>> = MutableLiveData<List<ItemGDriveFile>>(listOf())
+    private val gFiles: MutableLiveData<List<ItemGDriveFile>> = MutableLiveData<List<ItemGDriveFile>>(listOf())
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
@@ -161,80 +166,76 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
 
             val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), stateViewModel.gso);
 
-            val menuPopupGFile = MyPopupMenuItem<ItemGDriveFile>(WeakReference(this@SettingsSincFragment), "GFilePopup").apply {
-                addButton(MenuPopupButton.DELETE) { itemGFile ->
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        ktorGOA.deleteFile(itemGFile.id)
-                        getGFileList()
+            val menuPopupGFile =
+                MyPopupMenuItem<ItemGDriveFile>(WeakReference(this@SettingsSincFragment), "GFilePopup").apply {
+                    addButton(MenuPopupButton.DELETE) { itemGFile ->
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            ktorGOA.deleteFile(itemGFile.id)
+                            getGFileList()
+                        }
                     }
-                }
-                addButton(MenuPopupButton.LOAD) { itemGFile ->
-                    ktorGOA.downloadFile(itemGFile.id) { progress ->
-                        binding.progLoad.progress = (progress * 100).toInt()
-                    }
-                }
-                addButton(MenuPopupButton.OVERWRITE) { itemGFile ->
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        ktorGOA.overwriteFile("databasefff.db", itemGFile.id) { progress ->
+                    addButton(MenuPopupButton.LOAD) { itemGFile ->
+                        ktorGOA.downloadFile(itemGFile.id) { progress ->
                             binding.progLoad.progress = (progress * 100).toInt()
-                            if (progress == 1F) binding.progLoad.progress = 0
+                        }
+                    }
+                    addButton(MenuPopupButton.OVERWRITE) { itemGFile ->
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            ktorGOA.overwriteFile("databasefff.db", itemGFile.id) { progress ->
+                                binding.progLoad.progress = (progress * 100).toInt()
+                                if (progress == 1F) binding.progLoad.progress = 0
+                            }
                         }
                     }
                 }
-            }
             val vopName = OneVoprosStrDial(WeakReference(this@SettingsSincFragment), "voprosNameGnewFile") {
                 viewLifecycleOwner.lifecycleScope.launch {
                     val intentUploadService = Intent(requireActivity().applicationContext, UploadFileBD::class.java)
-                    intentUploadService.putExtra(UploadFileBD.nameExtra.nameBDonDevice.value,"databasefff.db")
-                    intentUploadService.putExtra(UploadFileBD.nameExtra.nameNewBDonGoogle.value,it)
+                    intentUploadService.putExtra(UploadFileBD.nameExtra.nameBDonDevice.value, "databasefff.db")
+                    intentUploadService.putExtra(UploadFileBD.nameExtra.nameNewBDonGoogle.value, it)
                     when {
                         ContextCompat.checkSelfPermission(
                             requireActivity(),
-                            Manifest.permission.ACCESS_NOTIFICATION_POLICY
+                            Manifest.permission.POST_NOTIFICATIONS
                         ) == PackageManager.PERMISSION_GRANTED -> {
                             // You can use the API that requires the permission.
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                requireContext().applicationContext.startForegroundService(intentUploadService)
+                            } else {
+                                requireContext().applicationContext.startService(intentUploadService)
+                            }
+
                         }
-                        shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_NOTIFICATION_POLICY) -> {
-                        // In an educational UI, explain to the user why your app requires this
-                        // permission for a specific feature to behave as expected, and what
-                        // features are disabled if it's declined. In this UI, include a
-                        // "cancel" or "no thanks" button that lets the user continue
-                        // using your app without granting the permission.
-//                        showInContextUI(...)
-                    }
+
+                        shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
+                            // In an educational UI, explain to the user why your app requires this
+                            // permission for a specific feature to behave as expected, and what
+                            // features are disabled if it's declined. In this UI, include a
+                            // "cancel" or "no thanks" button that lets the user continue
+                            // using your app without granting the permission.
+                            showInContextUI()
+                        }
+
                         else -> {
                             // You can directly ask for the permission.
                             // The registered ActivityResultCallback gets the result of this request.
                             requestPermissionLauncher.launch(
-                                Manifest.permission.ACCESS_NOTIFICATION_POLICY)
+                                Manifest.permission.ACCESS_NOTIFICATION_POLICY
+                            )
                         }
                     }
-                    requireActivity().startService(intentUploadService)
-//                    ktorGOA.uploadFileResumable("databasefff.db", it,{ messageFromUploadFile ->
-//                        Log.d("MyTag", "messageFromUploadFile = ${messageFromUploadFile}")
-//                    }) { progress ->
-//                        binding.progLoad.progress = (progress * 100).toInt()
-//                    }
-//                    getGFileList()
                 }
             }
-            val vopNameFolder = OneVoprosStrDial(WeakReference(this@SettingsSincFragment), "voprosNameGnewFolder") { nameFolder ->
-                viewLifecycleOwner.lifecycleScope.launch {
-                    ktorGOA.createFolder(nameFolder)
-                    getGFileList()
+            val vopNameFolder =
+                OneVoprosStrDial(WeakReference(this@SettingsSincFragment), "voprosNameGnewFolder") { nameFolder ->
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        ktorGOA.createFolder(nameFolder)
+                        getGFileList()
+                    }
                 }
-            }
 
-/*
-            ktorGOA.pushListDriveFile = { listGFile ->
-//                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main){
-                    gFiles.value = listGFile
-//                }
-            }
-*/
-
-            ktorGOA.gFiles.observe(viewLifecycleOwner){listGFile ->
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main){
+            ktorGOA.gFiles.observe(viewLifecycleOwner) { listGFile ->
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                     Log.d("MyTag", "############################    ktorGOA.gFiles.observe work")
                     rvmAdapter.updateData(formUniRVItemList(listGFile) { item ->
                         GDriveFileRVItem(item, longTapListener = { itemGFile ->
@@ -298,6 +299,11 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
         }
     }
 
+    private fun showInContextUI() {
+        val intentShowReasons = Intent(requireContext(), ShowReasonsPermissions::class.java)
+        intentShowReasons.putExtra(ShowReasonsPermissions.keyExtraPermissions, Manifest.permission.POST_NOTIFICATIONS)
+        startActivity(intentShowReasons)
+    }
 
 
     private fun copyBdToDevice() {
@@ -315,7 +321,7 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
                     intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION;
                     startActivity(intent);
                 }
-/**
+                /**
                  * https://stackoverflow.com/questions/62782648/android-11-scoped-storage-permissions/67140033
                  * Т.к. я стартую активити без возвращения результата, то для копии БД кнопку будет нужно нажать еще раз.
                  * */
@@ -328,6 +334,7 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
             copyFileDBToDevice()
         }
     }
+
     private fun getGFileList() {
         ktorGOA.GetAppFilesList {
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {

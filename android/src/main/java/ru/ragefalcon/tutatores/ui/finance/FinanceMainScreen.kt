@@ -302,14 +302,14 @@ class FinanceMainScreen : BaseFragmentVM<FragmentMainFinscreenBinding>(FragmentM
     }
 
     class MyVPAL() : ViewPropertyAnimatorListener {
-        override fun onAnimationEnd(view: View?) {
+        override fun onAnimationEnd(view: View) {
             if (view?.alpha == 0f) {
                 view.visibility = android.view.View.INVISIBLE
             }
         }
-        override fun onAnimationCancel(view: View?) {
+        override fun onAnimationCancel(view: View) {
         }
-        override fun onAnimationStart(view: View?) {
+        override fun onAnimationStart(view: View) {
         }
     }
 

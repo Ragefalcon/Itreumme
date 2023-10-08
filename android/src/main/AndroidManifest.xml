@@ -2,10 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools" package="ru.ragefalcon.tutatores">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage"/>
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
             android:name=".ItreummeApplication"
@@ -19,10 +20,13 @@
     >
         <service android:name=".services.UploadFileBD"
                  android:permission="android.permission.READ_EXTERNAL_STORAGE|android.permission.INTERNET"
+                 android:foregroundServiceType="dataSync"
                  android:enabled="true"
                  android:exported="false"
         />
         <!--                 android:description="Служба в фоне загружает файл базы данных на гугл диск."-->
+        <activity android:name=".ShowReasonsPermissions"
+                  android:theme="@style/Theme.PermissionsShowScreen"/>
         <activity android:name=".MainActivity"
                   android:exported="true"
                   android:theme="@style/SplashTheme"

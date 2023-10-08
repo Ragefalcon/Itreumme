@@ -15,7 +15,7 @@ kotlin {
             dependencies {
                 implementation(compose.desktop.currentOs)
 
-                implementation(project(":common"))
+                implementation(projects.common)
 
                 implementation(libs.io.ktor.server.netty)
                 implementation(libs.io.ktor.websockets)

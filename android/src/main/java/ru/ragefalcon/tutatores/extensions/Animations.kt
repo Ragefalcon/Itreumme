@@ -16,15 +16,15 @@ fun getMyAnimListener(
 ): ViewPropertyAnimatorListener {
 
     return object : ViewPropertyAnimatorListener {
-        override fun onAnimationEnd(view: View?) {
+        override fun onAnimationEnd(view: View) {
             aEnd(view)
         }
 
-        override fun onAnimationCancel(view: View?) {
+        override fun onAnimationCancel(view: View) {
             aCancel(view)
         }
 
-        override fun onAnimationStart(view: View?) {
+        override fun onAnimationStart(view: View) {
             aStart(view)
         }
 

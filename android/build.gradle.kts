@@ -1,12 +1,11 @@
 plugins {
-    id("com.android.application")
-    kotlin("android")
-    id("org.jetbrains.compose")
-    id("kotlin-kapt")
-    id("kotlin-parcelize")
-    id("androidx.navigation.safeargs")
-    id("com.squareup.sqldelight")
-
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.androidx.navigation.safeargs)
+    alias(libs.plugins.squareup.sqldelight)
 }
 
 android {
@@ -57,56 +56,49 @@ android {
 }
 
 dependencies {
-    val sqldelight_version = "1.5.1"
-    val kotlin_version = "1.6.10"
-    val dagger_version = "2.48"
-
-    val nav_version = "2.4.0"
-
     implementation(project(":common"))
-    implementation("androidx.activity:activity-compose:1.3.1")
 
-    kapt("com.google.dagger:dagger-compiler:$dagger_version")
-    implementation("com.google.dagger:dagger:$dagger_version")
+    implementation(libs.androidx.activity.compose)
 
-    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")
+    kapt(libs.google.dagger.compiler)
+    implementation(libs.google.dagger)
 
-
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
-    implementation("androidx.gridlayout:gridlayout:1.0.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlin_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
-
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
-    implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.core:core-ktx:1.3.2")
-    implementation("androidx.constraintlayout:constraintlayout:2.0.4")
+    debugImplementation(libs.squareup.leakcanary)
 
 
-    implementation("com.google.android.material:material:1.3.0")
-    implementation("com.google.android.gms:play-services-auth:19.0.0")
-    implementation("androidx.recyclerview:recyclerview:1.2.0")
-    implementation("com.google.android.material:material:1.3.0")
-    implementation("com.github.bumptech.glide:glide:4.9.0")
-    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.3.1")
-    implementation("androidx.fragment:fragment-ktx:1.3.3")
-    implementation("androidx.drawerlayout:drawerlayout:1.1.1")
-    implementation("com.squareup.sqldelight:android-driver:$sqldelight_version")
-    implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
-    implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
-    implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
-    implementation("androidx.viewpager:viewpager:1.0.0")
-    testImplementation("junit:junit:4.12")
+    implementation(libs.jetbrains.kotlin.reflect)
+    implementation(libs.androidx.gridlayout)
+    testImplementation(libs.jetbrains.kotlin.test)
+    testImplementation(libs.jetbrains.kotlin.test.junit)
 
-    androidTestImplementation("androidx.test.ext:junit:1.1.2")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
-    androidTestImplementation("androidx.test:core:1.3.0")
-    androidTestImplementation("androidx.test:rules:1.3.0")
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.3.0")
-    androidTestImplementation("androidx.test:runner:1.3.0")
-    androidTestImplementation("com.android.support:palette-v7:31.0.0")
+    implementation(libs.jetbrains.kotlin.stdlib.jdk7)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.constraintlayout)
 
 
+    implementation(libs.google.android.material)
+    implementation(libs.google.android.gms.play.services.auth)
+    implementation(libs.google.android.material)
+    implementation(libs.github.bumptech.glide)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.drawerlayout)
+    implementation(libs.squareup.sqldelight.android.driver)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.dynamic.features.fragment)
+    implementation(libs.androidx.viewpager)
+    testImplementation(libs.junit.junit)
+
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.test.espresso.contrib)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.android.support.palette.v7)
 }

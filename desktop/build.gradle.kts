@@ -2,19 +2,11 @@ import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.jetbrains.compose)
 }
 
 kotlin {
-    val ktor_version = "1.6.2"
-    val korimVersion = "2.7.0"
-    val korioVersion = "2.7.0"
-    val sqldelight_version = "1.5.3"
-    val kotlin_version = "1.5.31"
-    val coroutine_version = "1.3.9"
-    val serializer_version = "0.20.0"
-
     jvm {
         withJava()
     }
@@ -25,14 +17,14 @@ kotlin {
 
                 implementation(project(":common"))
 
-                implementation ("io.ktor:ktor-server-netty:$ktor_version")
-                implementation("io.ktor:ktor-websockets:$ktor_version")
+                implementation(libs.io.ktor.server.netty)
+                implementation(libs.io.ktor.websockets)
 
-                implementation("com.soywiz.korlibs.korim:korim-jvm:$korimVersion")
-                implementation("com.soywiz.korlibs.korio:korio-jvm:$korioVersion")
+                implementation(libs.soywiz.korlibs.korim.jvm)
+                implementation(libs.soywiz.korlibs.korio.jvm)
 
-                implementation("junit:junit:4.13.2")
-                implementation("org.junit.jupiter:junit-jupiter:5.8.2")
+                implementation(libs.junit.junit)
+                implementation(libs.junit.jupiter)
             }
         }
     }

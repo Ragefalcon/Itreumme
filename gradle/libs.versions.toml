@@ -1,0 +1,142 @@
+[versions]
+androidGradlePlugin = "7.0.4"
+android_support_palette_v7 = "31.0.0"
+
+kotlin_version = "1.6.10"
+
+ktor_version = "1.6.2"
+
+sqldelight_version = "1.5.1"
+
+coroutine_version = "1.5.2"
+kotlinx_serialization_json = "1.2.2"
+klockVersion = "2.4.8"
+korimVersion = "2.7.0"
+korioVersion = "2.7.0"
+jetbrains_compose = "1.1.1"
+activity_compose = "1.3.1"
+
+dagger_version = "2.48"
+
+androidx_navigation = "2.4.0"
+androidx_gridlayout = "1.0.0"
+androidx_appcompat = "1.3.1"
+#androidx_appcompat = "1.2.0"
+androidx_core = "1.6.0"
+#androidx_core = "1.3.2"
+androidx_constraintlayout = "2.0.4"
+androidx_recyclerview = "1.2.0"
+androidx_legacy_support_v4 = "1.0.0"
+androidx_lifecycle_extensions = "2.2.0"
+androidx_lifecycle_viewmodel_savedstate = "2.3.1"
+androidx_fragment = "1.3.3"
+androidx_drawerlayout = "1.1.1"
+androidx_viewpager = "1.0.0"
+androidx_test = "1.3.0"
+androidx_test_espresso = "3.3.0"
+
+androidx_test_ext = "1.1.2"
+
+google_android_material = "1.3.0"
+google_android_gms_play_services_auth = "19.0.0"
+
+github_bumptech_glide = "4.9.0"
+
+junit_junit = "4.12"
+junit_jupiter = "5.8.2"
+
+squareup_leakcanary = "2.12"
+
+[libraries]
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity_compose" }
+androidx-gridlayout = { group = "androidx.gridlayout", name = "gridlayout", version.ref = "androidx_gridlayout" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx_appcompat" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx_core" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx_constraintlayout" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "androidx_recyclerview" }
+androidx-lifecycle-extensions = { group = "androidx.lifecycle", name = "lifecycle-extensions", version.ref = "androidx_lifecycle_extensions" }
+androidx-lifecycle-viewmodel-savedstate = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "androidx_lifecycle_viewmodel_savedstate" }
+androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "androidx_legacy_support_v4" }
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidx_fragment" }
+androidx-drawerlayout = { group = "androidx.drawerlayout", name = "drawerlayout", version.ref = "androidx_drawerlayout" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidx_navigation" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "androidx_navigation" }
+androidx-navigation-dynamic-features-fragment = { group = "androidx.navigation", name = "navigation-dynamic-features-fragment", version.ref = "androidx_navigation" }
+androidx-viewpager = { group = "androidx.viewpager", name = "viewpager", version.ref = "androidx_viewpager" }
+androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidx_test" }
+androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidx_test" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx_test" }
+
+google-dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger_version" }
+google-dagger = { group = "com.google.dagger", name = "dagger", version.ref = "dagger_version" }
+jetbrains-kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin_version" }
+jetbrains-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin_version" }
+jetbrains-kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin_version" }
+jetbrains-kotlin-stdlib-jdk7 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk7", version.ref = "kotlin_version" }
+jetbrains-kotlin-stdlib-jdk8 = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8", version.ref = "kotlin_version" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx_test_espresso" }
+androidx-test-espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "androidx_test_espresso" }
+squareup-leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "squareup_leakcanary" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx_test_ext" }
+android-support-palette-v7 = { group = "com.android.support", name = "palette-v7", version.ref = "android_support_palette_v7" }
+google-android-material = { group = "com.google.android.material", name = "material", version.ref = "google_android_material" }
+google-android-gms-play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "google_android_gms_play_services_auth" }
+github-bumptech-glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "github_bumptech_glide" }
+junit-junit = { group = "junit", name = "junit", version.ref = "junit_junit" }
+
+
+#COMMON
+
+soywiz-korlibs-klock = { group = "com.soywiz.korlibs.klock", name = "klock", version.ref = "klockVersion" }
+soywiz-korlibs-korim = { group = "com.soywiz.korlibs.korim", name = "korim", version.ref = "korimVersion" }
+soywiz-korlibs-korio = { group = "com.soywiz.korlibs.korio", name = "korio", version.ref = "korioVersion" }
+soywiz-korlibs-korim-jvm = { group = "com.soywiz.korlibs.korim", name = "korim-jvm", version.ref = "korimVersion" }
+soywiz-korlibs-korio-jvm = { group = "com.soywiz.korlibs.korio", name = "korio-jvm", version.ref = "korioVersion" }
+jetbrains-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin_version" }
+jetbrains-kotlin-stdlib-common = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib-common", version.ref = "kotlin_version" }
+jetbrains-kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutine_version" }
+jetbrains-kotlinx-coroutines-javafx = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-javafx", version.ref = "coroutine_version" }
+jetbrains-kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutine_version" }
+jetbrains-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx_serialization_json" }
+
+io-ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor_version" }
+io-ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor_version" }
+io-ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor_version" }
+io-ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor_version" }
+io-ktor-client-json = { group = "io.ktor", name = "ktor-client-json", version.ref = "ktor_version" }
+io-ktor-client-serialization = { group = "io.ktor", name = "ktor-client-serialization", version.ref = "ktor_version" }
+
+io-ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor_version"}
+io-ktor-client-json-jvm = { group = "io.ktor", name = "ktor-client-json-jvm", version.ref = "ktor_version"}
+io-ktor-client-serialization-jvm = { group = "io.ktor", name = "ktor-client-serialization-jvm", version.ref = "ktor_version"}
+io-ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor_version"}
+io-ktor-websockets = { group = "io.ktor", name = "ktor-websockets", version.ref = "ktor_version"}
+
+squareup-sqldelight-runtime = { group = "com.squareup.sqldelight", name = "runtime", version.ref = "sqldelight_version" }
+squareup-sqldelight-coroutines-extensions = { group = "com.squareup.sqldelight", name = "coroutines-extensions", version.ref = "sqldelight_version" }
+squareup-sqldelight-android-driver = { group = "com.squareup.sqldelight", name = "android-driver", version.ref = "sqldelight_version" }
+squareup-sqldelight-sqlite-driver = { group = "com.squareup.sqldelight", name = "sqlite-driver", version.ref = "sqldelight_version" }
+
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit_jupiter" }
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+
+androidx-navigation-safeargs = { id = "androidx.navigation.safeargs", version.ref = "androidx_navigation" }
+
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "jetbrains_compose" }
+
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin_version" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin_version" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin_version" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin_version" }
+
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin_version" }
+
+squareup-sqldelight = { id = "com.squareup.sqldelight", version.ref = "sqldelight_version" }
+
+
+[bundles]
+

@@ -1,24 +1,15 @@
 import org.jetbrains.compose.compose
 
 plugins {
-    id("com.android.library")
-    kotlin("multiplatform")
-    id("org.jetbrains.compose")
-    id("kotlinx-serialization")
-    id("kotlin-parcelize")
-    id("com.squareup.sqldelight")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.squareup.sqldelight)
+    alias(libs.plugins.jetbrains.compose)
+    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.multiplatform)
 }
 
 kotlin {
-    val ktor_version = "1.6.2"
-    val sqldelight_version = "1.5.1"
-    val kotlin_version = "1.6.10"
-    val coroutine_version = "1.5.2"
-    val klockVersion = "2.4.8"
-    val korimVersion = "2.7.0"
-    val korioVersion = "2.7.0"
-    val serializer_version = "0.20.0"
-
     android()
     jvm("desktop")
 
@@ -28,60 +19,56 @@ kotlin {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
-                api("org.jetbrains.kotlin:kotlin-stdlib-common")
+                api(libs.jetbrains.kotlin.stdlib.common)
 
                 implementation(compose.preview)
 
-                implementation("org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version")
 
-                implementation("com.soywiz.korlibs.klock:klock:$klockVersion")
-                implementation("com.soywiz.korlibs.korim:korim:$korimVersion")
-                implementation("com.soywiz.korlibs.korio:korio:$korioVersion")
+                implementation(libs.soywiz.korlibs.klock)
+                implementation(libs.soywiz.korlibs.korim)
+                implementation(libs.soywiz.korlibs.korio)
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version")
+                implementation(libs.jetbrains.kotlin.stdlib.common)
+                implementation(libs.jetbrains.kotlinx.coroutines.core)
+                implementation(libs.jetbrains.kotlinx.serialization.json)
 
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+                implementation(libs.io.ktor.client.auth)
+                implementation(libs.io.ktor.client.logging)
+                implementation(libs.io.ktor.client.core)
+                implementation(libs.io.ktor.client.cio)
+                implementation(libs.io.ktor.client.json)
+                implementation(libs.io.ktor.client.serialization)
 
-                implementation("io.ktor:ktor-client-auth:$ktor_version")
-                implementation("io.ktor:ktor-client-logging:$ktor_version")
-                implementation("io.ktor:ktor-client-core:$ktor_version")
-                implementation("io.ktor:ktor-client-cio:$ktor_version")
-                implementation("io.ktor:ktor-client-json:$ktor_version")
-                implementation("io.ktor:ktor-client-serialization:$ktor_version")
-
-                implementation ("com.squareup.sqldelight:runtime:$sqldelight_version")
-                implementation("com.squareup.sqldelight:coroutines-extensions:$sqldelight_version")
+                implementation(libs.squareup.sqldelight.runtime)
+                implementation(libs.squareup.sqldelight.coroutines.extensions)
             }
         }
         named("androidMain") {
             dependencies {
-                api("androidx.appcompat:appcompat:1.3.1")
-                api("androidx.core:core-ktx:1.6.0")
-                implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
+                api(libs.androidx.appcompat)
+                api(libs.androidx.core.ktx)
+                implementation(libs.jetbrains.kotlin.stdlib.jdk8)
 
-                implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
-                implementation("org.jetbrains.kotlin:kotlin-stdlib-common:$kotlin_version")
+                implementation(libs.jetbrains.kotlin.stdlib)
+                implementation(libs.jetbrains.kotlin.stdlib.common)
+                implementation(libs.jetbrains.kotlinx.coroutines.core)
+                implementation(libs.jetbrains.kotlinx.coroutines.android)
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version")
+                implementation(libs.io.ktor.client.android)
+                implementation(libs.io.ktor.client.json.jvm)
+                implementation(libs.io.ktor.client.serialization.jvm)
 
-                implementation("io.ktor:ktor-client-android:$ktor_version")
-                implementation("io.ktor:ktor-client-json-jvm:$ktor_version")
-                implementation("io.ktor:ktor-client-serialization-jvm:$ktor_version")
-
-                implementation("com.squareup.sqldelight:android-driver:$sqldelight_version")
+                implementation(libs.squareup.sqldelight.android.driver)
             }
         }
         named("desktopMain") {
             dependencies {
-                implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version")
-                implementation("com.soywiz.korlibs.korim:korim-jvm:$korimVersion")
-                implementation("com.soywiz.korlibs.korio:korio-jvm:$korioVersion")
-
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$coroutine_version")
-
-                implementation("com.squareup.sqldelight:sqlite-driver:$sqldelight_version")
+                implementation(libs.soywiz.korlibs.korim.jvm)
+                implementation(libs.soywiz.korlibs.korio.jvm)
+                implementation(libs.jetbrains.kotlin.stdlib)
+                implementation(libs.jetbrains.kotlinx.coroutines.core)
+                implementation(libs.jetbrains.kotlinx.coroutines.javafx)
+                implementation(libs.squareup.sqldelight.sqlite.driver)
             }
         }
     }

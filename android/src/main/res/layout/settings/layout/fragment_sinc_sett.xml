@@ -84,6 +84,15 @@
                 android:layout_below="@+id/sign_in_button" android:layout_toEndOf="@+id/butt_old_my_base"
                 android:layout_marginStart="0dp"/>
         <Button
+                android:text="CH!"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/butt_notif_sett"
+                android:paddingBottom="0dp" android:paddingTop="0dp"
+                android:layout_below="@+id/sign_in_button"
+                android:layout_toEndOf="@+id/butt_new_folder"
+                android:layout_marginStart="0dp"/>
+        <Button
                 android:text="Files"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/buttGetFiles"

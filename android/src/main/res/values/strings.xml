@@ -3,4 +3,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="channel_google_drive_name">Синхронизация с Google Drive</string>
+    <string name="channel_google_drive_description">Оповещения о загрузке данных с Google Drive или на него.</string>
+    <string name="channel_google_drive_id">Google_Drive</string>
 </resources>

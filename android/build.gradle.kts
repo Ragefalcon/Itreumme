@@ -26,7 +26,6 @@ android {
         versionName = "1.0"
     }
     buildFeatures {
-//            compose = true
         viewBinding = true
     }
     buildTypes {
@@ -39,12 +38,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-//        sourceCompatibility = JavaVersion.VERSION_1_8
-//        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_17.toString()
-//        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
     sourceSets {
@@ -83,6 +79,7 @@ dependencies {
 
     implementation(libs.jetbrains.kotlin.stdlib.jdk7)
     implementation(libs.androidx.appcompat)
+//    implementation(libs.androidx.core)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.constraintlayout)
 

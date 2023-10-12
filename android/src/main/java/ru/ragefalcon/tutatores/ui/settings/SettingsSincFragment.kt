@@ -1,8 +1,10 @@
 package ru.ragefalcon.tutatores.ui.settings
 
 import android.Manifest
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -10,6 +12,7 @@ import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.Environment
 import android.os.Environment.getExternalStorageDirectory
+import android.os.IBinder
 import android.provider.Settings
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
@@ -17,7 +20,6 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
@@ -36,6 +38,7 @@ import ru.ragefalcon.sharedcode.myGoogleLib.KtorGoogleOAuth
 import ru.ragefalcon.sharedcode.source.disk.CommonName
 import ru.ragefalcon.tutatores.BuildConfig.APPLICATION_ID
 import ru.ragefalcon.tutatores.ItreummeApplication
+import ru.ragefalcon.tutatores.R
 import ru.ragefalcon.tutatores.ShowReasonsPermissions
 import ru.ragefalcon.tutatores.adapter.unirvadapter.UniRVAdapter
 import ru.ragefalcon.tutatores.adapter.unirvadapter.formUniRVItemList
@@ -77,12 +80,10 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.d("MyTag", "!!!!!________________________--------------________SettingsSincFragment onAttach")
     }
 
     override fun onDetach() {
         super.onDetach()
-        Log.d("MyTag", "!!!!!________________________--------------________SettingsSincFragment onDetach")
     }
 
     private var rvmAdapter = UniRVAdapter()
@@ -108,10 +109,8 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
                                 .make(it, "Вход в Google drive успешно выполнен", Snackbar.LENGTH_LONG)
                                 .show()
                         }
-                        Log.d("MyTag", "authCode2 === ${signInAccount?.serverAuthCode}")
                         stateViewModel.authCode.value = signInAccount?.serverAuthCode
                     } catch (apiException: ApiException) {
-                        Log.wtf("MyTag", "Unexpected error parsing sign-in result")
                     }
                 }
             }
@@ -145,7 +144,7 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
                 buttNetworkMyBase.visibility = VISIBLE
             } else {
                 signInButton.visibility = VISIBLE
-//                buttExit.visibility = INVISIBLE
+                buttExit.visibility = INVISIBLE
                 buttGetFiles.visibility = INVISIBLE
                 buttUploadMyBase.visibility = INVISIBLE
                 buttNetworkMyBase.visibility = INVISIBLE
@@ -154,6 +153,37 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
     }
 
     private val gFiles: MutableLiveData<List<ItemGDriveFile>> = MutableLiveData<List<ItemGDriveFile>>(listOf())
+
+    private val progressValue = MutableLiveData<Int>(0)
+    private var mBound = false
+
+
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(componentName: ComponentName?, binder: IBinder?) {
+            mBound = true
+            (binder as? UploadFileBD.LocalBinder)?.getService()?.get()?.let { serviceUploadBD ->
+                serviceUploadBD.progressValue.observe(viewLifecycleOwner) {
+                    progressValue.value = it
+                }
+            }
+        }
+
+        override fun onServiceDisconnected(componentName: ComponentName?) {
+            mBound = false
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireContext().unbindService(connection)
+        mBound = false
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val intentBindService = Intent(requireContext(), UploadFileBD::class.java)
+        requireContext().bindService(intentBindService, connection, 0) //Context.BIND_AUTO_CREATE)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -165,6 +195,10 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
             }
 
             val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), stateViewModel.gso);
+
+            progressValue.observe(viewLifecycleOwner) {
+                binding.progLoad.progress = it
+            }
 
             val menuPopupGFile =
                 MyPopupMenuItem<ItemGDriveFile>(WeakReference(this@SettingsSincFragment), "GFilePopup").apply {
@@ -198,27 +232,21 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
                             requireActivity(),
                             Manifest.permission.POST_NOTIFICATIONS
                         ) == PackageManager.PERMISSION_GRANTED -> {
-                            // You can use the API that requires the permission.
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 requireContext().applicationContext.startForegroundService(intentUploadService)
                             } else {
                                 requireContext().applicationContext.startService(intentUploadService)
                             }
+                            val intentBindService = Intent(requireContext(), UploadFileBD::class.java)
+                            requireContext().bindService(intentBindService, connection, 0)
 
                         }
 
                         shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
-                            // In an educational UI, explain to the user why your app requires this
-                            // permission for a specific feature to behave as expected, and what
-                            // features are disabled if it's declined. In this UI, include a
-                            // "cancel" or "no thanks" button that lets the user continue
-                            // using your app without granting the permission.
                             showInContextUI()
                         }
 
                         else -> {
-                            // You can directly ask for the permission.
-                            // The registered ActivityResultCallback gets the result of this request.
                             requestPermissionLauncher.launch(
                                 Manifest.permission.ACCESS_NOTIFICATION_POLICY
                             )
@@ -265,7 +293,7 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
                 launcher.launch(signInIntent)
             }
             signInButton.visibility = VISIBLE
-//            buttExit.visibility = INVISIBLE
+            buttExit.visibility = INVISIBLE
             buttExit.setOnClickListener {
                 mGoogleSignInClient.revokeAccess()
                 mGoogleSignInClient.signOut()
@@ -295,6 +323,14 @@ class SettingsSincFragment() : BaseFragmentVM<FragmentSincSettBinding>(FragmentS
                     "Загрузить",
                     "Android_new_folder"
                 )
+            }
+            buttNotifSett.setOnClickListener {
+                val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, "ru.ragefalcon.tutatores")
+                    putExtra(Settings.EXTRA_CHANNEL_ID, getString(R.string.channel_google_drive_id))
+                }
+
+                startActivity(intent)
             }
         }
     }

@@ -1,5 +1,3 @@
-import org.jetbrains.compose.compose
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.squareup.sqldelight)
@@ -90,8 +88,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-//        sourceCompatibility = JavaVersion.VERSION_1_8
-//        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     sourceSets {
@@ -129,11 +125,6 @@ sqldelight {
         sourceFolders = listOf("sqldelightQuest")
     }
 
-//    databases {
-//        create("Database") {
-//            packageName.set("com.example")
-//        }
-//    }
     database("DatabaseStyle") {
         packageName = "ru.ragefalcon.sharedcode"
         sourceFolders = listOf("sqldelightStyle")

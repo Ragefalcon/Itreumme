@@ -83,20 +83,6 @@ object MainDB {
     val avatarFun = ObserFM.avatarFun
     val addAvatar = ObserFM.addAvatar
 
-    val goalYearStatistik = mutableStateOf(listOf<ItemYearGraf>())
-    val dreamYearStatistik = mutableStateOf(listOf<ItemYearGraf>())
-    val goalHourWeek = mutableStateOf("0")
-    val goalHourMonth = mutableStateOf("0")
-    val goalHourYear = mutableStateOf("0")
-    val goalHourAll = mutableStateOf("0")
-    val goalCountPlan = mutableStateOf("0")
-    val dreamHourWeek = mutableStateOf("0")
-    val dreamHourMonth = mutableStateOf("0")
-    val dreamHourYear = mutableStateOf("0")
-    val dreamHourAll = mutableStateOf("0")
-    val dreamCountPlan = mutableStateOf("0")
-
-
     /*******************************************************/
 
     val editStyleSpis = ObserFM.editStyleSpis
@@ -181,37 +167,6 @@ object MainDB {
         }
     }
 
-    private var setAvatarListener = false
-    fun setAvatarDreamGoalListener() {
-        if (!setAvatarListener) {
-            avatarSpis.diagramStatikHourGoal.getState()?.value?.let{
-//            avatarFun.setListenerStatikHourGoal {
-                goalYearStatistik.value = it
-            }
-            avatarSpis.diagramStatikHourDream.getState()?.value?.let{
-//            avatarFun.setListenerStatikHourDream {
-                dreamYearStatistik.value = it
-            }
-            avatarSpis.goalStat.getState()?.value?.let{ goalStat ->
-//            avatarFun.setListenerForStatistikHourGoal { week, month, year, all, countPlan ->
-                goalHourWeek.value = goalStat.week
-                goalHourMonth.value = goalStat.month
-                goalHourYear.value = goalStat.year
-                goalHourAll.value = goalStat.all
-                goalCountPlan.value = goalStat.countPlan
-            }
-            avatarSpis.dreamStat.getState()?.value?.let{
-//            avatarFun.setListenerHourForStatistikDream { week, month, year, all, countPlan ->
-                dreamHourWeek.value = it.week
-                dreamHourMonth.value = it.month
-                dreamHourYear.value = it.year
-                dreamHourAll.value = it.all
-                dreamCountPlan.value = it.countPlan
-            }
-            setAvatarListener = true
-        }
-    }
-
     init {
         updateInnerDialog(false)
         ObserFM.selPer.addUpdate {
@@ -240,5 +195,4 @@ object MainDB {
             addTime.startInnerTrigger(InnerStartTriggerEnum.StartTrigger)
         }
     }
-
 }

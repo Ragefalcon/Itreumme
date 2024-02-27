@@ -81,7 +81,7 @@ class GoogleSincTab(val dialLay: MyDialogLayout) {
                                 Modifier.height(50.dp).clickable(onClick = {
                                     mainFF()
 
-                                    val clientID = "your_client_id_from_google_console_project"
+                                    val clientID = System.getenv("GOOGLE_CLIENT_ID_DESKTOP")
                                     openInBrowser(
                                         URI(
                                             "https://accounts.google.com/o/oauth2/v2/auth?" +

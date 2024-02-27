@@ -73,6 +73,12 @@ open class BaseUniRVItem<T : Id_class>(
     }
 
     fun getType(): Int {
+        /**
+         * Кажется здесь ошибка. Я предполагал, что будет учитываться полный тип,
+         * но т.к. параметр типа T стирается при выполнении, то скорее всего, здесь, как и с типом List,
+         * всегда будет просто класс BaseUniRVItem, без параметра типа.
+         * Не уверен, что полноценно тестировал это, когда писал.
+         * */
         return this.javaClass.canonicalName?.hashCode() ?: -1
     }
 }
@@ -99,7 +105,8 @@ class UniRVMainAdapterViewHolder(val binding: ViewBinding) : RecyclerView.ViewHo
 class UniRVItem(private val item: BaseUniRVItem<*>) {
     fun getData() = item.getData()
 
-    fun <T : Id_class> getItem(t: KClass<T>): T? = if (t == getData()::class) getData() as T else null
+    inline fun <reified T : Id_class> getItem(): T? = getData() as? T
+//    fun <T : Id_class> getItem(t: KClass<T>): T? = if (t == getData()::class) getData() as T else null
 
     fun getId() = item.getId()
 

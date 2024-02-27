@@ -357,7 +357,6 @@ class DrawTwoRectDiagram {
                 ) {
                     Surface(onClick = {},
                         interactionSource = interactionSource,
-                        indication = null,
                         color = Color.Transparent,
                         modifier = Modifier
                             .padding(horizontal = 13.dp)

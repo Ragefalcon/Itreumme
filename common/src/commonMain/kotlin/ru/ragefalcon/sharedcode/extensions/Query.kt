@@ -1,35 +1,27 @@
 package ru.ragefalcon.sharedcode.extensions
 
-//import kotlinx.coroutines.*
-//import kotlinx.coroutines.*
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import ru.ragefalcon.sharedcode.source.disk.getCorDisp
 import kotlin.coroutines.CoroutineContext
 
 fun <T : Any> Query<T>.startMy(
-    keyF: () -> Int = { 1 },
-    ctxSave: (CoroutineContext) -> Unit,
-    stopF: (() -> Unit)? = null,
+    ctxSave: CoroutineContext,
     upf: (List<T>) -> Unit
 ) {
-    val keyStop = keyF()
-    CoroutineScope(getCorDisp()).async {
-        ctxSave(coroutineContext)
-        Result.success(
-            this@startMy.asFlow().mapToList().collect { list ->
-                if (keyF() != keyStop) {
-                    stopF?.invoke()
-                    coroutineContext.cancel()
-                } else {
-                    upf(list)
-                }
-            }
-        )
-    }
+    this@startMy
+        .asFlow()
+        .mapToList()
+        .flowOn(Dispatchers.Default)
+        .onEach { list ->
+            upf(list)
+        }
+        .launchIn(CoroutineScope(getCorDisp() + ctxSave))
 }
 

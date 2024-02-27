@@ -1,6 +1,7 @@
 package ru.ragefalcon.sharedcode.viewmodels.UniAdapters
 
 import com.squareup.sqldelight.Query
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import ru.ragefalcon.sharedcode.extensions.localUnix
 import ru.ragefalcon.sharedcode.extensions.startMy
@@ -42,10 +43,12 @@ open class UniQueryPeriodAdapter<T : Any>(private val selPer: PeriodSelecter) {
     private fun update() {
         qSeries++
         ctx?.cancel()
-        query?.let { it(selPer.dateBegin.localUnix(), selPer.dateEnd.localUnix()) }
-            ?.startMy({ qSeries }, { ctx = it }) {
-                updSpisF?.invoke(it)
-            }
-
+        ctx = Job()
+        ctx?.let { coroutineContext ->
+            query?.let { it(selPer.dateBegin.localUnix(), selPer.dateEnd.localUnix()) }
+                ?.startMy(coroutineContext) {
+                    updSpisF?.invoke(it)
+                }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package ru.ragefalcon.sharedcode.viewmodels.UniAdapters
 
 import com.squareup.sqldelight.Query
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import ru.ragefalcon.sharedcode.extensions.startMy
 import kotlin.coroutines.CoroutineContext
@@ -35,9 +36,15 @@ class UniQueryAdapter<T : Any>(private var query: Query<T>? = null) {
     private fun update() {
         qSeries++
         ctx?.cancel()
-        query?.startMy({ qSeries }, { ctx = it }) {
-            updSpisF?.invoke(it)
+        /**
+         * Нужно рассмотреть ситуацию когда сюда может падать запрос сразу из нескольких потоков.
+         * Может ли быть конфликт выполнения в этом месте.
+         * */
+        ctx = Job()
+        ctx?.let { coroutineContext ->
+            query?.startMy(coroutineContext) {
+                updSpisF?.invoke(it)
+            }
         }
-
     }
 }

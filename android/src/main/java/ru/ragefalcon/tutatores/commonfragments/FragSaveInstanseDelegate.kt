@@ -122,7 +122,7 @@ fun <T> putValueInBundle(savable: Bundle, key: String, value: T?) {
             is String -> savable.putString(key, it)
             is Bundle -> savable.putBundle(key, it)
             is Parcelable -> savable.putParcelable(key, it)
-            is ArrayList<*> -> savable.putParcelableArrayList(key, it as ArrayList<Parcelable>)
+            is ArrayList<*> -> savable.putParcelableArrayList(key, it as? ArrayList<Parcelable> ?: arrayListOf())
             is LongArray -> savable.putLongArray(key, it)
             is Enum<*> -> savable.putString(key, it.name)
             /**  ?????  **/

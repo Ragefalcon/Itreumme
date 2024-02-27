@@ -2,6 +2,7 @@ package ru.ragefalcon.sharedcode.viewmodels.UniAdapters
 
 
 import com.squareup.sqldelight.Query
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import ru.ragefalcon.sharedcode.extensions.startMy
 import kotlin.coroutines.CoroutineContext
@@ -47,10 +48,13 @@ open class UniConvertQueryAdapter<T: Any, K: Any> (private var query: Query<T>? 
     private fun update() {
         qSeries++
         ctx?.cancel()
-        query?.startMy ({qSeries}, { ctx = it}){
-            updSpisF?.invoke(it.map { type ->
-                adaptF(type)
-            })
+        ctx = Job()
+        ctx?.let { coroutineContext ->
+            query?.startMy ( coroutineContext ){
+                updSpisF?.invoke(it.map { type ->
+                    adaptF(type)
+                })
+            }
         }
 
     }

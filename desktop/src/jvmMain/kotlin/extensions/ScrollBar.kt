@@ -1,6 +1,7 @@
 package extensions
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.ScrollbarAdapter
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
@@ -77,7 +78,7 @@ fun BoxWithVScrollBar(
             content(scroll)
         }
         if (scroll.maxValue != Int.MAX_VALUE && scroll.maxValue > 0) MyVertScrollbar1(
-            rememberScrollbarAdapter(scroll),
+            OldScrollbarAdapter(scroll),
             dark,
             color
         )
@@ -100,7 +101,7 @@ fun BoxWithHScrollBar(
         ) {
             content(scroll)
         }
-        MyHorizScrollbar1(rememberScrollbarAdapter(scroll), dark, reverse, color)
+        MyHorizScrollbar1(OldScrollbarAdapter(scroll), dark, reverse, color)
     }
 }
 

@@ -153,6 +153,13 @@ fun Padej(N: Int, units: TimeUnits = TimeUnits.DAY): String {
         TimeUnits.DAY -> {
             st1 = "день"; st2 = "дня"; st3 = "дней"
         }
+
+        TimeUnits.MONTH -> {
+            st1 = "месяц"; st2 = "месяца"; st3 = "месяцев"
+        }
+        TimeUnits.YEAR -> {
+            st1 = "год"; st2 = "года"; st3 = "лет"
+        }
     }
 
     if ((N % 100 > 4) && (N % 100 < 21)) {

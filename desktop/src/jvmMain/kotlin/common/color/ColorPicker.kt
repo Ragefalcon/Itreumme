@@ -71,9 +71,8 @@ class ColorPicker() {
         B("B(RG)");
     }
 
-    private val typeBox = EnumDiskretSeekBar(MainChanel.R::class) {
+    private val typeBox = EnumDiskretSeekBar(tabs = MainChanel::class) {
         changeFromRGB(it)
-        var aa = MainChanel.R::class
     }
 
     fun getColor() = MyColorARGB(

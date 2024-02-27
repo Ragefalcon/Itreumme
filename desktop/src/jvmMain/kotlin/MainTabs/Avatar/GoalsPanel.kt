@@ -315,25 +315,25 @@ class GoalsPanel {
                             )
                             Row(Modifier.padding(end = 10.dp)) {
                                 Text(
-                                    MainDB.goalHourAll.value,
+                                    MainDB.avatarSpis.goalStat.getState().value?.all ?: "",
                                     modifier = Modifier,
                                     style = text2.copy(color = TEXT_ALL_HOUR_COLOR.getValue().toColor())
                                 )
                                 Text(" ( ", modifier = Modifier, style = text2)
                                 Text(
-                                    MainDB.goalHourYear.value,
+                                    MainDB.avatarSpis.goalStat.getState().value?.year ?: "",
                                     modifier = Modifier,
                                     style = text2.copy(color = TEXT_REST_HOUR_COLOR.getValue().toColor())
                                 )
                                 Text(" / ", modifier = Modifier, style = text2)
                                 Text(
-                                    MainDB.goalHourMonth.value,
+                                    MainDB.avatarSpis.goalStat.getState().value?.month ?: "",
                                     modifier = Modifier,
                                     style = text2.copy(color = TEXT_REST_HOUR_COLOR.getValue().toColor())
                                 )
                                 Text(" / ", modifier = Modifier, style = text2)
                                 Text(
-                                    MainDB.goalHourWeek.value,
+                                    MainDB.avatarSpis.goalStat.getState().value?.week ?: "",
                                     modifier = Modifier,
                                     style = text2.copy(color = TEXT_REST_HOUR_COLOR.getValue().toColor())
                                 )
@@ -343,7 +343,7 @@ class GoalsPanel {
                     }
                 }
                 MyTextButtStyle1(
-                    "Проекты: ${MainDB.goalCountPlan.value}",
+                    "Проекты: ${MainDB.avatarSpis.goalStat.getState().value?.count ?: ""}",
                     Modifier.padding(horizontal = 0.dp).padding(bottom = 0.dp),
                     myStyleTextButton = TextButtonStyleState(buttPrivPlan)
                 ) {
@@ -355,7 +355,7 @@ class GoalsPanel {
 
             rectDiagram.drawDiagram(
                 Modifier.fillMaxHeight().fillMaxWidth(1f),
-                MainDB.goalYearStatistik.value,
+                MainDB.avatarSpis.diagramStatikHourGoal.getState().value ?: listOf(),
                 darkBackground = false,
                 styleState = RectDiagramColorStyleState(rectDiagColor)
             )

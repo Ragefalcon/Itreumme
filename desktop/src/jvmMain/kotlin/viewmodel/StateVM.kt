@@ -123,8 +123,8 @@ object StateVM {
 
     private val fileToken = "fileTok"
 
-    private val clientID = "your_client_id_from_google_console_project"
-    private val clientSecret = "your_clientSecret_from_google_console_project"
+    private val clientID = System.getenv("GOOGLE_CLIENT_ID_DESKTOP")
+    private val clientSecret = System.getenv("GOOGLE_CLIENT_SECRET_DESKTOP")
 
     val params = mutableStateOf(ItemKtorGoogleParams())
 

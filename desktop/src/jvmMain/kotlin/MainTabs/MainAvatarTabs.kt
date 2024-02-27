@@ -32,9 +32,6 @@ class MainAvatarTabs(val dialLay: MyDialogLayout) {
 
     @Composable
     fun show() {
-        LaunchedEffect(MainDB) {
-            MainDB.setAvatarDreamGoalListener()
-        }
         Box {
             Row {
                 Column(Modifier.fillMaxWidth(0.65f).padding(start = 10.dp)) {

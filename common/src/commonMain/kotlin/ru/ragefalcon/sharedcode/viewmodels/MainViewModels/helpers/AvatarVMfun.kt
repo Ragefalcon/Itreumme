@@ -342,6 +342,7 @@ class AvatarVMfun(
     }
 
     fun removeFromProgressCharacteristicsMessage(item: Pair<ItemCharacteristic, Long>) {
+        spisVM.mutableSpisProgressCharacteristic.remove(item)
         spisVM.spisProgressCharacteristicForMessage.setValue(spisVM.mutableSpisProgressCharacteristic.firstOrNull())
     }
 

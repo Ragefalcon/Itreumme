@@ -23,15 +23,14 @@ fun MessageProgressCharacteristics() {
     val keyDial = remember { mutableStateOf(false) }
     val dialLay = remember { MyDialogLayout() }
 
-    if (MainDB.avatarSpis.spisProgressCharacteristicForMessage.getState().value != null) keyDial.value =
-        true
+    LaunchedEffect(MainDB.avatarSpis.spisProgressCharacteristicForMessage.getState().value){
+        if (MainDB.avatarSpis.spisProgressCharacteristicForMessage.getState().value != null) keyDial.value = true
+    }
     val alpha: Float by animateFloatAsState(
         targetValue = if (MainDB.avatarSpis.spisProgressCharacteristicForMessage.getState().value != null) 1f else 0.0f,
-
         animationSpec = tween(durationMillis = 100, easing = FastOutSlowInEasing)
     ) {
-        if (MainDB.avatarSpis.spisProgressCharacteristicForMessage.getState().value == null) keyDial.value =
-            false
+        if (MainDB.avatarSpis.spisProgressCharacteristicForMessage.getState().value == null) keyDial.value = false
     }
     BoxWithConstraints(Modifier.fillMaxSize().alpha(alpha), Alignment.Center) {
         if (keyDial.value)

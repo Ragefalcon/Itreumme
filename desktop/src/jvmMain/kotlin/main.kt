@@ -58,6 +58,14 @@ enum class MainTabsEnum(override val nameTab: String) : tabElement {
 @OptIn(ExperimentalFoundationApi::class, androidx.compose.ui.ExperimentalComposeUiApi::class)
 fun main() = application {
 
+    /**
+     * Возможные значения  "METAL","SOFTWARE","OPENGL" и наверное "DIRECTX" или "DIRECT3D"
+     * На ноуте с виндой и с дискретной и с встроенной видеокартой если не стоит принудительного выбора
+     * дискретного ускорителя, то вываливается ошибка Failed Direct3D call через какое то время после запуска.
+     * Если установить OPENGL, то вроде все работает без настроек в системе.
+     * */
+    System.setProperty("skiko.renderApi", "OPENGL")
+
     val dialLay = remember { MyDialogLayout() }
 
     val timeScreen = remember { MainTimeTabs(dialLay) }

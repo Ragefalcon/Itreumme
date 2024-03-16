@@ -122,9 +122,11 @@ class GoogleSincTab(val dialLay: MyDialogLayout) {
                         MyOutlinedTextField("Имя нового файла", nameNewBD)
                         MyTextButtStyle1("Загрузить новый файл") {
                             CoroutineScope(Dispatchers.Default).launch {
-                                StateVM.ktorGOA.uploadFile(
+                                StateVM.ktorGOA.uploadFileResumable(
                                     CommonName.nameMainDBfile,
-                                    nameNewBD.value.text
+                                    nameNewBD.value.text,{
+                                        println("MyTag - ktorGOA.uploadFileResumable Log = ${it}")
+                                    }
                                 ) { progress ->
                                     progressSett.value = progress
                                 }

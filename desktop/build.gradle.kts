@@ -46,7 +46,7 @@ compose.desktop {
              * */
             modules("java.compiler", "java.naming", "java.instrument" , "java.sql", "jdk.unsupported")
             packageName = "Itreumme"
-            packageVersion = "1.0.003"
+            packageVersion = "1.0.005"
         }
     }
 }
